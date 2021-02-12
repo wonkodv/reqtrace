@@ -1,6 +1,5 @@
 
-Requirements
-============
+# Requirements
 
 
 ## REQ-001: Requirement Fields
@@ -97,8 +96,7 @@ are covered by more fine grained Requirements downstream.
 
 An error is reported for an invalid tracing graph. A Tracing Graph is invalid, if there is a loop.
 
-Usecases
-========
+# Usecases
 
 ## UC-001: Validate Configuration
 

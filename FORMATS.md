@@ -1,11 +1,8 @@
-
-Formats
-=======
+# Formats
 
 Covers: REQ-006 (Well defined Formats)
 
-Primitives
-----------
+## Primitives
 
 These Rules hold for all Artefact formats:
 
@@ -16,8 +13,7 @@ The Id of a requirement, which matches the Regular Expression `[a-zA-Z][a-zA-Z0-
 
 
 
-Markdown Requirements
----------------------
+## Markdown Requirements
 
 This project's format as used in `REQUIREMENTS.md` or this File.
 
