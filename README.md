@@ -34,7 +34,7 @@ A requirement has
 * short representative title
 * optionally a description
 * list of other requirements that are "covered" by it
-* Optionally a Parent Requirement
+* Optionally one Parent or a list of child requirements
 
 
 Coverage

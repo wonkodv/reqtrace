@@ -11,7 +11,7 @@ These Rules hold for all Artefact formats:
 
 
 ### ID
-The Id of a requirement, which matches the Regular Expression `[a-zA-Z][a-zA-Z0-9_-]+`.
+The Id of a requirement, which matches the Regular Expression `[a-zA-Z][a-zA-Z0-9_-]`.
 
 
 
@@ -33,8 +33,9 @@ Options:
 *   Nested Requirement: If true, nested requirements are constructed. If False,
     Nested Requirements produce an Error.
 
-A Requirement starts with a heading that has the form `ID: TITLE`, if the id
-matches a prefix or the list of prefixes is empty.
+A Requirement starts with a `#` heading of any level that has the form `ID:
+TITLE`, if the id matches a prefix or the list of prefixes is empty.
+The underlined headings are not supported to ease parsing. TODO: reconsider?
 
 The Paragraphs that directly follow the heading give the description of the
 requirement.
@@ -49,4 +50,3 @@ All paragraphs are considered, until either:
 *   A Heading with the same or lower level
 *   A Heading that itself starts a Requirement. This becomes a nested
     requirement (unless this feature is deactivated)
-
