@@ -59,6 +59,7 @@ Covers:
 Depends:
 *   FMT_MD_START
 *   FMT_MD_DESC
+*   FMT_MD_DESC_HEADINGS
 *   FMT_MD_ATTRIBUTES
 
 
@@ -79,19 +80,43 @@ All paragraphs add to the description until:
 
 
 
-### FMT_MD_DESC_HEADINGS: Headings in the description are promoted
+### FMT_MD_DESC_HEADINGS: Heading Level in Description is adjusted
 
 Headings with a lower level than the starting one, that do not start a nested
-requirement are added to the description. Their heading level is promoted by
+requirement are added to the description. Their heading level is adjusted by
 removing as many leading `#` as the requirement had
 
-### FMT_MD_COV: Coverage Marks
+### FMT_MD_ATTRIBUTES: Attributes
 
-Paragraphs where each line matches `Covers: ID( \([^)]*\))?` (an ID which may or
-may not be followed by text in parenthesis) are omitted from the description and
-define a coverage of the requirement with ID. If the text in
-parenthesis is present, it is matched against the covered requirement's title.
+Attributes are parsed from paragraphs that start with a single word followed by
+a colon. Once the first Attribute Paragraph is encountered, the Parser will add
+to the Attribute Value until:
 
+*   The Start of another Requirement.
+*   The start of another Attribute Paragraph
+*   A Heading the same level or less. This ends the Requirement.
+
+There are 3 types of Attribute Paragraphs:
+*   Text: can span multiple Paragraphs
+*   Short List: Comma separated list of IDs
+*   Long list:  one paragraph that only consists of bullet points
+
+The Attribute `Tags` can be a short or long list of arbitrary Tags which have
+the same format as requirement IDs.
+
+The Attributes `Depends` and `Covers` can be short lists of Requirement IDs or
+long lists, where each item starts with a requirement id, optionally followed by
+a colon and the title of the referenced requirement.
+
+Comment:
+
+    `Covers: Some, IDs,`
+
+or
+
+    `Covers:
+    *   Some
+    *   IDs
 
 ### Example
 

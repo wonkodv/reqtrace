@@ -3,16 +3,12 @@
 
 ## DSG_REQ_FIELDS: Requirement Fields
 
-A requirement has to have:
-*   id: a unique ID
+Attributes of a requirement that this tool requires:
+*   ID: a short string that uniquely identifies this requirement
 
-and optionally any combination of the following attributes:
-
-*   title: Short representative title
-*   Description: longer text giving Details
-*   History: Text about how this requirement changed
-*   Comment: Text with even more details, further reading, etc. that has a lower
-    priority than Description which may be excluded from reports
+Optional Attributes that are handled:
+*   Title:  Text that briefly summarizes this requirement (on line)
+*   Description: Text that gives detailed description
 *   Coverage: List of requirement IDs that are covered by this one
 *   Dependencies: List of requirement IDs which cover this one
 *   Tags:   List of Strings that can be used to categorize requirements
@@ -20,6 +16,12 @@ and optionally any combination of the following attributes:
 Attributes inferred during requirement Parsing:
 *   Location:   Artefact that defines this requirement and the location inside
     the artefact where it is defined
+
+Arbitrary Additional Attributes are possible, for example
+
+*   History: Text about how this requirement changed
+*   Comment: Text with even more details, further reading, etc. that has a lower
+    priority than Description which may be excluded from reports
 
 Covers:
 *   REQ_UP
