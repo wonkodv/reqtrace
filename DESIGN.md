@@ -46,6 +46,8 @@ Candidates:
 *   JSON
 *   ?
 
+for smaller diff, all lists should be sorted 
+
 
 ## Computing effort Considerations
 
@@ -61,6 +63,10 @@ are stored in a file each:
 To prevent over caching a fingerprint of the Artefact is stored in the cached
 requirements, and the fingerprint of all related artefacts is stored with the
 coverage links.
+
+### DSG_JSON_CACHE_SORT: JSON Cache sorted
+
+Sort lists, smaller diff
 
 ### DSG_JSON_CACHE: JSON for Storing State
 

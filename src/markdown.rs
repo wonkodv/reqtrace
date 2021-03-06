@@ -10,7 +10,6 @@ use thiserror::Error;
 
 use super::common::*;
 
-
 lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();
     static ref REQUIREMENT_LINE: Regex =
@@ -21,25 +20,26 @@ lazy_static! {
 }
 
 #[allow(dead_code)]
-#[derive(Error, Debug)]
+#[derive(Error, Debug)] // TODO
 pub enum MarkdownParserError {
+    #[error("If `prefixes` is empty, require_prefix must be false")]
+    DuplicateRequirement(Requirement,Requirement),
+
     #[error("If `prefixes` is empty, require_prefix must be false")]
     RequiredPrefixWithoutPrefix,
 
     #[error("Heading with Prefix not declaring a Requirement at {0}")]
-    InvalidPrefix(FileLineLocation),
+    InvalidPrefix(Location),
 
     #[error("Nested Requirement at {0}")]
-    IllegalNesting(FileLineLocation),
+    IllegalNesting(Location),
 
     #[error("Bad Format: {1} at {0}")]
-    FormatError(FileLineLocation, &'static str),
+    FormatError(Location, &'static str),
 
     #[error("File Read error")]
     IOError(PathBuf, io::Error),
 }
-
-pub type MarkdownParserResult = Result<Requirements, MarkdownParserError>;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct MarkdownArtefact<'a> {
@@ -52,15 +52,67 @@ impl<'a> fmt::Display for MarkdownArtefact<'a> {
     }
 }
 
-fn markdown_parse<R: io::Read>(read: R, path: PathBuf) -> MarkdownParserResult {
+impl<'a> MarkdownArtefact<'a> {
+    pub fn new(path: &'a Path) -> Self {
+        Self { path }
+    }
+}
+
+impl Artefact for MarkdownArtefact<'_> {
+    type ERROR = MarkdownParserError;
+
+    fn parse(&self) -> Result<Requirements, Self::ERROR> {
+        let p = self.path;
+        let file = fs::File::open(p).map_err(|e| MarkdownParserError::IOError(p.into(), e))?;
+
+        let reader = io::BufReader::new(file);
+
+        let requirements = markdown_parse(reader, self.path.into())?;
+
+        return Ok(requirements);
+    }
+}
+
+fn markdown_parse<R: io::Read>(
+    read: R,
+    path: PathBuf,
+) -> Result<Requirements, MarkdownParserError> {
     let mut reader = io::BufReader::new(read);
-    let mut results = Vec::new();
+    let mut results: Requirements = Requirements::new();
 
     let mut line_number: u32 = 0;
     let mut line = String::new();
 
     let mut current_level: usize = 0;
-    let mut req = Requirement::default();
+    let mut req: Requirement = Requirement::default();
+    /* TODO: figure out how ref works  and add req to list instead of cloning 
+     *
+     * Better yet, create an iterator on MarkdownArtefact that parses until it
+     * finds, then yields.
+     *
+     *
+     *
+     * States:
+     *
+     * REQ         ---ReqHeading(new)-------> DESCRIPTION
+     *
+     * DESCRIPTION ---Text------------------> DESCRIPTION
+     * DESCRIPTION ---Attr------------------> ATTRIBUTE
+     *
+     * DESCRIPTION ---Heading---------------> REQ
+     * DESCRIPTION ---ReqHeading(emit,new)--> DESCRIPTION
+     *
+     * ATTRIBUTE   ---Attr------------------> ATTRIBUTE
+     * ATTRIBUTE   ---Text(emit)------------> REQ
+     * ATTR        ---Heading---------------> REQ
+     * ATTR        ---ReqHeading(emit,new)--> DESCRIPTION
+     *
+     *
+     *
+     *
+     **/
+
+    req.location.file = path.clone();
 
     let mut collecting = false;
 
@@ -81,16 +133,16 @@ fn markdown_parse<R: io::Read>(read: R, path: PathBuf) -> MarkdownParserResult {
                 /* new Requirement starting  */
                 if collecting {
                     /* working on a req currently               */
-                    if level > current_level {
+                    if level == current_level {
+                        results.push(req.clone());
+                    } else if level > current_level {
                         /*  ### REQ
                          *  #### NESTED-REQ
                          */
-                        return Err(MarkdownParserError::IllegalNesting(FileLineLocation::new(
+                        return Err(MarkdownParserError::IllegalNesting(Location::new(
                             path,
                             line_number,
                         )));
-                    } else if level == current_level {
-                        results.push(req.clone());
                     } else if level < current_level {
                         /*  ### SORT-OF-NESTED-REQ
                          *  ## REQ
@@ -98,7 +150,7 @@ fn markdown_parse<R: io::Read>(read: R, path: PathBuf) -> MarkdownParserResult {
                         /* this is not strictly nesting but looks like it. needs a headline
                          * without req in between.
                          */
-                        return Err(MarkdownParserError::IllegalNesting(FileLineLocation::new(
+                        return Err(MarkdownParserError::IllegalNesting(Location::new(
                             path,
                             line_number,
                         )));
@@ -110,7 +162,7 @@ fn markdown_parse<R: io::Read>(read: R, path: PathBuf) -> MarkdownParserResult {
                 req.title = title;
                 req.id = id;
                 req.description.clear();
-                req.line_number = line_number;
+                req.location.line = line_number;
                 current_level = level;
                 collecting = true;
             } else {
@@ -126,17 +178,17 @@ fn markdown_parse<R: io::Read>(read: R, path: PathBuf) -> MarkdownParserResult {
                      * ## REQ
                      * ## Head Line
                      */
-                    eprint!("finished Req: {}\n", req);
-                    results.push(req.clone());
-                    collecting = false;
+                    if collecting {
+                        collecting = false;
+                        results.push(req.clone());
+                    }
                 }
             }
         } else if BAD_HEADLINE_UNDERLINE.is_match(&line) {
-                        return Err(MarkdownParserError::FormatError(FileLineLocation::new(
-                            path,
-                            line_number,
-                        ), "Underlines for Headings confuse the parser"));
-
+            return Err(MarkdownParserError::FormatError(
+                Location::new(path, line_number),
+                "Underlines for Headings confuse the parser",
+            ));
         } else {
             /* TODO: if CoverLine.matches */
             req.description += &line;
@@ -145,28 +197,13 @@ fn markdown_parse<R: io::Read>(read: R, path: PathBuf) -> MarkdownParserResult {
         // end of File
         if r == 0 {
             if collecting {
-                results.push(req);
+                results.push(req.clone());
             }
             break;
         }
     }
 
     return Ok(results);
-}
-
-impl<'a> MarkdownArtefact<'a> {
-    pub fn new(path: &'a Path) -> Self { Self { path } }
-
-    pub fn parse(&self) -> MarkdownParserResult {
-        let p = self.path;
-        let file = fs::File::open(p).map_err(|e| MarkdownParserError::IOError(p.into(), e))?;
-
-        let reader = io::BufReader::new(file);
-
-        let requirements = markdown_parse(reader, self.path.into())?;
-
-        return Ok(requirements);
-    }
 }
 
 #[cfg(test)]
@@ -193,4 +230,3 @@ mod tests {
         todo!()
     }
 }
-

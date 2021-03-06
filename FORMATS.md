@@ -151,6 +151,7 @@ TODO
 # Output Formats
 
 ## Json
+each list sorted to minimize diff !
 
 * Artefacts
   * Unique ID
