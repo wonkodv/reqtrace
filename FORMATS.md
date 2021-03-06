@@ -1,48 +1,187 @@
-# Formats
+# Artefact Formats
 
-Covers: REQ-006 (Well defined Formats)
-
-## Primitives
-
-These Rules hold for all Artefact formats:
+The set of formats that are passed by this tool are well defined by this
+specification.
 
 
-### ID
-The Id of a requirement, which matches the Regular Expression `[a-zA-Z][a-zA-Z0-9_-]`.
+## Tool wide Formats
 
+These Rules hold for all Artefact formats supported by the tool except JSON,
+where anything is possible.
 
+### FMT_ID: Requirement Identifier
 
+Requirement identifier consist of letters, digits and underscore, specifically
+they match the Regular Expression
+
+    [A-Za-z][a-zA-Z0-9_]+[a-zA-Z0-9]
+
+This way they are safe for use in filenames, URLs, markdown, code, allow
+partitioning and are double click friendly.
+
+Covers:
+*   REQ_FORMATS (Well defined Formats)
+
+Comment:
+Discussion in the [README](README.md#requirement-ids)
 
 ## Markdown Requirements
 
-This project's format as used in `REQUIREMENTS.md` or this File.
+This project's preferred format as used in `REQUIREMENTS.md` or this File.
 
-The artefact is a Markdown file with freely chosen format. A requirement is
-a Heading that matches the syntax stated below and the paragraphs that follow.
+### FMT_MD: Markdown File Format
 
-Options:
-*   Requirement Prefix: A list of prefixes that are considered for finding
-    Requirements. For example `"UC-","REQ-"`. An empty list disables prefix
-    mathing.
-*   Enforce Prefix: If true, Headings that start with a prefix but do not match
-    the Syntax of a requirement produce an error.
-*   Nested Requirement: If true, nested requirements are constructed. If False,
-    Nested Requirements produce an Error.
+
+The artefact is a Markdown file with freely chosen layout.  A Requirement is in
+a heading line with requirement ID and title, followed by description and other
+attributes.
+
+Covers:
+*   REQ_FORMATS: Well defined Formats
+
+Depends:
+*   FMT_MD_START
+*   FMT_MD_DESC
+*   FMT_MD_ATTRIBUTES
+
+
+### FMT_MD_START: Requirement Start
 
 A Requirement starts with a `#` heading of any level that has the form `ID:
-TITLE`, if the id matches a prefix or the list of prefixes is empty.
-The underlined headings are not supported to ease parsing. TODO: reconsider?
+TITLE`.
 
-The Paragraphs that directly follow the heading give the description of the
-requirement.
+### FMT_MD_DESC: Description
 
-Paragraphs where each line matches `Covers: ID( \([^)]*\))?` (an ID whic hmay or
-may not be followed by text in parenthesis, where text does not contain
-a closing paren) are omitted from the description and define a coverage of the
-requirement with ID. The text in the parenthesis must match the title of the
-covered requirement.
+The paragraphs following the start of the requirement make up the description of
+the requirement.
 
-All paragraphs are considered, until either:
-*   A Heading with the same or lower level
-*   A Heading that itself starts a Requirement. This becomes a nested
-    requirement (unless this feature is deactivated)
+All paragraphs add to the description until:
+*   The Start of another Requirement.
+*   The start of an Attribute Paragraph
+*   A Heading the same level or less. This ends the Requirement.
+
+
+
+### FMT_MD_DESC_HEADINGS: Headings in the description are promoted
+
+Headings with a lower level than the starting one, that do not start a nested
+requirement are added to the description. Their heading level is promoted by
+removing as many leading `#` as the requirement had
+
+### FMT_MD_COV: Coverage Marks
+
+Paragraphs where each line matches `Covers: ID( \([^)]*\))?` (an ID which may or
+may not be followed by text in parenthesis) are omitted from the description and
+define a coverage of the requirement with ID. If the text in
+parenthesis is present, it is matched against the covered requirement's title.
+
+
+### Example
+
+A Markdown File with the following content:
+
+    # Headline
+    ## REQ_ID: Requirement Title
+    Description paragraph
+    ### Heading in the description
+    another Description Paragraph
+
+    Covers: REQ_COV
+
+    ## Headline outside the description
+
+would lead to one Requirement with id `REQ_ID` and title `Requirement Title`
+It would cover `REQ_COV` by ID.
+The Description would be:
+
+    Description paragraph
+    # Heading in the description
+    another Description Paragraph
+
+
+### Markdown Artefact Parsing Options
+
+The following options can be used to configure parsing of markdown artefacts.
+
+#### FMT_MD_OPT_PREFIX: List of Prefixes
+
+A List of strings can be passed, which is used to prevent the parser from
+creating unintended requirements from headlines which accidentally have the
+right form.
+
+Lines in the markdown file which would start a new requirement, are treated as
+normal headings, if the identifier of the would be requirement does not start
+with one of the list of prefixes. If the list is empty, no prefix matching is
+performed and all matching lines lead to a requirement.
+
+
+## JSON Requirements
+
+*   [Requirements]
+    *   id
+    *   location
+    *   ...
+
+TODO
+
+## Rust Coverage Marks
+
+Parse `cov_mark::hit!(DSG_001)`
+
+TODO
+
+
+# Output Formats
+
+## Json
+
+* Artefacts
+  * Unique ID
+  * Version Info
+  * If File
+    * Path
+    * Hash over File
+  * If Group
+    * Child Artefacts (have no upwards or downwards artefact links)
+  * Upwards Artefact IDs
+  * Downwards Aretefact IDs
+  * Requirements defined in that Artefact
+    * ID
+    * Title
+    * Description
+    * Location
+    * Covers REQ_Id\*
+    * Covered-by Req_Id
+
+TODO
+
+## Markdown
+
+With link to artefact.md#req-id
+
+## Latex
+
+Generated by seperate Tool, using latex config, req state. Generates 1 tex file per artefact so recompiling tex is cheaper.
+(attention using include or input, one makes aux files the other recompiles from
+scratch)
+
+Graph of Artefacts
+
+SubSection per Artefact
+
+SubSubsection per Requirement
+
+ID, Title, \\ref{req-id}
+
+Description
+
+Covers:
+
+* Artefact
+  * Completeness [Link]ReqId: Title
+
+Covered By:
+
+* Artefact
+  * [Link] ReqId Title
+
