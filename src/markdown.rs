@@ -1,9 +1,9 @@
-use std::fmt;
 use std::fs;
 use std::io;
 use std::io::BufRead;
 use std::path::Path;
 use std::path::PathBuf;
+use std::{fmt, mem};
 
 use regex::Regex;
 use thiserror::Error;
@@ -13,17 +13,16 @@ use super::common::*;
 lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();
     static ref REQUIREMENT_LINE: Regex =
-        Regex::new(r"^(#+)\s*([A-Za-z][a-zA-Z0-9_-]*):\s*(.+)\s*$").unwrap();
-    static ref COVER_LINE: Regex =
-        Regex::new(r"^Covers:\s*([A-Za-z][a-zA-Z0-9_-]*)\s*\(([^)]+)\)\s*$").unwrap();
-    static ref BAD_HEADLINE_UNDERLINE: Regex = Regex::new(r"^(====*)|(----*)").unwrap();
+        Regex::new(r"^(#+)\s*([A-Za-z][a-zA-Z0-9_]+[a-zA-Z0-9]):\s*(.+)\s*$").unwrap();
+    static ref ATTRIBUTE_LINE: Regex = Regex::new(r"^([A-Z][a-z]+):\s(.*)$").unwrap();
+    static ref BAD_HEADLINE_UNDERLINE: Regex = Regex::new(r"^(====*)|(----*)").unwrap(); // TODO: use
 }
 
-#[allow(dead_code)]
-#[derive(Error, Debug)] // TODO
+#[allow(dead_code)] // TODO
+#[derive(Error, Debug)]
 pub enum MarkdownParserError {
     #[error("If `prefixes` is empty, require_prefix must be false")]
-    DuplicateRequirement(Requirement,Requirement),
+    DuplicateRequirement(Requirement, Requirement),
 
     #[error("If `prefixes` is empty, require_prefix must be false")]
     RequiredPrefixWithoutPrefix,
@@ -37,9 +36,13 @@ pub enum MarkdownParserError {
     #[error("Bad Format: {1} at {0}")]
     FormatError(Location, &'static str),
 
+    #[error("Duplicate Attribute: {1} at {0}")]
+    DiplicateAttribute(Location, String),
+
     #[error("File Read error")]
     IOError(PathBuf, io::Error),
 }
+use MarkdownParserError::*;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct MarkdownArtefact<'a> {
@@ -59,151 +62,156 @@ impl<'a> MarkdownArtefact<'a> {
 }
 
 impl Artefact for MarkdownArtefact<'_> {
-    type ERROR = MarkdownParserError;
+    type Error = MarkdownParserError;
+    type Parser = MarkdownParser<fs::File>;
 
-    fn parse(&self) -> Result<Requirements, Self::ERROR> {
+    fn get_parser(&self) -> Result<Self::Parser, Self::Error> {
         let p = self.path;
         let file = fs::File::open(p).map_err(|e| MarkdownParserError::IOError(p.into(), e))?;
 
-        let reader = io::BufReader::new(file);
-
-        let requirements = markdown_parse(reader, self.path.into())?;
-
-        return Ok(requirements);
+        Ok(Self::Parser::new(file, p.into()))
     }
 }
 
-fn markdown_parse<R: io::Read>(
-    read: R,
+#[derive(Debug, PartialEq)]
+enum MarkdownParserState {
+    LookForReq,
+    CollectDesc,
+    CollectAttr,
+}
+use MarkdownParserState::*;
+
+#[derive(Debug)]
+pub struct MarkdownParser<R: io::Read> {
+    reader: io::BufReader<R>,
     path: PathBuf,
-) -> Result<Requirements, MarkdownParserError> {
-    let mut reader = io::BufReader::new(read);
-    let mut results: Requirements = Requirements::new();
+    line_number: u32,
+    line: Option<String>,
+}
 
-    let mut line_number: u32 = 0;
-    let mut line = String::new();
-
-    let mut current_level: usize = 0;
-    let mut req: Requirement = Requirement::default();
-    /* TODO: figure out how ref works  and add req to list instead of cloning 
-     *
-     * Better yet, create an iterator on MarkdownArtefact that parses until it
-     * finds, then yields.
-     *
-     *
-     *
-     * States:
-     *
-     * REQ         ---ReqHeading(new)-------> DESCRIPTION
-     *
-     * DESCRIPTION ---Text------------------> DESCRIPTION
-     * DESCRIPTION ---Attr------------------> ATTRIBUTE
-     *
-     * DESCRIPTION ---Heading---------------> REQ
-     * DESCRIPTION ---ReqHeading(emit,new)--> DESCRIPTION
-     *
-     * ATTRIBUTE   ---Attr------------------> ATTRIBUTE
-     * ATTRIBUTE   ---Text(emit)------------> REQ
-     * ATTR        ---Heading---------------> REQ
-     * ATTR        ---ReqHeading(emit,new)--> DESCRIPTION
-     *
-     *
-     *
-     *
-     **/
-
-    req.location.file = path.clone();
-
-    let mut collecting = false;
-
-    loop {
-        line_number += 1;
-        line.clear();
-        let r = reader.read_line(&mut line).unwrap(); // TODO: .map_err(|e| MarkdownParserError::IOError(p, e))?;
-
-        if let Some(heading) = HEADING_LINE.captures(&line) {
-            let level = heading[1].len();
-
-            let requirement_match = REQUIREMENT_LINE.captures(&line);
-
-            if let Some(requirement_match) = requirement_match {
-                let id = requirement_match[2].into();
-                let title = requirement_match[3].into();
-
-                /* new Requirement starting  */
-                if collecting {
-                    /* working on a req currently               */
-                    if level == current_level {
-                        results.push(req.clone());
-                    } else if level > current_level {
-                        /*  ### REQ
-                         *  #### NESTED-REQ
-                         */
-                        return Err(MarkdownParserError::IllegalNesting(Location::new(
-                            path,
-                            line_number,
-                        )));
-                    } else if level < current_level {
-                        /*  ### SORT-OF-NESTED-REQ
-                         *  ## REQ
-                         */
-                        /* this is not strictly nesting but looks like it. needs a headline
-                         * without req in between.
-                         */
-                        return Err(MarkdownParserError::IllegalNesting(Location::new(
-                            path,
-                            line_number,
-                        )));
-                    } else {
-                        unreachable!();
-                    }
-                }
-
-                req.title = title;
-                req.id = id;
-                req.description.clear();
-                req.location.line = line_number;
-                current_level = level;
-                collecting = true;
-            } else {
-                /* headline but not a requirement */
-                if level > current_level {
-                    /*
-                     * ## REQ
-                     * ### Head Line as part of description
-                     */
-                    req.description += line[current_level..].trim_start(); /* part of description */
-                } else {
-                    /*
-                     * ## REQ
-                     * ## Head Line
-                     */
-                    if collecting {
-                        collecting = false;
-                        results.push(req.clone());
-                    }
-                }
-            }
-        } else if BAD_HEADLINE_UNDERLINE.is_match(&line) {
-            return Err(MarkdownParserError::FormatError(
-                Location::new(path, line_number),
-                "Underlines for Headings confuse the parser",
-            ));
-        } else {
-            /* TODO: if CoverLine.matches */
-            req.description += &line;
-        }
-
-        // end of File
-        if r == 0 {
-            if collecting {
-                results.push(req.clone());
-            }
-            break;
+impl<R: io::Read> MarkdownParser<R> {
+    fn new(read: R, path: PathBuf) -> Self {
+        Self {
+            reader: io::BufReader::new(read),
+            path,
+            line_number: 0,
+            line: None,
         }
     }
 
-    return Ok(results);
+    fn parse_next(&mut self) -> Result<Option<Requirement>, MarkdownParserError> {
+        let mut req = Requirement::default();
+        let mut level = 0;
+        let mut line_buffer: String = String::default();
+        let mut state = LookForReq;
+
+        let mut currently_appending_to: Option<&mut String> = None;
+
+        let consume = loop {
+            if let Some(l) = self.line.take() {
+                line_buffer = l;
+            } else {
+                line_buffer.clear();
+                let bytes_read = self
+                    .reader
+                    .read_line(&mut line_buffer)
+                    .map_err(|e| IOError(self.path.clone(), e))?;
+                if bytes_read == 0 {
+                    break false;
+                }
+                self.line_number += 1;
+            }
+
+            let mut line = line_buffer.as_str();
+
+            if state == LookForReq {
+                if let Some(req_line) = REQUIREMENT_LINE.captures(line) {
+                    level = req_line[1].len();
+                    req.id = req_line[2].to_owned();
+                    req.title = Some(req_line[3].trim().to_owned());
+                    req.location.file = self.path.clone();
+                    req.location.line = self.line_number;
+                    state = CollectDesc;
+
+                    currently_appending_to = None;
+                }
+            } else {
+                if let Some(heading_line) = HEADING_LINE.captures(line) {
+                    if REQUIREMENT_LINE.is_match(&line) {
+                        break false;
+                    }
+                    let line_level = heading_line[1].len();
+                    if line_level <= level {
+                        break true;
+                    } else {
+                        line = line[level..].trim_start();
+                    }
+                }
+
+                if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
+                    let key = &attr_line[1];
+                    let val = &attr_line[2];
+
+                    if key == "Tags" {
+                        req.tags = val.split(",").map(|s| s.trim().to_owned()).collect();
+                    } else if key == "Covers" {
+                        req.covers = val.split(",").map(|s| Reference{id:s.trim().to_owned(), title:None}).collect();
+                    } else if key == "Depends" {
+                        req.depends = val.split(",").map(|s| Reference{id:s.trim().to_owned(), title:None}).collect();
+                    } else {
+                        let e = req.attributes.entry(key.to_owned());
+
+                        match e {
+                            std::collections::hash_map::Entry::Occupied(_) => {
+                                return Err(DiplicateAttribute(
+                                    Location::new(self.path.clone(), self.line_number),
+                                    key.to_owned(),
+                                ));
+                            }
+                            std::collections::hash_map::Entry::Vacant(_) => {
+                                currently_appending_to = Some(e.or_insert(val.to_owned()));
+                            }
+                        }
+                    }
+                    state = CollectAttr;
+                } else {
+                    if let Some(ap) = currently_appending_to.as_mut() {
+                        if ap.trim().is_empty() || !line.is_empty() {
+                            ap.push_str(line);
+                        }
+                    } else {
+                        assert!(state == CollectDesc);
+                        if !line.is_empty() {
+                            req.description = Some(mem::take(&mut line_buffer));
+                            currently_appending_to = req.description.as_mut();
+                        }
+                    }
+                }
+            }
+        };
+
+        if !consume {
+            self.line = Some(line_buffer);
+        }
+
+        if state != LookForReq {
+            return Ok(Some(req));
+        } else {
+            return Ok(None);
+        }
+    }
+}
+
+impl<R: io::Read> Iterator for MarkdownParser<R> {
+    type Item = Result<Requirement, MarkdownParserError>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.parse_next() {
+            Ok(Some(r)) => Some(Ok(r)),
+            Ok(None) => None,
+            Err(e) => Some(Err(e)),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -212,17 +220,12 @@ mod tests {
 
     #[test]
     fn test_req_regex_matches() {
-        let cap = REQUIREMENT_LINE.captures("#### REQ-123: Tit le").unwrap();
-        assert_eq!(&cap[1], "####");
-        assert_eq!(&cap[2], "REQ-123");
-        assert_eq!(&cap[3], "Tit le");
-    }
-
-    #[test]
-    fn test_cover_regex_matches() {
-        let cap = COVER_LINE.captures("Covers: REQ-123 (Title )").unwrap();
-        assert_eq!(&cap[1], "REQ-123");
-        assert_eq!(&cap[2], "Title ");
+        let cap = REQUIREMENT_LINE
+            .captures("## REQ_VCS: Allow Version Control\n")
+            .unwrap();
+        assert_eq!(&cap[1], "##");
+        assert_eq!(&cap[2], "REQ_VCS");
+        assert_eq!(&cap[3], "Allow Version Control");
     }
 
     #[test]
