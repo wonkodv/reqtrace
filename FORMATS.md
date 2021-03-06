@@ -1,3 +1,20 @@
+
+# Config File
+
+
+Json File
+
+*   Artefacts
+    *   id
+        *   paths
+        *   parser
+*   tracing
+    *   list of:
+        *   pair of
+            *   list of upwards Requirements
+            *   List of downards Requirements
+
+
 # Artefact Formats
 
 The set of formats that are passed by this tool are well defined by this

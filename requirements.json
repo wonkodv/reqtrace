@@ -1,0 +1,26 @@
+{
+    "artefacts": {
+        "requirements": {
+            "paths": ["REQUIREMENTS.md"],
+            "parser": "markdown"
+        },
+        "design": {
+            "paths": ["DESIGN.md"],
+            "parser": "markdown"
+        },
+        "formats": {
+            "paths": ["FORMATS.md"],
+            "parser": "markdown"
+        },
+        "code": {
+            "paths": ["src/**/*.rs"],
+            "parser": "rust"
+        }
+    },
+    "tracing": [
+        [ [ "requirements" ], ["design", "formats"]],
+        [ [ "design" ], ["formats", "code"] ],
+        [ [ "formats" ], ["code"] ]
+    ]
+}
+
