@@ -1,6 +1,9 @@
-use std::fmt;
+use std::collections::HashMap;
 use std::path::PathBuf;
-use std::{collections::HashMap, error::Error};
+use std::{fmt, fs, io, path::Path};
+use thiserror::Error;
+
+use crate::markdown::MarkdownParser;
 
 #[derive(Debug, Default, PartialEq, Clone)]
 pub struct Location {
@@ -93,26 +96,94 @@ impl fmt::Display for Requirement {
     }
 }
 
-pub trait Artefact: fmt::Debug + PartialEq {
-    type Error: Error;
-    type Parser: Iterator<Item = Result<Requirement, Self::Error>>;
+pub enum ArtefactConfig<'a> {
+    Markdown(&'a Path),
+}
 
-    fn get_parser(&self) -> Result<Self::Parser, Self::Error>;
+#[allow(dead_code)] // TODO
+#[derive(Error, Debug)]
+pub enum ParserError {
+    #[error("If `prefixes` is empty, require_prefix must be false")]
+    DuplicateRequirement(Requirement, Requirement),
 
-    fn parse(&self) -> (Vec<Requirement>, Vec<Self::Error>) {
-        let mut errors = Vec::<Self::Error>::new();
-        let mut reqs = Vec::<Requirement>::new();
-        match self.get_parser() {
-            Err(e) => errors.push(e),
-            Ok(parser) => {
-                for res in parser {
-                    match res {
-                        Ok(req) => reqs.push(req),
-                        Err(e) => errors.push(e),
+    #[error("Bad Format: {1} at {0}")]
+    FormatError(Location, &'static str),
+
+    #[error("Duplicate Attribute: {1} at {0}")]
+    DuplicateAttribute(Location, String),
+
+    #[error("File Read error")]
+    IOError(PathBuf, io::Error),
+}
+
+pub struct Artefact<'a> {
+    #[allow(dead_code)] // TODO
+    config: &'a ArtefactConfig<'a>,
+    store: Vec<Requirement>,
+    requirements: HashMap<String, u16>, // ID => Req  with  ID
+    covers: HashMap<String, Vec<u16>>,  // ID => Reqs where ID in Req.Covers
+    depends: HashMap<String, Vec<u16>>, // ID => Reqs where ID in Req.Depends
+    errors: Vec<ParserError>,
+}
+
+impl<'a> Artefact<'a> {
+    pub fn open(config: &'a ArtefactConfig) -> Self {
+        let mut s = Self {
+            config,
+            store: Vec::new(),
+            requirements: HashMap::new(),
+            covers: HashMap::new(),
+            depends: HashMap::new(),
+            errors: Vec::new(),
+        };
+
+        match config {
+            ArtefactConfig::Markdown(path) => {
+                let file = fs::File::open(path).map_err(|e| ParserError::IOError(path.into(), e));
+                match file {
+                    Err(err) => s.errors.push(err),
+                    Ok(file) => {
+                        let parser = MarkdownParser::new(file, path.into());
+                        for res in parser {
+                            match res {
+                                Ok(req) => s.store.push(req),
+                                Err(e) => s.errors.push(e),
+                            }
+                        }
                     }
                 }
             }
         }
-        return (reqs, errors);
+
+        let mut idx: u16 = 0;
+        for req in &s.store {
+            let old = s.requirements.insert(req.id.to_owned(), idx);
+            if let Some(old_idx) = old {
+                let old_idx: usize = old_idx.into();
+                let old_req: &Requirement = &s.store[old_idx];
+                s.errors.push(ParserError::DuplicateRequirement(
+                    old_req.clone(),
+                    req.clone(),
+                ));
+            }
+
+            for cov in &req.covers {
+                s.covers.entry(cov.id.to_owned()).or_default().push(idx)
+            }
+            for dep in &req.depends {
+                s.depends.entry(dep.id.to_owned()).or_default().push(idx)
+            }
+
+            idx += 1;
+        }
+        s
+    }
+
+    pub fn get_errors(&self) -> &[ParserError] {
+        return &self.errors;
+    }
+
+    pub fn get_requirements(&self) -> &[Requirement] {
+        return &self.store;
     }
 }

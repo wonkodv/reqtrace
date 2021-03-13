@@ -13,13 +13,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for path in vec!["REQUIREMENTS.md", "FORMATS.md"] {
         eprint!("parsing {}\n", path);
         let path = Path::new(path);
-        let a = markdown::MarkdownArtefact::new(path);
-        let (reqs, errors) = a.parse();
-        for e in errors {
+        let cfg = ArtefactConfig::Markdown(&path);
+        let artefact = Artefact::open(&cfg);
+        for e in artefact.get_errors() {
             error_counter += 1;
             eprint!("Error {}", e);
         }
-        for r in reqs {
+        for r in artefact.get_requirements() {
             eprint!("{}", r.to_markdown());
         }
     }
