@@ -117,6 +117,12 @@ if:
 *   there is a loop
 *   a Node has no edges leading in or out
 
+
+##  REQ_CONFIG: Simple Configuration in One File
+
+All Configuration is stored in a single file using a common Format that is
+editable for humans and machine readable.
+
 # Usecases
 
 ## UC_VALIDATE: Validate Configuration

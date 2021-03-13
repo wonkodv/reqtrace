@@ -1,7 +1,11 @@
 # Design
 
 
-## DSG_REQ_FIELDS: Requirement Fields
+## Requirements
+
+Requirement Objects are dumb data containers for one Requirement
+
+### DSG_REQ_FIELDS: Requirement Fields
 
 Attributes of a requirement that this tool requires:
 *   ID: a short string that uniquely identifies this requirement
@@ -29,7 +33,22 @@ Covers:
 *   REQ_DELEGATION
 
 
-## DSG_ART_FIELDS: Artefact Fields
+## Artefacts
+
+Artefacts represent a (group of) files. They load cached requirements or parse
+them as needed.
+
+### DSG_ART_PARSE
+
+Artefact parses the requirements in the files it represents.
+
+### DSG_ART_CACHING
+
+Artefact manages a cache of already parsed requirements and only 
+
+
+
+### DSG_ART_FIELDS: Artefact Fields
 
 *   ID
 *   paths:  List of Paths or pattern with which to find the files
@@ -38,7 +57,10 @@ Covers:
 *   caching: boolean, whether to cache or parse on every access
 
 
-## Data Format Considerations
+
+## Formats
+
+### Data Format Considerations
 
 The data format for internal Caching, data exchange, and machine readable output
 needs to be well supported, text based and produce a reasonably small diff if
@@ -51,7 +73,7 @@ Candidates:
 for smaller diff, all lists should be sorted 
 
 
-## Computing effort Considerations
+### Computing effort Considerations
 
 Depending on the artefact type, parsing an artefact may not be slower than
 retrieving the information from a cache, but it may also be a lot slower, if the
@@ -66,29 +88,29 @@ To prevent over caching a fingerprint of the Artefact is stored in the cached
 requirements, and the fingerprint of all related artefacts is stored with the
 coverage links.
 
-### DSG_JSON_CACHE_SORT: JSON Cache sorted
+#### DSG_JSON_CACHE_SORT: JSON Cache sorted
 
 Sort lists, smaller diff
 
-### DSG_JSON_CACHE: JSON for Storing State
+#### DSG_JSON_CACHE: JSON for Storing State
 
 JSON is used to store parsing results and computed coverage links
 
 Covers: REQ_VCS, REQ_LAZY
 
-### DSG_JSON_IMPORT: JSON for Importing Requirements
+#### DSG_JSON_IMPORT: JSON for Importing Requirements
 
 Artefacts which can not be parsed by the tool are
 
 Covers: REQ_VCS, REQ_EXTENSIBLE
 
-### DSG_JSON_IMPORT: JSON for Exporting Results
+#### DSG_JSON_IMPORT: JSON for Exporting Results
 
 Artefacts which can not be parsed by the tool are
 
 Covers: REQ_VCS, REQ_MACHINE_READABLE
 
-### DSG_CACHE_FINGERPRINT: Fingerprint in Caches
+#### DSG_CACHE_FINGERPRINT: Fingerprint in Caches
 
 The fingerprint which indicates whether a cache computed from:
 *   The tool's version
@@ -96,7 +118,7 @@ The fingerprint which indicates whether a cache computed from:
 
 Covers: REQ_LAZY
 
-### DSG_ART_FINGERPRINT: Fingerprint of Artefacts
+#### DSG_ART_FINGERPRINT: Fingerprint of Artefacts
 
 The fingerprint of an artefact is computed by computing a hash over:
 *   hash over the parsing-type of the artefact

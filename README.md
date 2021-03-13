@@ -2,8 +2,29 @@ Requirement Tracing
 ===================
 
 
-Tool for easy to use simple Requirement Tracing.
+Tool to trace Software requirements.
 
+Primary Design Coals that mostly came from dealing with a tool which does this,
+or does not this:
+*   Can Parse any kind of artefacts in a (somewhat) sane way by working Well
+    with other Tools/languages
+    *   =>  REQ_EXTENSIBLE
+    *   =>  REQ_FORMATS
+    *   =>  REQ_UP
+    *   =>  REQ_DOWN
+    *   =>  REQ_GROUPING
+    *   =>  REQ_ERROR
+*   All state, internal representations, output etc. work well with Version
+    Control Systems => REQ_VCS
+*   Fast => REQ_FAST
+*   Use a Requirement Title if the ID has little meaning => REQ_VAL_TITLE
+*   Work well with Open Source Packages, integrate nicely with the ecosystem of
+    Continous Delivery Pipeline on public Source Code Hosters like github
+    =>  REQ_CONFIG: Simple Configuration in one File
+*   Don't give up early. Upon Errors (parsing, tracing) the tool should
+    recover and continue where possible and show a result along with all
+    encountered errors.
+    => REQ_LATE_ERRORS
 
 
 
@@ -13,7 +34,7 @@ Wording
 Artefact
 --------
 
-documents that contain Information about Requirements, for example:
+Documents that contain Information about Requirements, for example:
 
 * PDF
 * Markdown File
