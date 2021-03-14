@@ -41,6 +41,7 @@ pub struct Requirement {
     pub attributes: HashMap<String, String>,
 }
 
+#[allow(dead_code)]
 impl Requirement {
     pub fn to_markdown(&self) -> String {
         let mut result = String::with_capacity(1024);
@@ -103,7 +104,7 @@ pub enum ArtefactConfig<'a> {
 #[allow(dead_code)] // TODO
 #[derive(Error, Debug)]
 pub enum ParserError {
-    #[error("If `prefixes` is empty, require_prefix must be false")]
+    #[error("Duplicate Requirement {0} and {1}")]
     DuplicateRequirement(Requirement, Requirement),
 
     #[error("Bad Format: {1} at {0}")]
@@ -159,10 +160,8 @@ impl<'a> Artefact<'a> {
         for req in &s.store {
             let old = s.requirements.insert(req.id.to_owned(), idx);
             if let Some(old_idx) = old {
-                let old_idx: usize = old_idx.into();
-                let old_req: &Requirement = &s.store[old_idx];
                 s.errors.push(ParserError::DuplicateRequirement(
-                    old_req.clone(),
+                    s.req_with_idx(old_idx).clone(),
                     req.clone(),
                 ));
             }
@@ -179,11 +178,32 @@ impl<'a> Artefact<'a> {
         s
     }
 
+    fn req_with_idx(&self, idx:u16) -> &Requirement {
+        let idx: usize = idx.into();
+        &self.store[idx]
+    }
+
     pub fn get_errors(&self) -> &[ParserError] {
         return &self.errors;
     }
 
     pub fn get_requirements(&self) -> &[Requirement] {
         return &self.store;
+    }
+
+    #[allow(dead_code)]
+    pub fn get_requirement_with_id(&self, id:&str) -> Option<&Requirement> {
+        if let Some(idx) = self.requirements.get(id) {
+            return Some(self.req_with_idx(*idx));
+        }
+        None
+    }
+
+    pub fn get_requirements_that_cover(&self, id:&str) -> Vec<&Requirement> {
+        if let Some(covs) = self.covers.get(id) {
+            covs.iter().map(|idx| self.req_with_idx(*idx)).collect()
+        } else {
+            vec![]
+        }
     }
 }
