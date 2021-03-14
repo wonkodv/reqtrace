@@ -13,7 +13,7 @@ lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();
     static ref REQUIREMENT_LINE: Regex =
         Regex::new(r"^(#+)\s*([A-Za-z][a-zA-Z0-9_]+[a-zA-Z0-9]):\s*(.+)\s*$").unwrap();
-    static ref ATTRIBUTE_LINE: Regex = Regex::new(r"^([A-Z][a-z]+):\s(.*)$").unwrap();
+    static ref ATTRIBUTE_LINE: Regex = Regex::new(r"^([A-Z][a-z]+):\s*(.*)\s*$").unwrap();
     static ref BAD_HEADLINE_UNDERLINE: Regex = Regex::new(r"^(====*)|(----*)").unwrap(); // TODO: use
 }
 
@@ -173,6 +173,7 @@ impl<R: io::Read> Iterator for MarkdownParser<R> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::path::PathBuf;
 
     #[test]
     fn test_req_regex_matches() {
@@ -185,7 +186,35 @@ mod tests {
     }
 
     #[test]
+    fn test_attr_regex_matches() {
+        let cap = ATTRIBUTE_LINE
+            .captures("Covers: COV, Cov\n")
+            .unwrap();
+        assert_eq!(&cap[1], "Covers");
+        assert_eq!(&cap[2], "COV, Cov");
+    }
+
+
+    #[test]
     fn test_markdown_parser() {
-        todo!()
+        let s = r#"
+## REQ: Title Title
+
+Description
+
+Descriotion
+
+Covers: COV, Cov
+
+Depends: DEP
+        "#;
+        let mut parser = MarkdownParser::new(s.as_bytes(), PathBuf::from("test"));
+
+        let req = parser.next().unwrap().unwrap();
+        assert_eq!(req.id, "REQ");
+        assert_eq!(req.title, Some("Title Title".to_owned()));
+        assert_eq!(req.covers.len(), 2);
+        assert_eq!(req.covers[0].id, "COV");
+        assert_eq!(req.covers[1].id, "Cov");
     }
 }
