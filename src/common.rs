@@ -3,7 +3,12 @@ use std::path::PathBuf;
 use std::{fmt, fs, io, path::Path};
 use thiserror::Error;
 
-use crate::markdown::MarkdownParser;
+use crate::markdown::markdown_parse;
+
+pub const ATTR_COVERS: &str = "Covers";
+pub const ATTR_DEPENDS: &str = "Depends";
+pub const ATTR_DESCRIPTION: &str = "Description";
+pub const ATTR_TAGS: &str = "Tags";
 
 #[derive(Debug, Default, PartialEq, Clone)]
 pub struct Location {
@@ -34,7 +39,6 @@ pub struct Requirement {
     pub id: String,
     pub location: Location,
     pub title: Option<String>,
-    pub description: Option<String>,
     pub covers: Vec<Reference>,
     pub depends: Vec<Reference>,
     pub tags: Vec<String>,
@@ -53,13 +57,15 @@ impl Requirement {
         result += "\n";
         result += &self.location.to_string();
 
-        if let Some(desc) = &self.description {
+        if let Some(desc) = &self.attributes.get(ATTR_DESCRIPTION) {
             result += "\n\n";
             result += &desc;
         }
 
         if !self.covers.is_empty() {
-            result += "\n\nCovers: ";
+            result += "\n\n";
+            result += ATTR_COVERS;
+            result += ": ";
             let mut i = self.covers.iter();
             result += &i.next().unwrap().id;
             for r in i {
@@ -69,8 +75,10 @@ impl Requirement {
         }
 
         if !self.depends.is_empty() {
-            result += "\n\nDepends: ";
-            let mut i = self.covers.iter();
+            result += "\n\n";
+            result += ATTR_DEPENDS;
+            result += ": ";
+            let mut i = self.depends.iter();
             result += &i.next().unwrap().id;
             for r in i {
                 result += ", ";
@@ -129,56 +137,62 @@ pub struct Artefact<'a> {
 
 impl<'a> Artefact<'a> {
     pub fn open(config: &'a ArtefactConfig) -> Self {
-        let mut s = Self {
-            config,
-            store: Vec::new(),
-            requirements: HashMap::new(),
-            covers: HashMap::new(),
-            depends: HashMap::new(),
-            errors: Vec::new(),
-        };
+        let store;
+        let mut errors;
 
         match config {
             ArtefactConfig::Markdown(path) => {
                 let file = fs::File::open(path).map_err(|e| ParserError::IOError(path.into(), e));
                 match file {
-                    Err(err) => s.errors.push(err),
+                    Err(err) => {
+                        errors = vec![err];
+                        store = vec![];
+                    }
                     Ok(file) => {
-                        let parser = MarkdownParser::new(file, path.into());
-                        for res in parser {
-                            match res {
-                                Ok(req) => s.store.push(req),
-                                Err(e) => s.errors.push(e),
-                            }
-                        }
+                        let (s, e) = markdown_parse(file, path);
+                        errors = e;
+                        store = s;
                     }
                 }
             }
         }
 
+        let mut requirements = HashMap::<String, u16>::new();
+        let mut covers = HashMap::<String, Vec<u16>>::new();
+        let mut depends = HashMap::<String, Vec<u16>>::new();
+
         let mut idx: u16 = 0;
-        for req in &s.store {
-            let old = s.requirements.insert(req.id.to_owned(), idx);
+        for req in &store {
+            let old = requirements.insert(req.id.to_owned(), idx);
             if let Some(old_idx) = old {
-                s.errors.push(ParserError::DuplicateRequirement(
-                    s.req_with_idx(old_idx).clone(),
+                let old_idx: usize = old_idx.into();
+                errors.push(ParserError::DuplicateRequirement(
+                    store[old_idx].clone(),
                     req.clone(),
                 ));
             }
 
             for cov in &req.covers {
-                s.covers.entry(cov.id.to_owned()).or_default().push(idx)
+                covers.entry(cov.id.to_owned()).or_default().push(idx)
             }
             for dep in &req.depends {
-                s.depends.entry(dep.id.to_owned()).or_default().push(idx)
+                depends.entry(dep.id.to_owned()).or_default().push(idx)
             }
 
             idx += 1;
         }
-        s
+
+        return Self {
+            config,
+            store,
+            requirements,
+            covers,
+            depends,
+            errors,
+        };
     }
 
-    fn req_with_idx(&self, idx:u16) -> &Requirement {
+    fn req_with_idx(&self, idx: u16) -> &Requirement {
         let idx: usize = idx.into();
         &self.store[idx]
     }
@@ -192,14 +206,14 @@ impl<'a> Artefact<'a> {
     }
 
     #[allow(dead_code)]
-    pub fn get_requirement_with_id(&self, id:&str) -> Option<&Requirement> {
+    pub fn get_requirement_with_id(&self, id: &str) -> Option<&Requirement> {
         if let Some(idx) = self.requirements.get(id) {
             return Some(self.req_with_idx(*idx));
         }
         None
     }
 
-    pub fn get_requirements_that_cover(&self, id:&str) -> Vec<&Requirement> {
+    pub fn get_requirements_that_cover(&self, id: &str) -> Vec<&Requirement> {
         if let Some(covs) = self.covers.get(id) {
             covs.iter().map(|idx| self.req_with_idx(*idx)).collect()
         } else {
