@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::{fmt, fs, io, path::Path};
-use thiserror::Error;
 
 use crate::markdown::markdown_parse;
 
@@ -109,21 +108,27 @@ pub enum ArtefactConfig<'a> {
     Markdown(&'a Path),
 }
 
-#[allow(dead_code)] // TODO
-#[derive(Error, Debug)]
+#[derive(Debug)]
 pub enum ParserError {
-    #[error("Duplicate Requirement {0} and {1}")]
-    DuplicateRequirement(Requirement, Requirement),
-
-    #[error("Bad Format: {1} at {0}")]
     FormatError(Location, &'static str),
-
-    #[error("Duplicate Attribute: {1} at {0}")]
+    DuplicateRequirement(Requirement, Requirement),
     DuplicateAttribute(Location, String),
-
-    #[error("File Read error")]
     IOError(PathBuf, io::Error),
 }
+
+impl fmt::Display for ParserError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            ParserError::FormatError(loc, err) => write!(f, "{}: {}", loc, err),
+            ParserError::DuplicateRequirement(first, second) => write!(f, "{}: Duplicate Requirement {} previously defined at {}", second.location, second.id, first.location ),
+            ParserError::DuplicateAttribute(loc, attr) => write!(f, "{}: Duplicate Attribute {}", loc, attr),
+            ParserError::IOError(path, err) => write!(f, "{}: {}", path.display(), err),
+        }
+    }
+}
+
+
+
 
 pub struct Artefact<'a> {
     #[allow(dead_code)] // TODO
