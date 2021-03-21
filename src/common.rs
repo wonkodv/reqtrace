@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, mem};
 use std::path::PathBuf;
 use std::{fmt, fs, io, path::Path};
 
@@ -85,6 +85,13 @@ impl Requirement {
             }
         }
 
+        if !self.tags.is_empty() {
+            result += "\n\n";
+            result += ATTR_TAGS;
+            result += ": ";
+            result += &self.tags.join(", ");
+        }
+
         let mut keys = self.attributes.keys().into_iter().collect::<Vec<_>>();
         keys.sort();
         for k in keys {
@@ -104,8 +111,11 @@ impl fmt::Display for Requirement {
     }
 }
 
+#[derive(Debug)]
 pub enum ArtefactConfig<'a> {
     Markdown(&'a Path),
+    #[allow(dead_code)]
+    PrePopulated(Vec<Requirement>),
 }
 
 #[derive(Debug)]
@@ -120,109 +130,143 @@ impl fmt::Display for ParserError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             ParserError::FormatError(loc, err) => write!(f, "{}: {}", loc, err),
-            ParserError::DuplicateRequirement(first, second) => write!(f, "{}: Duplicate Requirement {} previously defined at {}", second.location, second.id, first.location ),
-            ParserError::DuplicateAttribute(loc, attr) => write!(f, "{}: Duplicate Attribute {}", loc, attr),
+            ParserError::DuplicateRequirement(first, second) => write!(
+                f,
+                "{}: Duplicate Requirement {} previously defined at {}",
+                second.location, second.id, first.location
+            ),
+            ParserError::DuplicateAttribute(loc, attr) => {
+                write!(f, "{}: Duplicate Attribute {}", loc, attr)
+            }
             ParserError::IOError(path, err) => write!(f, "{}: {}", path.display(), err),
         }
     }
 }
 
-
-
-
+#[derive(Debug)]
 pub struct Artefact<'a> {
-    #[allow(dead_code)] // TODO
-    config: &'a ArtefactConfig<'a>,
-    store: Vec<Requirement>,
-    requirements: HashMap<String, u16>, // ID => Req  with  ID
-    covers: HashMap<String, Vec<u16>>,  // ID => Reqs where ID in Req.Covers
-    depends: HashMap<String, Vec<u16>>, // ID => Reqs where ID in Req.Depends
+    pub id: &'a str,
+    pub config: ArtefactConfig<'a>,
+
+    loaded: bool,
+    requirements: Vec<Requirement>,
+    id_to_req: HashMap<String, u16>, // ID => Req  with  ID
+    id_to_covering_req: HashMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Covers
+    id_to_depending_req: HashMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Depends
     errors: Vec<ParserError>,
 }
 
 impl<'a> Artefact<'a> {
-    pub fn open(config: &'a ArtefactConfig) -> Self {
-        let store;
-        let mut errors;
+    pub fn new(id: &'a str, config: ArtefactConfig<'a>) -> Self {
+        let requirements = Vec::new();
+        let id_to_req = HashMap::new();
+        let id_to_covering_req = HashMap::new();
+        let id_to_depending_req = HashMap::new();
+        let errors = Vec::new();
+        let loaded = false;
+        Self {
+            id,
+            config,
+            loaded,
+            requirements,
+            id_to_req,
+            id_to_covering_req,
+            id_to_depending_req,
+            errors,
+        }
+    }
 
-        match config {
+    pub fn load(&mut self) {
+        if self.loaded {
+            return;
+        }
+        match self.config {
             ArtefactConfig::Markdown(path) => {
                 let file = fs::File::open(path).map_err(|e| ParserError::IOError(path.into(), e));
                 match file {
                     Err(err) => {
-                        errors = vec![err];
-                        store = vec![];
+                        self.errors = vec![err];
                     }
                     Ok(file) => {
                         let (s, e) = markdown_parse(file, path);
-                        errors = e;
-                        store = s;
+                        self.errors = e;
+                        self.requirements = s;
                     }
                 }
+            },
+            ArtefactConfig::PrePopulated(ref mut vec) => {
+                let vec = mem::take(vec); // TODO: better idea?
+                self.requirements = vec;
             }
         }
 
-        let mut requirements = HashMap::<String, u16>::new();
-        let mut covers = HashMap::<String, Vec<u16>>::new();
-        let mut depends = HashMap::<String, Vec<u16>>::new();
-
-        let mut idx: u16 = 0;
-        for req in &store {
-            let old = requirements.insert(req.id.to_owned(), idx);
+        for (req_idx, req) in self.requirements.iter().enumerate() {
+            let old = self.id_to_req.insert(req.id.to_owned(), req_idx as u16);
             if let Some(old_idx) = old {
                 let old_idx: usize = old_idx.into();
-                errors.push(ParserError::DuplicateRequirement(
-                    store[old_idx].clone(),
+                /* Covers:  REQ_UNIQUE_ID: Requirements have a unique Identifier */
+                self.errors.push(ParserError::DuplicateRequirement(
+                    self.requirements[old_idx].clone(),
                     req.clone(),
                 ));
             }
 
-            for cov in &req.covers {
-                covers.entry(cov.id.to_owned()).or_default().push(idx)
+            for (cov_idx, cov) in req.covers.iter().enumerate() {
+                self.id_to_covering_req
+                    .entry(cov.id.to_owned())
+                    .or_default()
+                    .push((req_idx as u16, cov_idx as u16))
             }
-            for dep in &req.depends {
-                depends.entry(dep.id.to_owned()).or_default().push(idx)
+            for (dep_idx, dep) in req.depends.iter().enumerate() {
+                self.id_to_depending_req
+                    .entry(dep.id.to_owned())
+                    .or_default()
+                    .push((req_idx as u16, dep_idx as u16))
             }
 
-            idx += 1;
         }
 
-        return Self {
-            config,
-            store,
-            requirements,
-            covers,
-            depends,
-            errors,
-        };
+        self.loaded = true;
     }
 
     fn req_with_idx(&self, idx: u16) -> &Requirement {
+        assert!(self.loaded);
         let idx: usize = idx.into();
-        &self.store[idx]
+        &self.requirements[idx]
     }
 
     pub fn get_errors(&self) -> &[ParserError] {
+        assert!(self.loaded);
         return &self.errors;
     }
 
     pub fn get_requirements(&self) -> &[Requirement] {
-        return &self.store;
+        assert!(self.loaded);
+        return &self.requirements;
     }
 
-    #[allow(dead_code)]
     pub fn get_requirement_with_id(&self, id: &str) -> Option<&Requirement> {
-        if let Some(idx) = self.requirements.get(id) {
+        assert!(self.loaded);
+        if let Some(idx) = self.id_to_req.get(id) {
             return Some(self.req_with_idx(*idx));
         }
         None
     }
 
-    pub fn get_requirements_that_cover(&self, id: &str) -> Vec<&Requirement> {
-        if let Some(covs) = self.covers.get(id) {
-            covs.iter().map(|idx| self.req_with_idx(*idx)).collect()
-        } else {
-            vec![]
+    pub fn get_requirements_that_cover(&self, id: &str) -> Vec<(&Requirement, Option<&str>)> {
+        assert!(self.loaded);
+        let mut result = vec![];
+        if let Some(covs) = self.id_to_covering_req.get(id) {
+            for (req_id, cov_id) in covs {
+                let r = self.req_with_idx(*req_id);
+                let dep = r.covers[*cov_id as usize].title.as_ref();
+                if let Some(title) = dep {
+                    result.push((r, Some(title.as_str())));
+                } else {
+                    result.push((r, None));
+                }
+            }
         }
+        return result;
     }
 }
