@@ -173,6 +173,27 @@ Parse `cov_mark::hit!(DSG_001)`
 TODO
 
 
+## Rust Unsafe Reasoning
+
+Create Requirements from `unsafe` code, so each occurrence requires a justification in an
+extra document. This can be used to prove that each use was analyzed for necessity and safe
+implementation.
+
+### FMT_RS_UNSAFE: Unique Requirement for each unsafe keyword
+
+Each occurrence of `unsafe` in rust code leads to a unique requirement.
+The Id of the requirement is given by a comment immediately following the keyword
+
+    let x = unsafe /* UNSAFE_ID_EXAMPLE */ { 42 };
+
+Requirement IDs must be unique (REQ_UNIQUE_ID) so each use of the `unsafe` keyword will
+have to have a different ID.
+
+### FMT_RS_UNSAFE_NEEDS_ID: Unsafe Without Id Produce Error
+
+Occurrences of the `unsafe` keyword without a comment that gives an ID produce a parsing error.
+
+
 # Output Formats
 
 ## Json

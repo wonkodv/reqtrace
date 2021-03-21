@@ -1,6 +1,10 @@
 
 # Requirements
 
+## REQ_UNIQUE_ID: Requirements have a unique Identifier
+
+Each requirement must be identifiable by a short, unique string.
+
 ## REQ_VCS: Allow Version Control
 
 
@@ -16,7 +20,6 @@ no package management, libraries, dependencies
 
 If internal parsers are not able to work on an Artefact, external tools can be
 incorporated.
-
 
 ## REQ_MACHINE_READABLE: Machine Readable Output
 
