@@ -1,9 +1,21 @@
 
 # Requirements
 
+Things this tool should do in no particular order
+
+
 ## REQ_UNIQUE_ID: Requirements have a unique Identifier
 
 Each requirement must be identifiable by a short, unique string.
+
+## REQ_USER_FRIENDLY: Simple to use Interface
+
+The User Interface should be slim and straight forward.
+
+## REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
+
+The tool should be easy to include in automated work flows, IDEs, CI Pipelines
+etc.
 
 ## REQ_VCS: Allow Version Control
 
@@ -21,14 +33,17 @@ no package management, libraries, dependencies
 If internal parsers are not able to work on an Artefact, external tools can be
 incorporated.
 
+## REQ_CONFIGURABLE_OUTPUT: The Output Format is Configurable
+
+The Format in which Information is returned is configurable
+
 ## REQ_MACHINE_READABLE: Machine Readable Output
 
-The Result is presented in a format that can easily be read by other tools
+Information can be returned in a format that can easily be read by other tools
 
 ## REQ_HUMAN_READABLE: Human Readable Output
 
-The Result is presented in a format that can easily be read, navigated, shared
-and searched by humans.
+Information can be returned in a format that can easily be read by humans
 
 ## REQ_FORMATS: Well defined Formats
 
@@ -63,14 +78,6 @@ requirement.
 
 Parser Errors give the precise location and type of the problem, for example filename with
 line number of the artefact.
-
-## REQ_FAST: Fast
-
-Show results quickly, especially if only a small query is given
-
-## REQ_NO_OVERCACHING: No over-caching
-
-If the user has to flush the cache, this is a bug in the Program.
 
 
 ## REQ_MATCH_ID: Match by ID
@@ -126,6 +133,23 @@ if:
 All Configuration is stored in a single file using a common Format that is
 editable for humans and machine readable.
 
+
+## REQ_QUERIES: Configurable Information Granularity
+
+Instead of returning every detail about the Tracing, specific parts of
+information can be queried, so that the output is as slim as possible and only
+relevant information is computed.
+
+## REQ_FAST: Fast
+
+Show results quickly, especially if only a small query is given.
+
+## REQ_NO_OVERCACHING: No over-caching
+
+If the user has to flush the cache, this is a bug in the Program.
+
+
+
 # Usecases
 
 ## UC_VALIDATE: Validate Configuration
@@ -163,3 +187,4 @@ a selected Format
 
 Information about the coverage of a set of requirements or artefacts is exported
 in a selected format
+
