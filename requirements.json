@@ -1,15 +1,15 @@
 {
     "artefacts": {
         "requirements": {
-            "paths": ["REQUIREMENTS.md"],
+            "paths": ["doc/requirements/REQUIREMENTS.md"],
             "parser": "markdown"
         },
         "design": {
-            "paths": ["DESIGN.md"],
+            "paths": ["doc/requirements/DESIGN.md"],
             "parser": "markdown"
         },
         "formats": {
-            "paths": ["FORMATS.md"],
+            "paths": ["doc/requirements/FORMATS.md"],
             "parser": "markdown"
         },
         "code": {
