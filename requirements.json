@@ -15,12 +15,23 @@
         "code": {
             "paths": ["src/**/*.rs"],
             "parser": "rust"
+        },
+        "unsafe_code": {
+            "paths": ["src/**/*.rs"],
+            "parser": "rust_unsafe"
+        },
+        "unsafe_reasoning": {
+            "paths": ["examples/unsafe_reasoning.md"],
+            "parser": "markdown"
         }
+
     },
     "tracing": [
         [ [ "requirements" ], ["design", "formats"]],
         [ [ "design" ], ["formats", "code"] ],
-        [ [ "formats" ], ["code"] ]
+        [ [ "formats" ], ["code"] ],
+
+        [ [ "unsafe_code" ], ["unsafe_reasoning"] ]
     ]
 }
 
