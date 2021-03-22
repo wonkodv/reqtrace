@@ -15,9 +15,9 @@ Json File
             *   List of downards Requirements
 
 
-# Artefact Formats
+# Artefact Parsers
 
-The set of formats that are passed by this tool are well defined by this
+The set of formats that are parsed by this tool are well defined by this
 specification.
 
 
@@ -44,7 +44,9 @@ Discussion in the [README](README.md#requirement-ids)
 
 ## Markdown Requirements
 
-This project's preferred format as used in `REQUIREMENTS.md` or this File.
+This project's preferred format as used in `REQUIREMENTS.md` or this file.
+Everything is ignored until a requirement starts. The everything is
+a requirement until the next requirement or heading.
 
 ### FMT_MD: Markdown File Format
 
@@ -157,6 +159,27 @@ with one of the list of prefixes. If the list is empty, no prefix matching is
 performed and all matching lines lead to a requirement.
 
 
+## Mono Requirement File
+A file which is one Requirement that has multiple `Depends` references. This can
+be used as the Root of the coverage Tree, for example a packages `README.md`
+like in this tool.
+
+## FMT_MONO: Mono Requirement File
+Artefact of type MonoRequirement emit exactly one Requirement with the following
+attributes:
+*   Id: The stem of the file path (i.e. `README.md`)
+*   Title:  The first line containing Word-Characters with all non-word
+    characters trimmed of both ends of the line. (Allowing Markdown heading,
+    C style comments, ...)
+*   Depends: Every Requirement-Id that immediately follows a fat arrow (`=>`).
+
+Comment:
+See this projects README for examples.
+
+Covers:
+*   REQ_FORMATS: Well defined Formats
+
+
 ## JSON Requirements
 
 *   [Requirements]
@@ -166,11 +189,18 @@ performed and all matching lines lead to a requirement.
 
 TODO
 
+### FMT_JSON: JSON Requirements Format
+Covers:
+*   REQ_FORMATS: Well defined Formats
+
 ## Rust Coverage Marks
 
 Parse `cov_mark::hit!(DSG_001)`
 
 TODO
+
+Covers:
+*   REQ_FORMATS: Well defined Formats
 
 
 ## Rust Unsafe Reasoning
@@ -189,9 +219,38 @@ The Id of the requirement is given by a comment immediately following the keywor
 Requirement IDs must be unique (REQ_UNIQUE_ID) so each use of the `unsafe` keyword will
 have to have a different ID.
 
+Covers:
+*   REQ_FORMATS: Well defined Formats
+
 ### FMT_RS_UNSAFE_NEEDS_ID: Unsafe Without Id Produce Error
 
 Occurrences of the `unsafe` keyword without a comment that gives an ID produce a parsing error.
+
+## Regex Parsing
+
+Custom Parsers can be defined which are backed by regular Expressions. There are
+two methods a simple and approachable one, and a complex and powerul one.
+
+### FMT_REGEX_MULTIPASS
+
+The Text File is parsed in phases:
+
+1.  Load Text File
+2.  Replace the Text using Regular expressions. This can be used to remove
+    headers or footers 
+
+Match Everything sort later
+    1 big Regex with Names for attributes
+    A Req Starts, everything that follows gets attached to that req until the
+    next starts.
+
+
+### FMT_REGEX_STATEMACHINE
+Statemachine:
+    List of Regexes
+    List of states:
+        State Name, Regex Name, Attribute to set and State that results from it
+
 
 
 # Output Formats
@@ -249,3 +308,9 @@ Covered By:
 * Artefact
   * [Link] ReqId Title
 
+
+## ctags
+
+Emit Tag with type R for the Requirement,
+Type C for where a req is covered
+Type D for where it is depended on.

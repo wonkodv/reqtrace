@@ -38,24 +38,36 @@ Covers:
 Artefacts represent a (group of) files. They load cached requirements or parse
 them as needed.
 
-### DSG_ART_PARSE
+
+### DSG_ART_PARSE: Artefact Parsing
 
 Artefact parses the requirements in the files it represents.
 
-### DSG_ART_CACHING
+### DSG_ART_CACHING: Cache Parsing Results
 
 Artefact manages a cache of already parsed requirements and only 
 
+### DSG_ART_EXTERNAL_PARSER: External Artefact Parser
+
+If files can not be parsed by this tool, an external program is invoked which
+writes  the requirements into a temporary file or to its `stdout` stream in the
+JSON format, or as Text which is then processed by the regex parsers.
+
+TODO: think about filenames, locations, regexparser, how to configure it and so on.
 
 
-### DSG_ART_FIELDS: Artefact Fields
+
+References:
+*   FMT_JSON
+
+### DSG_ART_CONFIG: Artefact Configuration Fields
 
 *   ID
 *   paths:  List of Paths or pattern with which to find the files
-*   parser:   id of a parsing strategy
-*   parser argument: Object that is passed to the parser
+*   parser:   id of a parsing strategy, e.g. `Markdown Requirements`, `Rust
+    Coverage Marks`, `External`
+*   parser arguments: Object that is passed to the parser
 *   caching: boolean, whether to cache or parse on every access
-
 
 
 ## Formats
