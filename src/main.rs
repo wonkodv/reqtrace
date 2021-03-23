@@ -1,10 +1,11 @@
-use std::path::Path;
+use std::{fs, path::Path};
 
 #[macro_use]
 extern crate lazy_static;
 
 mod common;
 mod parsers;
+mod formatters;
 mod trace;
 
 use common::*;
@@ -15,25 +16,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut g = trace::Graph::new();
 
     {
-        let path = Path::new("DESIGN.md");
+        let path = Path::new("doc/requirements/DESIGN.md");
         let cfg = ArtefactConfig::Markdown(&path);
         let artefact = Artefact::new("DSG", cfg);
         g.add_artefact(artefact);
     }
     {
-        let path = Path::new("README.md");
+        let path = Path::new("doc/requirements/README.md");
         let cfg = ArtefactConfig::Markdown(&path);
         let artefact = Artefact::new("README", cfg);
         g.add_artefact(artefact);
     }
     {
-        let path = Path::new("REQUIREMENTS.md");
+        let path = Path::new("doc/requirements/REQUIREMENTS.md");
         let cfg = ArtefactConfig::Markdown(&path);
         let artefact = Artefact::new("REQ", cfg);
         g.add_artefact(artefact);
     }
     {
-        let path = Path::new("FORMATS.md");
+        let path = Path::new("doc/requirements/FORMATS.md");
         let cfg = ArtefactConfig::Markdown(&path);
         let artefact = Artefact::new("FORMAT", cfg);
         g.add_artefact(artefact);
@@ -43,7 +44,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     g.add_edge("REQ", "DSG");
     g.add_edge("REQ", "FORMAT");
 
+    {
+        let r = g.get_all_reqs();
+        let mut file = fs::File::create(".req_tags")?;
+        formatters::tags::requirements_ctags(r.as_slice(), &mut file);
+    }
+
     let t = g.trace_shallow("REQ");
+
 
 
     eprintln!("# Derived");
@@ -55,7 +63,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         eprintln!("*  {}", r.id);
     }
     eprintln!("# Covered");
-    for (ur, lr, c) in t.covered {
+    for (ur, lr, _c) in t.covered {
         eprintln!("*  {} --> {}", ur.id, lr.id);
     }
     eprintln!("# Errors");

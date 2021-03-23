@@ -16,6 +16,7 @@ pub enum TracingError<'a> {
     DependWithWrongTitle(&'a Requirement, &'a Requirement, &'a str),
 }
 
+#[derive(Debug)]
 pub enum Coverage<'a> {
     Covered,
     CoveredWithTitle(&'a str),
@@ -23,6 +24,7 @@ pub enum Coverage<'a> {
     DependsWithTitle(&'a str),
 }
 
+#[derive(Debug)]
 pub struct Tracing<'a> {
     pub covered: Vec<(&'a Requirement, &'a Requirement, Coverage<'a>)>,
     pub uncovered: Vec<&'a Requirement>,
@@ -30,12 +32,14 @@ pub struct Tracing<'a> {
     pub errors: Vec<TracingError<'a>>,
 }
 
+#[derive(Debug)]
 struct Node<'a> {
     artefact: Artefact<'a>,
     upper_nodes: Vec<u16>,
     lower_nodes: Vec<u16>,
 }
 
+#[derive(Debug)]
 pub struct Graph<'a> {
     nodes: Vec<Node<'a>>,
     artefact_id_to_node: HashMap<String, u16>,
@@ -237,6 +241,19 @@ impl<'a> Graph<'a> {
             derived,
             errors,
         }
+    }
+
+
+    pub fn get_all_reqs<'r>(&'r mut self) -> Vec<&'r Requirement> {
+        let mut result = Vec::new(); // TODO: make iterator
+
+        for node in &mut self.nodes {
+            node.artefact.load();
+            for r in node.artefact.get_requirements() {
+                result.push(r);
+            }
+        }
+        return result;
     }
 }
 
