@@ -2,7 +2,7 @@ use std::{collections::HashMap, mem};
 use std::path::PathBuf;
 use std::{fmt, fs, io, path::Path};
 
-use crate::markdown::markdown_parse;
+use crate::parsers::markdown::markdown_parse;
 
 pub const ATTR_COVERS: &str = "Covers";
 pub const ATTR_DEPENDS: &str = "Depends";

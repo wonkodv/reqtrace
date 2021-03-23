@@ -4,7 +4,7 @@ use std::path::Path;
 extern crate lazy_static;
 
 mod common;
-mod markdown;
+mod parsers;
 mod trace;
 
 use common::*;

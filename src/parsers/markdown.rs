@@ -3,7 +3,7 @@ use std::{io::BufRead, path::Path};
 
 use regex::{Captures, Regex};
 
-use super::common::*;
+use super::super::common::*;
 
 #[allow(unused_imports)]
 use ParserError::*;
