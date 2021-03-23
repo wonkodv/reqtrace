@@ -338,12 +338,15 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
 
 fn parse_link_attr<'a>(attr: &str, short_list: &str) -> State {
     let mut vec = Vec::new();
+    let short_list = short_list.trim();
     for id in short_list.split(",") {
         let id = id.trim();
-        vec.push(Reference {
-            id: id.to_owned(),
-            title: None,
-        });
+        if !id.is_empty() {
+            vec.push(Reference {
+                id: id.to_owned(),
+                title: None,
+            });
+        }
     }
     return State::CollectRefLink(attr.to_owned(), vec);
 }
@@ -390,8 +393,12 @@ Description
 Descriotion
 
 Covers: COV, Cov
+*   COV3: Title 3
+*   COV4
 
-Depends: DEP
+Depends:
+*   DEP
+*   DEP_WT: T
         "#;
 
         let p = Path::new("Test.md");
@@ -405,8 +412,36 @@ Depends: DEP
 
         assert_eq!(req.id, "REQ");
         assert_eq!(req.title, Some("Title Title".to_owned()));
-        assert_eq!(req.covers.len(), 2);
+        assert_eq!(req.covers.len(), 4);
         assert_eq!(req.covers[0].id, "COV");
         assert_eq!(req.covers[1].id, "Cov");
+        assert_eq!(req.covers[2].id, "COV3");
+        assert_eq!(req.covers[2].title, Some("Title 3".into()));
+        assert_eq!(req.covers[3].id, "COV4");
+        assert_eq!(req.depends.len(), 2);
+        assert_eq!(req.depends[0].id, "DEP");
+        assert_eq!(req.depends[1].id, "DEP_WT");
+        assert_eq!(req.depends[1].title, Some("T".into()));
+    }
+
+    /// Regression test, Used to parse the rest of the line into 1 Requirement with empty ID
+    #[test]
+    fn test_markdown_parser_reflinks() {
+        let s = r#"
+## REQ: Title Title
+Covers:
+        "#;
+
+        let p = Path::new("Test.md");
+        let (reqs, errs) = markdown_parse(s.as_bytes(), &p);
+
+        assert!(errs.is_empty());
+
+        assert_eq!(reqs.len(), 1);
+
+        let req = &reqs[0];
+
+        assert_eq!(req.id, "REQ");
+        assert_eq!(req.covers, vec![]);
     }
 }
