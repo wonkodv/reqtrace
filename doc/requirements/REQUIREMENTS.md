@@ -50,9 +50,14 @@ Information can be returned in a format that can easily be read by humans
 To work with external programs as parsers or to process the output, the formats used must be well
 defined.
 
-## REQ_GROUPING: Artefact Grouping
+## REQ_ARTEFACT_PARSE_ID: Parse Artefact Identifier
 
-A set of Artefacts can act as one Node in the Tracing Graph
+An identifier can be parsed from the line, for example a version string, or
+an expanded RCS Keyword (like `$Id: /path/to/artefact.md$42$`).
+
+## REQ_ARTEFACT_PARSE_ID: Query Tool for Artefact Identifier
+
+An identifier can be gotten from an external tool like `git describe --tags`.
 
 ## REQ_UP: Upward Coverage
 
