@@ -21,7 +21,7 @@
             "parser": "rust_unsafe"
         },
         "unsafe_reasoning": {
-            "paths": ["examples/unsafe_reasoning.md"],
+            "paths": ["doc/requirements/unsafe_reasoning.md"],
             "parser": "markdown"
         }
 
