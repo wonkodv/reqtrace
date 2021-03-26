@@ -199,7 +199,7 @@ impl<'a> Artefact<'a> {
                         self.requirements = s;
                     }
                 }
-            },
+            }
             ArtefactConfig::PrePopulated(ref mut vec) => {
                 let vec = mem::take(vec); // TODO: better idea?
                 self.requirements = vec;
@@ -229,7 +229,6 @@ impl<'a> Artefact<'a> {
                     .or_default()
                     .push((req_idx as u16, dep_idx as u16))
             }
-
         }
 
         self.loaded = true;

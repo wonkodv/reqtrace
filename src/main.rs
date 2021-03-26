@@ -4,8 +4,8 @@ use std::{fs, path::Path};
 extern crate lazy_static;
 
 mod common;
-mod parsers;
 mod formatters;
+mod parsers;
 mod trace;
 
 use common::*;
@@ -52,8 +52,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let t = g.trace_shallow("REQ");
 
-
-
     eprintln!("# Derived");
     for r in t.derived {
         eprintln!("*  {}", r.id);
@@ -71,7 +69,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         eprintln!("*  {:?}", e);
         error_counter += 1;
     }
-
 
     if error_counter > 0 {
         return Err(format!("There were {} errors", error_counter).into());

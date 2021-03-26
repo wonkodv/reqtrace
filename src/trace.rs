@@ -243,7 +243,6 @@ impl<'a> Graph<'a> {
         }
     }
 
-
     pub fn get_all_reqs<'r>(&'r mut self) -> Vec<&'r Requirement> {
         let mut result = Vec::new(); // TODO: make iterator
 
