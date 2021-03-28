@@ -40,9 +40,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         g.add_artefact(artefact);
     }
 
-    g.add_edge("README", "REQ");
-    g.add_edge("REQ", "DSG");
-    g.add_edge("REQ", "FORMAT");
+    g.add_edge_group("README", &["REQ"])
+        .map_err(|e| e.to_string())?;
+    g.add_edge_group("REQ", &["DSG", "FORMAT"])?;
 
     {
         let r = g.get_all_reqs();
@@ -50,23 +50,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         formatters::tags::requirements_ctags(r.as_slice(), &mut file);
     }
 
-    let t = g.trace_shallow("REQ");
+    let t = g.trace_edge("REQ", "DSG");
+    let tf = g.trace_edge("REQ", "FORMAT");
+    let t = t.add(tf).unwrap();
 
     eprintln!("# Derived");
-    for r in t.derived {
-        eprintln!("*  {}", r.id);
+    for (id, _r) in t.derived {
+        eprintln!("*  {}", id);
     }
     eprintln!("# Uncovered");
-    for r in t.uncovered {
-        eprintln!("*  {}", r.id);
+    for (id, _r) in t.uncovered {
+        eprintln!("*  {}", id);
     }
     eprintln!("# Covered");
-    for (ur, lr, _c) in t.covered {
-        eprintln!("*  {} --> {}", ur.id, lr.id);
+    for cov in t.covered {
+        eprintln!("*  {} --> {}", cov.upper.id, cov.lower.id);
     }
     eprintln!("# Errors");
     for e in t.errors {
-        eprintln!("*  {:?}", e);
+        eprintln!("*  {}", e);
         error_counter += 1;
     }
 
