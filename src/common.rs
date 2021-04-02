@@ -1,10 +1,9 @@
-use std::cell::UnsafeCell;
+use std::{cell::{UnsafeCell}};
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fmt;
 use std::fs;
 use std::io;
-use std::mem;
 use std::path::Path;
 use std::path::PathBuf;
 use once_cell::unsync::OnceCell;
@@ -300,6 +299,7 @@ pub struct StringVault {
 /// println!("{}", s); // s can not outlive sv
 /// ```
 ///
+#[allow(dead_code)]
 impl StringVault {
     /// Create a new empty StringVault
     pub fn new() -> Self {

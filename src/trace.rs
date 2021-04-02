@@ -224,6 +224,7 @@ impl Into<usize> for NodeIdx {
         self.0.into()
     }
 }
+#[allow(dead_code)]
 impl NodeIdx {
     fn as_mut<'a>(self, graph: &'a mut Graph<'a>) -> &'a mut Node {
         let i: usize = self.into();
@@ -254,15 +255,6 @@ struct Node<'a> {
     edges_down: Vec<EdgeIdx>,
 }
 
-impl<'a> Node<'_> {
-    pub fn upper(&'a self) -> &[EdgeIdx] {
-        self.edges_up.as_slice()
-    }
-    pub fn lower(&'a self) -> &[EdgeIdx] {
-        self.edges_down.as_slice()
-    }
-}
-
 #[derive(Debug)]
 pub struct Graph<'a> {
     nodes: Vec<Node<'a>>,
@@ -271,6 +263,7 @@ pub struct Graph<'a> {
     artefact_id_to_node: HashMap<&'a str, NodeIdx>,
 }
 
+#[allow(dead_code)]
 impl<'a> Graph<'a> {
     pub fn new() -> Self {
         let nodes = Vec::new();
@@ -573,7 +566,7 @@ mod tests {
     fn make_graph<'a>() -> Graph<'a> {
         let a_req = Artefact::new("REQ", ArtefactConfig::PrePopulated(vec![]));
         let a_dsg = Artefact::new("DSG", ArtefactConfig::PrePopulated(vec![]));
-        let a_dsg = Artefact::new("FORMAT", ArtefactConfig::PrePopulated(vec![]));
+        let a_fmt = Artefact::new("FORMAT", ArtefactConfig::PrePopulated(vec![]));
         let a_code = Artefact::new("Code", ArtefactConfig::PrePopulated(vec![]));
         let a_dt = Artefact::new("DTests", ArtefactConfig::PrePopulated(vec![]));
         let a_rt = Artefact::new("RTests", ArtefactConfig::PrePopulated(vec![]));
@@ -581,6 +574,7 @@ mod tests {
         let mut g = Graph::new();
         g.add_artefact(a_req).unwrap();
         g.add_artefact(a_dsg).unwrap();
+        g.add_artefact(a_fmt).unwrap();
         g.add_artefact(a_code).unwrap();
         g.add_artefact(a_dt).unwrap();
         g.add_artefact(a_rt).unwrap();
@@ -599,8 +593,9 @@ mod tests {
         let g = make_graph();
 
         let r = g.get_upper("Code").unwrap();
-        assert_eq!(r.len(), 1);
+        assert_eq!(r.len(), 2);
         assert_eq!("DSG", r[0].id);
+        assert_eq!("FORMAT", r[1].id);
         let r = g.get_lower("REQ").unwrap();
         assert_eq!(r.len(), 2);
         assert_eq!("DSG", r[0][0].id);
