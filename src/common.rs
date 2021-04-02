@@ -7,6 +7,7 @@ use std::io;
 use std::mem;
 use std::path::Path;
 use std::path::PathBuf;
+use once_cell::unsync::OnceCell;
 
 use crate::parsers::markdown::markdown_parse;
 
@@ -149,12 +150,8 @@ impl fmt::Display for ParserError {
     }
 }
 
-#[derive(Debug)]
-pub struct Artefact<'a> {
-    pub id: &'a str,
-    pub config: ArtefactConfig<'a>,
-
-    loaded: bool,
+#[derive(Debug, Default)]
+struct ArtefactData {
     requirements: Vec<Requirement>,
     id_to_req: HashMap<String, u16>, // ID => Req  with  ID
     id_to_covering_req: HashMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Covers
@@ -162,106 +159,105 @@ pub struct Artefact<'a> {
     errors: Vec<ParserError>,
 }
 
+#[derive(Debug)]
+pub struct Artefact<'a> {
+    pub id: &'a str,
+    pub config: ArtefactConfig<'a>,
+    data: OnceCell<ArtefactData>
+}
+
+#[allow(dead_code)]
 impl<'a> Artefact<'a> {
     pub fn new(id: &'a str, config: ArtefactConfig<'a>) -> Self {
-        let requirements = Vec::new();
-        let id_to_req = HashMap::new();
-        let id_to_covering_req = HashMap::new();
-        let id_to_depending_req = HashMap::new();
-        let errors = Vec::new();
-        let loaded = false;
+        let data = OnceCell::new();
         Self {
             id,
             config,
-            loaded,
-            requirements,
-            id_to_req,
-            id_to_covering_req,
-            id_to_depending_req,
-            errors,
+            data,
         }
     }
 
-    pub fn load(&mut self) {
-        if self.loaded {
-            return;
+    fn load<'s>(&'s self) -> &'s ArtefactData {
+        if let Some(data) = self.data.get() {
+            return data;
         }
-        match self.config {
+        let mut data = ArtefactData::default();
+
+        match &self.config {
             ArtefactConfig::Markdown(path) => {
                 let file = fs::File::open(path).map_err(|e| ParserError::IOError(path.into(), e));
                 match file {
                     Err(err) => {
-                        self.errors = vec![err];
+                        data.errors = vec![err];
                     }
                     Ok(file) => {
                         let (s, e) = markdown_parse(file, path);
-                        self.errors = e;
-                        self.requirements = s;
+                        data.errors = e;
+                        data.requirements = s;
                     }
                 }
             }
-            ArtefactConfig::PrePopulated(ref mut vec) => {
-                let vec = mem::take(vec); // TODO: better idea?
-                self.requirements = vec;
+            ArtefactConfig::PrePopulated(vec) => {
+                data.requirements = vec.clone();
             }
         }
 
-        for (req_idx, req) in self.requirements.iter().enumerate() {
-            let old = self.id_to_req.insert(req.id.to_owned(), req_idx as u16);
+        for (req_idx, req) in data.requirements.iter().enumerate() {
+            let old = data.id_to_req.insert(req.id.to_owned(), req_idx as u16);
             if let Some(old_idx) = old {
                 let old_idx: usize = old_idx.into();
                 /* Covers:  REQ_UNIQUE_ID: Requirements have a unique Identifier */
-                self.errors.push(ParserError::DuplicateRequirement(
-                    self.requirements[old_idx].clone(),
+                data.errors.push(ParserError::DuplicateRequirement(
+                    data.requirements[old_idx].clone(),
                     req.clone(),
                 ));
             }
 
             for (cov_idx, cov) in req.covers.iter().enumerate() {
-                self.id_to_covering_req
+                data.id_to_covering_req
                     .entry(cov.id.to_owned())
                     .or_default()
                     .push((req_idx as u16, cov_idx as u16))
             }
             for (dep_idx, dep) in req.depends.iter().enumerate() {
-                self.id_to_depending_req
+                data.id_to_depending_req
                     .entry(dep.id.to_owned())
                     .or_default()
                     .push((req_idx as u16, dep_idx as u16))
             }
         }
 
-        self.loaded = true;
+        if self.data.set(data).is_err() {
+            unreachable!();
+        }
+        return self.data.get().unwrap();
     }
 
     fn req_with_idx(&self, idx: u16) -> &Requirement {
-        assert!(self.loaded);
         let idx: usize = idx.into();
-        &self.requirements[idx]
+        &self.load().requirements[idx]
     }
 
     pub fn get_errors(&self) -> &[ParserError] {
-        assert!(self.loaded);
-        return &self.errors;
+        return &self.load().errors;
     }
 
     pub fn get_requirements(&self) -> &[Requirement] {
-        assert!(self.loaded);
-        return &self.requirements;
+        return &self.load().requirements;
     }
 
     pub fn get_requirement_with_id(&self, id: &str) -> Option<&Requirement> {
-        assert!(self.loaded);
-        if let Some(idx) = self.id_to_req.get(id) {
+        let d = self.load();
+        if let Some(idx) = d.id_to_req.get(id) {
             return Some(self.req_with_idx(*idx));
         }
         None
     }
 
     pub fn get_requirements_that_cover(&self, id: &str) -> Vec<(&Requirement, Option<&str>)> {
-        assert!(self.loaded);
+        let d = self.load();
         let mut result = vec![];
-        if let Some(covs) = self.id_to_covering_req.get(id) {
+        if let Some(covs) = d.id_to_covering_req.get(id) {
             for (req_id, cov_id) in covs {
                 let r = self.req_with_idx(*req_id);
                 let dep = r.covers[*cov_id as usize].title.as_ref();

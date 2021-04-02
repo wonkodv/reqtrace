@@ -558,7 +558,6 @@ impl<'a> Graph<'a> {
         let mut result = Vec::new(); // TODO: make iterator
 
         for node in &mut self.nodes {
-            node.artefact.load();
             for r in node.artefact.get_requirements() {
                 result.push(r);
             }
