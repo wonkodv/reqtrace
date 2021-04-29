@@ -1,4 +1,5 @@
-use std::{cell::{UnsafeCell}};
+use once_cell::unsync::OnceCell;
+use std::cell::UnsafeCell;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fmt;
@@ -6,7 +7,6 @@ use std::fs;
 use std::io;
 use std::path::Path;
 use std::path::PathBuf;
-use once_cell::unsync::OnceCell;
 
 use crate::parsers::markdown::markdown_parse;
 
@@ -50,7 +50,6 @@ pub struct Requirement {
     pub attributes: HashMap<String, String>,
 }
 
-#[allow(dead_code)]
 impl Requirement {
     pub fn to_markdown(&self) -> String {
         let mut result = String::with_capacity(1024);
@@ -120,7 +119,6 @@ impl fmt::Display for Requirement {
 #[derive(Debug)]
 pub enum ArtefactConfig<'a> {
     Markdown(&'a Path),
-    #[allow(dead_code)]
     PrePopulated(Vec<Requirement>),
 }
 
@@ -162,18 +160,13 @@ struct ArtefactData {
 pub struct Artefact<'a> {
     pub id: &'a str,
     pub config: ArtefactConfig<'a>,
-    data: OnceCell<ArtefactData>
+    data: OnceCell<ArtefactData>,
 }
 
-#[allow(dead_code)]
 impl<'a> Artefact<'a> {
     pub fn new(id: &'a str, config: ArtefactConfig<'a>) -> Self {
         let data = OnceCell::new();
-        Self {
-            id,
-            config,
-            data,
-        }
+        Self { id, config, data }
     }
 
     fn load<'s>(&'s self) -> &'s ArtefactData {
@@ -299,7 +292,6 @@ pub struct StringVault {
 /// println!("{}", s); // s can not outlive sv
 /// ```
 ///
-#[allow(dead_code)]
 impl StringVault {
     /// Create a new empty StringVault
     pub fn new() -> Self {

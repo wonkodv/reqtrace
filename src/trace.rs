@@ -5,7 +5,7 @@ use std::{
 
 use super::common::*;
 
-mod errors {
+pub mod errors {
     use super::*;
     #[derive(Debug)]
     pub struct UnknownArtefact<'a>(pub &'a str);
@@ -224,7 +224,6 @@ impl Into<usize> for NodeIdx {
         self.0.into()
     }
 }
-#[allow(dead_code)]
 impl NodeIdx {
     fn as_mut<'a>(self, graph: &'a mut Graph<'a>) -> &'a mut Node {
         let i: usize = self.into();
@@ -263,7 +262,6 @@ pub struct Graph<'a> {
     artefact_id_to_node: HashMap<&'a str, NodeIdx>,
 }
 
-#[allow(dead_code)]
 impl<'a> Graph<'a> {
     pub fn new() -> Self {
         let nodes = Vec::new();

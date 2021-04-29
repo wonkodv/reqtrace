@@ -1,11 +1,11 @@
 use std::io;
 use std::{io::BufRead, path::Path};
 
+use lazy_static::lazy_static;
 use regex::{Captures, Regex};
 
 use super::super::common::*;
 
-#[allow(unused_imports)]
 use ParserError::*;
 
 lazy_static! {

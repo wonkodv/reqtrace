@@ -167,7 +167,7 @@ All artefacts are checked for changes since last parsing
 
 ## UC_PARSE: Parse Artefacts
 
-A Set of artefacts are parsed, reporting any errors found
+A Set of artefacts are parsed, reporting all requirements and errors.
 
 ## UC_COMPUTE: Compute Tracing
 
