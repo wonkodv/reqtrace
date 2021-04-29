@@ -4,9 +4,13 @@
 Things this tool should do in no particular order
 
 
-## REQ_UNIQUE_ID: Requirements have a unique Identifier
+## REQ_UNIQUE_ID_v2: Requirements have a unique Identifier
 
 Each requirement must be identifiable by a short, unique string.
+All unicode symbols must be possible, though parsers may restrict this
+
+History:
+*   v2: Unicode
 
 ## REQ_USER_FRIENDLY: Simple to use Interface
 
@@ -49,6 +53,14 @@ Information can be returned in a format that can easily be read by humans
 
 To work with external programs as parsers or to process the output, the formats used must be well
 defined.
+
+## REQ_UNICODE_SAFE: Sane Handling of unicode
+
+Some Characters can be represented by multiple different sequences of Unicode
+Code Points. Also Unicode Encodings like UTF-8 can encode the same Codepoint
+as different bytes.
+
+This must be handled.
 
 ## REQ_ARTEFACT_PARSE_ID: Parse Artefact Identifier
 

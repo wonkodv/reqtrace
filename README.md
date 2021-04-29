@@ -174,7 +174,8 @@ This all boils down to:
 *   Start with a letter (valid identifier in programming languages)
 *   At least 3 letters
 
-The Regular Expression which is used by the build in Formats is therefore:
+The Recommended Format is therefor anything which matches the following regular
+expression:
 
     [A-Za-z][a-zA-Z0-9_]+[a-zA-Z0-9]
 
@@ -191,8 +192,19 @@ Examples:
     REQ_123_v1
     REQ
 
-Numbers in the requirement ids are not very useful for the reader, but easy to get
-unique. They will often come from a database based tool.
+Since mathematical Symbols, or non English characters may be useful in some
+domains, the above recommendation is not enforced. Instead, following the
+[recommendation of the unicode consortium regarding identifiers](http://www.unicode.org/reports/tr31/)
+in languages is followed and the following Regular Expression is used:
+
+    \p{XID_Start}\p{XID_Continue}+
+
+
+Differentiating Requirements by numbers alone is not very useful for the reader,
+but easy to get unique, e.g. (UC_123). They will often come from a database
+based tool. When Covering or depending  on them, it is useful to also specify
+the title of the requirement. This tool can check, that the right title is
+given, making it easy to add correct context to otherwise meaningless ids.
 
 Talking requirement ids require to find a unique short fitting name, which is
 easy for a limited number of requirements but becomes difficult when there are

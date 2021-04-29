@@ -11,10 +11,10 @@ use ParserError::*;
 lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();
     static ref REQUIREMENT_LINE: Regex =
-        Regex::new(r"^(#+)\s*([A-Za-z][a-zA-Z0-9_]+[a-zA-Z0-9]):\s*(.+)\s*$").unwrap();
+        Regex::new(r"^(#+)\s*(\p{XID_Start}\p{XID_Continue}+):\s*(.+)\s*$").unwrap();
     static ref ATTRIBUTE_LINE: Regex = Regex::new(r"^([A-Z][a-z]+):\s(.*)\s*$").unwrap();
     static ref REF_LINK_LINE: Regex =
-        Regex::new(r"^*\s+([A-Za-z][a-zA-Z0-9_]+[a-zA-Z0-9])(?::\s*(.+))?\s*$").unwrap();
+        Regex::new(r"^*\s+(\p{XID_Start}\p{XID_Continue}+)(?::\s*(.+))?\s*$").unwrap();
     static ref BAD_HEADLINE_UNDERLINE: Regex = Regex::new(r"^(====*)|(----*)").unwrap(); // TODO: use
 }
 
@@ -363,6 +363,33 @@ mod tests {
         assert_eq!(&cap[1], "##");
         assert_eq!(&cap[2], "REQ_VCS");
         assert_eq!(&cap[3], "Allow Version Control");
+    }
+
+    #[test]
+    fn test_req_regex_unicode() {
+        let cap = REQUIREMENT_LINE
+            .captures("## ÄÅÉËÞÜÚÍÓÖÁÐFGHÏ: Allow Unicode IDs\n")
+            .unwrap();
+        assert_eq!(&cap[1], "##");
+        assert_eq!(&cap[2], "ÄÅÉËÞÜÚÍÓÖÁÐFGHÏ");
+    }
+
+    #[test]
+    fn test_req_regex_no_match_dash() {
+        let cap = REQUIREMENT_LINE.captures("## REQ-ID: No Dash\n");
+        assert!(cap.is_none());
+    }
+
+    #[test]
+    fn test_req_regex_no_match_pound() {
+        let cap = REQUIREMENT_LINE.captures("## REQ#ID: No Dash\n");
+        assert!(cap.is_none());
+    }
+
+    #[test]
+    fn test_req_regex_no_match_symbols() {
+        let cap = REQUIREMENT_LINE.captures("## REQ🍔: No Burgers in requirement ids\n");
+        assert!(cap.is_none());
     }
 
     #[test]

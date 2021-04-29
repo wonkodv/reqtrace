@@ -26,21 +26,51 @@ specification.
 These Rules hold for all Artefact formats supported by the tool except JSON,
 where anything is possible.
 
-### FMT_ID: Requirement Identifier
+### FMT_ID_v2: Requirement Identifier
 
 Requirement identifier consist of letters, digits and underscore, specifically
 they match the Regular Expression
 
-    [A-Za-z][a-zA-Z0-9_]+[a-zA-Z0-9]
+    \p{XID_Start}\p{XID_Continue}+
 
-This way they are safe for use in filenames, URLs, markdown, code, allow
-partitioning and are double click friendly.
+This gives the user the greatest flexibility.
 
 Covers:
 *   REQ_FORMATS (Well defined Formats)
 
 Comment:
 Discussion in the [README](README.md#requirement-ids)
+
+History:
+*   v2: Align to Unicode Identifiers
+
+
+### FMT_FILE_ENCODINGS: Handle File Encodings
+
+When not otherwise specified, Text Files are read as UTF-8 and encoding errors are
+replaced.
+
+Covers:
+*  REQ_UNICODE_SAFE: Sane Handling of unicode
+
+
+### FMT_UNICODE_NORMALIZE: Normalize Unicode during read
+
+All input strings are unicode normalizes as
+[NFC](https://www.unicode.org/reports/tr15/#Normalization_Forms_Table).
+This means that
+*   All output derived from input will be NFC normalized
+*   Identifier Matching can be done on the byte level
+
+Covers:
+*  REQ_UNICODE_SAFE: Sane Handling of unicode
+
+
+Comment:
+See [Rust RFC 2457](https://rust-lang.github.io/rfcs/2457-non-ascii-idents.html) on the topic.
+
+This means two requirement ids are equal if their NFC forms are equal.
+
 
 ## Markdown Requirements
 
