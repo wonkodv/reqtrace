@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
 use crate::{
     common::{Artefact, ArtefactConfig},
     trace::{errors::ConfigError, Graph},
 };
+use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, io, path::PathBuf};
 
 pub enum Query<'a> {
@@ -30,7 +30,6 @@ struct AC {
     parser_options: Option<String>,
 }
 
-
 #[derive(Debug)]
 pub enum ControllerLoadError<'a> {
     OnlyOnePathExpected,
@@ -56,10 +55,10 @@ impl AC {
                 }
                 Ok(ArtefactConfig::Markdown(&self.paths[0]))
             }
-            "rust"|"rust_unsafe"=> {
+            "rust" | "rust_unsafe" => {
                 Ok(ArtefactConfig::PrePopulated(vec![])) // TODO
             }
-            x => { Err(ControllerLoadError::UnknownArtefactType(x)) }
+            x => Err(ControllerLoadError::UnknownArtefactType(x)),
         }
     }
 }
@@ -98,7 +97,7 @@ impl<'c> Controller<'c> {
         match job {
             "tags" => {
                 let r = self.graph.get_all_reqs();
-                crate::formatters::tags::requirements_ctags(&r, &mut io::stdout().lock()).unwrap();
+                crate::formatters::tags::requirements_ctags(r, &mut io::stdout().lock()).unwrap();
             }
             "tmx" => {
                 todo!();

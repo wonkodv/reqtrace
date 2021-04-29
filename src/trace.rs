@@ -545,15 +545,10 @@ impl<'a> Graph<'a> {
         tracing
     }
 
-    pub fn get_all_reqs<'r>(&'r mut self) -> Vec<&'r Requirement> {
-        let mut result = Vec::new(); // TODO: make iterator
-
-        for node in &mut self.nodes {
-            for r in node.artefact.get_requirements() {
-                result.push(r);
-            }
-        }
-        return result;
+    pub fn get_all_reqs<'r>(&'r mut self) -> impl Iterator<Item = &'r Requirement> {
+        self.nodes
+            .iter()
+            .flat_map(|node| node.artefact.get_requirements())
     }
 }
 

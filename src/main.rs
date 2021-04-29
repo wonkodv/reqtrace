@@ -1,7 +1,5 @@
-
 #![allow(unused_imports)] // TODO
 #![allow(dead_code)] // TODO
-
 
 use std::{fmt, fs::File};
 
@@ -10,9 +8,6 @@ mod controller;
 mod formatters;
 mod parsers;
 mod trace;
-
-
-
 
 struct StringError(String);
 impl<T: fmt::Debug> From<T> for StringError {
