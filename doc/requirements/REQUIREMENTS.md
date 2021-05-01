@@ -173,7 +173,7 @@ If the user has to flush the cache, this is a bug in the Program.
 
 The configuration is loaded, the Tracing Graph validated. This Step should be fast.
 
-## UC_STATUS: Query Parsing State
+## UC_CACHE_STATUS: Query Parsing State
 
 All artefacts are checked for changes since last parsing
 
@@ -181,27 +181,29 @@ All artefacts are checked for changes since last parsing
 
 A Set of artefacts are parsed, reporting all requirements and errors.
 
-## UC_COMPUTE: Compute Tracing
+
+Parameters:
+*   Artefacts to Parse
+
+## UC_TRACE: Compute Tracing
 
 All requirements are matched up and down the Tracing Graph. The results are
 stored in a file and bad tracing is reported.
+
+Parameters:
+*   Tracing Report
 
 ## UC_ANALYZE_SINGLE: Analyze a Requirement
 
 For a Requirement, look up what it covers, and where it is covered itself and
 where coverage is missing.
 
+Parameters:
+*   Requirement Id
+
 ## UC_ANALYZE_IMPACT: Analyze Dependencies of Requirement
 
 For a Requirement, look up all requirements that it depends upon transitively.
 
-## UC_EXPORT_PARSING: Export Parsed Requirements
-
-Information about the requirements of a set of artefacts is exported in
-a selected Format
-
-## UC_EXPORT_TRACING: Export Tracing
-
-Information about the coverage of a set of requirements or artefacts is exported
-in a selected format
-
+Parameters:
+*   Requirement Id
