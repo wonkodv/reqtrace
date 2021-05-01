@@ -106,5 +106,13 @@ TODO
 TODO
 ## Parser
 TODO
+
+
 ## Formatter
-TODO
+
+Formatter is the component that formats data in the requested format.
+
+### ARCH_FORMATTER
+
+Given Data and a requested format, the formatter formats the given data in the
+given format.
