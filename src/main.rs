@@ -1,7 +1,7 @@
 #![allow(unused_imports)] // TODO
 #![allow(dead_code)] // TODO
 
-use std::{fmt, fs::File};
+use std::{convert::TryInto, fmt, fs::File};
 
 mod common;
 mod controller;
@@ -18,13 +18,18 @@ impl<T: fmt::Debug> From<T> for StringError {
 }
 
 fn try_main() -> Result<(), StringError> {
+
     let f = File::open("requirements.json")?;
+
     let config: controller::Config = serde_json::from_reader(f)?;
 
     let mut c = controller::Controller::new(&config);
     c.load()?;
-    c.run("tags");
-    c.run("tmx");
+
+    let job = c.find_job("tags").unwrap();
+    c.run(&job)?;
+  //  let job = c.find_job("tmx").unwrap();
+  //  c.run(&job)?;
     if c.success() {
         std::process::exit(0);
     } else {

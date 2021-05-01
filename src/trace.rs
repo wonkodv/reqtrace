@@ -545,7 +545,13 @@ impl<'a> Graph<'a> {
         tracing
     }
 
-    pub fn get_all_reqs<'r>(&'r mut self) -> impl Iterator<Item = &'r Requirement> {
+    pub fn get_parsing_errors<'r>(&'r self) -> impl Iterator<Item = &'r ParserError> {
+        self.nodes
+            .iter()
+            .flat_map(|node| node.artefact.get_errors())
+    }
+
+    pub fn get_all_reqs<'r>(&'r self) -> impl Iterator<Item = &'r Requirement> {
         self.nodes
             .iter()
             .flat_map(|node| node.artefact.get_requirements())

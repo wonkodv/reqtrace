@@ -1,10 +1,10 @@
 use super::super::common::*;
 use std::io;
 
-pub fn requirements_ctags<'r, W, I>(reqs: I, w: &mut W) -> Result<(), io::Error>
+pub fn requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
-    I: Iterator<Item = &'r Requirement>,
+    R: Iterator<Item = &'r Requirement>,
 {
     for req in reqs {
         writeln!(

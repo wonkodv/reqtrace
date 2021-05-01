@@ -7,6 +7,7 @@ use std::fs;
 use std::io;
 use std::path::Path;
 use std::path::PathBuf;
+use serde::{Deserialize, Serialize};
 
 use crate::parsers::markdown::markdown_parse;
 
@@ -15,7 +16,7 @@ pub const ATTR_DEPENDS: &str = "Depends";
 pub const ATTR_DESCRIPTION: &str = "Description";
 pub const ATTR_TAGS: &str = "Tags";
 
-#[derive(Debug, Default, PartialEq, Clone)]
+#[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Location {
     pub file: PathBuf,
     pub line: u32,
@@ -33,13 +34,13 @@ impl fmt::Display for Location {
     }
 }
 
-#[derive(Debug, Default, PartialEq, Clone)]
+#[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Reference {
     pub id: String,
     pub title: Option<String>,
 }
 
-#[derive(Debug, Default, PartialEq, Clone)]
+#[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Requirement {
     pub id: String,
     pub location: Location,
@@ -266,9 +267,12 @@ impl<'a> Artefact<'a> {
 
 
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum Format {
+    Json,
+    Markdown,
+    Tags,
+    Latex,
+    TemplateFile(PathBuf),
+    TemplateString(String),
 }
-
-
-
-}
-

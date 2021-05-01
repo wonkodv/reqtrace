@@ -14,7 +14,7 @@
         },
         "code": {
             "paths": ["src/**/*.rs"],
-            "parser": "rust"
+            "parser": "rust_cov_marks"
         },
         "unsafe_code": {
             "paths": ["src/**/*.rs"],
@@ -27,11 +27,16 @@
 
     },
     "tracing": [
-        [ [ "requirements" ], ["design", "formats"]],
-        [ [ "design" ], ["formats", "code"] ],
-        [ [ "formats" ], ["code"] ],
-
-        [ [ "unsafe_code" ], ["unsafe_reasoning"] ]
-    ]
+        [ "requirements", ["design",          "formats" ]],
+        [ "design",       ["formats",         "code"]],
+        [ "formats",      ["code"             ]],
+        [ "unsafe_code",  ["unsafe_reasoning" ]]
+    ],
+    "jobs": {
+        "tags" : {
+            "query" :  "Trace",
+            "format": "Tags"
+        }
+    }
 }
 

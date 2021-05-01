@@ -1,33 +1,19 @@
 use crate::{
-    common::{Artefact, ArtefactConfig},
+    common::{Artefact, ArtefactConfig, Format},
     trace::{errors::ConfigError, Graph},
+    formatters,
 };
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, io, path::PathBuf};
+use std::{collections::HashMap, convert::TryFrom, io, path::PathBuf};
 
-pub enum Query<'a> {
-    Full,
-    ValidateGraph,
-    EdgeTrace { from: &'a str, to: &'a str },
-    Parse { artefact: &'a str },
-    PrintRequirements,
-}
-
-pub enum Format {
-    MarkdownTmx,
-    Ctags,
-}
-
-pub struct Job<'a> {
-    pub query: Query<'a>,
-    pub format: Format,
-}
+use anyhow::bail;
+use anyhow::Error;
 
 #[derive(Serialize, Deserialize)]
 struct AC {
     paths: Vec<PathBuf>,
     parser: String,
-    parser_options: Option<String>,
+    parser_options: Option<serde_json::Value>,
 }
 
 #[derive(Debug)]
@@ -55,7 +41,7 @@ impl AC {
                 }
                 Ok(ArtefactConfig::Markdown(&self.paths[0]))
             }
-            "rust" | "rust_unsafe" => {
+            "rust_cov_marks" | "rust_unsafe" => {
                 Ok(ArtefactConfig::PrePopulated(vec![])) // TODO
             }
             x => Err(ControllerLoadError::UnknownArtefactType(x)),
@@ -66,6 +52,35 @@ impl AC {
 #[derive(Serialize, Deserialize)]
 pub struct Config {
     artefacts: HashMap<String, AC>,
+    tracing: Vec<(String, Vec<String>)>,
+    jobs: Option<HashMap<String, Job>>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum Query {
+    /// Validate the Graph without parsing Artefacts
+    ValidateGraph,
+
+    /// Query Artefacts and Tracing Edges to see which are outdated
+    CacheStatus,
+
+    /// Parse a list of artefacts or all artefacts if empty
+    Parse { artefacts: Vec<String> },
+
+    /// Trace all Edges in Graph
+    Trace,
+
+    /// Analise a Single Requirement
+    ShowRequirement { id: String },
+
+    /// Show all Requirements which are below the passed one
+    ShowRequirementImpact { id: String },
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Job {
+    pub query: Query,
+    pub format: Format,
 }
 
 pub struct Controller<'config> {
@@ -93,21 +108,30 @@ impl<'c> Controller<'c> {
         Ok(())
     }
 
-    pub fn run(&mut self, job: &str) {
-        match job {
-            "tags" => {
+    pub fn find_job(&self, job: &str) -> Option<Job> {
+        Some(self.config.jobs.as_ref()?.get(job)?.clone().clone())
+    }
+
+    pub fn run(&mut self, job: &Job) -> anyhow::Result<()> {
+        let stdout = io::stdout();
+        let mut stdout = stdout.lock();
+
+        self.success = false;
+        match &job.query {
+            Query::ValidateGraph => {}
+            Query::CacheStatus => {}
+            Query::Parse { artefacts:_ } => {}
+            Query::Trace => {
                 let r = self.graph.get_all_reqs();
-                crate::formatters::tags::requirements_ctags(r, &mut io::stdout().lock()).unwrap();
+                formatters::requirements(r, &job.format, &mut stdout)?;
+                let e = self.graph.get_parsing_errors();
+                formatters::errors(e, &job.format, &mut stdout)?;
             }
-            "tmx" => {
-                todo!();
-            }
-            _ => {
-                self.success = false;
-            }
+            Query::ShowRequirement { id: _ } => {}
+            Query::ShowRequirementImpact { id: _ } => {}
         }
-        print!("Running {}", job);
-        todo!();
+
+        Ok(())
     }
 
     pub fn success(&self) -> bool {
