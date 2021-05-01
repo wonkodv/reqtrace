@@ -9,6 +9,7 @@ mod formatters;
 mod parsers;
 mod trace;
 mod stringvault;
+mod genericvalue;
 
 struct StringError(String);
 impl<T: fmt::Debug> From<T> for StringError {
