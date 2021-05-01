@@ -144,3 +144,48 @@ Covers:
 Comment:
 Since the version is included in the fingerprint, the details can be changed
 easily.
+
+
+
+### Export Formats
+
+Exporting data is kept as simple as possible by behaving like a good unix tool.
+Results are printed on stdio, errors are printed on stderr.
+The format can be chosen in config or on the command line.
+
+#### DSG_EXPORT_DATA: Export data to stdout
+
+Print results to stdout in a chosen format
+
+#### DSG_EXPORT_ERRORS: Export errors to stderr
+
+Print Errors to stdout in a chosen format
+
+#### DSG_EXPORT_FORMAT: Allow Selecting the Export Format
+
+The format in which errors and results are written to the out streams can be
+chosen.
+
+
+
+#### DSG_EXPORT_FORMAT_JSON: Export to JSON
+
+Errors, Requirements, Status, Tracing Info can be exported as JSON
+
+#### DSG_EXPORT_FORMAT_MARKDOWN: Export to Markdown
+
+Errors, Requirements, Status, Tracing Info can be exported as a useful
+standalone Markdown File
+
+#### DSG_EXPORT_FORMAT_TEX: Export to TEX
+
+Errors, Requirements, Status, Tracing Info can be exported as tex macro calls,
+do that the output can be used via `\include{}` in a tex project that defines
+the relevant macros.
+
+Tag:
+*   TODO
+
+Todo:
+*   Define the exact format of each object
+
