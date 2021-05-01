@@ -8,6 +8,7 @@ mod controller;
 mod formatters;
 mod parsers;
 mod trace;
+mod stringvault;
 
 struct StringError(String);
 impl<T: fmt::Debug> From<T> for StringError {
