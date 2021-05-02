@@ -1,4 +1,4 @@
-use std::io;
+use std::{collections::HashMap, io};
 use std::{io::BufRead, path::Path};
 
 use lazy_static::lazy_static;
@@ -35,7 +35,7 @@ impl<'a> Context<'a> {
 
 #[derive(Debug)]
 enum Event<'a> {
-    EOF,
+    Eof,
     Req(&'a Captures<'a>),
     Heading,
     Line(&'a str),
@@ -75,14 +75,14 @@ pub fn markdown_parse<R: io::Read>(reader: R, path: &Path) -> (Vec<Requirement>,
             Err(e) => {
                 context
                     .errors
-                    .push(ParserError::IOError(context.path.to_owned(), e));
+                    .push(ParserError::IoError(context.path.to_owned(), e));
                 break;
             }
             Ok(0) => {
-                evt = Event::EOF;
+                evt = Event::Eof;
             }
             Ok(1) => {
-                assert!(line.starts_with("\n"));
+                assert!(line.starts_with('\n'));
                 evt = Event::Empty;
             } /* TODO: Win line Endings */
             Ok(_) => {
@@ -99,7 +99,7 @@ pub fn markdown_parse<R: io::Read>(reader: R, path: &Path) -> (Vec<Requirement>,
 
         state = parse_states(state, &mut context, &evt);
 
-        if let Event::EOF = evt {
+        if let Event::Eof = evt {
             break;
         }
     }
@@ -156,7 +156,7 @@ fn parse_states<'a>(state: State, context: &mut Context, evt: &'a Event) -> Stat
             }
         },
 
-        Event::EOF => {
+        Event::Eof => {
             match state {
                 State::LookForReq => {}
                 State::LookForDesc => {}
@@ -249,11 +249,11 @@ fn parse_states<'a>(state: State, context: &mut Context, evt: &'a Event) -> Stat
                 return state;
             }
             State::CollectDesc(mut desc) => {
-                desc.push_str("\n");
+                desc.push('\n');
                 return State::CollectDescNl(desc);
             }
             State::CollectDescNl(mut desc) => {
-                desc.push_str("\n");
+                desc.push('\n');
                 return State::CollectDescNl(desc);
             }
             State::LookForAttr => {
@@ -292,10 +292,15 @@ fn commit_link_attr(context: &mut Context, attr: String, vec: Vec<Reference>) {
 
 fn add_req<'a>(context: &mut Context, req_line: &Captures<'a>) -> State {
     context.level = req_line[1].len();
-    let mut r = Requirement::default();
-    r.id = req_line[2].to_owned();
-    r.title = Some(req_line[3].trim().to_owned());
-    r.location = context.location();
+    let id = req_line[2].to_owned();
+    let title = Some(req_line[3].trim().to_owned());
+    let location = context.location();
+    let r = Requirement {
+        id,
+        location,
+        title,
+        ..Requirement::default()
+    };
     context.requirements.push(r);
 
     return State::LookForDesc;
@@ -325,7 +330,14 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
             return parse_link_attr(attr, first_line);
         }
         _ => {
-            if let Some(_) = context.requirements.last().unwrap().attributes.get(attr) {
+            if context
+                .requirements
+                .last()
+                .unwrap()
+                .attributes
+                .get(attr)
+                .is_some()
+            {
                 context.errors.push(ParserError::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
@@ -336,10 +348,10 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
     }
 }
 
-fn parse_link_attr<'a>(attr: &str, short_list: &str) -> State {
+fn parse_link_attr(attr: &str, short_list: &str) -> State {
     let mut vec = Vec::new();
     let short_list = short_list.trim();
-    for id in short_list.split(",") {
+    for id in short_list.split(',') {
         let id = id.trim();
         if !id.is_empty() {
             vec.push(Reference {

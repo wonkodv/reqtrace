@@ -1,4 +1,5 @@
 use once_cell::unsync::OnceCell;
+use serde::{Deserialize, Serialize};
 use std::cell::UnsafeCell;
 use std::collections::HashMap;
 use std::collections::HashSet;
@@ -7,7 +8,6 @@ use std::fs;
 use std::io;
 use std::path::Path;
 use std::path::PathBuf;
-use serde::{Deserialize, Serialize};
 
 use crate::parsers::markdown::markdown_parse;
 
@@ -107,7 +107,7 @@ impl Requirement {
             result += &self.attributes[k];
         }
 
-        return result;
+        result
     }
 }
 
@@ -128,7 +128,7 @@ pub enum ParserError {
     FormatError(Location, &'static str),
     DuplicateRequirement(Requirement, Requirement),
     DuplicateAttribute(Location, String),
-    IOError(PathBuf, io::Error),
+    IoError(PathBuf, io::Error),
 }
 
 impl fmt::Display for ParserError {
@@ -143,7 +143,7 @@ impl fmt::Display for ParserError {
             ParserError::DuplicateAttribute(loc, attr) => {
                 write!(f, "{}: Duplicate Attribute {}", loc, attr)
             }
-            ParserError::IOError(path, err) => write!(f, "{}: {}", path.display(), err),
+            ParserError::IoError(path, err) => write!(f, "{}: {}", path.display(), err),
         }
     }
 }
@@ -178,7 +178,7 @@ impl<'a> Artefact<'a> {
 
         match &self.config {
             ArtefactConfig::Markdown(path) => {
-                let file = fs::File::open(path).map_err(|e| ParserError::IOError(path.into(), e));
+                let file = fs::File::open(path).map_err(|e| ParserError::IoError(path.into(), e));
                 match file {
                     Err(err) => {
                         data.errors = vec![err];
@@ -264,8 +264,6 @@ impl<'a> Artefact<'a> {
         return result;
     }
 }
-
-
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Format {

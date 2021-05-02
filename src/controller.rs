@@ -1,7 +1,7 @@
 use crate::{
     common::{Artefact, ArtefactConfig, Format},
-    trace::{errors::ConfigError, Graph},
     formatters,
+    trace::{errors::ConfigError, Graph},
 };
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, convert::TryFrom, io, path::PathBuf};
@@ -10,7 +10,7 @@ use anyhow::bail;
 use anyhow::Error;
 
 #[derive(Serialize, Deserialize)]
-struct AC {
+struct ArtefactConfigSerialized {
     paths: Vec<PathBuf>,
     parser: String,
     parser_options: Option<serde_json::Value>,
@@ -29,7 +29,7 @@ impl<'a> From<ConfigError<'a>> for ControllerLoadError<'a> {
     }
 }
 
-impl AC {
+impl ArtefactConfigSerialized {
     fn to_artefact_config<'c>(&'c self) -> Result<ArtefactConfig<'c>, ControllerLoadError<'c>> {
         match self.parser.as_str() {
             "markdown" => {
@@ -51,7 +51,7 @@ impl AC {
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
-    artefacts: HashMap<String, AC>,
+    artefacts: HashMap<String, ArtefactConfigSerialized>,
     tracing: Vec<(String, Vec<String>)>,
     jobs: Option<HashMap<String, Job>>,
 }
@@ -109,7 +109,7 @@ impl<'c> Controller<'c> {
     }
 
     pub fn find_job(&self, job: &str) -> Option<Job> {
-        Some(self.config.jobs.as_ref()?.get(job)?.clone().clone())
+        Some(self.config.jobs.as_ref()?.get(job)?.clone())
     }
 
     pub fn run(&mut self, job: &Job) -> anyhow::Result<()> {
@@ -120,7 +120,7 @@ impl<'c> Controller<'c> {
         match &job.query {
             Query::ValidateGraph => {}
             Query::CacheStatus => {}
-            Query::Parse { artefacts:_ } => {}
+            Query::Parse { artefacts: _ } => {}
             Query::Trace => {
                 let r = self.graph.get_all_reqs();
                 formatters::requirements(r, &job.format, &mut stdout)?;

@@ -6,10 +6,10 @@ use std::{convert::TryInto, fmt, fs::File};
 mod common;
 mod controller;
 mod formatters;
-mod parsers;
-mod trace;
-mod stringvault;
 mod genericvalue;
+mod parsers;
+mod pool;
+mod trace;
 
 struct StringError(String);
 impl<T: fmt::Debug> From<T> for StringError {
@@ -19,7 +19,6 @@ impl<T: fmt::Debug> From<T> for StringError {
 }
 
 fn try_main() -> Result<(), StringError> {
-
     let f = File::open("requirements.json")?;
 
     let config: controller::Config = serde_json::from_reader(f)?;

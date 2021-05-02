@@ -70,11 +70,7 @@ pub mod errors {
                     lower.location,
                     upper.id,
                     title,
-                    upper
-                        .title
-                        .as_ref()
-                        .map(String::as_str)
-                        .unwrap_or("<no title>")
+                    upper.title.as_deref().unwrap_or("<no title>")
                 ),
                 TracingError::DependWithWrongTitle(upper, lower, title) => write!(
                     f,
@@ -82,11 +78,7 @@ pub mod errors {
                     upper.location,
                     lower.id,
                     title,
-                    lower
-                        .title
-                        .as_ref()
-                        .map(String::as_str)
-                        .unwrap_or("<no title>")
+                    lower.title.as_deref().unwrap_or("<no title>")
                 ),
                 TracingError::CombinedTracingsWithIntersectingEdges => {
                     write!(f, "Combining Tracings which contain the same Edges")
@@ -206,7 +198,7 @@ impl EdgeIdx {
     fn to<'a>(self, graph: &'a Graph) -> &'a [NodeIdx] {
         self.as_ref(graph).to.as_slice()
     }
-    fn from<'a>(self, graph: &'a Graph) -> NodeIdx {
+    fn from(self, graph: &Graph) -> NodeIdx {
         self.as_ref(graph).from
     }
 }
@@ -447,9 +439,12 @@ impl<'a> Graph<'a> {
         let upper_artefact = &upper_node_idx.as_ref(self).artefact;
         let lower_artefact = &lower_node_idx.as_ref(self).artefact;
 
-        let mut tracing = Tracing::default();
-
-        tracing.derived = lower_artefact
+        let mut edges: HashSet<(EdgeIdx, u16)> = HashSet::new();
+        edges.insert((edge, group));
+        let mut covered = Vec::new();
+        let mut uncovered = HashMap::new();
+        let mut errors = Vec::new();
+        let mut derived: HashMap<_, _> = lower_artefact
             .get_requirements()
             .iter()
             .map(|r| {
@@ -468,9 +463,9 @@ impl<'a> Graph<'a> {
             for depends in &ur.depends {
                 if let Some(lr) = lower_artefact.get_requirement_with_id(&depends.id) {
                     is_covered = true;
-                    tracing.derived.remove(lr.id.as_str());
+                    derived.remove(lr.id.as_str());
                     if let Some(title) = depends.title.as_ref() {
-                        tracing.covered.push(CoveredRequirement {
+                        covered.push(CoveredRequirement {
                             upper: ur,
                             lower: lr,
                             edge: (edge, group),
@@ -483,12 +478,10 @@ impl<'a> Graph<'a> {
                             false
                         };
                         if !ok {
-                            tracing
-                                .errors
-                                .push(TracingError::DependWithWrongTitle(ur, lr, title));
+                            errors.push(TracingError::DependWithWrongTitle(ur, lr, title));
                         }
                     } else {
-                        tracing.covered.push(CoveredRequirement {
+                        covered.push(CoveredRequirement {
                             upper: ur,
                             lower: lr,
                             edge: (edge, group),
@@ -499,9 +492,9 @@ impl<'a> Graph<'a> {
             }
             for (lr, title) in lower_artefact.get_requirements_that_cover(&ur.id) {
                 is_covered = true;
-                tracing.derived.remove(lr.id.as_str());
+                derived.remove(lr.id.as_str());
                 if let Some(title) = title {
-                    tracing.covered.push(CoveredRequirement {
+                    covered.push(CoveredRequirement {
                         upper: ur,
                         lower: lr,
                         coverage: Coverage::CoveredWithTitle(title),
@@ -513,12 +506,10 @@ impl<'a> Graph<'a> {
                         false
                     };
                     if !ok {
-                        tracing
-                            .errors
-                            .push(TracingError::CoveredWithWrongTitle(ur, lr, title));
+                        errors.push(TracingError::CoveredWithWrongTitle(ur, lr, title));
                     }
                 } else {
-                    tracing.covered.push(CoveredRequirement {
+                    covered.push(CoveredRequirement {
                         upper: ur,
                         lower: lr,
                         coverage: Coverage::Covered,
@@ -527,7 +518,7 @@ impl<'a> Graph<'a> {
                 }
             }
             if !is_covered {
-                let old = tracing.uncovered.insert(
+                let old = uncovered.insert(
                     ur.id.as_str(),
                     UncoveredRequirement {
                         req: ur,
@@ -535,14 +526,18 @@ impl<'a> Graph<'a> {
                     },
                 );
                 if let Some(old) = old {
-                    tracing
-                        .errors
-                        .push(TracingError::DuplicateRequirement(old.req, ur));
+                    errors.push(TracingError::DuplicateRequirement(old.req, ur));
                 }
             }
         }
 
-        tracing
+        Tracing {
+            edges,
+            covered,
+            uncovered,
+            derived,
+            errors,
+        }
     }
 
     pub fn get_parsing_errors<'r>(&'r self) -> impl Iterator<Item = &'r ParserError> {
