@@ -115,6 +115,8 @@ impl<'c> Controller<'c> {
     pub fn run(&mut self, job: &Job) -> anyhow::Result<()> {
         let stdout = io::stdout();
         let mut stdout = stdout.lock();
+        let stderr = io::stderr();
+        let mut stderr = stderr.lock();
 
         self.success = false;
         match &job.query {
@@ -125,7 +127,7 @@ impl<'c> Controller<'c> {
                 let r = self.graph.get_all_reqs();
                 formatters::requirements(r, &job.format, &mut stdout)?;
                 let e = self.graph.get_parsing_errors();
-                formatters::errors(e, &job.format, &mut stdout)?;
+                formatters::errors(e, &job.format, &mut stderr)?;
             }
             Query::ShowRequirement { id: _ } => {}
             Query::ShowRequirementImpact { id: _ } => {}
