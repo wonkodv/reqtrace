@@ -1,4 +1,4 @@
-use std::{collections::HashMap, io};
+use std::{collections::HashMap, io, rc::Rc};
 use std::{io::BufRead, path::Path};
 
 use lazy_static::lazy_static;
@@ -21,7 +21,8 @@ lazy_static! {
 #[derive(Debug)]
 struct Context<'a> {
     errors: Vec<ParserError>,
-    requirements: Vec<Requirement>,
+    requirements: Vec<Rc<Requirement>>,
+    req_under_construction: Option<Box<Requirement>>,
     path: &'a Path,
     line_number: u32, // current line number
     level: usize,     // Heading level of current requirement
@@ -53,11 +54,15 @@ enum State {
     CollectRefLink(String, Vec<Reference>),
 }
 
-pub fn markdown_parse<R: io::Read>(reader: R, path: &Path) -> (Vec<Requirement>, Vec<ParserError>) {
+pub fn markdown_parse<R: io::Read>(
+    reader: R,
+    path: &Path,
+) -> (Vec<Rc<Requirement>>, Vec<ParserError>) {
     let mut context = Context {
         path,
         errors: Vec::new(),
         requirements: Vec::new(),
+        req_under_construction: None,
         line_number: 0,
         level: 0,
     };
@@ -159,19 +164,27 @@ fn parse_states<'a>(state: State, context: &mut Context, evt: &'a Event) -> Stat
         Event::Eof => {
             match state {
                 State::LookForReq => {}
-                State::LookForDesc => {}
+                State::LookForDesc => {
+                    maybe_commit_req(context);
+                }
                 State::CollectDesc(desc) => {
                     commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
+                    maybe_commit_req(context);
                 }
                 State::CollectDescNl(desc) => {
                     commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
+                    maybe_commit_req(context);
                 }
-                State::LookForAttr => {}
+                State::LookForAttr => {
+                    maybe_commit_req(context);
+                }
                 State::CollectTextAttr(attr, val) => {
                     commit_attr(context, attr, val);
+                    maybe_commit_req(context);
                 }
                 State::CollectRefLink(attr, vec) => {
                     commit_link_attr(context, attr, vec);
+                    maybe_commit_req(context);
                 }
             }
             return State::LookForReq; // does not matter
@@ -273,8 +286,8 @@ fn parse_states<'a>(state: State, context: &mut Context, evt: &'a Event) -> Stat
 
 fn commit_attr(context: &mut Context, attr: String, val: String) {
     context
-        .requirements
-        .last_mut()
+        .req_under_construction
+        .as_mut()
         .unwrap()
         .attributes
         .insert(attr, val);
@@ -282,15 +295,22 @@ fn commit_attr(context: &mut Context, attr: String, val: String) {
 
 fn commit_link_attr(context: &mut Context, attr: String, vec: Vec<Reference>) {
     if attr == ATTR_COVERS {
-        context.requirements.last_mut().unwrap().covers = vec;
+        context.req_under_construction.as_mut().unwrap().covers = vec;
     } else if attr == ATTR_DEPENDS {
-        context.requirements.last_mut().unwrap().depends = vec;
+        context.req_under_construction.as_mut().unwrap().depends = vec;
     } else {
         panic!();
     }
 }
 
+fn maybe_commit_req(context: &mut Context) {
+    if let Some(box_req) = context.req_under_construction.take() {
+        context.requirements.push(Rc::from(box_req));
+    }
+}
+
 fn add_req<'a>(context: &mut Context, req_line: &Captures<'a>) -> State {
+    maybe_commit_req(context);
     context.level = req_line[1].len();
     let id = req_line[2].to_owned();
     let title = Some(req_line[3].trim().to_owned());
@@ -301,7 +321,7 @@ fn add_req<'a>(context: &mut Context, req_line: &Captures<'a>) -> State {
         title,
         ..Requirement::default()
     };
-    context.requirements.push(r);
+    context.req_under_construction = Some(Box::new(r));
 
     return State::LookForDesc;
 }
@@ -312,7 +332,13 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
     match attr {
         // TODO  ATTR_TAGS => self.parse_tags(val);
         ATTR_COVERS => {
-            if !context.requirements.last().unwrap().covers.is_empty() {
+            if !context
+                .req_under_construction
+                .as_ref()
+                .unwrap()
+                .covers
+                .is_empty()
+            {
                 context.errors.push(ParserError::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
@@ -321,7 +347,13 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
             return parse_link_attr(attr, first_line);
         }
         ATTR_DEPENDS => {
-            if !context.requirements.last().unwrap().depends.is_empty() {
+            if !context
+                .req_under_construction
+                .as_ref()
+                .unwrap()
+                .depends
+                .is_empty()
+            {
                 context.errors.push(ParserError::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
@@ -331,8 +363,8 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
         }
         _ => {
             if context
-                .requirements
-                .last()
+                .req_under_construction
+                .as_ref()
                 .unwrap()
                 .attributes
                 .get(attr)

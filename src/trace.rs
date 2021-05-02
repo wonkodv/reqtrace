@@ -1,6 +1,7 @@
 use std::{
     collections::{HashMap, HashSet},
     error, fmt,
+    rc::Rc,
 };
 
 use super::common::*;
@@ -109,8 +110,8 @@ pub struct DerivedRequirement<'a> {
 
 #[derive(Debug)]
 pub struct CoveredRequirement<'a> {
-    pub upper: &'a Requirement,
-    pub lower: &'a Requirement,
+    pub upper: &'a Rc<Requirement>,
+    pub lower: &'a Rc<Requirement>,
     pub coverage: Coverage<'a>,
     edge: (EdgeIdx, u16),
 }
@@ -546,7 +547,7 @@ impl<'a> Graph<'a> {
             .flat_map(|node| node.artefact.get_errors())
     }
 
-    pub fn get_all_reqs<'r>(&'r self) -> impl Iterator<Item = &'r Requirement> {
+    pub fn get_all_reqs<'r>(&'r self) -> impl Iterator<Item = &'r Rc<Requirement>> {
         self.nodes
             .iter()
             .flat_map(|node| node.artefact.get_requirements())

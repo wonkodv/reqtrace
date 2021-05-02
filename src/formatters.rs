@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::{io, path::PathBuf};
+use std::{io, path::PathBuf, rc::Rc};
 
 use crate::common::{Format, ParserError, Requirement};
 
@@ -9,7 +9,7 @@ pub mod tags;
 pub fn requirements<'r, W, R>(requiremens: R, format: &Format, writer: &mut W) -> io::Result<()>
 where
     W: io::Write,
-    R: Iterator<Item = &'r Requirement>,
+    R: Iterator<Item = &'r Rc<Requirement>>,
 {
     match format {
         Format::Tags => tags::requirements(requiremens, writer),

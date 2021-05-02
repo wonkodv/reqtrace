@@ -28,8 +28,8 @@ fn try_main() -> Result<(), StringError> {
 
     let job = c.find_job("tags").unwrap();
     c.run(&job)?;
-  //  let job = c.find_job("tmx").unwrap();
-  //  c.run(&job)?;
+    //  let job = c.find_job("tmx").unwrap();
+    //  c.run(&job)?;
     if c.success() {
         std::process::exit(0);
     } else {

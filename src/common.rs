@@ -1,6 +1,5 @@
 use once_cell::unsync::OnceCell;
 use serde::{Deserialize, Serialize};
-use std::cell::UnsafeCell;
 use std::collections::HashMap;
 use std::collections::HashSet;
 use std::fmt;
@@ -8,6 +7,7 @@ use std::fs;
 use std::io;
 use std::path::Path;
 use std::path::PathBuf;
+use std::{cell::UnsafeCell, rc::Rc};
 
 use crate::parsers::markdown::markdown_parse;
 
@@ -120,13 +120,13 @@ impl fmt::Display for Requirement {
 #[derive(Debug)]
 pub enum ArtefactConfig<'a> {
     Markdown(&'a Path),
-    PrePopulated(Vec<Requirement>),
+    PrePopulated(Vec<Rc<Requirement>>),
 }
 
 #[derive(Debug)]
 pub enum ParserError {
     FormatError(Location, &'static str),
-    DuplicateRequirement(Requirement, Requirement),
+    DuplicateRequirement(Rc<Requirement>, Rc<Requirement>),
     DuplicateAttribute(Location, String),
     IoError(PathBuf, io::Error),
 }
@@ -150,7 +150,7 @@ impl fmt::Display for ParserError {
 
 #[derive(Debug, Default)]
 struct ArtefactData {
-    requirements: Vec<Requirement>,
+    requirements: Vec<Rc<Requirement>>,
     id_to_req: HashMap<String, u16>, // ID => Req  with  ID
     id_to_covering_req: HashMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Covers
     id_to_depending_req: HashMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Depends
@@ -201,8 +201,8 @@ impl<'a> Artefact<'a> {
                 let old_idx: usize = old_idx.into();
                 /* Covers:  REQ_UNIQUE_ID: Requirements have a unique Identifier */
                 data.errors.push(ParserError::DuplicateRequirement(
-                    data.requirements[old_idx].clone(),
-                    req.clone(),
+                    Rc::clone(&data.requirements[old_idx]),
+                    Rc::clone(&req),
                 ));
             }
 
@@ -226,7 +226,7 @@ impl<'a> Artefact<'a> {
         return self.data.get().unwrap();
     }
 
-    fn req_with_idx(&self, idx: u16) -> &Requirement {
+    fn req_with_idx(&self, idx: u16) -> &Rc<Requirement> {
         let idx: usize = idx.into();
         &self.load().requirements[idx]
     }
@@ -235,33 +235,45 @@ impl<'a> Artefact<'a> {
         return &self.load().errors;
     }
 
-    pub fn get_requirements(&self) -> &[Requirement] {
+    pub fn get_requirements(&self) -> &[Rc<Requirement>] {
         return &self.load().requirements;
     }
 
-    pub fn get_requirement_with_id(&self, id: &str) -> Option<&Requirement> {
+    pub fn get_requirement_with_id(&self, id: &str) -> Option<&Rc<Requirement>> {
         let d = self.load();
         if let Some(idx) = d.id_to_req.get(id) {
-            return Some(self.req_with_idx(*idx));
+            return Some(&self.req_with_idx(*idx));
         }
         None
     }
 
-    pub fn get_requirements_that_cover(&self, id: &str) -> Vec<(&Requirement, Option<&str>)> {
+    pub fn get_requirements_that_cover<'b>(
+        &'b self,
+        id: &'b str,
+    ) -> impl Iterator<Item = (&'b Rc<Requirement>, Option<&'b str>)> {
         let d = self.load();
-        let mut result = vec![];
+
+        let mut i;
         if let Some(covs) = d.id_to_covering_req.get(id) {
-            for (req_id, cov_id) in covs {
-                let r = self.req_with_idx(*req_id);
-                let dep = r.covers[*cov_id as usize].title.as_ref();
-                if let Some(title) = dep {
-                    result.push((r, Some(title.as_str())));
-                } else {
-                    result.push((r, None));
+            i = Some(covs.iter());
+        } else {
+            i = None;
+        }
+
+        return std::iter::from_fn(move || {
+            if let Some(i) = &mut i {
+                if let Some((req_id, cov_id)) = i.next() {
+                    let r = self.req_with_idx(*req_id);
+                    let dep = r.covers[*cov_id as usize].title.as_ref();
+                    if let Some(title) = dep {
+                        return Some((r, Some(title.as_str())));
+                    } else {
+                        return Some((r, None));
+                    }
                 }
             }
-        }
-        return result;
+            return None;
+        });
     }
 }
 

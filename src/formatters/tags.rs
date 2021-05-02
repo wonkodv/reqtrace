@@ -1,10 +1,10 @@
 use super::super::common::*;
-use std::io;
+use std::{io, rc::Rc};
 
 pub fn requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
-    R: Iterator<Item = &'r Requirement>,
+    R: Iterator<Item = &'r Rc<Requirement>>,
 {
     for req in reqs {
         writeln!(
