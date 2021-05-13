@@ -9,7 +9,7 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::{cell::UnsafeCell, rc::Rc};
 
-use crate::parsers::markdown::markdown_parse;
+use crate::parsers::{markdown::markdown_parse, ParserError};
 
 pub const ATTR_COVERS: &str = "Covers";
 pub const ATTR_DEPENDS: &str = "Depends";
@@ -121,31 +121,6 @@ impl fmt::Display for Requirement {
 pub enum ArtefactConfig<'a> {
     Markdown(&'a Path),
     PrePopulated(Vec<Rc<Requirement>>),
-}
-
-#[derive(Debug)]
-pub enum ParserError {
-    FormatError(Location, &'static str),
-    DuplicateRequirement(Rc<Requirement>, Rc<Requirement>),
-    DuplicateAttribute(Location, String),
-    IoError(PathBuf, io::Error),
-}
-
-impl fmt::Display for ParserError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            ParserError::FormatError(loc, err) => write!(f, "{}: {}", loc, err),
-            ParserError::DuplicateRequirement(first, second) => write!(
-                f,
-                "{}: Duplicate Requirement {} previously defined at {}",
-                second.location, second.id, first.location
-            ),
-            ParserError::DuplicateAttribute(loc, attr) => {
-                write!(f, "{}: Duplicate Attribute {}", loc, attr)
-            }
-            ParserError::IoError(path, err) => write!(f, "{}: {}", path.display(), err),
-        }
-    }
 }
 
 #[derive(Debug, Default)]

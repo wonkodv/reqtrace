@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 use std::{io, path::PathBuf, rc::Rc};
 
-use crate::common::{Format, ParserError, Requirement};
+use crate::{
+    common::{Format, Requirement},
+    parsers::ParserError,
+};
 
 pub mod gnuerr;
 pub mod tags;

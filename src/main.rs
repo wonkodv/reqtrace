@@ -1,6 +1,8 @@
 #![allow(unused_imports)] // TODO
 #![allow(dead_code)] // TODO
 
+use thiserror::Error;
+
 use std::{convert::TryInto, fmt, fs::File};
 
 mod common;

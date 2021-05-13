@@ -4,6 +4,8 @@ use std::{
     rc::Rc,
 };
 
+use crate::parsers::ParserError;
+
 use super::common::*;
 
 pub mod errors {

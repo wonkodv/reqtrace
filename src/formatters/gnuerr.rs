@@ -1,3 +1,5 @@
+use crate::parsers::ParserError;
+
 use super::super::common::*;
 use std::io;
 
@@ -12,8 +14,28 @@ where
             ParserError::FormatError(loc, err) => {
                 writeln!(w, "{}:{}: {}", loc.file.display(), loc.line, err)?;
             }
-            e => {
-                writeln!(w, "{:?}", e)?;
+            ParserError::DuplicateRequirement(r1, r2) => {
+                writeln!(
+                    w,
+                    "{}:{}: Duplicate Requirement {} previously seen at {}:{}",
+                    r2.location.file.display(),
+                    r2.location.line,
+                    r1.id,
+                    r1.location.file.display(),
+                    r1.location.line,
+                )?;
+            }
+            ParserError::DuplicateAttribute(loc, attr) => {
+                writeln!(
+                    w,
+                    "{}:{}: Duplicate Attribute {}",
+                    loc.file.display(),
+                    loc.line,
+                    attr,
+                )?;
+            }
+            ParserError::IoError(path, err) => {
+                writeln!(w, "{}: IO Error: {}", path.display(), err,)?;
             }
         }
     }
