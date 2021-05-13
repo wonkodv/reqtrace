@@ -7,7 +7,8 @@ use regex::{Captures, Regex};
 use super::super::common::*;
 use super::*;
 
-use ParserError::*;
+use crate::errors::Error;
+use Error::*;
 
 lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();
@@ -21,7 +22,7 @@ lazy_static! {
 
 #[derive(Debug)]
 struct Context<'a> {
-    errors: Vec<ParserError>,
+    errors: Vec<Error>,
     requirements: Vec<Rc<Requirement>>,
     req_under_construction: Option<Box<Requirement>>,
     path: &'a Path,
@@ -58,7 +59,7 @@ enum State {
 pub fn markdown_parse<R: io::Read>(
     reader: R,
     path: &Path,
-) -> (Vec<Rc<Requirement>>, Vec<ParserError>) {
+) -> (Vec<Rc<Requirement>>, Vec<Error>) {
     let mut context = Context {
         path,
         errors: Vec::new(),
@@ -81,7 +82,7 @@ pub fn markdown_parse<R: io::Read>(
             Err(e) => {
                 context
                     .errors
-                    .push(ParserError::IoError(context.path.to_owned(), e));
+                    .push(IoError(context.path.to_owned(), e));
                 break;
             }
             Ok(0) => {
@@ -220,7 +221,7 @@ fn parse_states<'a>(state: State, context: &mut Context, evt: &'a Event) -> Stat
                 } else {
                     context.errors.push(FormatError(
                         context.location(),
-                        "Expected an Attribute line like `Comment:`",
+                        "Expected an Attribute line like `Comment:`".into(),
                     ));
                     return State::LookForReq;
                 }
@@ -248,7 +249,7 @@ fn parse_states<'a>(state: State, context: &mut Context, evt: &'a Event) -> Stat
                     commit_link_attr(context, attr, vec);
                     context.errors.push(FormatError(
                         context.location(),
-                        "Expected a Reference like `* REQ_ID: Title`",
+                        "Expected a Reference like `* REQ_ID: Title`".into(),
                     ));
                     return State::LookForReq;
                 }
@@ -340,7 +341,7 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
                 .covers
                 .is_empty()
             {
-                context.errors.push(ParserError::DuplicateAttribute(
+                context.errors.push(DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
                 ));
@@ -355,7 +356,7 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
                 .depends
                 .is_empty()
             {
-                context.errors.push(ParserError::DuplicateAttribute(
+                context.errors.push(DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
                 ));
@@ -371,7 +372,7 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
                 .get(attr)
                 .is_some()
             {
-                context.errors.push(ParserError::DuplicateAttribute(
+                context.errors.push(DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
                 ));

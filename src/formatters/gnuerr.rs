@@ -1,20 +1,21 @@
-use crate::parsers::ParserError;
-
 use super::super::common::*;
 use std::io;
+
+use crate::errors::Error;
+use Error::*;
 
 pub fn errors<'r, W, R>(errors: R, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
-    R: Iterator<Item = &'r ParserError>,
+    R: Iterator<Item = &'r Error>,
 {
     writeln!(w, "# Parser Errors")?;
     for err in errors {
         match err {
-            ParserError::FormatError(loc, err) => {
+            FormatError(loc, err) => {
                 writeln!(w, "{}:{}: {}", loc.file.display(), loc.line, err)?;
             }
-            ParserError::DuplicateRequirement(r1, r2) => {
+            DuplicateRequirement(r1, r2) => {
                 writeln!(
                     w,
                     "{}:{}: Duplicate Requirement {} previously seen at {}:{}",
@@ -25,7 +26,7 @@ where
                     r1.location.line,
                 )?;
             }
-            ParserError::DuplicateAttribute(loc, attr) => {
+            DuplicateAttribute(loc, attr) => {
                 writeln!(
                     w,
                     "{}:{}: Duplicate Attribute {}",
@@ -34,8 +35,12 @@ where
                     attr,
                 )?;
             }
-            ParserError::IoError(path, err) => {
+            IoError(path, err) => {
                 writeln!(w, "{}: IO Error: {}", path.display(), err,)?;
+            }
+            e => {
+                // TODO
+                writeln!(w, "{:?}", e)?;
             }
         }
     }

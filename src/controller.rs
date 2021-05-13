@@ -1,13 +1,13 @@
 use crate::{
     common::{Artefact, ArtefactConfig, Format},
     formatters,
-    trace::{errors::ConfigError, Graph},
+    trace::Graph,
 };
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, convert::TryFrom, io, path::PathBuf};
 
-use anyhow::bail;
-use anyhow::Error;
+use crate::errors::{Error, Result};
+use Error::*;
 
 #[derive(Serialize, Deserialize)]
 struct ArtefactConfigSerialized {
@@ -16,25 +16,12 @@ struct ArtefactConfigSerialized {
     parser_options: Option<serde_json::Value>,
 }
 
-#[derive(Debug)]
-pub enum ControllerLoadError<'a> {
-    OnlyOnePathExpected,
-    UnknownArtefactType(&'a str),
-    ConfigError(ConfigError<'a>),
-}
-
-impl<'a> From<ConfigError<'a>> for ControllerLoadError<'a> {
-    fn from(e: ConfigError<'a>) -> Self {
-        ControllerLoadError::ConfigError(e)
-    }
-}
-
 impl ArtefactConfigSerialized {
-    fn to_artefact_config<'c>(&'c self) -> Result<ArtefactConfig<'c>, ControllerLoadError<'c>> {
+    fn to_artefact_config<'c>(&'c self) -> Result<ArtefactConfig<'c>> {
         match self.parser.as_str() {
             "markdown" => {
                 if self.paths.len() != 1 {
-                    return Err(ControllerLoadError::OnlyOnePathExpected);
+                    return Err(OnlyOnePathExpected);
                 }
                 if self.parser_options.is_some() {
                     todo!();
@@ -44,7 +31,7 @@ impl ArtefactConfigSerialized {
             "rust_cov_marks" | "rust_unsafe" => {
                 Ok(ArtefactConfig::PrePopulated(vec![])) // TODO
             }
-            x => Err(ControllerLoadError::UnknownArtefactType(x)),
+            x => Err(UnknownArtefactType(x.into())),
         }
     }
 }
@@ -99,7 +86,7 @@ impl<'c> Controller<'c> {
         }
     }
 
-    pub fn load(&mut self) -> Result<(), ControllerLoadError> {
+    pub fn load(&mut self) -> Result<()> {
         for (id, ac) in &self.config.artefacts {
             let ac = ac.to_artefact_config()?;
             let a = Artefact::new(id.as_str(), ac);
@@ -112,7 +99,7 @@ impl<'c> Controller<'c> {
         Some(self.config.jobs.as_ref()?.get(job)?.clone())
     }
 
-    pub fn run(&mut self, job: &Job) -> anyhow::Result<()> {
+    pub fn run(&mut self, job: &Job) -> Result<()> {
         let stdout = io::stdout();
         let mut stdout = stdout.lock();
         let stderr = io::stderr();

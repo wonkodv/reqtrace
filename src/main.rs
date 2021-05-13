@@ -1,7 +1,7 @@
 #![allow(unused_imports)] // TODO
 #![allow(dead_code)] // TODO
 
-use thiserror::Error;
+use thiserror;
 
 use std::{convert::TryInto, fmt, fs::File};
 
@@ -12,6 +12,7 @@ mod genericvalue;
 mod parsers;
 mod pool;
 mod trace;
+mod errors;
 
 struct StringError(String);
 impl<T: fmt::Debug> From<T> for StringError {

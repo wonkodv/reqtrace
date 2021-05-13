@@ -3,8 +3,10 @@ use std::{io, path::PathBuf, rc::Rc};
 
 use crate::{
     common::{Format, Requirement},
-    parsers::ParserError,
 };
+
+use crate::errors::Error;
+use Error::*;
 
 pub mod gnuerr;
 pub mod tags;
@@ -23,7 +25,7 @@ where
 pub fn errors<'r, W, R>(errors: R, format: &Format, writer: &mut W) -> io::Result<()>
 where
     W: io::Write,
-    R: Iterator<Item = &'r ParserError>,
+    R: Iterator<Item = &'r Error>,
 {
     match format {
         Format::Tags => gnuerr::errors(errors, writer),

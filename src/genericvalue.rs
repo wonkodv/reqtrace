@@ -1,6 +1,8 @@
 use std::{collections::HashMap, convert::TryFrom};
 
-use anyhow::bail;
+use crate::errors::Error;
+use Error::*;
+
 
 #[derive(Debug)]
 pub enum Value {
@@ -13,7 +15,7 @@ pub enum Value {
 }
 
 impl TryFrom<serde_json::Value> for Value {
-    type Error = anyhow::Error;
+    type Error = Error;
 
     fn try_from(v: serde_json::Value) -> Result<Self, Self::Error> {
         let r = match v {
@@ -23,7 +25,7 @@ impl TryFrom<serde_json::Value> for Value {
                 if let Some(n) = n.as_i64() {
                     Value::Number(n)
                 } else {
-                    bail!("Not a i64: {}", n)
+                    return Err(ConfigError(format!("Not a i64: {}", n)));
                 }
             }
             serde_json::Value::String(s) => Value::String(s),

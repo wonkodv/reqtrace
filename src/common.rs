@@ -9,7 +9,9 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::{cell::UnsafeCell, rc::Rc};
 
-use crate::parsers::{markdown::markdown_parse, ParserError};
+use crate::parsers::{markdown::markdown_parse};
+use crate::errors::Error;
+use crate::errors::Error::*;
 
 pub const ATTR_COVERS: &str = "Covers";
 pub const ATTR_DEPENDS: &str = "Depends";
@@ -129,7 +131,7 @@ struct ArtefactData {
     id_to_req: HashMap<String, u16>, // ID => Req  with  ID
     id_to_covering_req: HashMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Covers
     id_to_depending_req: HashMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Depends
-    errors: Vec<ParserError>,
+    errors: Vec<Error>,
 }
 
 #[derive(Debug)]
@@ -153,7 +155,7 @@ impl<'a> Artefact<'a> {
 
         match &self.config {
             ArtefactConfig::Markdown(path) => {
-                let file = fs::File::open(path).map_err(|e| ParserError::IoError(path.into(), e));
+                let file = fs::File::open(path).map_err(|e| IoError(path.into(), e));
                 match file {
                     Err(err) => {
                         data.errors = vec![err];
@@ -175,7 +177,7 @@ impl<'a> Artefact<'a> {
             if let Some(old_idx) = old {
                 let old_idx: usize = old_idx.into();
                 /* Covers:  REQ_UNIQUE_ID: Requirements have a unique Identifier */
-                data.errors.push(ParserError::DuplicateRequirement(
+                data.errors.push(DuplicateRequirement(
                     Rc::clone(&data.requirements[old_idx]),
                     Rc::clone(&req),
                 ));
@@ -206,7 +208,7 @@ impl<'a> Artefact<'a> {
         &self.load().requirements[idx]
     }
 
-    pub fn get_errors(&self) -> &[ParserError] {
+    pub fn get_errors(&self) -> &[Error] {
         return &self.load().errors;
     }
 

@@ -4,97 +4,9 @@ use std::{
     rc::Rc,
 };
 
-use crate::parsers::ParserError;
-
 use super::common::*;
-
-pub mod errors {
-    use super::*;
-    #[derive(Debug)]
-    pub struct UnknownArtefact<'a>(pub &'a str);
-
-    impl<'a> fmt::Display for UnknownArtefact<'a> {
-        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            write!(f, "No Artefact with id {}", self.0)
-        }
-    }
-
-    #[derive(Debug)]
-    pub enum ConfigError<'a> {
-        DuplicateArtefact(&'a str),
-        UnknownArtefact(UnknownArtefact<'a>),
-    }
-
-    impl<'a> From<UnknownArtefact<'a>> for ConfigError<'a> {
-        fn from(e: UnknownArtefact<'a>) -> Self {
-            Self::UnknownArtefact(e)
-        }
-    }
-
-    impl<'a> fmt::Display for ConfigError<'a> {
-        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-            match self {
-                ConfigError::DuplicateArtefact(id) => write!(f, "Duplicate Artefact Id: {}", id),
-                ConfigError::UnknownArtefact(ua) => ua.fmt(f),
-            }
-        }
-    }
-
-    impl<'a> error::Error for ConfigError<'a> {}
-
-    #[derive(Debug)]
-    pub enum TracingError<'a> {
-        UnknownArtefact(UnknownArtefact<'a>),
-        UnknownEdge(&'a str, &'a str),
-        DuplicateRequirement(&'a Requirement, &'a Requirement),
-        CoveredWithWrongTitle(&'a Requirement, &'a Requirement, &'a str),
-        DependWithWrongTitle(&'a Requirement, &'a Requirement, &'a str),
-        CombinedTracingsWithIntersectingEdges,
-    }
-
-    impl<'a> From<UnknownArtefact<'a>> for TracingError<'a> {
-        fn from(e: UnknownArtefact<'a>) -> Self {
-            Self::UnknownArtefact(e)
-        }
-    }
-
-    impl<'a> fmt::Display for TracingError<'a> {
-        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-            match self {
-                TracingError::UnknownArtefact(ua) => ua.fmt(f),
-                TracingError::DuplicateRequirement(first, second) => write!(
-                    f,
-                    "{}: Duplicate Requirement {} previously defined at {}",
-                    second.location, second.id, first.location
-                ),
-                TracingError::CoveredWithWrongTitle(upper, lower, title) => write!(
-                    f,
-                    "{}: Requirement {} covered with wrong title {} != {}",
-                    lower.location,
-                    upper.id,
-                    title,
-                    upper.title.as_deref().unwrap_or("<no title>")
-                ),
-                TracingError::DependWithWrongTitle(upper, lower, title) => write!(
-                    f,
-                    "{}: Requirement {} depended on with wrong title {} != {}",
-                    upper.location,
-                    lower.id,
-                    title,
-                    lower.title.as_deref().unwrap_or("<no title>")
-                ),
-                TracingError::CombinedTracingsWithIntersectingEdges => {
-                    write!(f, "Combining Tracings which contain the same Edges")
-                }
-                TracingError::UnknownEdge(from, to) => {
-                    write!(f, "No Edge from {} to {}", from, to)
-                }
-            }
-        }
-    }
-    impl<'a> error::Error for TracingError<'a> {}
-}
-use errors::*;
+use crate::errors::{Error, Result};
+use Error::*;
 
 #[derive(Debug)]
 pub enum Coverage<'a> {
@@ -120,7 +32,7 @@ pub struct CoveredRequirement<'a> {
 
 #[derive(Debug)]
 pub struct UncoveredRequirement<'a> {
-    pub req: &'a Requirement,
+    pub req: &'a Rc<Requirement>,
     edges: Vec<(EdgeIdx, u16)>,
 }
 
@@ -130,14 +42,13 @@ pub struct Tracing<'a> {
     pub covered: Vec<CoveredRequirement<'a>>,
     pub uncovered: HashMap<&'a str, UncoveredRequirement<'a>>,
     pub derived: HashMap<&'a str, DerivedRequirement<'a>>,
-    pub errors: Vec<TracingError<'a>>,
+    pub errors: Vec<Error>,
 }
 
 impl<'a> Tracing<'a> {
-    pub fn add(mut self, mut other: Tracing<'a>) -> Result<Self, TracingError> {
-        if !self.edges.is_disjoint(&other.edges) {
-            return Err(TracingError::CombinedTracingsWithIntersectingEdges);
-        }
+    pub fn add(mut self, mut other: Tracing<'a>) -> Result<Self> {
+        assert!(self.edges.is_disjoint(&other.edges));
+
         for e in other.edges {
             self.edges.insert(e);
         }
@@ -163,8 +74,10 @@ impl<'a> Tracing<'a> {
                     let old: &mut UncoveredRequirement = e.get_mut();
                     if uncov.req != old.req {
                         // if IDs equal, REQs should be equal
-                        self.errors
-                            .push(TracingError::DuplicateRequirement(uncov.req, old.req));
+                        self.errors.push(DuplicateRequirement(
+                            Rc::clone(uncov.req),
+                            Rc::clone(old.req),
+                        ));
                     } else {
                         old.edges.append(&mut uncov.edges);
                     }
@@ -283,11 +196,11 @@ impl<'a> Graph<'a> {
         self.edges.get(idx).unwrap()
     }
 
-    fn node_idx_by_id<'i>(&self, id: &'i str) -> Result<NodeIdx, UnknownArtefact<'i>> {
+    fn node_idx_by_id(&self, id: &str) -> Result<NodeIdx> {
         return Ok(*self
             .artefact_id_to_node
             .get(id)
-            .ok_or(UnknownArtefact(id))?);
+            .ok_or(UnknownArtefact(id.into()))?);
     }
 
     /// Add [`Artefact`] to the graph
@@ -295,13 +208,13 @@ impl<'a> Graph<'a> {
     /// # Errors
     /// Returns [`DuplicateArtefactId`] if an artefact with the same id was
     /// already registered
-    pub fn add_artefact(&mut self, artefact: Artefact<'a>) -> Result<(), ConfigError<'a>> {
+    pub fn add_artefact(&mut self, artefact: Artefact<'a>) -> Result<()> {
         let node_id: NodeIdx = self.nodes.len().into();
 
         let e = self.artefact_id_to_node.entry(artefact.id);
         match e {
             std::collections::hash_map::Entry::Occupied(_) => {
-                return Err(ConfigError::DuplicateArtefact(&artefact.id));
+                return Err(DuplicateArtefact(artefact.id.into()));
             }
             std::collections::hash_map::Entry::Vacant(e) => {
                 e.insert(node_id);
@@ -326,11 +239,7 @@ impl<'a> Graph<'a> {
     ///
     /// *   `upper` is the id of a previously added [`Artefact`]
     /// *   `lower` is a list of ids of previously added [`Artefact`]s
-    pub fn add_edge_group<'r>(
-        &mut self,
-        upper: &'r str,
-        lower: &[&'r str],
-    ) -> Result<(), ConfigError<'r>> {
+    pub fn add_edge_group<'r>(&mut self, upper: &'r str, lower: &[&'r str]) -> Result<()> {
         let edge_idx: EdgeIdx = self.edges.len().into();
         let mut lower_indexes: Vec<NodeIdx> = vec![];
         let upper_idx: NodeIdx = self.node_idx_by_id(upper)?;
@@ -349,19 +258,13 @@ impl<'a> Graph<'a> {
         Ok(())
     }
 
-    pub fn get_artefact<'i>(
-        &'a self,
-        id: &'i str,
-    ) -> Result<&'a Artefact<'a>, UnknownArtefact<'i>> {
+    pub fn get_artefact<'i>(&'a self, id: &'i str) -> Result<&'a Artefact<'a>> {
         let node_idx = self.node_idx_by_id(id)?;
         let node = self.node_ref(node_idx);
         Ok(&node.artefact)
     }
 
-    pub fn get_upper<'i>(
-        &'a self,
-        id: &'i str,
-    ) -> Result<Vec<&'a Artefact<'a>>, UnknownArtefact<'i>> {
+    pub fn get_upper<'i>(&'a self, id: &'i str) -> Result<Vec<&'a Artefact<'a>>> {
         let node_idx = self.node_idx_by_id(id)?;
         let node = self.node_ref(node_idx);
         let r = node
@@ -373,10 +276,7 @@ impl<'a> Graph<'a> {
         Ok(r)
     }
 
-    pub fn get_lower<'i>(
-        &'a self,
-        id: &'i str,
-    ) -> Result<Vec<Vec<&'a Artefact<'a>>>, UnknownArtefact<'i>> {
+    pub fn get_lower<'i>(&'a self, id: &'i str) -> Result<Vec<Vec<&'a Artefact<'a>>>> {
         let node_idx = self.node_idx_by_id(id)?;
         let node = self.node_ref(node_idx);
         let r = node
@@ -393,15 +293,11 @@ impl<'a> Graph<'a> {
         Ok(r)
     }
 
-    fn find_edge_from_to(
-        &self,
-        from: &'a str,
-        to: &'a str,
-    ) -> Result<(EdgeIdx, u16), TracingError> {
+    fn find_edge_from_to(&self, from: &'a str, to: &'a str) -> Result<(EdgeIdx, u16)> {
         let root_node = if let Some(n) = self.artefact_id_to_node.get(from) {
             *n
         } else {
-            return Err(TracingError::from(UnknownArtefact(from)));
+            return Err(UnknownArtefact(from.into()));
         };
 
         for edge in root_node.lower(self) {
@@ -411,7 +307,7 @@ impl<'a> Graph<'a> {
                 }
             }
         }
-        return Err(TracingError::UnknownEdge(from, to));
+        return Err(UnknownEdge(from.into(), to.into()));
     }
 
     pub fn trace_edge(&'a self, from: &'a str, to: &'a str) -> Tracing<'a> {
@@ -419,7 +315,7 @@ impl<'a> Graph<'a> {
             Err(_) => {
                 let t = Tracing::default();
                 return Tracing {
-                    errors: vec![TracingError::from(UnknownArtefact(from))],
+                    errors: vec![UnknownArtefact(from.into())],
                     ..t
                 };
             }
@@ -481,7 +377,11 @@ impl<'a> Graph<'a> {
                             false
                         };
                         if !ok {
-                            errors.push(TracingError::DependWithWrongTitle(ur, lr, title));
+                            errors.push(DependWithWrongTitle(
+                                Rc::clone(ur),
+                                Rc::clone(lr),
+                                title.into(),
+                            ));
                         }
                     } else {
                         covered.push(CoveredRequirement {
@@ -509,7 +409,11 @@ impl<'a> Graph<'a> {
                         false
                     };
                     if !ok {
-                        errors.push(TracingError::CoveredWithWrongTitle(ur, lr, title));
+                        errors.push(CoveredWithWrongTitle(
+                            Rc::clone(ur),
+                            Rc::clone(lr),
+                            title.into(),
+                        ));
                     }
                 } else {
                     covered.push(CoveredRequirement {
@@ -529,7 +433,7 @@ impl<'a> Graph<'a> {
                     },
                 );
                 if let Some(old) = old {
-                    errors.push(TracingError::DuplicateRequirement(old.req, ur));
+                    errors.push(DuplicateRequirement(Rc::clone(old.req), Rc::clone(ur)));
                 }
             }
         }
@@ -543,7 +447,7 @@ impl<'a> Graph<'a> {
         }
     }
 
-    pub fn get_parsing_errors<'r>(&'r self) -> impl Iterator<Item = &'r ParserError> {
+    pub fn get_parsing_errors<'r>(&'r self) -> impl Iterator<Item = &'r Error> {
         self.nodes
             .iter()
             .flat_map(|node| node.artefact.get_errors())
