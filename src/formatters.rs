@@ -1,15 +1,14 @@
 use serde::{Deserialize, Serialize};
 use std::{io, path::PathBuf, rc::Rc};
 
-use crate::{
-    common::{Format, Requirement},
-};
+use crate::{common::{Format, Requirement}, trace::{Graph, Tracing}};
 
 use crate::errors::Error;
 use Error::*;
 
-pub mod gnuerr;
-pub mod tags;
+mod gnuerr;
+mod tags;
+mod markdown;
 
 pub fn requirements<'r, W, R>(requiremens: R, format: &Format, writer: &mut W) -> io::Result<()>
 where
@@ -29,6 +28,16 @@ where
 {
     match format {
         Format::Tags => gnuerr::errors(errors, writer),
+        _ => todo!(),
+    }
+}
+
+pub fn tracing<'r, W>(tracing: &Tracing, graph:&Graph, format: &Format, writer: &mut W) -> io::Result<()>
+where
+    W: io::Write,
+{
+    match format {
+        Format::Markdown => markdown::tracing(tracing, graph, writer),
         _ => todo!(),
     }
 }
