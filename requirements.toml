@@ -1,42 +1,53 @@
-{
-    "artefacts": {
-        "requirements": {
-            "paths": ["doc/requirements/REQUIREMENTS.md"],
-            "parser": "markdown"
-        },
-        "design": {
-            "paths": ["doc/requirements/DESIGN.md"],
-            "parser": "markdown"
-        },
-        "formats": {
-            "paths": ["doc/requirements/FORMATS.md"],
-            "parser": "markdown"
-        },
-        "code": {
-            "paths": ["src/**/*.rs"],
-            "parser": "rust_cov_marks"
-        },
-        "unsafe_code": {
-            "paths": ["src/**/*.rs"],
-            "parser": "rust_unsafe"
-        },
-        "unsafe_reasoning": {
-            "paths": ["doc/requirements/unsafe_reasoning.md"],
-            "parser": "markdown"
-        }
+version_provider = "git"
 
-    },
-    "tracing": [
-        [ "requirements", ["design",          "formats" ]],
-        [ "design",       ["formats",         "code"]],
-        [ "formats",      ["code"             ]],
-        [ "unsafe_code",  ["unsafe_reasoning" ]]
-    ],
-    "jobs": {
-        "tags" : {
-            "query" :  "Trace",
-            "format": "Tags"
-        }
-    }
-}
+[artefact.requirements]
+paths = ["doc/requirements/REQUIREMENTS.md", ]
+parser = "markdown"
+
+[artefact.design]
+paths   = ["doc/requirements/DESIGN.md", ]
+parser  = "markdown"
+
+[artefact.formats]
+paths =  ["doc/requirements/FORMATS.md", ]
+parser = "markdown"
+
+[artefact.code]
+paths = ["src/**/*.rs"]
+parser = "rust_cov_marks"
+
+[artefact.unsafe_code]
+paths =  ["src/**/*.rs"]
+parser = "rust_unsafe"
+
+[artefact.unsafe_reasoning]
+paths = ["doc/requirements/unsafe_reasoning.md"]
+parser = "markdown"
+
+[[trace]]
+upper = "requirements"
+lower = ["design", "formats", ]
+
+[[trace]]
+upper="design"
+lower= ["formats", "code", ]
+
+[[trace]]
+upper="formats"
+lower= ["code", ]
+
+[[trace]]
+upper="unsafe_code"
+lower= ["unsafe_reasoning", ]
+
+[job.tags]
+query = "Parse"
+format = "Tags"
+file = ".tags"
+
+[job.tmx]
+query = "Trace"
+format = "Markdown"
+file = "docs/requirements.md"
+
 
