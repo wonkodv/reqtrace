@@ -18,8 +18,16 @@ pub enum Coverage<'a> {
 
 #[derive(Debug, PartialEq)]
 pub struct DerivedRequirement<'a> {
-    pub req: &'a Requirement,
+    pub req: &'a Rc<Requirement>,
     node: NodeIdx,
+}
+
+#[derive(Debug)]
+pub struct TracedRequirement {
+    pub requirement: Rc<Requirement>,
+    pub upper: Vec<Rc<Requirement>>,
+    pub lower: Vec<Rc<Requirement>>,
+    pub artefact: NodeIdx,
 }
 
 #[derive(Debug)]
@@ -39,11 +47,13 @@ pub struct UncoveredRequirement<'a> {
 #[derive(Debug, Default)]
 pub struct Tracing<'a> {
     edges: HashSet<(EdgeIdx, u16)>, // TODO: for Edge Groups not u16
-    pub covered: Vec<CoveredRequirement<'a>>,
+    pub coverages: Vec<CoveredRequirement<'a>>,
     pub uncovered: HashMap<&'a str, UncoveredRequirement<'a>>,
     pub derived: HashMap<&'a str, DerivedRequirement<'a>>,
     pub errors: Vec<Error>,
 }
+
+
 
 impl<'a> Tracing<'a> {
     pub fn add(mut self, mut other: Tracing<'a>) -> Result<Self> {
@@ -55,14 +65,14 @@ impl<'a> Tracing<'a> {
 
         self.errors.append(&mut other.errors);
 
-        for cov in &self.covered {
+        for cov in &self.coverages {
             other.derived.remove(cov.lower.id.as_str());
             other.uncovered.remove(cov.upper.id.as_str());
         }
-        for cov in other.covered {
+        for cov in other.coverages {
             self.derived.remove(cov.lower.id.as_str());
             self.uncovered.remove(cov.upper.id.as_str());
-            self.covered.push(cov);
+            self.coverages.push(cov);
         }
 
         for (id, mut uncov) in other.uncovered {
@@ -90,6 +100,41 @@ impl<'a> Tracing<'a> {
         }
 
         Ok(self)
+    }
+
+    //pub fn artefacts(&'a self, graph: &'a Graph) -> Vec<&'a Artefact> {
+    //    // TODO: result lifetime hangs on graph not self ?
+    //    let mut set: HashSet<NodeIdx> = HashSet::new();
+    //    for (e,g) in &self.edges {
+    //
+    //        let e: &Edge = e.as_ref(graph);
+    //        let from: NodeIdx = e.from;
+    //        let to: NodeIdx = e.to[*g as usize];
+    //        set.insert(from);
+    //        set.insert(to);
+    //    }
+    //
+    //    set.iter().map(|nid| &nid.as_ref(graph).artefact).collect()
+    //}
+
+    pub fn errors(&self) -> &[Error] {
+        self.errors.as_slice()
+    }
+
+    pub fn uncovered<'r> (&'r self) -> impl Iterator<Item = &'r Rc<Requirement>>  {
+        self.uncovered.iter().map(|(_,r)| r.req)
+    }
+
+    pub fn derived<'r> (&'r self) -> impl Iterator<Item = &'r Rc<Requirement>>  {
+        self.derived.iter().map(|(_,r)| r.req)
+    }
+
+    pub fn coverages<'r> (&'r self) -> impl Iterator<Item = (&'r Rc<Requirement>,&'r Rc<Requirement>)>  {
+        self.coverages.iter().map(|r| (r.upper, r.lower))
+    }
+
+    pub fn traced_requiremests(&self) -> Vec<TracedRequirement> {
+           todo!();
     }
 }
 
@@ -239,13 +284,18 @@ impl<'a> Graph<'a> {
     ///
     /// *   `upper` is the id of a previously added [`Artefact`]
     /// *   `lower` is a list of ids of previously added [`Artefact`]s
-    pub fn add_edge_group<'r>(&mut self, upper: &'r str, lower: &[&'r str]) -> Result<()> {
+    pub fn add_edge_group<'r, S: AsRef<str>, I: Iterator<Item = S>>(
+        &mut self,
+        upper: &'r str,
+        lower: I,
+    ) -> Result<()> {
         let edge_idx: EdgeIdx = self.edges.len().into();
         let mut lower_indexes: Vec<NodeIdx> = vec![];
         let upper_idx: NodeIdx = self.node_idx_by_id(upper)?;
         self.node_mut(upper_idx).edges_up.push(edge_idx);
 
         for lower_artefact_id in lower {
+            let lower_artefact_id: &str = lower_artefact_id.as_ref();
             let lower_idx: NodeIdx = self.node_idx_by_id(lower_artefact_id)?;
             lower_indexes.push(lower_idx);
             self.node_mut(lower_idx).edges_up.push(edge_idx);
@@ -308,6 +358,26 @@ impl<'a> Graph<'a> {
             }
         }
         return Err(UnknownEdge(from.into(), to.into()));
+    }
+
+    pub fn trace(&'a self) -> Result<Tracing<'a>> {
+        let mut i = self.edges.iter().enumerate().flat_map(|(edix, e)| {
+            e.to.iter()
+                .enumerate()
+                .map(move |(gidx, _g)| self.trace_edge_(edix.into(), gidx as u16))
+        });
+
+        if let Some(first_tracing) = i.next() {
+            let mut t = first_tracing;
+
+            for n in i {
+                t = t.add(n)?;
+            }
+
+            return Ok(t);
+        } else {
+            return Err(EmptyGraph);
+        }
     }
 
     pub fn trace_edge(&'a self, from: &'a str, to: &'a str) -> Tracing<'a> {
@@ -440,7 +510,7 @@ impl<'a> Graph<'a> {
 
         Tracing {
             edges,
-            covered,
+            coverages: covered,
             uncovered,
             derived,
             errors,
