@@ -550,11 +550,11 @@ mod tests {
         g.add_artefact(a_dt).unwrap();
         g.add_artefact(a_rt).unwrap();
 
-        g.add_edge_group("REQ", &["DSG", "FORMAT"]).unwrap();
-        g.add_edge_group("DSG", &["Code", "FORMAT"]).unwrap();
-        g.add_edge_group("FORMAT", &["Code"]).unwrap();
-        g.add_edge_group("DSG", &["DTests"]).unwrap();
-        g.add_edge_group("REQ", &["RTests"]).unwrap();
+        g.add_edge_group("REQ",    ["DSG",   "FORMAT"].iter()).unwrap();
+        g.add_edge_group("DSG",    ["Code", "FORMAT"].iter()).unwrap();
+        g.add_edge_group("FORMAT", ["Code"].iter()).unwrap();
+        g.add_edge_group("DSG",    ["DTests"].iter()).unwrap();
+        g.add_edge_group("REQ",    ["RTests"].iter()).unwrap();
 
         g
     }
