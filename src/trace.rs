@@ -53,8 +53,6 @@ pub struct Tracing<'a> {
     pub errors: Vec<Error>,
 }
 
-
-
 impl<'a> Tracing<'a> {
     pub fn add(mut self, mut other: Tracing<'a>) -> Result<Self> {
         assert!(self.edges.is_disjoint(&other.edges));
@@ -121,20 +119,22 @@ impl<'a> Tracing<'a> {
         self.errors.as_slice()
     }
 
-    pub fn uncovered<'r> (&'r self) -> impl Iterator<Item = &'r Rc<Requirement>>  {
-        self.uncovered.iter().map(|(_,r)| r.req)
+    pub fn uncovered<'r>(&'r self) -> impl Iterator<Item = &'r Rc<Requirement>> {
+        self.uncovered.iter().map(|(_, r)| r.req)
     }
 
-    pub fn derived<'r> (&'r self) -> impl Iterator<Item = &'r Rc<Requirement>>  {
-        self.derived.iter().map(|(_,r)| r.req)
+    pub fn derived<'r>(&'r self) -> impl Iterator<Item = &'r Rc<Requirement>> {
+        self.derived.iter().map(|(_, r)| r.req)
     }
 
-    pub fn coverages<'r> (&'r self) -> impl Iterator<Item = (&'r Rc<Requirement>,&'r Rc<Requirement>)>  {
+    pub fn coverages<'r>(
+        &'r self,
+    ) -> impl Iterator<Item = (&'r Rc<Requirement>, &'r Rc<Requirement>)> {
         self.coverages.iter().map(|r| (r.upper, r.lower))
     }
 
     pub fn traced_requiremests(&self) -> Vec<TracedRequirement> {
-           todo!();
+        todo!();
     }
 }
 
@@ -550,11 +550,11 @@ mod tests {
         g.add_artefact(a_dt).unwrap();
         g.add_artefact(a_rt).unwrap();
 
-        g.add_edge_group("REQ",    ["DSG",   "FORMAT"].iter()).unwrap();
-        g.add_edge_group("DSG",    ["Code", "FORMAT"].iter()).unwrap();
+        g.add_edge_group("REQ", ["DSG", "FORMAT"].iter()).unwrap();
+        g.add_edge_group("DSG", ["Code", "FORMAT"].iter()).unwrap();
         g.add_edge_group("FORMAT", ["Code"].iter()).unwrap();
-        g.add_edge_group("DSG",    ["DTests"].iter()).unwrap();
-        g.add_edge_group("REQ",    ["RTests"].iter()).unwrap();
+        g.add_edge_group("DSG", ["DTests"].iter()).unwrap();
+        g.add_edge_group("REQ", ["RTests"].iter()).unwrap();
 
         g
     }

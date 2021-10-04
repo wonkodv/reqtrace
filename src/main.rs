@@ -26,9 +26,9 @@ fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
     )
     .map_err(|e| {
         if let Some((line, col)) = e.line_col() {
-            format!("requirements.toml:{}:{}: TOML Error {}", line+1, col, e)
+            format!("requirements.toml:{}:{}: TOML Error {}", line + 1, col, e)
         } else {
-            format!("requirements.toml:  TOML Error {}",  e)
+            format!("requirements.toml:  TOML Error {}", e)
         }
     })?;
     let mut c = controller::Controller::new(&config);

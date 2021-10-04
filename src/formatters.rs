@@ -1,14 +1,17 @@
 use serde::{Deserialize, Serialize};
 use std::{io, path::PathBuf, rc::Rc};
 
-use crate::{common::{Format, Requirement}, trace::{Graph, Tracing}};
+use crate::{
+    common::{Format, Requirement},
+    trace::{Graph, Tracing},
+};
 
 use crate::errors::Error;
 use Error::*;
 
 mod gnuerr;
-mod tags;
 mod markdown;
+mod tags;
 
 pub fn requirements<'r, W, R>(requiremens: R, format: &Format, writer: &mut W) -> io::Result<()>
 where
@@ -32,7 +35,12 @@ where
     }
 }
 
-pub fn tracing<'r, W>(tracing: &Tracing, graph:&Graph, format: &Format, writer: &mut W) -> io::Result<()>
+pub fn tracing<'r, W>(
+    tracing: &Tracing,
+    graph: &Graph,
+    format: &Format,
+    writer: &mut W,
+) -> io::Result<()>
 where
     W: io::Write,
 {

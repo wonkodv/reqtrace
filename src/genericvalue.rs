@@ -3,7 +3,6 @@ use std::{collections::HashMap, convert::TryFrom};
 use crate::errors::Error;
 use Error::*;
 
-
 #[derive(Debug)]
 pub enum Value {
     Null,

@@ -222,9 +222,9 @@ where
         writeln!(w, "# Covered Requirements")?;
         writeln!(w, "")?;
         let mut covered: Vec<_> = tracing.coverages().collect();
-        covered.sort_unstable_by_key(|(upper,_lower)| &upper.id);
+        covered.sort_unstable_by_key(|(upper, _lower)| &upper.id);
 
-        requirements(covered.into_iter().map(|(r1,_r2)| r1), w)?;
+        requirements(covered.into_iter().map(|(r1, _r2)| r1), w)?;
     }
 
     Ok(())

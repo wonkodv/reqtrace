@@ -9,9 +9,9 @@ use std::path::Path;
 use std::path::PathBuf;
 use std::{cell::UnsafeCell, rc::Rc};
 
-use crate::parsers::{markdown::markdown_parse};
 use crate::errors::Error;
 use crate::errors::Error::*;
+use crate::parsers::markdown::markdown_parse;
 
 pub const ATTR_COVERS: &str = "Covers";
 pub const ATTR_DEPENDS: &str = "Depends";

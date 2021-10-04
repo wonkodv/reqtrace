@@ -56,10 +56,7 @@ enum State {
     CollectRefLink(String, Vec<Reference>),
 }
 
-pub fn markdown_parse<R: io::Read>(
-    reader: R,
-    path: &Path,
-) -> (Vec<Rc<Requirement>>, Vec<Error>) {
+pub fn markdown_parse<R: io::Read>(reader: R, path: &Path) -> (Vec<Rc<Requirement>>, Vec<Error>) {
     let mut context = Context {
         path,
         errors: Vec::new(),
@@ -80,9 +77,7 @@ pub fn markdown_parse<R: io::Read>(
         context.line_number += 1;
         match reader.read_line(&mut line) {
             Err(e) => {
-                context
-                    .errors
-                    .push(IoError(context.path.to_owned(), e));
+                context.errors.push(IoError(context.path.to_owned(), e));
                 break;
             }
             Ok(0) => {
@@ -341,10 +336,9 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
                 .covers
                 .is_empty()
             {
-                context.errors.push(DuplicateAttribute(
-                    context.location(),
-                    attr.to_owned(),
-                ));
+                context
+                    .errors
+                    .push(DuplicateAttribute(context.location(), attr.to_owned()));
             }
             return parse_link_attr(attr, first_line);
         }
@@ -356,10 +350,9 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
                 .depends
                 .is_empty()
             {
-                context.errors.push(DuplicateAttribute(
-                    context.location(),
-                    attr.to_owned(),
-                ));
+                context
+                    .errors
+                    .push(DuplicateAttribute(context.location(), attr.to_owned()));
             }
             return parse_link_attr(attr, first_line);
         }
@@ -372,10 +365,9 @@ fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State
                 .get(attr)
                 .is_some()
             {
-                context.errors.push(DuplicateAttribute(
-                    context.location(),
-                    attr.to_owned(),
-                ));
+                context
+                    .errors
+                    .push(DuplicateAttribute(context.location(), attr.to_owned()));
             }
             return State::CollectTextAttr(attr.to_owned(), first_line.to_owned());
         }
