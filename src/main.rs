@@ -3,47 +3,53 @@
 
 use thiserror;
 
-use std::{convert::TryInto, fmt, fs::File};
+use std::{
+    convert::TryInto,
+    fmt,
+    fs::{self, File},
+};
 
 mod common;
 mod controller;
+mod errors;
 mod formatters;
 mod genericvalue;
 mod parsers;
 mod pool;
 mod trace;
-mod errors;
 
-struct StringError(String);
-impl<T: fmt::Debug> From<T> for StringError {
-    fn from(e: T) -> Self {
-        Self(format!("{:?}", e))
-    }
-}
-
-fn try_main() -> Result<(), StringError> {
-    let f = File::open("requirements.json")?;
-
-    let config: controller::Config = serde_json::from_reader(f)?;
-
+fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
+    let config: controller::Config = toml::from_slice(
+        fs::read("requirements.toml")
+            .map_err(|e| format!("requirements.toml: {}", e))?
+            .as_slice(),
+    )
+    .map_err(|e| {
+        if let Some((line, col)) = e.line_col() {
+            format!("requirements.toml:{}:{}: TOML Error {}", line+1, col, e)
+        } else {
+            format!("requirements.toml:  TOML Error {}",  e)
+        }
+    })?;
     let mut c = controller::Controller::new(&config);
     c.load()?;
 
+    let job = c.find_job("tmx").unwrap();
+    c.run(&job)?;
     let job = c.find_job("tags").unwrap();
     c.run(&job)?;
-    //  let job = c.find_job("tmx").unwrap();
-    //  c.run(&job)?;
-    if c.success() {
-        std::process::exit(0);
-    } else {
-        std::process::exit(1);
-    }
+
+    Ok(c.success())
 }
 
 fn main() {
     let r = try_main();
-    if let Err(e) = r {
-        eprintln!("{}", e.0);
-        std::process::exit(1);
+    match r {
+        Err(e) => {
+            eprintln!("Fatal Error: {}", e);
+            std::process::exit(2);
+        }
+        Ok(true) => std::process::exit(0),
+        Ok(false) => std::process::exit(1),
     }
 }
