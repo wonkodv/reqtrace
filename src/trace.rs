@@ -16,12 +16,6 @@ pub enum Coverage<'a> {
     DependsWithTitle(&'a str),
 }
 
-#[derive(Debug, PartialEq)]
-pub struct DerivedRequirement<'a> {
-    pub req: &'a Rc<Requirement>,
-    node: NodeIdx,
-}
-
 #[derive(Debug)]
 pub struct TracedRequirement {
     pub requirement: Rc<Requirement>,
@@ -38,15 +32,23 @@ pub struct CoveredRequirement<'a> {
     edge: (EdgeIdx, u16),
 }
 
+/// Missing Coverage for Requirement along one or more edges
 #[derive(Debug)]
 pub struct UncoveredRequirement<'a> {
     pub req: &'a Rc<Requirement>,
     edges: Vec<(EdgeIdx, u16)>,
 }
 
+/// Derived Requirement in Node
+#[derive(Debug, PartialEq)]
+pub struct DerivedRequirement<'a> {
+    pub req: &'a Rc<Requirement>,
+    node: NodeIdx,
+}
+
 #[derive(Debug, Default)]
 pub struct Tracing<'a> {
-    edges: HashSet<(EdgeIdx, u16)>, // TODO: for Edge Groups not u16
+    traced_edges: HashSet<(EdgeIdx, u16)>, // TODO: for Edge Groups not u16
     pub coverages: Vec<CoveredRequirement<'a>>,
     pub uncovered: HashMap<&'a str, UncoveredRequirement<'a>>,
     pub derived: HashMap<&'a str, DerivedRequirement<'a>>,
@@ -55,10 +57,10 @@ pub struct Tracing<'a> {
 
 impl<'a> Tracing<'a> {
     pub fn add(mut self, mut other: Tracing<'a>) -> Result<Self> {
-        assert!(self.edges.is_disjoint(&other.edges));
+        assert!(self.traced_edges.is_disjoint(&other.traced_edges));
 
-        for e in other.edges {
-            self.edges.insert(e);
+        for e in other.traced_edges {
+            self.traced_edges.insert(e);
         }
 
         self.errors.append(&mut other.errors);
@@ -164,6 +166,7 @@ impl EdgeIdx {
     }
 }
 
+/// Index of a Node in the Graphs list of nodes. Used instead of a pointer
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub struct NodeIdx(u16);
 
@@ -194,12 +197,15 @@ impl NodeIdx {
     }
 }
 
+/// Not really an Edge but a fork. Has one start and multiple ends.
+/// All Requirements in the start node must be covered by a requirement in one of the ends
 #[derive(Debug)]
 struct Edge {
     from: NodeIdx,
     to: Vec<NodeIdx>,
 }
 
+/// An artefact in the graph
 #[derive(Debug)]
 struct Node<'a> {
     artefact: Artefact<'a>,
@@ -207,6 +213,7 @@ struct Node<'a> {
     edges_down: Vec<EdgeIdx>,
 }
 
+/// The tracing Graph
 #[derive(Debug)]
 pub struct Graph<'a> {
     nodes: Vec<Node<'a>>,
@@ -408,15 +415,11 @@ impl<'a> Graph<'a> {
         let upper_artefact = &upper_node_idx.as_ref(self).artefact;
         let lower_artefact = &lower_node_idx.as_ref(self).artefact;
 
-        let mut edges: HashSet<(EdgeIdx, u16)> = HashSet::new();
-        edges.insert((edge, group));
-        let mut covered = Vec::new();
-        let mut uncovered = HashMap::new();
-        let mut errors = Vec::new();
-        let mut derived: HashMap<_, _> = lower_artefact
-            .get_requirements()
-            .iter()
-            .map(|r| {
+        let mut tracing = Tracing::default();
+        tracing.traced_edges.insert((edge, group));
+        tracing
+            .derived
+            .extend(lower_artefact.get_requirements().iter().map(|r| {
                 (
                     r.id.as_str(),
                     DerivedRequirement {
@@ -424,17 +427,16 @@ impl<'a> Graph<'a> {
                         node: lower_node_idx,
                     },
                 )
-            })
-            .collect();
+            }));
 
         for ur in upper_artefact.get_requirements() {
             let mut is_covered = false;
             for depends in &ur.depends {
                 if let Some(lr) = lower_artefact.get_requirement_with_id(&depends.id) {
                     is_covered = true;
-                    derived.remove(lr.id.as_str());
+                    tracing.derived.remove(lr.id.as_str());
                     if let Some(title) = depends.title.as_ref() {
-                        covered.push(CoveredRequirement {
+                        tracing.coverages.push(CoveredRequirement {
                             upper: ur,
                             lower: lr,
                             edge: (edge, group),
@@ -447,14 +449,14 @@ impl<'a> Graph<'a> {
                             false
                         };
                         if !ok {
-                            errors.push(DependWithWrongTitle(
+                            tracing.errors.push(DependWithWrongTitle(
                                 Rc::clone(ur),
                                 Rc::clone(lr),
                                 title.into(),
                             ));
                         }
                     } else {
-                        covered.push(CoveredRequirement {
+                        tracing.coverages.push(CoveredRequirement {
                             upper: ur,
                             lower: lr,
                             edge: (edge, group),
@@ -465,9 +467,9 @@ impl<'a> Graph<'a> {
             }
             for (lr, title) in lower_artefact.get_requirements_that_cover(&ur.id) {
                 is_covered = true;
-                derived.remove(lr.id.as_str());
+                tracing.derived.remove(lr.id.as_str());
                 if let Some(title) = title {
-                    covered.push(CoveredRequirement {
+                    tracing.coverages.push(CoveredRequirement {
                         upper: ur,
                         lower: lr,
                         coverage: Coverage::CoveredWithTitle(title),
@@ -479,14 +481,14 @@ impl<'a> Graph<'a> {
                         false
                     };
                     if !ok {
-                        errors.push(CoveredWithWrongTitle(
+                        tracing.errors.push(CoveredWithWrongTitle(
                             Rc::clone(ur),
                             Rc::clone(lr),
                             title.into(),
                         ));
                     }
                 } else {
-                    covered.push(CoveredRequirement {
+                    tracing.coverages.push(CoveredRequirement {
                         upper: ur,
                         lower: lr,
                         coverage: Coverage::Covered,
@@ -495,7 +497,7 @@ impl<'a> Graph<'a> {
                 }
             }
             if !is_covered {
-                let old = uncovered.insert(
+                let old = tracing.uncovered.insert(
                     ur.id.as_str(),
                     UncoveredRequirement {
                         req: ur,
@@ -503,18 +505,12 @@ impl<'a> Graph<'a> {
                     },
                 );
                 if let Some(old) = old {
-                    errors.push(DuplicateRequirement(Rc::clone(old.req), Rc::clone(ur)));
+                    tracing.errors.push(DuplicateRequirement(Rc::clone(old.req), Rc::clone(ur)));
                 }
             }
         }
 
-        Tracing {
-            edges,
-            coverages: covered,
-            uncovered,
-            derived,
-            errors,
-        }
+        tracing
     }
 
     pub fn get_parsing_errors<'r>(&'r self) -> impl Iterator<Item = &'r Error> {
