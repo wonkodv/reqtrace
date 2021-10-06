@@ -1,11 +1,11 @@
 use super::super::common::*;
 use std::{collections::HashSet, io, rc::Rc};
 
-use crate::{
-    errors::Error,
-    trace::{Graph, Tracing},
-};
+use crate::graph::Graph;
+use crate::{errors::Error, trace::Tracing};
 use Error::*;
+
+use crate::trace::TracedRequirement;
 
 pub fn requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
 where
@@ -44,6 +44,52 @@ where
         }
 
         for (k, v) in &req.attributes {
+            let v = v.trim();
+            if !v.is_empty() {
+                writeln!(w, "\n{}:", k)?;
+                writeln!(w, "{}", v)?;
+            }
+        }
+    }
+    Ok(())
+}
+
+pub fn traced_requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
+where
+    W: io::Write,
+    R: Iterator<Item = &'r TracedRequirement<'r>>,
+{
+    for req in reqs {
+        writeln!(
+            w,
+            "\n## {}: {}\n\nOrigin: `{}:{}`",
+            req.requirement.id,
+            req.requirement.title.as_ref().unwrap_or(&"".to_owned()),
+            req.requirement.location.file.display(),
+            req.requirement.location.line
+        )?;
+
+        if !req.upper.is_empty() {
+            writeln!(w, "\nCovers:")?;
+            for (fork, coverage) in &req.upper {
+                writeln!(w, "*   {:?}", fork,)?;
+                for cov in coverage {
+                    writeln!(w, "    *   {}", cov.upper_requirement.id,)?;
+                }
+            }
+        }
+
+        if !req.lower.is_empty() {
+            writeln!(w, "\nCovered By:")?;
+            for (fork, coverage) in &req.lower {
+                writeln!(w, "*   {:?}", fork,)?;
+                for cov in coverage {
+                    writeln!(w, "    *   {}", cov.lower_requirement.id,)?;
+                }
+            }
+        }
+
+        for (k, v) in &req.requirement.attributes {
             let v = v.trim();
             if !v.is_empty() {
                 writeln!(w, "\n{}:", k)?;
@@ -97,7 +143,7 @@ where
         UnknownArtefact(a) => {
             writeln!(w, "Unknown Artefact: {}", a)?;
         }
-        UnknownEdge(from, to) => {
+        UnknownFork(from, to) => {
             writeln!(w, "Unknown Edge {} -> {}", from, to)?;
         }
         CoveredWithWrongTitle(r1, r2, wrong_title) => {
@@ -159,7 +205,7 @@ where
                     header_written = true;
                     writeln!(w, "")?;
                     writeln!(w, "")?;
-                    writeln!(w, "# Artefacts Errors")?;
+                    writeln!(w, "# Artefact Errors")?;
                     writeln!(w, "")?;
                 }
                 w.write_all(&s)?;
@@ -188,7 +234,7 @@ where
     {
         // Uncovered
         let mut uncovered: Vec<_> = tracing.uncovered().collect();
-        uncovered.sort_unstable_by_key(|r| &r.id);
+        uncovered.sort_unstable_by_key(|r| &r.requirement.id);
 
         if !uncovered.is_empty() {
             writeln!(w, "")?;
@@ -196,14 +242,16 @@ where
             writeln!(w, "# Uncovered Requirements")?;
             writeln!(w, "")?;
 
-            requirements(uncovered.into_iter(), w)?;
+            for r in uncovered {
+                writeln!(w, "*   {}", r.requirement.id)?;
+            }
         }
     }
 
     {
         // Derived
         let mut derived: Vec<_> = tracing.derived().collect();
-        derived.sort_unstable_by_key(|r| &r.id);
+        derived.sort_unstable_by_key(|r| &r.requirement.id);
 
         if !derived.is_empty() {
             writeln!(w, "")?;
@@ -211,7 +259,9 @@ where
             writeln!(w, "# Derived Requirements")?;
             writeln!(w, "")?;
 
-            requirements(derived.into_iter(), w)?;
+            for r in derived {
+                writeln!(w, "*   {}", r.requirement.id)?;
+            }
         }
     }
 
@@ -221,10 +271,9 @@ where
         writeln!(w, "")?;
         writeln!(w, "# Covered Requirements")?;
         writeln!(w, "")?;
-        let mut covered: Vec<_> = tracing.coverages().collect();
-        covered.sort_unstable_by_key(|(upper, _lower)| &upper.id);
-
-        requirements(covered.into_iter().map(|(r1, _r2)| r1), w)?;
+        let mut covered: Vec<_> = tracing.requirements().iter().collect();
+        covered.sort_unstable_by_key(|req| &req.requirement.id);
+        traced_requirements(covered.into_iter(), w)?;
     }
 
     Ok(())

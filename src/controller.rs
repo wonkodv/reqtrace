@@ -1,7 +1,8 @@
 use crate::{
     common::{Artefact, ArtefactConfig, Format},
     formatters,
-    trace::Graph,
+    graph::Graph,
+    trace::Tracing,
 };
 use serde::{Deserialize, Serialize};
 use std::{
@@ -123,7 +124,7 @@ impl<'c> Controller<'c> {
             }
 
             for tc in &self.config.trace {
-                graph.add_edge_group(&tc.upper, tc.lower.iter())?;
+                graph.add_fork(&tc.upper, tc.lower.iter())?;
             }
 
             self.graph = Some(graph);
@@ -152,7 +153,7 @@ impl<'c> Controller<'c> {
 
         let write_res = match &job.query {
             Query::Trace => {
-                let t = graph.trace()?;
+                let t = Tracing::from_graph(graph);
                 if !t.errors().is_empty() {
                     success = false;
                 }

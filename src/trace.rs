@@ -1,42 +1,257 @@
 use std::{
-    collections::{HashMap, HashSet},
+    collections::{BTreeSet, HashMap, HashSet},
     error, fmt,
     rc::Rc,
 };
 
 use super::common::*;
 use crate::errors::{Error, Result};
+use crate::graph::*;
 use Error::*;
 
+use std::collections::hash_map::Entry::{Occupied, Vacant};
+
+#[derive(Debug, Copy, Clone)]
+pub struct Coverage<'a> {
+    pub upper_requirement: &'a Rc<Requirement>,
+    pub lower_requirement: &'a Rc<Requirement>,
+    pub kind: CoverageKind<'a>,
+    tine: Tine,
+}
+
 #[derive(Debug)]
-pub enum Coverage<'a> {
+pub struct TracedRequirement<'a> {
+    pub requirement: &'a Rc<Requirement>,
+    pub upper: HashMap<Fork, Vec<Coverage<'a>>>,
+    pub lower: HashMap<Fork, Vec<Coverage<'a>>>,
+    node: NodeIdx,
+}
+
+type TracedReqIdx = usize;
+
+/// Tracing info beeing build.
+///
+/// When adding a Fork (all tines at once) add all lower Reqs to
+/// `derived`, add all  reqs to `requirements`. for all upper, find a lower that covers or is
+/// depent on. if not found, add to uncovered
+#[derive(Debug, Default)]
+pub struct Tracing<'a> {
+    requirements: Vec<TracedRequirement<'a>>,
+    requirements_by_id: HashMap<&'a str, TracedReqIdx>,
+    uncovered: HashSet<TracedReqIdx>,
+    derived: HashSet<TracedReqIdx>,
+    errors: Vec<Error>,
+}
+
+impl<'a> Tracing<'a> {
+    pub fn from_graph(graph: &'a Graph<'a>) -> Self {
+        let mut trace = Tracing::default();
+
+        for fork in graph.iter_forks() {
+            trace.add_fork(fork, graph)
+        }
+
+        trace
+    }
+
+    pub fn errors(&self) -> &[Error] {
+        self.errors.as_slice()
+    }
+
+    pub fn uncovered<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'a>> {
+        self.uncovered
+            .iter()
+            .map(move |idx| &self.requirements[*idx])
+    }
+
+    pub fn derived<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'a>> {
+        self.derived.iter().map(move |idx| &self.requirements[*idx])
+    }
+
+    pub fn requirements(&self) -> &[TracedRequirement<'a>] {
+        self.requirements.as_slice()
+    }
+
+    pub fn requirement_by_id<'s>(&'s self, id: &str) -> Option<&'s TracedRequirement> {
+        self.requirements.get(*self.requirements_by_id.get(id)?)
+    }
+}
+
+/// Computing Tracing Data
+impl<'a> Tracing<'a> {
+    /// Compute Tracing for one upper and some lower artefacts
+    fn add_fork(&mut self, fork: Fork, graph: &'a Graph<'a>) {
+        let upper_artefact = &fork.from(graph).artefact(graph);
+
+        for tine in fork.tines(graph) {
+            let lower_artefact = &tine.to(graph).artefact(graph);
+
+            for r in lower_artefact.get_requirements() {
+                self.add_lower_req(r, tine, graph)
+            }
+        }
+
+        for upper_requirement in upper_artefact.get_requirements() {
+            let upper_requirement_idx = self.add_upper_req(upper_requirement, fork, graph);
+            let mut is_covered = false;
+            for depends in &upper_requirement.depends {
+                for tine in fork.tines(graph) {
+                    let lower_artefact = &tine.to(graph).artefact(graph);
+
+                    if let Some(lower_requirement) =
+                        lower_artefact.get_requirement_with_id(&depends.id)
+                    {
+                        is_covered = true;
+                        let kind = if let Some(title) = depends.title.as_ref() {
+                            CoverageKind::DependsWithTitle(&title)
+                        } else {
+                            CoverageKind::Depends
+                        };
+                        let cov = Coverage {
+                            upper_requirement,
+                            lower_requirement,
+                            tine,
+                            kind,
+                        };
+
+                        self.add_coverage(cov);
+                    }
+                }
+            }
+            for tine in fork.tines(graph) {
+                let lower_artefact = &tine.to(graph).artefact(graph);
+
+                for (lower_requirement, referenced_title) in
+                    lower_artefact.get_requirements_that_cover(&upper_requirement.id)
+                {
+                    is_covered = true;
+                    let kind = if let Some(title) = referenced_title.as_ref() {
+                        CoverageKind::CoveredWithTitle(&title)
+                    } else {
+                        CoverageKind::Covered
+                    };
+                    let cov = Coverage {
+                        upper_requirement,
+                        lower_requirement,
+                        tine,
+                        kind,
+                    };
+
+                    self.add_coverage(cov);
+                }
+            }
+            if !is_covered {
+                self.uncovered.insert(upper_requirement_idx);
+            }
+        }
+    }
+
+    fn add_lower_req(&mut self, req: &'a Rc<Requirement>, tine: Tine, graph: &Graph) {
+        let (added, idx) = self.add_req(req, tine.to(graph));
+        if added {
+            self.derived.insert(idx);
+        }
+        self.requirements
+            .get_mut(idx)
+            .unwrap()
+            .upper
+            .insert(tine.fork, vec![]);
+    }
+
+    fn add_upper_req(
+        &mut self,
+        req: &'a Rc<Requirement>,
+        fork: Fork,
+        graph: &Graph,
+    ) -> TracedReqIdx {
+        let (_added, idx) = self.add_req(req, fork.from(graph));
+
+        self.requirements
+            .get_mut(idx)
+            .unwrap()
+            .lower
+            .insert(fork, vec![]);
+
+        idx
+    }
+
+    /// Ensure Requirement is in `requirements`.
+    fn add_req(&mut self, req: &'a Rc<Requirement>, node: NodeIdx) -> (bool, TracedReqIdx) {
+        match self.requirements_by_id.entry(&req.id) {
+            Occupied(e) => {
+                let already_there_idx = *e.get();
+                let already_there = &self.requirements.get_mut(already_there_idx).unwrap();
+                if req != already_there.requirement {
+                    self.errors.push(DuplicateRequirement(
+                        Rc::clone(already_there.requirement),
+                        Rc::clone(req),
+                    ));
+                }
+                assert_eq!(already_there.node, node);
+
+                (false, already_there_idx)
+            }
+            Vacant(e) => {
+                let t = TracedRequirement {
+                    requirement: req,
+                    upper: Default::default(),
+                    lower: Default::default(),
+                    node,
+                };
+                let idx = self.requirements.len();
+                self.requirements.push(t);
+                e.insert(idx);
+
+                (true, idx)
+            }
+        }
+    }
+
+    /// Record coverage info for upper and lower requirement.
+    /// remove lower from `derived`
+    /// check that coverage with title used correct title
+    fn add_coverage(&mut self, cov: Coverage<'a>) {
+        let lower_idx = self.requirements_by_id[cov.lower_requirement.id.as_str()];
+        self.derived.remove(&lower_idx);
+
+        self.requirements
+            .get_mut(lower_idx)
+            .unwrap()
+            .upper
+            .get_mut(&cov.tine.fork)
+            .unwrap()
+            .push(cov);
+
+        let upper_idx = self.requirements_by_id[cov.upper_requirement.id.as_str()];
+        self.requirements
+            .get_mut(upper_idx)
+            .unwrap()
+            .lower
+            .get_mut(&cov.tine.fork)
+            .unwrap()
+            .push(cov);
+
+        match cov.kind {
+            CoverageKind::CoveredWithTitle(title) => {
+                if Some(title) != cov.upper_requirement.title.as_deref() {
+                    self.errors.push(DependWithWrongTitle(
+                        Rc::clone(cov.upper_requirement),
+                        Rc::clone(cov.lower_requirement),
+                        title.into(),
+                    ));
+                }
+            }
+            CoverageKind::DependsWithTitle(_) => todo!(),
+            _ => {}
+        }
+    }
+}
+#[derive(Debug, Copy, Clone)]
+pub enum CoverageKind<'a> {
     Covered,
     CoveredWithTitle(&'a str),
     Depends,
     DependsWithTitle(&'a str),
-}
-
-#[derive(Debug)]
-pub struct TracedRequirement {
-    pub requirement: Rc<Requirement>,
-    pub upper: Vec<Rc<Requirement>>,
-    pub lower: Vec<Rc<Requirement>>,
-    pub artefact: NodeIdx,
-}
-
-#[derive(Debug)]
-pub struct CoveredRequirement<'a> {
-    pub upper: &'a Rc<Requirement>,
-    pub lower: &'a Rc<Requirement>,
-    pub coverage: Coverage<'a>,
-    edge: (EdgeIdx, u16),
-}
-
-/// Missing Coverage for Requirement along one or more edges
-#[derive(Debug)]
-pub struct UncoveredRequirement<'a> {
-    pub req: &'a Rc<Requirement>,
-    edges: Vec<(EdgeIdx, u16)>,
 }
 
 /// Derived Requirement in Node
@@ -46,527 +261,7 @@ pub struct DerivedRequirement<'a> {
     node: NodeIdx,
 }
 
-#[derive(Debug, Default)]
-pub struct Tracing<'a> {
-    traced_edges: HashSet<(EdgeIdx, u16)>, // TODO: for Edge Groups not u16
-    pub coverages: Vec<CoveredRequirement<'a>>,
-    pub uncovered: HashMap<&'a str, UncoveredRequirement<'a>>,
-    pub derived: HashMap<&'a str, DerivedRequirement<'a>>,
-    pub errors: Vec<Error>,
-}
-
-impl<'a> Tracing<'a> {
-    pub fn add(mut self, mut other: Tracing<'a>) -> Result<Self> {
-        assert!(self.traced_edges.is_disjoint(&other.traced_edges));
-
-        for e in other.traced_edges {
-            self.traced_edges.insert(e);
-        }
-
-        self.errors.append(&mut other.errors);
-
-        for cov in &self.coverages {
-            other.derived.remove(cov.lower.id.as_str());
-            other.uncovered.remove(cov.upper.id.as_str());
-        }
-        for cov in other.coverages {
-            self.derived.remove(cov.lower.id.as_str());
-            self.uncovered.remove(cov.upper.id.as_str());
-            self.coverages.push(cov);
-        }
-
-        for (id, mut uncov) in other.uncovered {
-            match self.uncovered.entry(id) {
-                std::collections::hash_map::Entry::Vacant(e) => {
-                    e.insert(uncov);
-                }
-                std::collections::hash_map::Entry::Occupied(mut e) => {
-                    let old: &mut UncoveredRequirement = e.get_mut();
-                    if uncov.req != old.req {
-                        // if IDs equal, REQs should be equal
-                        self.errors.push(DuplicateRequirement(
-                            Rc::clone(uncov.req),
-                            Rc::clone(old.req),
-                        ));
-                    } else {
-                        old.edges.append(&mut uncov.edges);
-                    }
-                }
-            }
-        }
-
-        for (id, der) in other.derived {
-            self.derived.insert(id, der);
-        }
-
-        Ok(self)
-    }
-
-    //pub fn artefacts(&'a self, graph: &'a Graph) -> Vec<&'a Artefact> {
-    //    // TODO: result lifetime hangs on graph not self ?
-    //    let mut set: HashSet<NodeIdx> = HashSet::new();
-    //    for (e,g) in &self.edges {
-    //
-    //        let e: &Edge = e.as_ref(graph);
-    //        let from: NodeIdx = e.from;
-    //        let to: NodeIdx = e.to[*g as usize];
-    //        set.insert(from);
-    //        set.insert(to);
-    //    }
-    //
-    //    set.iter().map(|nid| &nid.as_ref(graph).artefact).collect()
-    //}
-
-    pub fn errors(&self) -> &[Error] {
-        self.errors.as_slice()
-    }
-
-    pub fn uncovered<'r>(&'r self) -> impl Iterator<Item = &'r Rc<Requirement>> {
-        self.uncovered.iter().map(|(_, r)| r.req)
-    }
-
-    pub fn derived<'r>(&'r self) -> impl Iterator<Item = &'r Rc<Requirement>> {
-        self.derived.iter().map(|(_, r)| r.req)
-    }
-
-    pub fn coverages<'r>(
-        &'r self,
-    ) -> impl Iterator<Item = (&'r Rc<Requirement>, &'r Rc<Requirement>)> {
-        self.coverages.iter().map(|r| (r.upper, r.lower))
-    }
-
-    pub fn traced_requiremests(&self) -> Vec<TracedRequirement> {
-        todo!();
-    }
-}
-
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
-pub struct EdgeIdx(u16);
-impl Into<usize> for EdgeIdx {
-    fn into(self) -> usize {
-        self.0.into()
-    }
-}
-impl From<usize> for EdgeIdx {
-    fn from(val: usize) -> Self {
-        Self(val as u16)
-    }
-}
-
-impl EdgeIdx {
-    fn as_ref<'a>(self, graph: &'a Graph) -> &'a Edge {
-        let i: usize = self.into();
-        &graph.edges[i]
-    }
-    fn to<'a>(self, graph: &'a Graph) -> &'a [NodeIdx] {
-        self.as_ref(graph).to.as_slice()
-    }
-    fn from(self, graph: &Graph) -> NodeIdx {
-        self.as_ref(graph).from
-    }
-}
-
-/// Index of a Node in the Graphs list of nodes. Used instead of a pointer
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
-pub struct NodeIdx(u16);
-
-impl From<usize> for NodeIdx {
-    fn from(val: usize) -> Self {
-        Self(val as u16)
-    }
-}
-impl Into<usize> for NodeIdx {
-    fn into(self) -> usize {
-        self.0.into()
-    }
-}
-impl NodeIdx {
-    fn as_mut<'a>(self, graph: &'a mut Graph<'a>) -> &'a mut Node {
-        let i: usize = self.into();
-        graph.nodes.get_mut(i).unwrap()
-    }
-    fn as_ref<'a>(self, graph: &'a Graph<'a>) -> &'a Node {
-        let i: usize = self.into();
-        &graph.nodes[i]
-    }
-    fn lower<'a>(self, graph: &'a Graph<'a>) -> &'a [EdgeIdx] {
-        self.as_ref(graph).edges_up.as_slice()
-    }
-    fn upper<'a>(self, graph: &'a Graph<'a>) -> &'a [EdgeIdx] {
-        self.as_ref(graph).edges_down.as_slice()
-    }
-}
-
-/// Not really an Edge but a fork. Has one start and multiple ends.
-/// All Requirements in the start node must be covered by a requirement in one of the ends
-#[derive(Debug)]
-struct Edge {
-    from: NodeIdx,
-    to: Vec<NodeIdx>,
-}
-
-/// An artefact in the graph
-#[derive(Debug)]
-struct Node<'a> {
-    artefact: Artefact<'a>,
-    edges_up: Vec<EdgeIdx>,
-    edges_down: Vec<EdgeIdx>,
-}
-
-/// The tracing Graph
-#[derive(Debug)]
-pub struct Graph<'a> {
-    nodes: Vec<Node<'a>>,
-    edges: Vec<Edge>,
-
-    artefact_id_to_node: HashMap<&'a str, NodeIdx>,
-}
-
-impl<'a> Graph<'a> {
-    pub fn new() -> Self {
-        let nodes = Vec::new();
-        let edges = Vec::new();
-        let artefact_id_to_node = HashMap::new();
-        Self {
-            nodes,
-            edges,
-            artefact_id_to_node,
-        }
-    }
-
-    fn node_mut(&mut self, idx: NodeIdx) -> &mut Node<'a> {
-        let idx: usize = idx.into();
-        self.nodes.get_mut(idx).unwrap()
-    }
-    fn node_ref(&self, idx: NodeIdx) -> &Node<'a> {
-        let idx: usize = idx.into();
-        self.nodes.get(idx).unwrap()
-    }
-
-    fn edge_ref(&self, idx: EdgeIdx) -> &Edge {
-        let idx: usize = idx.into();
-        self.edges.get(idx).unwrap()
-    }
-
-    fn node_idx_by_id(&self, id: &str) -> Result<NodeIdx> {
-        return Ok(*self
-            .artefact_id_to_node
-            .get(id)
-            .ok_or(UnknownArtefact(id.into()))?);
-    }
-
-    /// Add [`Artefact`] to the graph
-    ///
-    /// # Errors
-    /// Returns [`DuplicateArtefactId`] if an artefact with the same id was
-    /// already registered
-    pub fn add_artefact(&mut self, artefact: Artefact<'a>) -> Result<()> {
-        let node_id: NodeIdx = self.nodes.len().into();
-
-        let e = self.artefact_id_to_node.entry(artefact.id);
-        match e {
-            std::collections::hash_map::Entry::Occupied(_) => {
-                return Err(DuplicateArtefact(artefact.id.into()));
-            }
-            std::collections::hash_map::Entry::Vacant(e) => {
-                e.insert(node_id);
-            }
-        }
-
-        let node = Node {
-            artefact,
-            edges_up: Vec::new(),
-            edges_down: Vec::new(),
-        };
-        self.nodes.push(node);
-        Ok(())
-    }
-
-    /// Add an EdgeGroup.
-    ///
-    /// Every Requirement in the artefact `upper` must be covered by a requirement in one of the
-    /// artefacts of `lower`.
-    ///
-    /// # Arguments
-    ///
-    /// *   `upper` is the id of a previously added [`Artefact`]
-    /// *   `lower` is a list of ids of previously added [`Artefact`]s
-    pub fn add_edge_group<'r, S: AsRef<str>, I: Iterator<Item = S>>(
-        &mut self,
-        upper: &'r str,
-        lower: I,
-    ) -> Result<()> {
-        let edge_idx: EdgeIdx = self.edges.len().into();
-        let mut lower_indexes: Vec<NodeIdx> = vec![];
-        let upper_idx: NodeIdx = self.node_idx_by_id(upper)?;
-        self.node_mut(upper_idx).edges_up.push(edge_idx);
-
-        for lower_artefact_id in lower {
-            let lower_artefact_id: &str = lower_artefact_id.as_ref();
-            let lower_idx: NodeIdx = self.node_idx_by_id(lower_artefact_id)?;
-            lower_indexes.push(lower_idx);
-            self.node_mut(lower_idx).edges_up.push(edge_idx);
-        }
-
-        self.edges.push(Edge {
-            from: upper_idx,
-            to: lower_indexes,
-        });
-        Ok(())
-    }
-
-    pub fn get_artefact<'i>(&'a self, id: &'i str) -> Result<&'a Artefact<'a>> {
-        let node_idx = self.node_idx_by_id(id)?;
-        let node = self.node_ref(node_idx);
-        Ok(&node.artefact)
-    }
-
-    pub fn get_upper<'i>(&'a self, id: &'i str) -> Result<Vec<&'a Artefact<'a>>> {
-        let node_idx = self.node_idx_by_id(id)?;
-        let node = self.node_ref(node_idx);
-        let r = node
-            .edges_up
-            .iter()
-            .map(|edge_idx| self.edge_ref(*edge_idx).from)
-            .map(|node_idx| &self.node_ref(node_idx).artefact)
-            .collect();
-        Ok(r)
-    }
-
-    pub fn get_lower<'i>(&'a self, id: &'i str) -> Result<Vec<Vec<&'a Artefact<'a>>>> {
-        let node_idx = self.node_idx_by_id(id)?;
-        let node = self.node_ref(node_idx);
-        let r = node
-            .edges_up
-            .iter()
-            .map(|edge_idx| {
-                self.edge_ref(*edge_idx)
-                    .to
-                    .iter()
-                    .map(|node_idx| &self.node_ref(*node_idx).artefact)
-                    .collect()
-            })
-            .collect();
-        Ok(r)
-    }
-
-    fn find_edge_from_to(&self, from: &'a str, to: &'a str) -> Result<(EdgeIdx, u16)> {
-        let root_node = if let Some(n) = self.artefact_id_to_node.get(from) {
-            *n
-        } else {
-            return Err(UnknownArtefact(from.into()));
-        };
-
-        for edge in root_node.lower(self) {
-            for (group, lower_node) in edge.to(self).iter().enumerate() {
-                if lower_node.as_ref(self).artefact.id == to {
-                    return Ok((*edge, group as u16));
-                }
-            }
-        }
-        return Err(UnknownEdge(from.into(), to.into()));
-    }
-
-    pub fn trace(&'a self) -> Result<Tracing<'a>> {
-        let mut i = self.edges.iter().enumerate().flat_map(|(edix, e)| {
-            e.to.iter()
-                .enumerate()
-                .map(move |(gidx, _g)| self.trace_edge_(edix.into(), gidx as u16))
-        });
-
-        if let Some(first_tracing) = i.next() {
-            let mut t = first_tracing;
-
-            for n in i {
-                t = t.add(n)?;
-            }
-
-            return Ok(t);
-        } else {
-            return Err(EmptyGraph);
-        }
-    }
-
-    pub fn trace_edge(&'a self, from: &'a str, to: &'a str) -> Tracing<'a> {
-        match self.find_edge_from_to(from, to) {
-            Err(_) => {
-                let t = Tracing::default();
-                return Tracing {
-                    errors: vec![UnknownArtefact(from.into())],
-                    ..t
-                };
-            }
-            Ok((e, g)) => self.trace_edge_(e, g),
-        }
-    }
-
-    fn trace_edge_(&'a self, edge: EdgeIdx, group: u16) -> Tracing<'a> {
-        let upper_node_idx = edge.from(self);
-        let lower_node_idx = edge.to(self)[group as usize];
-
-        //TODO
-        //  {
-        //      let u : usize = upper_node_idx.into();
-        //      self.nodes.get_mut(u).unwrap().artefact.load();
-        //      let l:usize = lower_node_idx.into();
-        //      self.nodes.get_mut(l).unwrap().artefact.load();
-        //  }
-
-        let upper_artefact = &upper_node_idx.as_ref(self).artefact;
-        let lower_artefact = &lower_node_idx.as_ref(self).artefact;
-
-        let mut tracing = Tracing::default();
-        tracing.traced_edges.insert((edge, group));
-        tracing
-            .derived
-            .extend(lower_artefact.get_requirements().iter().map(|r| {
-                (
-                    r.id.as_str(),
-                    DerivedRequirement {
-                        req: r,
-                        node: lower_node_idx,
-                    },
-                )
-            }));
-
-        for ur in upper_artefact.get_requirements() {
-            let mut is_covered = false;
-            for depends in &ur.depends {
-                if let Some(lr) = lower_artefact.get_requirement_with_id(&depends.id) {
-                    is_covered = true;
-                    tracing.derived.remove(lr.id.as_str());
-                    if let Some(title) = depends.title.as_ref() {
-                        tracing.coverages.push(CoveredRequirement {
-                            upper: ur,
-                            lower: lr,
-                            edge: (edge, group),
-                            coverage: Coverage::DependsWithTitle(&title),
-                        });
-
-                        let ok = if let Some(upper_title) = &ur.title {
-                            upper_title == title
-                        } else {
-                            false
-                        };
-                        if !ok {
-                            tracing.errors.push(DependWithWrongTitle(
-                                Rc::clone(ur),
-                                Rc::clone(lr),
-                                title.into(),
-                            ));
-                        }
-                    } else {
-                        tracing.coverages.push(CoveredRequirement {
-                            upper: ur,
-                            lower: lr,
-                            edge: (edge, group),
-                            coverage: Coverage::Depends,
-                        });
-                    }
-                }
-            }
-            for (lr, title) in lower_artefact.get_requirements_that_cover(&ur.id) {
-                is_covered = true;
-                tracing.derived.remove(lr.id.as_str());
-                if let Some(title) = title {
-                    tracing.coverages.push(CoveredRequirement {
-                        upper: ur,
-                        lower: lr,
-                        coverage: Coverage::CoveredWithTitle(title),
-                        edge: (edge, group),
-                    });
-                    let ok = if let Some(upper_title) = &ur.title {
-                        upper_title == title
-                    } else {
-                        false
-                    };
-                    if !ok {
-                        tracing.errors.push(CoveredWithWrongTitle(
-                            Rc::clone(ur),
-                            Rc::clone(lr),
-                            title.into(),
-                        ));
-                    }
-                } else {
-                    tracing.coverages.push(CoveredRequirement {
-                        upper: ur,
-                        lower: lr,
-                        coverage: Coverage::Covered,
-                        edge: (edge, group),
-                    });
-                }
-            }
-            if !is_covered {
-                let old = tracing.uncovered.insert(
-                    ur.id.as_str(),
-                    UncoveredRequirement {
-                        req: ur,
-                        edges: vec![(edge, group)],
-                    },
-                );
-                if let Some(old) = old {
-                    tracing.errors.push(DuplicateRequirement(Rc::clone(old.req), Rc::clone(ur)));
-                }
-            }
-        }
-
-        tracing
-    }
-
-    pub fn get_parsing_errors<'r>(&'r self) -> impl Iterator<Item = &'r Error> {
-        self.nodes
-            .iter()
-            .flat_map(|node| node.artefact.get_errors())
-    }
-
-    pub fn get_all_reqs<'r>(&'r self) -> impl Iterator<Item = &'r Rc<Requirement>> {
-        self.nodes
-            .iter()
-            .flat_map(|node| node.artefact.get_requirements())
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    fn make_graph<'a>() -> Graph<'a> {
-        let a_req = Artefact::new("REQ", ArtefactConfig::PrePopulated(vec![]));
-        let a_dsg = Artefact::new("DSG", ArtefactConfig::PrePopulated(vec![]));
-        let a_fmt = Artefact::new("FORMAT", ArtefactConfig::PrePopulated(vec![]));
-        let a_code = Artefact::new("Code", ArtefactConfig::PrePopulated(vec![]));
-        let a_dt = Artefact::new("DTests", ArtefactConfig::PrePopulated(vec![]));
-        let a_rt = Artefact::new("RTests", ArtefactConfig::PrePopulated(vec![]));
-
-        let mut g = Graph::new();
-        g.add_artefact(a_req).unwrap();
-        g.add_artefact(a_dsg).unwrap();
-        g.add_artefact(a_fmt).unwrap();
-        g.add_artefact(a_code).unwrap();
-        g.add_artefact(a_dt).unwrap();
-        g.add_artefact(a_rt).unwrap();
-
-        g.add_edge_group("REQ", ["DSG", "FORMAT"].iter()).unwrap();
-        g.add_edge_group("DSG", ["Code", "FORMAT"].iter()).unwrap();
-        g.add_edge_group("FORMAT", ["Code"].iter()).unwrap();
-        g.add_edge_group("DSG", ["DTests"].iter()).unwrap();
-        g.add_edge_group("REQ", ["RTests"].iter()).unwrap();
-
-        g
-    }
-
-    #[test]
-    fn test_graph_traversal() {
-        let g = make_graph();
-
-        let r = g.get_upper("Code").unwrap();
-        assert_eq!(r.len(), 2);
-        assert_eq!("DSG", r[0].id);
-        assert_eq!("FORMAT", r[1].id);
-        let r = g.get_lower("REQ").unwrap();
-        assert_eq!(r.len(), 2);
-        assert_eq!("DSG", r[0][0].id);
-        assert_eq!("FORMAT", r[0][1].id);
-        assert_eq!("RTests", r[1][0].id);
-    }
 }

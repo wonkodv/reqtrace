@@ -3,7 +3,8 @@ use std::{io, path::PathBuf, rc::Rc};
 
 use crate::{
     common::{Format, Requirement},
-    trace::{Graph, Tracing},
+    graph::Graph,
+    trace::Tracing,
 };
 
 use crate::errors::Error;

@@ -34,7 +34,7 @@ pub enum Error {
     UnknownArtefact(String),
 
     #[error("Unknown Edge {0} {1} ")]
-    UnknownEdge(String, String),
+    UnknownFork(String, String),
 
     #[error("Requirement Covered with Wrong Title {0} {1} {2}")]
     CoveredWithWrongTitle(Rc<Requirement>, Rc<Requirement>, String),
