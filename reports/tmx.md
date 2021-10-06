@@ -1,0 +1,962 @@
+
+
+# Artefact Errors
+
+doc/requirements/REQUIREMENTS.md:114: Expected an Attribute line like `Comment:`
+doc/requirements/REQUIREMENTS.md:70: Duplicate Requirement REQ_ARTEFACT_PARSE_ID previously seen at doc/requirements/REQUIREMENTS.md:65
+doc/requirements/FORMATS.md:39: Expected a Reference like `* REQ_ID: Title`
+doc/requirements/FORMATS.md:72: Expected an Attribute line like `Comment:`
+doc/requirements/FORMATS.md:145: Expected an Attribute line like `Comment:`
+doc/requirements/DESIGN.md:119: Duplicate Requirement DSG_JSON_IMPORT previously seen at doc/requirements/DESIGN.md:113
+
+
+# Uncovered Requirements
+
+*   DSG_ART_CACHING
+*   DSG_ART_CONFIG
+*   DSG_ART_EXTERNAL_PARSER
+*   DSG_ART_FINGERPRINT
+*   DSG_ART_PARSE
+*   DSG_CACHE_FINGERPRINT
+*   DSG_EXPORT_DATA
+*   DSG_EXPORT_ERRORS
+*   DSG_EXPORT_FORMAT
+*   DSG_EXPORT_FORMAT_JSON
+*   DSG_EXPORT_FORMAT_MARKDOWN
+*   DSG_EXPORT_FORMAT_TEX
+*   DSG_JSON_CACHE
+*   DSG_JSON_CACHE_SORT
+*   DSG_JSON_IMPORT
+*   DSG_REQ_FIELDS
+*   FMT_FILE_ENCODINGS
+*   FMT_ID_v2
+*   FMT_JSON
+*   FMT_MD
+*   FMT_MD_ATTRIBUTES
+*   FMT_MD_DESC
+*   FMT_MD_DESC_HEADINGS
+*   FMT_MD_OPT_PREFIX
+*   FMT_MD_START
+*   FMT_MONO
+*   FMT_RS_UNSAFE
+*   FMT_UNICODE_NORMALIZE
+*   REQ_ARTEFACT_PARSE_ID
+*   REQ_CONFIG
+*   REQ_CONFIGURABLE_OUTPUT
+*   REQ_ERROR
+*   REQ_FAST
+*   REQ_HUMAN_READABLE
+*   REQ_INSTALL
+*   REQ_MACHINE_FRIENDLY
+*   REQ_MATCH_ID
+*   REQ_QUERIES
+*   REQ_UNIQUE_ID_v2
+*   REQ_USER_FRIENDLY
+*   REQ_VAL_COVERAGE
+*   REQ_VAL_GRAPH
+*   REQ_VAL_TITLE
+*   UC_ANALYZE_IMPACT
+*   UC_ANALYZE_SINGLE
+*   UC_CACHE_STATUS
+*   UC_PARSE
+*   UC_TRACE
+*   UC_VALIDATE
+
+
+# Derived Requirements
+
+*   DSG_ART_CACHING
+*   DSG_ART_CONFIG
+*   DSG_ART_EXTERNAL_PARSER
+*   DSG_ART_PARSE
+*   DSG_CACHE_FINGERPRINT
+*   DSG_EXPORT_DATA
+*   DSG_EXPORT_ERRORS
+*   DSG_EXPORT_FORMAT
+*   DSG_EXPORT_FORMAT_JSON
+*   DSG_EXPORT_FORMAT_MARKDOWN
+*   DSG_EXPORT_FORMAT_TEX
+*   DSG_JSON_CACHE_SORT
+*   FMT_ID_v2
+*   FMT_MD_ATTRIBUTES
+*   FMT_MD_DESC
+*   FMT_MD_DESC_HEADINGS
+*   FMT_MD_OPT_PREFIX
+*   FMT_MD_START
+*   SAFE_STRING_VAULT_LIFETIME
+*   SAFE_STRING_VAULT_SET
+
+
+# Covered Requirements
+
+
+## DSG_ART_CACHING: Cache Parsing Results
+
+Origin: `doc/requirements/DESIGN.md:46`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+Artefact manages a cache of already parsed requirements and only
+
+## DSG_ART_CONFIG: Artefact Configuration Fields
+
+Origin: `doc/requirements/DESIGN.md:63`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+*   ID
+*   paths:  List of Paths or pattern with which to find the files
+*   parser:   id of a parsing strategy, e.g. `Markdown Requirements`, `Rust
+    Coverage Marks`, `External`
+*   parser arguments: Object that is passed to the parser
+*   caching: boolean, whether to cache or parse on every access
+
+## DSG_ART_EXTERNAL_PARSER: External Artefact Parser
+
+Origin: `doc/requirements/DESIGN.md:50`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+References:
+*   FMT_JSON
+
+Description:
+If files can not be parsed by this tool, an external program is invoked which
+writes  the requirements into a temporary file or to its `stdout` stream in the
+JSON format, or as Text which is then processed by the regex parsers.
+
+## DSG_ART_FINGERPRINT: Fingerprint of Artefacts
+
+Origin: `doc/requirements/DESIGN.md:133`
+
+Covers:
+*   Fork(0)
+    *   REQ_NO_OVERCACHING
+
+Covered By:
+*   Fork(1)
+
+Comment:
+Since the version is included in the fingerprint, the details can be changed
+easily.
+
+Description:
+The fingerprint of an artefact is computed by computing a hash over:
+*   hash over the parsing-type of the artefact
+*   for all files that make up an Artefact:
+    *   The sha256 of the file if it is small
+    *   The modification time as and size if it is large
+
+## DSG_ART_PARSE: Artefact Parsing
+
+Origin: `doc/requirements/DESIGN.md:42`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+Artefact parses the requirements in the files it represents.
+
+## DSG_CACHE_FINGERPRINT: Fingerprint in Caches
+
+Origin: `doc/requirements/DESIGN.md:125`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+The fingerprint which indicates whether a cache computed from:
+*   The tool's version
+*   The hash of all artefacts relevant to this cache
+
+## DSG_EXPORT_DATA: Export data to stdout
+
+Origin: `doc/requirements/DESIGN.md:156`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+Print results to stdout in a chosen format
+
+## DSG_EXPORT_ERRORS: Export errors to stderr
+
+Origin: `doc/requirements/DESIGN.md:160`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+Print Errors to stdout in a chosen format
+
+## DSG_EXPORT_FORMAT: Allow Selecting the Export Format
+
+Origin: `doc/requirements/DESIGN.md:164`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+The format in which errors and results are written to the out streams can be
+chosen.
+
+## DSG_EXPORT_FORMAT_JSON: Export to JSON
+
+Origin: `doc/requirements/DESIGN.md:171`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+Errors, Requirements, Status, Tracing Info can be exported as JSON
+
+## DSG_EXPORT_FORMAT_MARKDOWN: Export to Markdown
+
+Origin: `doc/requirements/DESIGN.md:175`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+Errors, Requirements, Status, Tracing Info can be exported as a useful
+standalone Markdown File
+
+## DSG_EXPORT_FORMAT_TEX: Export to TEX
+
+Origin: `doc/requirements/DESIGN.md:180`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Todo:
+*   Define the exact format of each object
+
+Tag:
+*   TODO
+
+Description:
+Errors, Requirements, Status, Tracing Info can be exported as tex macro calls,
+do that the output can be used via `\include{}` in a tex project that defines
+the relevant macros.
+
+## DSG_JSON_CACHE: JSON for Storing State
+
+Origin: `doc/requirements/DESIGN.md:107`
+
+Covers:
+*   Fork(0)
+    *   REQ_VCS
+
+Covered By:
+*   Fork(1)
+
+Description:
+JSON is used to store parsing results and computed coverage links
+
+## DSG_JSON_CACHE_SORT: JSON Cache sorted
+
+Origin: `doc/requirements/DESIGN.md:103`
+
+Covers:
+*   Fork(0)
+
+Covered By:
+*   Fork(1)
+
+Description:
+Sort lists, smaller diff
+
+## DSG_JSON_IMPORT: JSON for Importing Requirements
+
+Origin: `doc/requirements/DESIGN.md:113`
+
+Covers:
+*   Fork(0)
+    *   REQ_VCS
+    *   REQ_VCS
+    *   REQ_EXTENSIBLE
+    *   REQ_MACHINE_READABLE
+
+Covered By:
+*   Fork(1)
+
+Description:
+Artefacts which can not be parsed by the tool are
+
+## DSG_REQ_FIELDS: Requirement Fields
+
+Origin: `doc/requirements/DESIGN.md:8`
+
+Covers:
+*   Fork(0)
+    *   REQ_UP
+    *   REQ_DOWN
+    *   REQ_DELEGATION
+
+Covered By:
+*   Fork(1)
+
+Description:
+Attributes of a requirement that this tool requires:
+*   ID: a short string that uniquely identifies this requirement
+
+*   Title:  Text that briefly summarizes this requirement (on line)
+*   Description: Text that gives detailed description
+*   Coverage: List of requirement IDs that are covered by this one
+*   Dependencies: List of requirement IDs which cover this one
+*   Tags:   List of Strings that can be used to categorize requirements
+
+*   Location:   Artefact that defines this requirement and the location inside
+    the artefact where it is defined
+
+
+*   Comment: Text with even more details, further reading, etc. that has a lower
+    priority than Description which may be excluded from reports
+
+## FMT_FILE_ENCODINGS: Handle File Encodings
+
+Origin: `doc/requirements/FORMATS.md:48`
+
+Covers:
+*   Fork(0)
+    *   REQ_UNICODE_SAFE
+*   Fork(1)
+
+Covered By:
+*   Fork(2)
+
+Description:
+When not otherwise specified, Text Files are read as UTF-8 and encoding errors are
+replaced.
+
+## FMT_ID_v2: Requirement Identifier
+
+Origin: `doc/requirements/FORMATS.md:29`
+
+Covers:
+*   Fork(0)
+*   Fork(1)
+
+Covered By:
+*   Fork(2)
+
+Description:
+Requirement identifier consist of letters, digits and underscore, specifically
+they match the Regular Expression
+
+## FMT_JSON: JSON Requirements Format
+
+Origin: `doc/requirements/FORMATS.md:222`
+
+Covers:
+*   Fork(1)
+*   Fork(0)
+    *   REQ_FORMATS
+
+Covered By:
+*   Fork(2)
+
+## FMT_MD: Markdown File Format
+
+Origin: `doc/requirements/FORMATS.md:81`
+
+Covers:
+*   Fork(1)
+*   Fork(0)
+    *   REQ_FORMATS
+
+Covered By:
+*   Fork(2)
+
+Description:
+The artefact is a Markdown file with freely chosen layout.  A Requirement is in
+a heading line with requirement ID and title, followed by description and other
+attributes.
+
+## FMT_MD_ATTRIBUTES: Attributes
+
+Origin: `doc/requirements/FORMATS.md:121`
+
+Covers:
+*   Fork(1)
+*   Fork(0)
+
+Covered By:
+*   Fork(2)
+
+Description:
+Attributes are parsed from paragraphs that start with a single word followed by
+a colon. Once the first Attribute Paragraph is encountered, the Parser will add
+to the Attribute Value until:
+
+*   The start of another Attribute Paragraph
+*   A Heading the same level or less. This ends the Requirement.
+
+*   Text: can span multiple Paragraphs
+*   Short List: Comma separated list of IDs
+*   Long list:  one paragraph that only consists of bullet points
+
+the same format as requirement IDs.
+
+long lists, where each item starts with a requirement id, optionally followed by
+a colon and the title of the referenced requirement.
+
+## FMT_MD_DESC: Description
+
+Origin: `doc/requirements/FORMATS.md:103`
+
+Covers:
+*   Fork(0)
+*   Fork(1)
+
+Covered By:
+*   Fork(2)
+
+Description:
+The paragraphs following the start of the requirement make up the description of
+the requirement.
+
+*   The Start of another Requirement.
+*   The start of an Attribute Paragraph
+*   A Heading the same level or less. This ends the Requirement.
+
+## FMT_MD_DESC_HEADINGS: Heading Level in Description is adjusted
+
+Origin: `doc/requirements/FORMATS.md:115`
+
+Covers:
+*   Fork(0)
+*   Fork(1)
+
+Covered By:
+*   Fork(2)
+
+Description:
+Headings with a lower level than the starting one, that do not start a nested
+requirement are added to the description. Their heading level is adjusted by
+removing as many leading `#` as the requirement had
+
+## FMT_MD_OPT_PREFIX: List of Prefixes
+
+Origin: `doc/requirements/FORMATS.md:180`
+
+Covers:
+*   Fork(1)
+*   Fork(0)
+
+Covered By:
+*   Fork(2)
+
+Description:
+A List of strings can be passed, which is used to prevent the parser from
+creating unintended requirements from headlines which accidentally have the
+right form.
+
+normal headings, if the identifier of the would be requirement does not start
+with one of the list of prefixes. If the list is empty, no prefix matching is
+performed and all matching lines lead to a requirement.
+
+## FMT_MD_START: Requirement Start
+
+Origin: `doc/requirements/FORMATS.md:98`
+
+Covers:
+*   Fork(1)
+*   Fork(0)
+
+Covered By:
+*   Fork(2)
+
+Description:
+A Requirement starts with a `#` heading of any level that has the form `ID:
+TITLE`.
+
+## FMT_MONO: Mono Requirement File
+
+Origin: `doc/requirements/FORMATS.md:197`
+
+Covers:
+*   Fork(1)
+*   Fork(0)
+    *   REQ_FORMATS
+
+Covered By:
+*   Fork(2)
+
+Description:
+Artefact of type MonoRequirement emit exactly one Requirement with the following
+attributes:
+*   Id: The stem of the file path (i.e. `README.md`)
+*   Title:  The first line containing Word-Characters with all non-word
+    characters trimmed of both ends of the line. (Allowing Markdown heading,
+    C style comments, ...)
+*   Depends: Every Requirement-Id that immediately follows a fat arrow (`=>`).
+
+Comment:
+See this projects README for examples.
+
+## FMT_RS_UNSAFE: Unique Requirement for each unsafe keyword
+
+Origin: `doc/requirements/FORMATS.md:242`
+
+Covers:
+*   Fork(0)
+    *   REQ_FORMATS
+*   Fork(1)
+
+Covered By:
+*   Fork(2)
+
+Description:
+Each occurrence of `unsafe` in rust code leads to a unique requirement.
+The Id of the requirement is given by a comment immediately following the keyword
+
+
+have to have a different ID.
+
+## FMT_UNICODE_NORMALIZE: Normalize Unicode during read
+
+Origin: `doc/requirements/FORMATS.md:57`
+
+Covers:
+*   Fork(1)
+*   Fork(0)
+    *   REQ_UNICODE_SAFE
+
+Covered By:
+*   Fork(2)
+
+Comment:
+See [Rust RFC 2457](https://rust-lang.github.io/rfcs/2457-non-ascii-idents.html) on the topic.
+
+Description:
+All input strings are unicode normalizes as
+[NFC](https://www.unicode.org/reports/tr15/#Normalization_Forms_Table).
+This means that
+*   All output derived from input will be NFC normalized
+*   Identifier Matching can be done on the byte level
+
+## REQ_ARTEFACT_PARSE_ID: Parse Artefact Identifier
+
+Origin: `doc/requirements/REQUIREMENTS.md:65`
+
+Covered By:
+*   Fork(0)
+
+Description:
+An identifier can be parsed from the line, for example a version string, or
+an expanded RCS Keyword (like `$Id: /path/to/artefact.md$42$`).
+
+## REQ_CONFIG: Simple Configuration in One File
+
+Origin: `doc/requirements/REQUIREMENTS.md:148`
+
+Covered By:
+*   Fork(0)
+
+Description:
+All Configuration is stored in a single file using a common Format that is
+editable for humans and machine readable.
+
+## REQ_CONFIGURABLE_OUTPUT: The Output Format is Configurable
+
+Origin: `doc/requirements/REQUIREMENTS.md:40`
+
+Covered By:
+*   Fork(0)
+
+Description:
+The Format in which Information is returned is configurable
+
+## REQ_DELEGATION: Coverage Delegation
+
+Origin: `doc/requirements/REQUIREMENTS.md:85`
+
+Covered By:
+*   Fork(0)
+    *   DSG_REQ_FIELDS
+
+Description:
+A Requirement delegates to another requirement in the same artefact or to
+a lower requirement by including the id of the lower one in
+its Dependencies attribute.
+
+requirement.
+
+## REQ_DOWN: Downward Coverage
+
+Origin: `doc/requirements/REQUIREMENTS.md:79`
+
+Covered By:
+*   Fork(0)
+    *   DSG_REQ_FIELDS
+
+Description:
+A Requirement is covered by a lower one by including the id of the lower one in
+its Dependencies attribute.
+
+## REQ_ERROR: Useful Parser Errors
+
+Origin: `doc/requirements/REQUIREMENTS.md:94`
+
+Covered By:
+*   Fork(0)
+
+Description:
+Parser Errors give the precise location and type of the problem, for example filename with
+line number of the artefact.
+
+## REQ_EXTENSIBLE: Extensible Parsing
+
+Origin: `doc/requirements/REQUIREMENTS.md:35`
+
+Covered By:
+*   Fork(0)
+    *   DSG_JSON_IMPORT
+
+Description:
+If internal parsers are not able to work on an Artefact, external tools can be
+incorporated.
+
+## REQ_FAST: Fast
+
+Origin: `doc/requirements/REQUIREMENTS.md:160`
+
+Covered By:
+*   Fork(0)
+
+Description:
+Show results quickly, especially if only a small query is given.
+
+## REQ_FORMATS: Well defined Formats
+
+Origin: `doc/requirements/REQUIREMENTS.md:52`
+
+Covered By:
+*   Fork(0)
+    *   FMT_MD
+    *   FMT_MONO
+    *   FMT_JSON
+    *   FMT_RS_UNSAFE
+
+Description:
+To work with external programs as parsers or to process the output, the formats used must be well
+defined.
+
+## REQ_HUMAN_READABLE: Human Readable Output
+
+Origin: `doc/requirements/REQUIREMENTS.md:48`
+
+Covered By:
+*   Fork(0)
+
+Description:
+Information can be returned in a format that can easily be read by humans
+
+## REQ_INSTALL: Easy to install
+
+Origin: `doc/requirements/REQUIREMENTS.md:30`
+
+Covered By:
+*   Fork(0)
+
+Description:
+no package management, libraries, dependencies
+
+## REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
+
+Origin: `doc/requirements/REQUIREMENTS.md:19`
+
+Covered By:
+*   Fork(0)
+
+Description:
+The tool should be easy to include in automated work flows, IDEs, CI Pipelines
+etc.
+
+## REQ_MACHINE_READABLE: Machine Readable Output
+
+Origin: `doc/requirements/REQUIREMENTS.md:44`
+
+Covered By:
+*   Fork(0)
+    *   DSG_JSON_IMPORT
+
+Description:
+Information can be returned in a format that can easily be read by other tools
+
+## REQ_MATCH_ID: Match by ID
+
+Origin: `doc/requirements/REQUIREMENTS.md:100`
+
+Covered By:
+*   Fork(0)
+
+Description:
+A Requirements covers another by its ID.
+
+## REQ_NO_OVERCACHING: No over-caching
+
+Origin: `doc/requirements/REQUIREMENTS.md:164`
+
+Covered By:
+*   Fork(0)
+    *   DSG_ART_FINGERPRINT
+
+Description:
+If the user has to flush the cache, this is a bug in the Program.
+
+## REQ_QUERIES: Configurable Information Granularity
+
+Origin: `doc/requirements/REQUIREMENTS.md:154`
+
+Covered By:
+*   Fork(0)
+
+Description:
+Instead of returning every detail about the Tracing, specific parts of
+information can be queried, so that the output is as slim as possible and only
+relevant information is computed.
+
+## REQ_UNICODE_SAFE: Sane Handling of unicode
+
+Origin: `doc/requirements/REQUIREMENTS.md:57`
+
+Covered By:
+*   Fork(0)
+    *   FMT_FILE_ENCODINGS
+    *   FMT_UNICODE_NORMALIZE
+
+Description:
+Some Characters can be represented by multiple different sequences of Unicode
+Code Points. Also Unicode Encodings like UTF-8 can encode the same Codepoint
+as different bytes.
+
+## REQ_UNIQUE_ID_v2: Requirements have a unique Identifier
+
+Origin: `doc/requirements/REQUIREMENTS.md:7`
+
+Covered By:
+*   Fork(0)
+
+Description:
+Each requirement must be identifiable by a short, unique string.
+All unicode symbols must be possible, though parsers may restrict this
+
+History:
+*   v2: Unicode
+
+## REQ_UP: Upward Coverage
+
+Origin: `doc/requirements/REQUIREMENTS.md:74`
+
+Covered By:
+*   Fork(0)
+    *   DSG_REQ_FIELDS
+
+Description:
+A Requirement covers a higher one by including the id of the higer one in its
+Coverage attribute.
+
+## REQ_USER_FRIENDLY: Simple to use Interface
+
+Origin: `doc/requirements/REQUIREMENTS.md:15`
+
+Covered By:
+*   Fork(0)
+
+Description:
+The User Interface should be slim and straight forward.
+
+## REQ_VAL_COVERAGE: Validate Coverage
+
+Origin: `doc/requirements/REQUIREMENTS.md:135`
+
+Covered By:
+*   Fork(0)
+
+Description:
+An error is reported for a Coverage claim for which no Requirement exists in the
+relevant artefacts.
+
+## REQ_VAL_GRAPH: Validate Graph
+
+Origin: `doc/requirements/REQUIREMENTS.md:140`
+
+Covered By:
+*   Fork(0)
+
+Description:
+An error is reported for an invalid tracing graph. A Tracing Graph is invalid,
+if:
+*   there is a loop
+*   a Node has no edges leading in or out
+
+## REQ_VAL_TITLE: Check matching title
+
+Origin: `doc/requirements/REQUIREMENTS.md:104`
+
+Covered By:
+*   Fork(0)
+
+Description:
+A Coverage link that is established by requirement ID can be verified by
+comparing the requirement's title.
+
+Comment:
+This is only really necessary where the requirement ids are not informative.
+For example a Requirement with the id `DSG_123` and the title `Delete Everything`
+could be covered by a line of code like:
+
+## REQ_VCS: Allow Version Control
+
+Origin: `doc/requirements/REQUIREMENTS.md:24`
+
+Covered By:
+*   Fork(0)
+    *   DSG_JSON_CACHE
+    *   DSG_JSON_IMPORT
+    *   DSG_JSON_IMPORT
+
+Description:
+All Config, state, intermediate results are in Plain Text based formats that are usable in
+Version Control and produce usable diff.
+
+## SAFE_STRING_VAULT_LIFETIME: String Vault Return Value Life time
+
+Origin: `doc/requirements/unsafe_reasoning.md:18`
+
+Covers:
+*   Fork(3)
+
+Description:
+`StringVault.keep` and `StringVault.keep_cloned` `transmute` the lifetime of
+a `&str` from the local function to that of the `&StringVault`.
+
+
+StringVault.
+
+## SAFE_STRING_VAULT_SET: String Vault Mutability
+
+Origin: `doc/requirements/unsafe_reasoning.md:5`
+
+Covers:
+*   Fork(3)
+
+Description:
+`StringVault.keep` and `StringVault.keep_cloned` take an immutable reference and access its `set` attribute mutably.
+
+
+only one thread can reference a `StringVault` at a time.
+
+## UC_ANALYZE_IMPACT: Analyze Dependencies of Requirement
+
+Origin: `doc/requirements/REQUIREMENTS.md:204`
+
+Covered By:
+*   Fork(0)
+
+Description:
+For a Requirement, look up all requirements that it depends upon transitively.
+
+Parameters:
+*   Requirement Id
+
+## UC_ANALYZE_SINGLE: Analyze a Requirement
+
+Origin: `doc/requirements/REQUIREMENTS.md:196`
+
+Covered By:
+*   Fork(0)
+
+Parameters:
+*   Requirement Id
+
+Description:
+For a Requirement, look up what it covers, and where it is covered itself and
+where coverage is missing.
+
+## UC_CACHE_STATUS: Query Parsing State
+
+Origin: `doc/requirements/REQUIREMENTS.md:176`
+
+Covered By:
+*   Fork(0)
+
+Description:
+All artefacts are checked for changes since last parsing
+
+## UC_PARSE: Parse Artefacts
+
+Origin: `doc/requirements/REQUIREMENTS.md:180`
+
+Covered By:
+*   Fork(0)
+
+Description:
+A Set of artefacts are parsed, reporting all requirements and errors.
+
+Parameters:
+*   Artefacts to Parse
+
+## UC_TRACE: Compute Tracing
+
+Origin: `doc/requirements/REQUIREMENTS.md:188`
+
+Covered By:
+*   Fork(0)
+
+Description:
+All requirements are matched up and down the Tracing Graph. The results are
+stored in a file and bad tracing is reported.
+
+Parameters:
+*   Tracing Report
+
+## UC_VALIDATE: Validate Configuration
+
+Origin: `doc/requirements/REQUIREMENTS.md:172`
+
+Covered By:
+*   Fork(0)
+
+Description:
+The configuration is loaded, the Tracing Graph validated. This Step should be fast.
