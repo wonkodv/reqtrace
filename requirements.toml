@@ -48,6 +48,6 @@ file = ".tags"
 [job.tmx]
 query = "Trace"
 format = "Markdown"
-file = "reports/requirements.md"
+file = "reports/tmx.md"
 
 

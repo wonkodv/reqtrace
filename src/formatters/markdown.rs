@@ -5,7 +5,30 @@ use crate::graph::Graph;
 use crate::{errors::Error, trace::Tracing};
 use Error::*;
 
+use lazy_static::lazy_static;
+use regex::{Captures, Regex};
+
 use crate::trace::TracedRequirement;
+
+lazy_static! {
+    static ref REPLACE: Regex = Regex::new(r"[^A-Za-z0-9_-]").unwrap(); // TODO: is this defined somewhere?
+}
+
+fn requirement_link(req: &Rc<Requirement>) -> String {
+    if let Some(title) = &req.title {
+        let replaced = format!("{}-{}", req.id, title);
+        let replaced = replaced.to_lowercase();
+        let replaced = REPLACE.replace_all(&replaced, "-");
+
+        format!("[{}](#{} \"{}\")", req.id, replaced, title)
+    } else {
+        let replaced = &req.id;
+        let replaced = replaced.to_lowercase();
+        let replaced = REPLACE.replace_all(&replaced, "-");
+
+        format!("[{}](#{})", req.id, replaced)
+    }
+}
 
 pub fn requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
 where
@@ -74,7 +97,7 @@ where
             for (fork, coverage) in &req.upper {
                 writeln!(w, "*   {:?}", fork,)?;
                 for cov in coverage {
-                    writeln!(w, "    *   {}", cov.upper_requirement.id,)?;
+                    writeln!(w, "    *   {}", requirement_link(cov.upper_requirement))?;
                 }
             }
         }
@@ -84,7 +107,7 @@ where
             for (fork, coverage) in &req.lower {
                 writeln!(w, "*   {:?}", fork,)?;
                 for cov in coverage {
-                    writeln!(w, "    *   {}", cov.lower_requirement.id,)?;
+                    writeln!(w, "    *   {}", requirement_link(cov.lower_requirement))?;
                 }
             }
         }
@@ -182,9 +205,11 @@ where
     R: Iterator<Item = &'r Error>,
 {
     writeln!(w, "# Errors")?;
+    writeln!(w, "```")?;
     for e in errors {
         err(e, w)?;
     }
+    writeln!(w, "```")?;
 
     Ok(())
 }
@@ -193,41 +218,40 @@ pub fn tracing<'r, W>(tracing: &Tracing, g: &Graph, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
-    let mut set: HashSet<Vec<u8>> = HashSet::new();
     {
-        // Parsing Errors
-        let mut header_written = false;
-        for e in g.get_parsing_errors() {
-            let mut s = Vec::new();
-            err(e, &mut s)?;
-            if set.insert(s.clone()) {
-                if !header_written {
-                    header_written = true;
-                    writeln!(w, "")?;
-                    writeln!(w, "")?;
-                    writeln!(w, "# Artefact Errors")?;
-                    writeln!(w, "")?;
-                }
-                w.write_all(&s)?;
+        let mut errors = g.get_parsing_errors().peekable();
+        if errors.peek().is_some() {
+            writeln!(w, "")?;
+            writeln!(w, "")?;
+            writeln!(w, "# Artefact Errors")?;
+            writeln!(w, "")?;
+            writeln!(w, "```")?;
+
+            for e in errors {
+                err(e, w)?;
             }
+            writeln!(w, "```")?;
         }
     }
+
     {
-        // Tracing Errors
-        let mut header_written = false;
-        for e in tracing.errors() {
-            let mut s = Vec::new();
-            err(e, &mut s)?;
-            if set.insert(s.clone()) {
-                if !header_written {
-                    header_written = true;
-                    writeln!(w, "")?;
-                    writeln!(w, "")?;
-                    writeln!(w, "# Tracing Errors")?;
-                    writeln!(w, "")?;
+        let errors = tracing.errors();
+        if !errors.is_empty() {
+            writeln!(w, "")?;
+            writeln!(w, "")?;
+            writeln!(w, "# Tracing Errors")?;
+            writeln!(w, "")?;
+            writeln!(w, "```")?;
+
+            let mut set: HashSet<Vec<u8>> = HashSet::new();
+            for e in errors {
+                let mut s = Vec::new();
+                err(e, &mut s)?;
+                if set.insert(s.clone()) {
+                    w.write_all(&s)?;
                 }
-                w.write_all(&s)?;
             }
+            writeln!(w, "```")?;
         }
     }
 
@@ -243,7 +267,7 @@ where
             writeln!(w, "")?;
 
             for r in uncovered {
-                writeln!(w, "*   {}", r.requirement.id)?;
+                writeln!(w, "*   {}", requirement_link(r.requirement))?;
             }
         }
     }
@@ -260,7 +284,7 @@ where
             writeln!(w, "")?;
 
             for r in derived {
-                writeln!(w, "*   {}", r.requirement.id)?;
+                writeln!(w, "*   {}", requirement_link(r.requirement))?;
             }
         }
     }
