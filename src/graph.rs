@@ -74,10 +74,10 @@ impl NodeIdx {
         &graph.nodes[i]
     }
     pub fn lower<'a>(self, graph: &'a Graph<'a>) -> &'a [Fork] {
-        self.as_ref(graph).forks_up.as_slice()
+        self.as_ref(graph).forks_down.as_slice()
     }
     pub fn upper<'a>(self, graph: &'a Graph<'a>) -> &'a [Fork] {
-        self.as_ref(graph).forks_down.as_slice()
+        self.as_ref(graph).forks_up.as_slice()
     }
     pub fn artefact<'a>(self, graph: &'a Graph<'a>) -> &'a Artefact<'a> {
         &self.as_ref(graph).artefact
@@ -125,6 +125,7 @@ impl<'a> Graph<'a> {
         let idx: usize = idx.into();
         self.nodes.get_mut(idx).unwrap()
     }
+
     fn node_ref(&self, idx: NodeIdx) -> &Node<'a> {
         let idx: usize = idx.into();
         self.nodes.get(idx).unwrap()
@@ -186,7 +187,7 @@ impl<'a> Graph<'a> {
         let fork_idx: Fork = self.forks.len().into();
         let mut lower_indexes: Vec<NodeIdx> = vec![];
         let upper_idx: NodeIdx = self.node_idx_by_id(upper)?;
-        self.node_mut(upper_idx).forks_up.push(fork_idx);
+        self.node_mut(upper_idx).forks_down.push(fork_idx);
 
         for lower_artefact_id in lower {
             let lower_artefact_id: &str = lower_artefact_id.as_ref();
@@ -208,45 +209,22 @@ impl<'a> Graph<'a> {
         Ok(&node.artefact)
     }
 
-    pub fn get_upper<'i>(&'a self, id: &'i str) -> Result<Vec<&'a Artefact<'a>>> {
-        let node_idx = self.node_idx_by_id(id)?;
-        let node = self.node_ref(node_idx);
-        let r = node
-            .forks_up
-            .iter()
-            .map(|fork_idx| self.fork_ref(*fork_idx).from)
-            .map(|node_idx| &self.node_ref(node_idx).artefact)
-            .collect();
-        Ok(r)
-    }
-
-    pub fn get_lower<'i>(&'a self, id: &'i str) -> Result<Vec<Vec<&'a Artefact<'a>>>> {
-        let node_idx = self.node_idx_by_id(id)?;
-        let node = self.node_ref(node_idx);
-        let r = node
-            .forks_up
-            .iter()
-            .map(|fork_idx| {
-                self.fork_ref(*fork_idx)
-                    .to
-                    .iter()
-                    .map(|node_idx| &self.node_ref(*node_idx).artefact)
-                    .collect()
-            })
-            .collect();
-        Ok(r)
-    }
-
     pub fn find_tine_from_to(&self, from: &'a str, to: &'a str) -> Result<Tine> {
-        let root_node = if let Some(n) = self.artefact_id_to_node.get(from) {
+        let from_nid = if let Some(n) = self.artefact_id_to_node.get(from) {
             *n
         } else {
             return Err(Error::UnknownArtefact(from.into()));
         };
 
-        for fork in root_node.lower(self) {
+        let to_nid = if let Some(n) = self.artefact_id_to_node.get(to) {
+            *n
+        } else {
+            return Err(Error::UnknownArtefact(to.into()));
+        };
+
+        for fork in from_nid.lower(self) {
             for tine in fork.tines(self) {
-                if tine.to(self).artefact(self).id == to {
+                if tine.to(self) == to_nid {
                     return Ok(tine);
                 }
             }
@@ -296,27 +274,61 @@ mod tests {
         g.add_artefact(a_dt).unwrap();
         g.add_artefact(a_rt).unwrap();
 
-        g.add_edge_group("REQ", ["DSG", "FORMAT"].iter()).unwrap();
-        g.add_edge_group("DSG", ["Code", "FORMAT"].iter()).unwrap();
-        g.add_edge_group("FORMAT", ["Code"].iter()).unwrap();
-        g.add_edge_group("DSG", ["DTests"].iter()).unwrap();
-        g.add_edge_group("REQ", ["RTests"].iter()).unwrap();
+        g.add_fork("REQ", ["DSG", "FORMAT"].iter()).unwrap();
+        g.add_fork("DSG", ["Code", "FORMAT"].iter()).unwrap();
+        g.add_fork("FORMAT", ["Code"].iter()).unwrap();
+        g.add_fork("DSG", ["DTests"].iter()).unwrap();
+        g.add_fork("REQ", ["RTests"].iter()).unwrap();
 
         g
     }
 
     #[test]
-    fn test_graph_traversal() {
-        let g = make_graph();
+    fn node_upper() {
+        let g = &make_graph();
 
-        let r = g.get_upper("Code").unwrap();
-        assert_eq!(r.len(), 2);
-        assert_eq!("DSG", r[0].id);
-        assert_eq!("FORMAT", r[1].id);
-        let r = g.get_lower("REQ").unwrap();
-        assert_eq!(r.len(), 2);
-        assert_eq!("DSG", r[0][0].id);
-        assert_eq!("FORMAT", r[0][1].id);
-        assert_eq!("RTests", r[1][0].id);
+        let node = g.node_idx_by_id("FORMAT").unwrap();
+
+        let lower = node.upper(g);
+
+        assert_eq!(lower.len(), 2);
+        assert_eq!("REQ", lower[0].from(g).artefact(g).id);
+        assert_eq!("DSG", lower[1].from(g).artefact(g).id);
+    }
+
+    #[test]
+    fn graph_get_lower() {
+        let g = &make_graph();
+
+        let node = g.node_idx_by_id("FORMAT").unwrap();
+
+        let lower = node.lower(g);
+
+        assert_eq!(lower.len(), 1);
+        assert_eq!(
+            "Code",
+            lower[0].tines(g).next().unwrap().to(g).artefact(g).id
+        );
+    }
+
+    #[test]
+    fn graph_find_tine() {
+        let g = &make_graph();
+
+        let t = g.find_tine_from_to("DSG", "Code").unwrap();
+        assert_eq!(t.from(g).as_ref(g).artefact.id, "DSG");
+    }
+
+    #[test]
+    fn fork_tines() {
+        let g = &make_graph();
+
+        let dsg = g.node_idx_by_id("DSG").unwrap();
+        let req_to_dsg = dsg.upper(g)[0];
+        let dsg_siblings: Vec<_> = req_to_dsg.tines(g).map(|t| t.to(g).as_ref(g)).collect();
+
+        assert_eq!(dsg_siblings.len(), 2);
+        assert_eq!("DSG", dsg_siblings[0].artefact.id);
+        assert_eq!("FORMAT", dsg_siblings[1].artefact.id);
     }
 }
