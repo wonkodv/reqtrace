@@ -1,7 +1,7 @@
-default_stages: [push]
 repos:
--   repo: https://github.com/doublify/pre-commit-rust
-    rev: v1.0
+-   repo: https://github.com/wonkodv/pre-commit-rust
+    rev: v1.1
     hooks:
     -   id: fmt
     -   id: cargo-check
+    -   id: test
