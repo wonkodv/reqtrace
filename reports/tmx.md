@@ -2,12 +2,22 @@
 
 # Artefact Errors
 
+```
 doc/requirements/DESIGN.md:119: Duplicate Requirement DSG_JSON_IMPORT previously seen at doc/requirements/DESIGN.md:113
 doc/requirements/FORMATS.md:39: Expected a Reference like `* REQ_ID: Title`
 doc/requirements/FORMATS.md:72: Expected an Attribute line like `Comment:`
 doc/requirements/FORMATS.md:145: Expected an Attribute line like `Comment:`
 doc/requirements/REQUIREMENTS.md:114: Expected an Attribute line like `Comment:`
 doc/requirements/REQUIREMENTS.md:70: Duplicate Requirement REQ_ARTEFACT_PARSE_ID previously seen at doc/requirements/REQUIREMENTS.md:65
+```
+
+
+# Tracing Errors
+
+```
+doc/requirements/DESIGN.md:119: Duplicate Requirement DSG_JSON_IMPORT previously seen at doc/requirements/DESIGN.md:113
+doc/requirements/REQUIREMENTS.md:70: Duplicate Requirement REQ_ARTEFACT_PARSE_ID previously seen at doc/requirements/REQUIREMENTS.md:65
+```
 
 
 # Uncovered Requirements
@@ -131,13 +141,13 @@ Covers:
 Covered By:
 *   Fork(1)
 
-References:
-*   FMT_JSON
-
 Description:
 If files can not be parsed by this tool, an external program is invoked which
 writes  the requirements into a temporary file or to its `stdout` stream in the
 JSON format, or as Text which is then processed by the regex parsers.
+
+References:
+*   FMT_JSON
 
 ## DSG_ART_FINGERPRINT: Fingerprint of Artefacts
 
@@ -150,16 +160,16 @@ Covers:
 Covered By:
 *   Fork(1)
 
+Comment:
+Since the version is included in the fingerprint, the details can be changed
+easily.
+
 Description:
 The fingerprint of an artefact is computed by computing a hash over:
 *   hash over the parsing-type of the artefact
 *   for all files that make up an Artefact:
     *   The sha256 of the file if it is small
     *   The modification time as and size if it is large
-
-Comment:
-Since the version is included in the fingerprint, the details can be changed
-easily.
 
 ## DSG_ART_PARSE: Artefact Parsing
 
@@ -372,8 +382,8 @@ replaced.
 Origin: `doc/requirements/FORMATS.md:29`
 
 Covers:
-*   Fork(1)
 *   Fork(0)
+*   Fork(1)
 
 Covered By:
 *   Fork(2)
@@ -416,8 +426,8 @@ attributes.
 Origin: `doc/requirements/FORMATS.md:121`
 
 Covers:
-*   Fork(0)
 *   Fork(1)
+*   Fork(0)
 
 Covered By:
 *   Fork(2)
@@ -444,8 +454,8 @@ a colon and the title of the referenced requirement.
 Origin: `doc/requirements/FORMATS.md:103`
 
 Covers:
-*   Fork(1)
 *   Fork(0)
+*   Fork(1)
 
 Covered By:
 *   Fork(2)
@@ -499,8 +509,8 @@ performed and all matching lines lead to a requirement.
 Origin: `doc/requirements/FORMATS.md:98`
 
 Covers:
-*   Fork(1)
 *   Fork(0)
+*   Fork(1)
 
 Covered By:
 *   Fork(2)
@@ -514,9 +524,9 @@ TITLE`.
 Origin: `doc/requirements/FORMATS.md:197`
 
 Covers:
+*   Fork(1)
 *   Fork(0)
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-*   Fork(1)
 
 Covered By:
 *   Fork(2)
@@ -538,9 +548,9 @@ See this projects README for examples.
 Origin: `doc/requirements/FORMATS.md:242`
 
 Covers:
+*   Fork(1)
 *   Fork(0)
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-*   Fork(1)
 
 Covered By:
 *   Fork(2)
@@ -557,12 +567,15 @@ have to have a different ID.
 Origin: `doc/requirements/FORMATS.md:57`
 
 Covers:
-*   Fork(1)
 *   Fork(0)
     *   [REQ_UNICODE_SAFE](#req_unicode_safe-sane-handling-of-unicode "Sane Handling of unicode")
+*   Fork(1)
 
 Covered By:
 *   Fork(2)
+
+Comment:
+See [Rust RFC 2457](https://rust-lang.github.io/rfcs/2457-non-ascii-idents.html) on the topic.
 
 Description:
 All input strings are unicode normalizes as
@@ -570,9 +583,6 @@ All input strings are unicode normalizes as
 This means that
 *   All output derived from input will be NFC normalized
 *   Identifier Matching can be done on the byte level
-
-Comment:
-See [Rust RFC 2457](https://rust-lang.github.io/rfcs/2457-non-ascii-idents.html) on the topic.
 
 ## REQ_ARTEFACT_PARSE_ID: Parse Artefact Identifier
 
@@ -837,14 +847,14 @@ Origin: `doc/requirements/REQUIREMENTS.md:104`
 Covered By:
 *   Fork(0)
 
-Description:
-A Coverage link that is established by requirement ID can be verified by
-comparing the requirement's title.
-
 Comment:
 This is only really necessary where the requirement ids are not informative.
 For example a Requirement with the id `DSG_123` and the title `Delete Everything`
 could be covered by a line of code like:
+
+Description:
+A Coverage link that is established by requirement ID can be verified by
+comparing the requirement's title.
 
 ## REQ_VCS: Allow Version Control
 
@@ -894,11 +904,11 @@ Origin: `doc/requirements/REQUIREMENTS.md:204`
 Covered By:
 *   Fork(0)
 
-Parameters:
-*   Requirement Id
-
 Description:
 For a Requirement, look up all requirements that it depends upon transitively.
+
+Parameters:
+*   Requirement Id
 
 ## UC_ANALYZE_SINGLE: Analyze a Requirement
 
@@ -931,11 +941,11 @@ Origin: `doc/requirements/REQUIREMENTS.md:180`
 Covered By:
 *   Fork(0)
 
-Parameters:
-*   Artefacts to Parse
-
 Description:
 A Set of artefacts are parsed, reporting all requirements and errors.
+
+Parameters:
+*   Artefacts to Parse
 
 ## UC_TRACE: Compute Tracing
 
