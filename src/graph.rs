@@ -19,16 +19,16 @@ impl From<usize> for Fork {
 }
 
 impl Fork {
-    fn as_ref<'a>(self, graph: &'a Graph) -> &'a ForkData {
+    fn as_ref<'a>(self, graph: &'a Graph<'_>) -> &'a ForkData {
         let i: usize = self.into();
         &graph.forks[i]
     }
 
-    pub fn from(self, graph: &Graph) -> NodeIdx {
+    pub fn from(self, graph: &Graph<'_>) -> NodeIdx {
         self.as_ref(graph).from
     }
 
-    pub fn tines<'g>(self, graph: &'g Graph) -> impl Iterator<Item = Tine> {
+    pub fn tines<'g>(self, graph: &'g Graph<'_>) -> impl Iterator<Item = Tine> {
         (0..self.as_ref(graph).to.len())
             .into_iter()
             .map(move |tine| Tine { fork: self, tine })
@@ -42,10 +42,10 @@ pub struct Tine {
 }
 
 impl Tine {
-    pub fn to<'a>(self, graph: &'a Graph) -> NodeIdx {
+    pub fn to<'a>(self, graph: &'a Graph<'_>) -> NodeIdx {
         self.fork.as_ref(graph).to[self.tine]
     }
-    pub fn from(self, graph: &Graph) -> NodeIdx {
+    pub fn from(self, graph: &Graph<'_>) -> NodeIdx {
         self.fork.as_ref(graph).from
     }
 }
@@ -65,11 +65,11 @@ impl Into<usize> for NodeIdx {
     }
 }
 impl NodeIdx {
-    fn as_mut<'a>(self, graph: &'a mut Graph<'a>) -> &'a mut Node {
+    fn as_mut<'a>(self, graph: &'a mut Graph<'a>) -> &'a mut Node<'a> {
         let i: usize = self.into();
         graph.nodes.get_mut(i).unwrap()
     }
-    fn as_ref<'a>(self, graph: &'a Graph<'a>) -> &'a Node {
+    fn as_ref<'a>(self, graph: &'a Graph<'a>) -> &'a Node<'a> {
         let i: usize = self.into();
         &graph.nodes[i]
     }

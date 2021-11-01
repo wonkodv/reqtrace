@@ -113,7 +113,7 @@ impl<'c> Controller<'c> {
         }
     }
 
-    pub fn load(&mut self) -> Result<&Graph> {
+    pub fn load(&mut self) -> Result<&Graph<'_>> {
         if self.graph.is_none() {
             let mut graph = Graph::new();
 

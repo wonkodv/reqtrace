@@ -70,7 +70,7 @@ pub fn markdown_parse<R: io::Read>(reader: R, path: &Path) -> (Vec<Rc<Requiremen
     let mut line = String::new();
     let mut state = State::LookForReq;
     loop {
-        let evt: Event;
+        let evt: Event<'_>;
         let req_line;
 
         line.clear();
@@ -109,7 +109,7 @@ pub fn markdown_parse<R: io::Read>(reader: R, path: &Path) -> (Vec<Rc<Requiremen
     return (context.requirements, context.errors);
 }
 
-fn parse_states<'a>(state: State, context: &mut Context, evt: &'a Event) -> State {
+fn parse_states<'a>(state: State, context: &mut Context<'_>, evt: &'a Event<'_>) -> State {
     match evt {
         Event::Req(req_line) => {
             match state {
@@ -281,7 +281,7 @@ fn parse_states<'a>(state: State, context: &mut Context, evt: &'a Event) -> Stat
     };
 }
 
-fn commit_attr(context: &mut Context, attr: String, val: String) {
+fn commit_attr(context: &mut Context<'_>, attr: String, val: String) {
     context
         .req_under_construction
         .as_mut()
@@ -290,7 +290,7 @@ fn commit_attr(context: &mut Context, attr: String, val: String) {
         .insert(attr, val);
 }
 
-fn commit_link_attr(context: &mut Context, attr: String, vec: Vec<Reference>) {
+fn commit_link_attr(context: &mut Context<'_>, attr: String, vec: Vec<Reference>) {
     if attr == ATTR_COVERS {
         context.req_under_construction.as_mut().unwrap().covers = vec;
     } else if attr == ATTR_DEPENDS {
@@ -300,13 +300,13 @@ fn commit_link_attr(context: &mut Context, attr: String, vec: Vec<Reference>) {
     }
 }
 
-fn maybe_commit_req(context: &mut Context) {
+fn maybe_commit_req(context: &mut Context<'_>) {
     if let Some(box_req) = context.req_under_construction.take() {
         context.requirements.push(Rc::from(box_req));
     }
 }
 
-fn add_req<'a>(context: &mut Context, req_line: &Captures<'a>) -> State {
+fn add_req<'a>(context: &mut Context<'_>, req_line: &Captures<'a>) -> State {
     maybe_commit_req(context);
     context.level = req_line[1].len();
     let id = req_line[2].to_owned();
@@ -323,7 +323,7 @@ fn add_req<'a>(context: &mut Context, req_line: &Captures<'a>) -> State {
     return State::LookForDesc;
 }
 
-fn start_attribute<'a>(context: &mut Context, attr_line: &Captures<'a>) -> State {
+fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> State {
     let attr = &attr_line[1];
     let first_line = &attr_line[2];
     match attr {

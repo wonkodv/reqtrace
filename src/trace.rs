@@ -146,7 +146,7 @@ impl<'a> Tracing<'a> {
         }
     }
 
-    fn add_lower_req(&mut self, req: &'a Rc<Requirement>, tine: Tine, graph: &Graph) {
+    fn add_lower_req(&mut self, req: &'a Rc<Requirement>, tine: Tine, graph: &Graph<'_>) {
         let (added, idx) = self.add_req(req, tine.to(graph));
         if added {
             self.derived.insert(idx);
@@ -162,8 +162,8 @@ impl<'a> Tracing<'a> {
         &mut self,
         req: &'a Rc<Requirement>,
         fork: Fork,
-        graph: &Graph,
-    ) -> TracedReqIdx {
+        graph: &Graph<'_>,
+    ) -> TracedRequirementIdx {
         let (_added, idx) = self.add_req(req, fork.from(graph));
 
         self.requirements

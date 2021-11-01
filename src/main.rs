@@ -1,5 +1,8 @@
-#![allow(unused_imports)] // TODO
-#![allow(dead_code)] // TODO
+//! Requirement Tracing Tool
+
+
+#![allow(unused_imports, dead_code)] // TODO
+#![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
 
 use thiserror;
 

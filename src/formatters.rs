@@ -37,8 +37,8 @@ where
 }
 
 pub fn tracing<'r, W>(
-    tracing: &Tracing,
-    graph: &Graph,
+    tracing: &Tracing<'_>,
+    graph: &Graph<'_>,
     format: &Format,
     writer: &mut W,
 ) -> io::Result<()>
