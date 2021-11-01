@@ -27,7 +27,13 @@ pub struct TracedRequirement<'a> {
     node: NodeIdx,
 }
 
-type TracedReqIdx = usize;
+impl<'a> TracedRequirement<'a> {
+    pub fn artefact(&self, graph: &'a Graph<'a>) -> &'a Artefact<'a> {
+        self.node.artefact(graph)
+    }
+}
+
+type TracedRequirementIdx = usize;
 
 /// Tracing info beeing build.
 ///
@@ -37,9 +43,9 @@ type TracedReqIdx = usize;
 #[derive(Debug, Default)]
 pub struct Tracing<'a> {
     requirements: Vec<TracedRequirement<'a>>,
-    requirements_by_id: HashMap<&'a str, TracedReqIdx>,
-    uncovered: HashSet<TracedReqIdx>,
-    derived: HashSet<TracedReqIdx>,
+    requirements_by_id: HashMap<&'a str, TracedRequirementIdx>,
+    uncovered: HashSet<TracedRequirementIdx>,
+    derived: HashSet<TracedRequirementIdx>,
     errors: Vec<Error>,
 }
 
@@ -72,10 +78,14 @@ impl<'a> Tracing<'a> {
         self.requirements.as_slice()
     }
 
-    pub fn requirement_by_id<'s>(&'s self, id: &str) -> Option<&'s TracedRequirement> {
+    pub fn requirement_by_id<'s>(&'s self, id: &str) -> Option<&'s TracedRequirement<'_>> {
         self.requirements.get(*self.requirements_by_id.get(id)?)
     }
 }
+
+struct TracingInsights {}
+
+impl TracingInsights {}
 
 /// Computing Tracing Data
 impl<'a> Tracing<'a> {
@@ -176,7 +186,7 @@ impl<'a> Tracing<'a> {
     }
 
     /// Ensure Requirement is in `requirements`.
-    fn add_req(&mut self, req: &'a Rc<Requirement>, node: NodeIdx) -> (bool, TracedReqIdx) {
+    fn add_req(&mut self, req: &'a Rc<Requirement>, node: NodeIdx) -> (bool, TracedRequirementIdx) {
         match self.requirements_by_id.entry(&req.id) {
             Occupied(e) => {
                 let already_there_idx = *e.get();

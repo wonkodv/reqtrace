@@ -77,7 +77,7 @@ where
     Ok(())
 }
 
-pub fn traced_requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
+pub fn traced_requirements<'r, W, R>(reqs: R, graph: &Graph<'_>, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
     R: Iterator<Item = &'r TracedRequirement<'r>>,
@@ -95,9 +95,17 @@ where
         if !req.upper.is_empty() {
             writeln!(w, "\nCovers:")?;
             for (fork, coverage) in &req.upper {
-                writeln!(w, "*   {:?}", fork,)?;
-                for cov in coverage {
-                    writeln!(w, "    *   {}", requirement_link(cov.upper_requirement))?;
+                if coverage.is_empty() {
+                    writeln!(
+                        w,
+                        "*   Does not cover: {}",
+                        fork.from(graph).artefact(graph).id
+                    )?;
+                } else {
+                    writeln!(w, "*   {}", fork.from(graph).artefact(graph).id)?;
+                    for cov in coverage {
+                        writeln!(w, "    *   {}", requirement_link(cov.upper_requirement))?;
+                    }
                 }
             }
         }
@@ -105,9 +113,32 @@ where
         if !req.lower.is_empty() {
             writeln!(w, "\nCovered By:")?;
             for (fork, coverage) in &req.lower {
-                writeln!(w, "*   {:?}", fork,)?;
-                for cov in coverage {
-                    writeln!(w, "    *   {}", requirement_link(cov.lower_requirement))?;
+                if coverage.is_empty() {
+                    write!(w, "*   Not Covered by: ",)?;
+                    let mut comma = false;
+                    for t in fork.tines(graph) {
+                        if comma {
+                            write!(w, ", ")?;
+                        }
+                        comma = true;
+                        write!(w, "{}", t.to(graph).artefact(graph).id)?;
+                    }
+                    writeln!(w, "")?;
+                } else {
+                    write!(w, "*   ")?;
+                    let mut comma = false;
+                    for t in fork.tines(graph) {
+                        if comma {
+                            write!(w, ", ")?;
+                        }
+                        comma = true;
+                        write!(w, "{}", t.to(graph).artefact(graph).id)?;
+                    }
+                    writeln!(w, "")?;
+
+                    for cov in coverage {
+                        writeln!(w, "    *   {}", requirement_link(cov.lower_requirement))?;
+                    }
                 }
             }
         }
@@ -214,12 +245,12 @@ where
     Ok(())
 }
 
-pub fn tracing<'r, W>(tracing: &Tracing, g: &Graph, w: &mut W) -> io::Result<()>
+pub fn tracing<'r, W>(tracing: &Tracing<'_>, graph: &Graph<'_>, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
     {
-        let mut errors = g.get_parsing_errors().peekable();
+        let mut errors = graph.get_parsing_errors().peekable();
         if errors.peek().is_some() {
             writeln!(w, "")?;
             writeln!(w, "")?;
@@ -293,11 +324,11 @@ where
         // Covered
         writeln!(w, "")?;
         writeln!(w, "")?;
-        writeln!(w, "# Covered Requirements")?;
+        writeln!(w, "# Requirements")?;
         writeln!(w, "")?;
         let mut covered: Vec<_> = tracing.requirements().iter().collect();
-        covered.sort_unstable_by_key(|req| &req.requirement.id);
-        traced_requirements(covered.into_iter(), w)?;
+        covered.sort_unstable_by_key(|req| (req.artefact(graph).id, &req.requirement.id));
+        traced_requirements(covered.into_iter(), graph, w)?;
     }
 
     Ok(())

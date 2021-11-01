@@ -51,7 +51,7 @@ impl Tine {
 }
 
 /// Index of a Node in the Graphs list of nodes. Used instead of a pointer
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NodeIdx(usize);
 
 impl From<usize> for NodeIdx {
