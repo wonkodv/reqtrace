@@ -113,7 +113,7 @@ impl<'a> Tracing<'a> {
                     {
                         is_covered = true;
                         let kind = if let Some(title) = depends.title.as_ref() {
-                            CoverageKind::DependsWithTitle(&title)
+                            CoverageKind::DependsWithTitle(title)
                         } else {
                             CoverageKind::Depends
                         };
@@ -136,7 +136,7 @@ impl<'a> Tracing<'a> {
                 {
                     is_covered = true;
                     let kind = if let Some(title) = referenced_title.as_ref() {
-                        CoverageKind::CoveredWithTitle(&title)
+                        CoverageKind::CoveredWithTitle(title)
                     } else {
                         CoverageKind::Covered
                     };

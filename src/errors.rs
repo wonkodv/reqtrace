@@ -1,7 +1,5 @@
 use std::{io, path::PathBuf, rc::Rc};
 
-use thiserror;
-
 use crate::common::{Location, Requirement};
 
 #[derive(thiserror::Error, Debug)]

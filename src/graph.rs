@@ -9,7 +9,7 @@ use crate::errors::{Error, Result};
 pub struct Fork(usize);
 impl Into<usize> for Fork {
     fn into(self) -> usize {
-        self.0.into()
+        self.0
     }
 }
 impl From<usize> for Fork {
@@ -61,7 +61,7 @@ impl From<usize> for NodeIdx {
 }
 impl Into<usize> for NodeIdx {
     fn into(self) -> usize {
-        self.0.into()
+        self.0
     }
 }
 impl NodeIdx {
@@ -140,7 +140,7 @@ impl<'a> Graph<'a> {
         return Ok(*self
             .artefact_id_to_node
             .get(id)
-            .ok_or(Error::UnknownArtefact(id.into()))?);
+            .ok_or_else(|| Error::UnknownArtefact(id.into()))?);
     }
 
     /// Add [`Artefact`] to the graph
@@ -229,7 +229,7 @@ impl<'a> Graph<'a> {
                 }
             }
         }
-        return Err(Error::UnknownFork(from.into(), to.into()));
+        Err(Error::UnknownFork(from.into(), to.into()))
     }
 
     pub fn get_parsing_errors<'r>(&'r self) -> impl Iterator<Item = &'r Error> {
@@ -245,11 +245,11 @@ impl<'a> Graph<'a> {
     }
 
     pub fn iter_forks(&self) -> impl Iterator<Item = Fork> {
-        (0..self.forks.len()).into_iter().map(|id| Fork(id))
+        (0..self.forks.len()).into_iter().map(Fork)
     }
 
     pub fn iter_nodes(&self) -> impl Iterator<Item = NodeIdx> {
-        (0..self.nodes.len()).into_iter().map(|id| NodeIdx(id))
+        (0..self.nodes.len()).into_iter().map(NodeIdx)
     }
 }
 

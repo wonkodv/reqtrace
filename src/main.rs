@@ -2,8 +2,7 @@
 
 #![allow(unused_imports, dead_code)] // TODO
 #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
-
-use thiserror;
+#![allow(clippy::needless_lifetimes, clippy::enum_variant_names)]
 
 use std::{
     convert::TryInto,

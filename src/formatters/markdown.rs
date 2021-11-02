@@ -123,7 +123,7 @@ where
                         comma = true;
                         write!(w, "{}", t.to(graph).artefact(graph).id)?;
                     }
-                    writeln!(w, "")?;
+                    writeln!(w)?;
                 } else {
                     write!(w, "*   ")?;
                     let mut comma = false;
@@ -134,7 +134,7 @@ where
                         comma = true;
                         write!(w, "{}", t.to(graph).artefact(graph).id)?;
                     }
-                    writeln!(w, "")?;
+                    writeln!(w)?;
 
                     for cov in coverage {
                         writeln!(w, "    *   {}", requirement_link(cov.lower_requirement))?;
@@ -245,17 +245,17 @@ where
     Ok(())
 }
 
-pub fn tracing<'r, W>(tracing: &Tracing<'_>, graph: &Graph<'_>, w: &mut W) -> io::Result<()>
+pub fn tracing<W>(tracing: &Tracing<'_>, graph: &Graph<'_>, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
     {
         let mut errors = graph.get_parsing_errors().peekable();
         if errors.peek().is_some() {
-            writeln!(w, "")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
+            writeln!(w)?;
             writeln!(w, "# Artefact Errors")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
             writeln!(w, "```")?;
 
             for e in errors {
@@ -268,10 +268,10 @@ where
     {
         let errors = tracing.errors();
         if !errors.is_empty() {
-            writeln!(w, "")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
+            writeln!(w)?;
             writeln!(w, "# Tracing Errors")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
             writeln!(w, "```")?;
 
             let mut set: HashSet<Vec<u8>> = HashSet::new();
@@ -292,10 +292,10 @@ where
         uncovered.sort_unstable_by_key(|r| &r.requirement.id);
 
         if !uncovered.is_empty() {
-            writeln!(w, "")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
+            writeln!(w)?;
             writeln!(w, "# Uncovered Requirements")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
 
             for r in uncovered {
                 writeln!(w, "*   {}", requirement_link(r.requirement))?;
@@ -309,10 +309,10 @@ where
         derived.sort_unstable_by_key(|r| &r.requirement.id);
 
         if !derived.is_empty() {
-            writeln!(w, "")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
+            writeln!(w)?;
             writeln!(w, "# Derived Requirements")?;
-            writeln!(w, "")?;
+            writeln!(w)?;
 
             for r in derived {
                 writeln!(w, "*   {}", requirement_link(r.requirement))?;
@@ -322,10 +322,10 @@ where
 
     {
         // Covered
-        writeln!(w, "")?;
-        writeln!(w, "")?;
+        writeln!(w)?;
+        writeln!(w)?;
         writeln!(w, "# Requirements")?;
-        writeln!(w, "")?;
+        writeln!(w)?;
         let mut covered: Vec<_> = tracing.requirements().iter().collect();
         covered.sort_unstable_by_key(|req| (req.artefact(graph).id, &req.requirement.id));
         traced_requirements(covered.into_iter(), graph, w)?;

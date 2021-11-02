@@ -57,7 +57,7 @@ impl StringVault {
             }
             set.insert(val);
         }
-        return interned;
+        interned
     }
 
     /// Find an equal string or create a clone and keep it.
@@ -86,17 +86,17 @@ impl StringVault {
             }
             set.insert(val);
         }
-        return interned;
+        interned
     }
 }
 
 /// add `as_interned(&sv)` to `String`
-trait AsInterned {
-    fn as_interned<'a>(self, sv: &'a StringVault) -> &'a str;
+trait ToInterned {
+    fn to_interned<'a>(self, sv: &'a StringVault) -> &'a str;
 }
 
-impl AsInterned for String {
-    fn as_interned<'a>(self, sv: &'a StringVault) -> &'a str {
+impl ToInterned for String {
+    fn to_interned<'a>(self, sv: &'a StringVault) -> &'a str {
         sv.keep(self)
     }
 }
@@ -148,6 +148,6 @@ mod test {
         let sv = StringVault::new();
         let s = String::from("Hello World");
 
-        let _: &str = s.as_interned(&sv);
+        let _: &str = s.to_interned(&sv);
     }
 }

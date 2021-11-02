@@ -59,14 +59,14 @@ impl Requirement {
         result += &self.id;
         if let Some(title) = &self.title {
             result += ": ";
-            result += &title;
+            result += title;
         }
         result += "\n";
         result += &self.location.to_string();
 
         if let Some(desc) = &self.attributes.get(ATTR_DESCRIPTION) {
             result += "\n\n";
-            result += &desc;
+            result += desc;
         }
 
         if !self.covers.is_empty() {
@@ -104,7 +104,7 @@ impl Requirement {
         keys.sort();
         for k in keys {
             result += "\n\n";
-            result += &k;
+            result += k;
             result += ": ";
             result += &self.attributes[k];
         }
@@ -147,7 +147,7 @@ impl<'a> Artefact<'a> {
         Self { id, config, data }
     }
 
-    fn load<'s>(&'s self) -> &'s ArtefactData {
+    fn load(&self) -> &ArtefactData {
         if let Some(data) = self.data.get() {
             return data;
         }
@@ -179,7 +179,7 @@ impl<'a> Artefact<'a> {
                 /* Covers:  REQ_UNIQUE_ID: Requirements have a unique Identifier */
                 data.errors.push(DuplicateRequirement(
                     Rc::clone(&data.requirements[old_idx]),
-                    Rc::clone(&req),
+                    Rc::clone(req),
                 ));
             }
 
@@ -219,7 +219,7 @@ impl<'a> Artefact<'a> {
     pub fn get_requirement_with_id(&self, id: &str) -> Option<&Rc<Requirement>> {
         let d = self.load();
         if let Some(idx) = d.id_to_req.get(id) {
-            return Some(&self.req_with_idx(*idx));
+            return Some(self.req_with_idx(*idx));
         }
         None
     }
@@ -237,7 +237,7 @@ impl<'a> Artefact<'a> {
             i = None;
         }
 
-        return std::iter::from_fn(move || {
+        std::iter::from_fn(move || {
             if let Some(i) = &mut i {
                 if let Some((req_id, cov_id)) = i.next() {
                     let r = self.req_with_idx(*req_id);
@@ -249,8 +249,8 @@ impl<'a> Artefact<'a> {
                     }
                 }
             }
-            return None;
-        });
+            None
+        })
     }
 }
 

@@ -13,8 +13,6 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use toml;
-
 use crate::errors::{Error, Result};
 use Error::*;
 
@@ -130,7 +128,7 @@ impl<'c> Controller<'c> {
             self.graph = Some(graph);
         }
 
-        Ok(&self.graph.as_ref().unwrap())
+        Ok(self.graph.as_ref().unwrap())
     }
 
     pub fn find_job(&self, job: &str) -> Option<Job> {
@@ -157,11 +155,11 @@ impl<'c> Controller<'c> {
                 if !t.errors().is_empty() {
                     success = false;
                 }
-                formatters::tracing(&t, &graph, &job.format, &mut out)
+                formatters::tracing(&t, graph, &job.format, &mut out)
             }
             Query::Parse => {
                 let reqs = graph.get_all_reqs();
-                if let Some(_) = graph.get_parsing_errors().next() {
+                if graph.get_parsing_errors().next().is_some() {
                     success = false;
                 }
                 formatters::requirements(reqs, &job.format, &mut out)

@@ -36,7 +36,7 @@ where
     }
 }
 
-pub fn tracing<'r, W>(
+pub fn tracing<W>(
     tracing: &Tracing<'_>,
     graph: &Graph<'_>,
     format: &Format,
