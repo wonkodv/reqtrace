@@ -31,7 +31,7 @@ where
     R: Iterator<Item = &'r Error>,
 {
     match format {
-        Format::Tags => gnuerr::errors(errors, writer),
+        Format::GnuError => gnuerr::errors(errors, writer),
         _ => todo!(),
     }
 }
@@ -47,6 +47,7 @@ where
 {
     match format {
         Format::Markdown => markdown::tracing(tracing, graph, writer),
+        Format::GnuError => gnuerr::tracing(tracing, graph, writer),
         _ => todo!(),
     }
 }

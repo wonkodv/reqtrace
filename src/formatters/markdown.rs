@@ -14,6 +14,7 @@ lazy_static! {
     static ref REPLACE: Regex = Regex::new(r"[^A-Za-z0-9_-]").unwrap(); // TODO: is this defined somewhere?
 }
 
+/// requirement Id as markdown link
 fn requirement_link(req: &Rc<Requirement>) -> String {
     if let Some(title) = &req.title {
         let replaced = format!("{}-{}", req.id, title);
@@ -160,45 +161,41 @@ where
 {
     match error {
         FormatError(loc, err) => {
-            writeln!(w, "{}:{}: {}", loc.file.display(), loc.line, err)?;
+            writeln!(
+                w,
+                "*   Format Error: {}\n    in {} Line {}",
+                err,
+                loc.file.display(),
+                loc.line
+            )
         }
         DuplicateRequirement(r1, r2) => {
             writeln!(
                 w,
-                "{}:{}: Duplicate Requirement {} previously seen at {}:{}",
-                r2.location.file.display(),
-                r2.location.line,
-                r1.id,
-                r1.location.file.display(),
-                r1.location.line,
-            )?;
+                "*   Duplicate Requirement: {}\n    {}\n    {}",
+                r1.id, r2.location, r1.location,
+            )
         }
         DuplicateAttribute(loc, attr) => {
-            writeln!(
-                w,
-                "{}:{}: Duplicate Attribute {}",
-                loc.file.display(),
-                loc.line,
-                attr,
-            )?;
+            writeln!(w, "*   Duplicate Attribute: {}\n    {}", attr, loc)
         }
         IoError(path, err) => {
-            writeln!(w, "{}: IO Error: {}", path.display(), err,)?;
+            writeln!(w, "*   IO Error: {}\n   {}", err, path.display())
         }
         UnknownArtefactType(t) => {
-            writeln!(w, "Unknown Artefact Type {}", t)?;
+            writeln!(w, "*   Unknown Artefact Type: {}", t)
         }
         ConfigError(s) => {
-            writeln!(w, "Config  Error: {:?}", s)?;
+            writeln!(w, "*   Config  Error: {:?}", s)
         }
         DuplicateArtefact(a) => {
-            writeln!(w, "Duplicate Artefact: {}", a)?;
+            writeln!(w, "*   Duplicate Artefact: {}", a)
         }
         UnknownArtefact(a) => {
-            writeln!(w, "Unknown Artefact: {}", a)?;
+            writeln!(w, "*    Unknown Artefact: {}", a)
         }
         UnknownFork(from, to) => {
-            writeln!(w, "Unknown Edge {} -> {}", from, to)?;
+            writeln!(w, "*    Unknown Edge {} -> {}", from, to)
         }
         CoveredWithWrongTitle {
             upper,
@@ -207,13 +204,23 @@ where
         } => {
             writeln!(
                 w,
-                "{}:{}: {} covered with wrong title \n\texpected: {}\n\tactual  : {}",
-                upper.location.file.display(),
-                upper.location.line,
+                concat!(
+                    "*   Requirement covers with wrong title:\n",
+                    "*   Upper Requirement {}\n",
+                    "*\n",
+                    "    {}\n",
+                    "*   Lower Requirement {}\n",
+                    "    {}\n",
+                    "*   Title of Upper Requirement: {}\n",
+                    "*   Title used to cover it:     {}\n",
+                ),
                 upper.id,
-                lower.title.as_ref().unwrap_or(&"<no title>".to_owned()),
+                upper.location,
+                lower.id,
+                lower.location,
+                upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
-            )?;
+            )
         }
         DependWithWrongTitle {
             upper,
@@ -222,23 +229,29 @@ where
         } => {
             writeln!(
                 w,
-                "{}:{}: {} depend with wrong title:\n\texpected: {}\n\tactual  : {}",
-                upper.location.file.display(),
-                upper.location.line,
+                "*   Requirement depended on with wrong title:
+                    *   Upper Requirement {}
+                        {}
+                    *   Lower Requirement {}
+                        {}
+                    *   Expected Title: {}
+                    *   Actual Title:   {}",
                 upper.id,
-                lower.title.as_ref().unwrap_or(&"<no title>".to_owned()),
+                upper.location,
+                lower.id,
+                lower.location,
+                upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
-            )?;
+            )
         }
 
         ArtefactTypeOnlyAllowsOnePath(_, _) | EmptyGraph => {
-            writeln!(w, "{:?}", error)?;
+            writeln!(w, "{:?}", error)
         }
         UnknownJob(j) => {
-            writeln!(w, "unknown job {:?}", j)?;
+            writeln!(w, "unknown job {:?}", j)
         }
     }
-    Ok(())
 }
 
 pub fn errors<'r, W, R>(errors: R, w: &mut W) -> io::Result<()>
@@ -247,11 +260,9 @@ where
     R: Iterator<Item = &'r Error>,
 {
     writeln!(w, "# Errors")?;
-    writeln!(w, "```")?;
     for e in errors {
         err(e, w)?;
     }
-    writeln!(w, "```")?;
 
     Ok(())
 }
@@ -267,12 +278,10 @@ where
             writeln!(w)?;
             writeln!(w, "# Artefact Errors")?;
             writeln!(w)?;
-            writeln!(w, "```")?;
 
             for e in errors {
                 err(e, w)?;
             }
-            writeln!(w, "```")?;
         }
     }
 
@@ -283,17 +292,16 @@ where
             writeln!(w)?;
             writeln!(w, "# Tracing Errors")?;
             writeln!(w)?;
-            writeln!(w, "```")?;
 
             let mut set: HashSet<Vec<u8>> = HashSet::new();
             for e in errors {
+                // echo each error string only once
                 let mut s = Vec::new();
                 err(e, &mut s)?;
                 if set.insert(s.clone()) {
                     w.write_all(&s)?;
                 }
             }
-            writeln!(w, "```")?;
         }
     }
 

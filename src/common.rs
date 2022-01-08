@@ -265,6 +265,7 @@ impl<'a> Artefact<'a> {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Format {
+    GnuError,
     Json,
     Markdown,
     Tags,

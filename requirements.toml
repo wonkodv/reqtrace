@@ -1,5 +1,5 @@
 version_provider = "git"
-default_jobs = ["tmx", "tags"]
+default_jobs = ["errors"]
 
 [artefact.requirements]
 paths = ["doc/requirements/REQUIREMENTS.md", ]
@@ -51,4 +51,9 @@ query = "Trace"
 format = "Markdown"
 file = "reports/tmx.md"
 
+
+[job.errors]
+query = "Trace"
+format = "GnuError"
+file = "-"
 
