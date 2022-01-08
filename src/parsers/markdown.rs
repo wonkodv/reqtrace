@@ -255,9 +255,9 @@ fn parse_states<'a>(state: State, context: &mut Context<'_>, evt: &'a Event<'_>)
                 State::CollectDescNl(desc)
             }
             State::LookForAttr => state,
-            State::CollectTextAttr(attr, val) => {
-                commit_attr(context, attr, val);
-                State::LookForAttr
+            State::CollectTextAttr(attr, mut val) => {
+                val.push('\n');
+                State::CollectTextAttr(attr, val)
             }
             State::CollectRefLink(attr, vec) => {
                 commit_link_attr(context, attr, vec);
