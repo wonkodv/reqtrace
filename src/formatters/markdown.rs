@@ -200,31 +200,42 @@ where
         UnknownFork(from, to) => {
             writeln!(w, "Unknown Edge {} -> {}", from, to)?;
         }
-        CoveredWithWrongTitle(r1, r2, wrong_title) => {
+        CoveredWithWrongTitle {
+            upper,
+            lower,
+            wrong_title,
+        } => {
             writeln!(
                 w,
                 "{}:{}: {} covered with wrong title \n\texpected: {}\n\tactual  : {}",
-                r1.location.file.display(),
-                r1.location.line,
-                r1.id,
-                r2.title.as_ref().unwrap_or(&"<no title>".to_owned()),
+                upper.location.file.display(),
+                upper.location.line,
+                upper.id,
+                lower.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
             )?;
         }
-        DependWithWrongTitle(r1, r2, wrong_title) => {
+        DependWithWrongTitle {
+            upper,
+            lower,
+            wrong_title,
+        } => {
             writeln!(
                 w,
                 "{}:{}: {} depend with wrong title:\n\texpected: {}\n\tactual  : {}",
-                r1.location.file.display(),
-                r1.location.line,
-                r1.id,
-                r2.title.as_ref().unwrap_or(&"<no title>".to_owned()),
+                upper.location.file.display(),
+                upper.location.line,
+                upper.id,
+                lower.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
             )?;
         }
 
-        OnlyOnePathExpected | CombinedTracingsWithIntersectingEdges | EmptyGraph => {
+        ArtefactTypeOnlyAllowsOnePath(_, _) | EmptyGraph => {
             writeln!(w, "{:?}", error)?;
+        }
+        UnknownJob(j) => {
+            writeln!(w, "unknown job {:?}", j)?;
         }
     }
     Ok(())

@@ -1,4 +1,5 @@
 version_provider = "git"
+default_jobs = ["tmx", "tags"]
 
 [artefact.requirements]
 paths = ["doc/requirements/REQUIREMENTS.md", ]

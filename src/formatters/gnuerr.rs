@@ -38,9 +38,46 @@ where
             IoError(path, err) => {
                 writeln!(w, "{}: IO Error: {}", path.display(), err,)?;
             }
-            e => {
-                // TODO
-                writeln!(w, "{:?}", e)?;
+            ArtefactTypeOnlyAllowsOnePath(_, _)
+            | UnknownArtefactType(_)
+            | ConfigError(_)
+            | DuplicateArtefact(_)
+            | UnknownArtefact(_)
+            | EmptyGraph
+            | UnknownJob(_)
+            | UnknownFork(_, _) => {
+                writeln!(w, "Error in config file: {:?}", err)?;
+            }
+
+            CoveredWithWrongTitle {
+                upper,
+                lower,
+                wrong_title,
+            } => {
+                writeln!(
+                    w,
+                    "{}:{}: {} covered with wrong title \n\texpected: {}\n\tactual  : {}",
+                    upper.location.file.display(),
+                    upper.location.line,
+                    upper.id,
+                    lower.title.as_ref().unwrap_or(&"<no title>".to_owned()),
+                    wrong_title,
+                )?;
+            }
+            DependWithWrongTitle {
+                upper,
+                lower,
+                wrong_title,
+            } => {
+                writeln!(
+                    w,
+                    "{}:{}: {} depend with wrong title:\n\texpected: {}\n\tactual  : {}",
+                    upper.location.file.display(),
+                    upper.location.line,
+                    upper.id,
+                    lower.title.as_ref().unwrap_or(&"<no title>".to_owned()),
+                    wrong_title,
+                )?;
             }
         }
     }

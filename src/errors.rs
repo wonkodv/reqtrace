@@ -4,47 +4,55 @@ use crate::common::{Location, Requirement};
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
-    #[error("Invalid Format {0}, {1}")]
+    #[error("Invalid Format {0}: {1}")]
     FormatError(Location, String),
 
-    #[error("Duplicate Requirement {0} {1}")]
+    #[error("Duplicate Requirements: {0} {1}")]
     DuplicateRequirement(Rc<Requirement>, Rc<Requirement>),
 
-    #[error("Duplicate Attribute {0}, {1}")]
+    #[error("Duplicate Attribute {1} in {0}")]
     DuplicateAttribute(Location, String),
 
-    #[error("IO Error {0} {1}")]
+    #[error("IO Error: {1} in {0}")]
     IoError(PathBuf, io::Error),
 
-    #[error("Only one Path expected")]
-    OnlyOnePathExpected,
+    #[error("Only one Path expected for {0}, got: {1:?}")]
+    ArtefactTypeOnlyAllowsOnePath(String, Vec<PathBuf>),
 
-    #[error("unknown Artefact type {0}")]
+    #[error("unknown Artefact type: {0}")]
     UnknownArtefactType(String),
 
-    #[error("Config Error {0}")]
+    #[error("Config Error: {0}")]
     ConfigError(String),
 
-    #[error("Artefact added twice {0}")]
+    #[error("Artefact added twice: {0}")]
     DuplicateArtefact(String),
 
-    #[error("Unknown Artefact {0}")]
+    #[error("Unknown Artefact: {0}")]
     UnknownArtefact(String),
 
-    #[error("Unknown Edge {0} {1} ")]
+    #[error("Unknown Edge: {0} -> {1} ")]
     UnknownFork(String, String),
 
-    #[error("Requirement Covered with Wrong Title {0} {1} {2}")]
-    CoveredWithWrongTitle(Rc<Requirement>, Rc<Requirement>, String),
+    #[error("Requirement Covered with Wrong Title {upper} <- {lower} with {wrong_title}")]
+    CoveredWithWrongTitle {
+        upper: Rc<Requirement>,
+        lower: Rc<Requirement>,
+        wrong_title: String,
+    },
 
-    #[error("Requirement Depended with Wrong Title {0} {1} {2}")]
-    DependWithWrongTitle(Rc<Requirement>, Rc<Requirement>, String),
-
-    #[error("Combining Tracing with Edges contained in both")]
-    CombinedTracingsWithIntersectingEdges,
+    #[error("Requirement Depended with Wrong Title {upper} -> {lower} with {wrong_title}")]
+    DependWithWrongTitle {
+        upper: Rc<Requirement>,
+        lower: Rc<Requirement>,
+        wrong_title: String,
+    },
 
     #[error("Empty Tracing Graph")]
     EmptyGraph,
+
+    #[error("Unknown Job {0}")]
+    UnknownJob(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

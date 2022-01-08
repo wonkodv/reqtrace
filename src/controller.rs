@@ -8,10 +8,14 @@ use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
     convert::TryFrom,
+    fmt,
     fs::{self, File},
     io::{self, Write},
     path::{Path, PathBuf},
+    time::Instant,
 };
+
+use log::*;
 
 use crate::errors::{Error, Result};
 use Error::*;
@@ -20,7 +24,8 @@ use Error::*;
 struct ArtefactConfigSerialized {
     paths: Vec<PathBuf>,
     parser: String,
-    parser_options: Option<String>,
+    parser_options: Option<HashMap<String, String>>,
+    parse_against_self: Option<bool>,
     version_provider: Option<String>,
 }
 
@@ -29,7 +34,10 @@ impl ArtefactConfigSerialized {
         match self.parser.as_str() {
             "markdown" => {
                 if self.paths.len() != 1 {
-                    return Err(OnlyOnePathExpected);
+                    return Err(ArtefactTypeOnlyAllowsOnePath(
+                        self.parser.clone(),
+                        self.paths.clone(),
+                    ));
                 }
                 if self.parser_options.is_some() {
                     todo!();
@@ -55,6 +63,7 @@ pub struct Config {
     trace: Vec<TraceConfig>,
     job: Option<HashMap<String, Job>>,
     version_provider: Option<String>,
+    default_jobs: Option<Vec<String>>,
 }
 
 impl Config {
@@ -98,45 +107,72 @@ pub struct Job {
 #[derive(Debug)]
 pub struct Controller<'config> {
     config: &'config Config,
-    graph: Option<Graph<'config>>,
-    success: bool,
+    graph: Graph<'config>,
 }
 
 impl<'c> Controller<'c> {
-    pub fn new(config: &'c Config) -> Self {
-        Self {
-            config,
-            graph: None,
-            success: true,
+    pub fn new(config: &'c Config) -> Result<Self> {
+        let mut graph = Graph::new();
+
+        for (id, ac) in &config.artefact {
+            let ac = ac.to_artefact_config()?;
+            let a = Artefact::new(id.as_str(), ac);
+            graph.add_artefact(a)?;
+        }
+
+        for tc in &config.trace {
+            graph.add_fork(&tc.upper, tc.lower.iter())?;
+        }
+
+        Ok(Self { config, graph })
+    }
+
+    pub fn find_job(&self, job: &str) -> Option<&Job> {
+        Some(self.config.job.as_ref()?.get(job)?)
+    }
+
+    pub fn run_default_jobs(&self) -> Result<bool> {
+        trace!("Running default jobs");
+        if let Some(ref default_jobs) = self.config.default_jobs {
+            self.run_jobs_by_name(default_jobs)
+        } else {
+            Err(ConfigError("no default_jobs configured".into()))
         }
     }
 
-    pub fn load(&mut self) -> Result<&Graph<'_>> {
-        if self.graph.is_none() {
-            let mut graph = Graph::new();
-
-            for (id, ac) in &self.config.artefact {
-                let ac = ac.to_artefact_config()?;
-                let a = Artefact::new(id.as_str(), ac);
-                graph.add_artefact(a)?;
+    pub fn run_jobs_by_name(&self, job_names: &[String]) -> Result<bool> {
+        let mut jobs = Vec::new();
+        for j in job_names {
+            if let Some(job) = self.find_job(&j) {
+                jobs.push(job)
+            } else {
+                return Err(Error::UnknownJob(j.clone()));
             }
+        }
+        self.run_jobs(&jobs, job_names)
+    }
 
-            for tc in &self.config.trace {
-                graph.add_fork(&tc.upper, tc.lower.iter())?;
+    pub fn run_jobs(&self, jobs: &[&Job], job_names: &[String]) -> Result<bool> {
+        let start = Instant::now();
+        let mut success = true;
+        for (job, job_name) in jobs.iter().zip(job_names.iter()) {
+            if !self.run(job, job_name)? {
+                success = false;
             }
-
-            self.graph = Some(graph);
         }
 
-        Ok(self.graph.as_ref().unwrap())
+        info!(
+            "ran {} jobs in {}ms, result: {}",
+            job_names.len(),
+            start.elapsed().as_millis(),
+            (if success { "Success" } else { "Fail" })
+        );
+
+        Ok(success)
     }
 
-    pub fn find_job(&self, job: &str) -> Option<Job> {
-        Some(self.config.job.as_ref()?.get(job)?.clone())
-    }
-
-    pub fn run(&mut self, job: &Job) -> Result<()> {
-        let graph = self.load()?;
+    pub fn run(&self, job: &Job, job_name: &str) -> Result<bool> {
+        trace!("Job {} {:?}", job_name, job);
         let stdout = io::stdout();
         let mut out: Box<dyn io::Write>;
 
@@ -151,15 +187,15 @@ impl<'c> Controller<'c> {
 
         let write_res = match &job.query {
             Query::Trace => {
-                let t = Tracing::from_graph(graph);
+                let t = Tracing::from_graph(&self.graph);
                 if !t.errors().is_empty() {
                     success = false;
                 }
-                formatters::tracing(&t, graph, &job.format, &mut out)
+                formatters::tracing(&t, &self.graph, &job.format, &mut out)
             }
             Query::Parse => {
-                let reqs = graph.get_all_reqs();
-                if graph.get_parsing_errors().next().is_some() {
+                let reqs = self.graph.get_all_reqs();
+                if self.graph.get_parsing_errors().next().is_some() {
                     success = false;
                 }
                 formatters::requirements(reqs, &job.format, &mut out)
@@ -171,14 +207,14 @@ impl<'c> Controller<'c> {
             Query::ParseArtefacts { artefacts: _ } => todo!(),
         };
 
-        write_res.map_err(|e| IoError(PathBuf::from("/dev/stdout"), e))?;
+        write_res.map_err(|e| IoError(job.file.clone(), e))?;
 
-        self.success = success;
+        if success {
+            info!("Job {} successful", job_name);
+        } else {
+            warn!("Job {} failed", job_name);
+        }
 
-        Ok(())
-    }
-
-    pub fn success(&self) -> bool {
-        self.success
+        Ok(success)
     }
 }

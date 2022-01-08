@@ -1,3 +1,4 @@
+use log::*;
 use once_cell::unsync::OnceCell;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -158,10 +159,17 @@ impl<'a> Artefact<'a> {
                 let file = fs::File::open(path).map_err(|e| IoError(path.into(), e));
                 match file {
                     Err(err) => {
+                        warn!("{}", err);
                         data.errors = vec![err];
                     }
                     Ok(file) => {
                         let (s, e) = markdown_parse(file, path);
+                        trace!(
+                            "parsed {}: {} errors, {} requirements",
+                            path.display(),
+                            e.len(),
+                            s.len()
+                        );
                         data.errors = e;
                         data.requirements = s;
                     }
@@ -176,11 +184,14 @@ impl<'a> Artefact<'a> {
             let old = data.id_to_req.insert(req.id.to_owned(), req_idx as u16);
             if let Some(old_idx) = old {
                 let old_idx: usize = old_idx.into();
+
                 /* Covers:  REQ_UNIQUE_ID: Requirements have a unique Identifier */
-                data.errors.push(DuplicateRequirement(
-                    Rc::clone(&data.requirements[old_idx]),
-                    Rc::clone(req),
-                ));
+                let err =
+                    DuplicateRequirement(Rc::clone(&data.requirements[old_idx]), Rc::clone(req));
+
+                warn!("{}", err);
+
+                data.errors.push(err);
             }
 
             for (cov_idx, cov) in req.covers.iter().enumerate() {
@@ -197,10 +208,8 @@ impl<'a> Artefact<'a> {
             }
         }
 
-        if self.data.set(data).is_err() {
-            unreachable!();
-        }
-        return self.data.get().unwrap();
+        self.data.set(data).unwrap();
+        self.data.get().unwrap()
     }
 
     fn req_with_idx(&self, idx: u16) -> &Rc<Requirement> {

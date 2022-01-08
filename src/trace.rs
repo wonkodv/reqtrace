@@ -1,3 +1,5 @@
+use log::*;
+
 use std::{
     collections::{BTreeSet, HashMap, HashSet},
     error, fmt,
@@ -93,6 +95,15 @@ impl<'a> Tracing<'a> {
     fn add_fork(&mut self, fork: Fork, graph: &'a Graph<'a>) {
         let upper_artefact = &fork.from(graph).artefact(graph);
 
+        trace!(
+            "Trace {} against {}",
+            upper_artefact.id,
+            fork.tines(graph)
+                .map(|t| t.to(graph).artefact(graph).id)
+                .collect::<Vec<_>>()
+                .join(", ")
+        );
+
         for tine in fork.tines(graph) {
             let lower_artefact = &tine.to(graph).artefact(graph);
 
@@ -186,16 +197,20 @@ impl<'a> Tracing<'a> {
     }
 
     /// Ensure Requirement is in `requirements`.
+    ///
+    /// Returns
+    ///     -   added:  true if `req` was added, false if it was already there
+    ///     -   idx:    the index of req
     fn add_req(&mut self, req: &'a Rc<Requirement>, node: NodeIdx) -> (bool, TracedRequirementIdx) {
         match self.requirements_by_id.entry(&req.id) {
             Occupied(e) => {
                 let already_there_idx = *e.get();
                 let already_there = &self.requirements.get_mut(already_there_idx).unwrap();
                 if req != already_there.requirement {
-                    self.errors.push(DuplicateRequirement(
-                        Rc::clone(already_there.requirement),
-                        Rc::clone(req),
-                    ));
+                    let err =
+                        DuplicateRequirement(Rc::clone(already_there.requirement), Rc::clone(req));
+                    warn!("{}", err);
+                    self.errors.push(err);
                 }
                 assert_eq!(already_there.node, node);
 
@@ -244,14 +259,26 @@ impl<'a> Tracing<'a> {
         match cov.kind {
             CoverageKind::CoveredWithTitle(title) => {
                 if Some(title) != cov.upper_requirement.title.as_deref() {
-                    self.errors.push(DependWithWrongTitle(
-                        Rc::clone(cov.upper_requirement),
-                        Rc::clone(cov.lower_requirement),
-                        title.into(),
-                    ));
+                    let err = CoveredWithWrongTitle {
+                        upper: Rc::clone(cov.upper_requirement),
+                        lower: Rc::clone(cov.lower_requirement),
+                        wrong_title: title.into(),
+                    };
+                    warn!("{}", err);
+                    self.errors.push(err);
                 }
             }
-            CoverageKind::DependsWithTitle(_) => todo!(),
+            CoverageKind::DependsWithTitle(title) => {
+                if Some(title) != cov.lower_requirement.title.as_deref() {
+                    let err = DependWithWrongTitle {
+                        upper: Rc::clone(cov.upper_requirement),
+                        lower: Rc::clone(cov.lower_requirement),
+                        wrong_title: title.into(),
+                    };
+                    warn!("{}", err);
+                    self.errors.push(err);
+                }
+            }
             _ => {}
         }
     }
