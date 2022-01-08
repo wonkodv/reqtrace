@@ -95,6 +95,24 @@ where
                     lower.location.line,
                 )?;
             }
+            DependOnUnknownRequirement(req, depend) => {
+                writeln!(
+                    w,
+                    concat!("{}:{}: Depends on unknown requirement {}",),
+                    req.location.file.display(),
+                    req.location.line,
+                    depend
+                )?;
+            }
+            CoversUnknownRequirement(req, cover) => {
+                writeln!(
+                    w,
+                    concat!("{}:{}: Covers unknown requirement {}",),
+                    req.location.file.display(),
+                    req.location.line,
+                    cover
+                )?;
+            }
         }
     }
 

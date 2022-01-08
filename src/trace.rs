@@ -37,27 +37,45 @@ impl<'a> TracedRequirement<'a> {
 
 type TracedRequirementIdx = usize;
 
+#[derive(Debug, Hash, PartialEq, Eq)]
+struct Link {
+    lower: String,
+    upper: String,
+}
+
 /// Tracing info beeing build.
 ///
 /// When adding a Fork (all tines at once) add all lower Reqs to
 /// `derived`, add all  reqs to `requirements`. for all upper, find a lower that covers or is
 /// depent on. if not found, add to uncovered
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct Tracing<'a> {
     requirements: Vec<TracedRequirement<'a>>,
     requirements_by_id: HashMap<&'a str, TracedRequirementIdx>,
     uncovered: HashSet<TracedRequirementIdx>,
     derived: HashSet<TracedRequirementIdx>,
+    invalid_covers_links: Option<HashSet<Link>>,
+    invalid_depends_links: Option<HashSet<Link>>,
     errors: Vec<Error>,
 }
 
 impl<'a> Tracing<'a> {
     pub fn from_graph(graph: &'a Graph<'a>) -> Self {
-        let mut trace = Tracing::default();
+        let mut trace = Tracing {
+            requirements: Vec::new(),
+            requirements_by_id: HashMap::new(),
+            uncovered: HashSet::new(),
+            derived: HashSet::new(),
+            invalid_covers_links: Some(HashSet::new()),
+            invalid_depends_links: Some(HashSet::new()),
+            errors: Vec::new(),
+        };
 
         for fork in graph.iter_forks() {
             trace.add_fork(fork, graph)
         }
+
+        trace.validate();
 
         trace
     }
@@ -85,10 +103,6 @@ impl<'a> Tracing<'a> {
     }
 }
 
-struct TracingInsights {}
-
-impl TracingInsights {}
-
 /// Computing Tracing Data
 impl<'a> Tracing<'a> {
     /// Compute Tracing for one upper and some lower artefacts
@@ -108,7 +122,7 @@ impl<'a> Tracing<'a> {
             let lower_artefact = &tine.to(graph).artefact(graph);
 
             for r in lower_artefact.get_requirements() {
-                self.add_lower_req(r, tine, graph)
+                self.add_lower_req(r, tine, graph);
             }
         }
 
@@ -116,6 +130,7 @@ impl<'a> Tracing<'a> {
             let upper_requirement_idx = self.add_upper_req(upper_requirement, fork, graph);
             let mut is_covered = false;
             for depends in &upper_requirement.depends {
+                // Covers: DSG_TRACE_DOWNWARDS: Trace downwards using Depends attribute
                 for tine in fork.tines(graph) {
                     let lower_artefact = &tine.to(graph).artefact(graph);
 
@@ -139,6 +154,7 @@ impl<'a> Tracing<'a> {
                     }
                 }
             }
+
             for tine in fork.tines(graph) {
                 let lower_artefact = &tine.to(graph).artefact(graph);
 
@@ -217,6 +233,21 @@ impl<'a> Tracing<'a> {
                 (false, already_there_idx)
             }
             Vacant(e) => {
+                for cov in &req.covers {
+                    // Covers: DSG_TRACE_COVERS_EXIST
+                    self.invalid_covers_links.as_mut().unwrap().insert(Link {
+                        lower: req.id.clone(),
+                        upper: cov.id.clone(),
+                    });
+                }
+                for dep in &req.depends {
+                    // Covers: DSG_TRACE_COVERS_EXIST
+                    self.invalid_depends_links.as_mut().unwrap().insert(Link {
+                        lower: dep.id.clone(),
+                        upper: req.id.clone(),
+                    });
+                }
+
                 let t = TracedRequirement {
                     requirement: req,
                     upper: Default::default(),
@@ -257,6 +288,21 @@ impl<'a> Tracing<'a> {
             .push(cov);
 
         match cov.kind {
+            CoverageKind::Covered | CoverageKind::CoveredWithTitle(_) => {
+                self.invalid_covers_links.as_mut().unwrap().remove(&Link {
+                    lower: cov.lower_requirement.id.clone(),
+                    upper: cov.upper_requirement.id.clone(),
+                });
+            }
+            CoverageKind::Depends | CoverageKind::DependsWithTitle(_) => {
+                self.invalid_depends_links.as_mut().unwrap().remove(&Link {
+                    lower: cov.lower_requirement.id.clone(),
+                    upper: cov.upper_requirement.id.clone(),
+                });
+            }
+        }
+
+        match cov.kind {
             CoverageKind::CoveredWithTitle(title) => {
                 if Some(title) != cov.upper_requirement.title.as_deref() {
                     let err = CoveredWithWrongTitle {
@@ -280,6 +326,28 @@ impl<'a> Tracing<'a> {
                 }
             }
             _ => {}
+        }
+    }
+
+    fn validate(&mut self) {
+        for cov in self.invalid_covers_links.take().unwrap() {
+            // Covers: DSG_TRACE_COVERS_EXIST
+            let err = Error::CoversUnknownRequirement(
+                Rc::clone(self.requirement_by_id(&cov.lower).unwrap().requirement),
+                cov.upper,
+            );
+            warn!("{}", err);
+            self.errors.push(err);
+        }
+        for dep in self.invalid_depends_links.take().unwrap() {
+            // Covers: DSG_TRACE_DEPENDS_EXIST
+
+            let err = Error::DependOnUnknownRequirement(
+                Rc::clone(self.requirement_by_id(&dep.upper).unwrap().requirement),
+                dep.lower,
+            );
+            warn!("{}", err);
+            self.errors.push(err);
         }
     }
 }

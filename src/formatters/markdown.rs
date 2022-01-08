@@ -251,6 +251,20 @@ where
         UnknownJob(j) => {
             writeln!(w, "unknown job {:?}", j)
         }
+        DependOnUnknownRequirement(req, depend) => {
+            writeln!(
+                w,
+                "*   Unknown Requirement {} that {} depends on\n    {}",
+                depend, req.id, req.location,
+            )
+        }
+        CoversUnknownRequirement(req, cover) => {
+            writeln!(
+                w,
+                "*   Unknown Requirement {} that {} covers\n    {}",
+                cover, req.id, req.location
+            )
+        }
     }
 }
 

@@ -48,6 +48,12 @@ pub enum Error {
         wrong_title: String,
     },
 
+    #[error("Requirement {0} depends on unknown Requirement {1}")]
+    DependOnUnknownRequirement(Rc<Requirement>, String),
+
+    #[error("Requirement {0} Covers unknown Requirement {1}")]
+    CoversUnknownRequirement(Rc<Requirement>, String),
+
     #[error("Empty Tracing Graph")]
     EmptyGraph,
 

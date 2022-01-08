@@ -44,7 +44,8 @@ impl ArtefactConfigSerialized {
                 }
                 Ok(ArtefactConfig::Markdown(&self.paths[0]))
             }
-            "rust_cov_marks" | "rust_unsafe" => {
+            "rust_cov_mark" => {
+                error!("Parser rust_cov_mark not implemented");
                 Ok(ArtefactConfig::PrePopulated(vec![])) // TODO
             }
             x => Err(UnknownArtefactType(x.into())),
