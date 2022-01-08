@@ -19,7 +19,6 @@ mod formatters;
 mod genericvalue;
 mod graph;
 mod parsers;
-mod pool;
 mod trace;
 
 use structopt::StructOpt;

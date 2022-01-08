@@ -15,15 +15,7 @@ parser = "markdown"
 
 [artefact.code]
 paths = ["src/**/*.rs"]
-parser = "rust_cov_marks"
-
-[artefact.unsafe_code]
-paths =  ["src/**/*.rs"]
-parser = "rust_unsafe"
-
-[artefact.unsafe_reasoning]
-paths = ["doc/requirements/unsafe_reasoning.md"]
-parser = "markdown"
+parser = "rust_cov_mark"
 
 [[trace]]
 upper = "requirements"
@@ -36,10 +28,6 @@ lower= ["formats", "code", ]
 [[trace]]
 upper="formats"
 lower= ["code", ]
-
-[[trace]]
-upper="unsafe_code"
-lower= ["unsafe_reasoning", ]
 
 [job.tags]
 query = "Parse"
