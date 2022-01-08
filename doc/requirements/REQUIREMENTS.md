@@ -3,6 +3,10 @@
 
 Things this tool should do in no particular order
 
+## REQ_TRACE: Determine whcih requirements cover which
+
+Compute tracing for each Requirement, wether it is covered, uncovered, covers
+another requirement or is derived.
 
 ## REQ_UNIQUE_ID_v2: Requirements have a unique Identifier
 
@@ -67,7 +71,7 @@ This must be handled.
 An identifier can be parsed from the line, for example a version string, or
 an expanded RCS Keyword (like `$Id: /path/to/artefact.md$42$`).
 
-## REQ_ARTEFACT_PARSE_ID: Query Tool for Artefact Identifier
+## REQ_ARTEFACT_QUERY_ID: Query Tool for Artefact Identifier
 
 An identifier can be gotten from an external tool like `git describe --tags`.
 
@@ -84,11 +88,10 @@ its Dependencies attribute.
 
 ## REQ_DELEGATION: Coverage Delegation
 
-A Requirement delegates to another requirement in the same artefact or to
-a lower requirement by including the id of the lower one in
-its Dependencies attribute.
+A Requirement delegates to another requirement in the same artefact by including
+the id of the lower one in its Dependencies attribute.
 
-It does not need to be and can not be covered itself through upward coverage of a lower
+It does not need to be covered itself through upward coverage of a lower
 requirement.
 
 ## REQ_ERROR: Useful Parser Errors

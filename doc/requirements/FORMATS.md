@@ -36,13 +36,13 @@ they match the Regular Expression
 This gives the user the greatest flexibility.
 
 Covers:
-*   REQ_FORMATS (Well defined Formats)
+*   REQ_FORMATS: Well defined Formats
 
 Comment:
 Discussion in the [README](README.md#requirement-ids)
 
 History:
-*   v2: Align to Unicode Identifiers
+*   v2: use to Unicode Identifiers
 
 
 ### FMT_FILE_ENCODINGS: Handle File Encodings
@@ -78,7 +78,7 @@ This project's preferred format as used in `REQUIREMENTS.md` or this file.
 Everything is ignored until a requirement starts. The everything is
 a requirement until the next requirement or heading.
 
-### FMT_MD: Markdown File Format
+### FMT_MARKDOWN_REQUIREMENT: Markdown File Format
 
 
 The artefact is a Markdown file with freely chosen layout.  A Requirement is in
@@ -219,42 +219,23 @@ Covers:
 
 TODO
 
-### FMT_JSON: JSON Requirements Format
-Covers:
-*   REQ_FORMATS: Well defined Formats
+### FMT_JSON_REQUIREMENT: JSON Requirements Format
 
-## Rust Coverage Marks
-
-Parse `cov_mark::hit!(DSG_001)`
-
-TODO
 
 Covers:
 *   REQ_FORMATS: Well defined Formats
 
+## FMT_RUST_COV: Rust Coverage Marks
 
-## Rust Unsafe Reasoning
-
-Create Requirements from `unsafe` code, so each occurrence requires a justification in an
-extra document. This can be used to prove that each use was analyzed for necessity and safe
-implementation.
-
-### FMT_RS_UNSAFE: Unique Requirement for each unsafe keyword
-
-Each occurrence of `unsafe` in rust code leads to a unique requirement.
-The Id of the requirement is given by a comment immediately following the keyword
-
-    let x = unsafe /* UNSAFE_ID_EXAMPLE */ { 42 };
-
-Requirement IDs must be unique (REQ_UNIQUE_ID) so each use of the `unsafe` keyword will
-have to have a different ID.
+Parse `cov_mark::hit!(REQ_ID)` and `cov_mark::hit!(REQ_ID) # TITLE`
 
 Covers:
 *   REQ_FORMATS: Well defined Formats
 
-### FMT_RS_UNSAFE_NEEDS_ID: Unsafe Without Id Produce Error
+## FMT_CODE_MANUAL: Code depends on Manual Entry
 
-Occurrences of the `unsafe` keyword without a comment that gives an ID produce a parsing error.
+Code with a comment like `=> MAN_ID(:TITLE)` makes a requirement of the code line that depends on a manual entry `MAN_ID`.
+
 
 ## Regex Parsing
 
@@ -285,7 +266,8 @@ Statemachine:
 
 # Output Formats
 
-## Json
+## FMT_JSON: Json as Data Format
+
 each list sorted to minimize diff !
 
 * Artefacts
@@ -307,6 +289,11 @@ each list sorted to minimize diff !
     * Covered-by Req_Id
 
 TODO
+
+emit JSON according to RFC 8259.
+For human readability,
+each value or key-value pair should be on its own line,
+indented with 4 space per level.
 
 ## Markdown
 
