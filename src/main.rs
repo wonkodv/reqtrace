@@ -12,6 +12,8 @@ use std::{
     path::PathBuf,
 };
 
+use std::io::Write;
+
 mod common;
 mod controller;
 mod errors;
@@ -45,10 +47,18 @@ fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
 
     // Requires MAN_LOG_CONFIG
     let mut builder = env_logger::Builder::new();
-
     builder
         .filter_level(LevelFilter::Info)
-        .format_timestamp(None)
+        .format(|buf, record| {
+            writeln!(
+                buf,
+                "{}:{}: [{}] {}",
+                record.file().unwrap_or("<no file>"),
+                record.line().unwrap_or(0),
+                record.level(),
+                record.args()
+            )
+        })
         .parse_env("REQTRACE_LOG");
 
     match opt.log_level {
