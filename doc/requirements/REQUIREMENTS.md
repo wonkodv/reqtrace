@@ -41,6 +41,14 @@ no package management, libraries, dependencies
 If internal parsers are not able to work on an Artefact, external tools can be
 incorporated.
 
+## REQ_IDENTIFIEABLE: Show versions of input artefacts in output
+
+When reading the output, each input must be clearly identifiable.
+For example by its:
+*   git describe
+*   hash
+*   file modification time
+
 ## REQ_CONFIGURABLE_OUTPUT: The Output Format is Configurable
 
 The Format in which Information is returned is configurable
