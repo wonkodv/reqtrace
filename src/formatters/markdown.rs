@@ -176,8 +176,12 @@ where
                 r1.id, r2.location, r1.location,
             )
         }
-        DuplicateAttribute(loc, attr) => {
-            writeln!(w, "*   Duplicate Attribute: {}\n    {}", attr, loc)
+        DuplicateAttribute(loc, attr, req) => {
+            writeln!(
+                w,
+                "*   Duplicate Attribute: {} when parsing {}\n    {}",
+                attr, req, loc
+            )
         }
         IoError(path, err) => {
             writeln!(w, "*   IO Error: {}\n   {}", err, path.display())
@@ -254,15 +258,15 @@ where
         DependOnUnknownRequirement(req, depend) => {
             writeln!(
                 w,
-                "*   Unknown Requirement {} that {} depends on\n    {}",
-                depend, req.id, req.location,
+                "*   {} depends on unknown Requirement {}\n    {}",
+                req.id, depend, req.location,
             )
         }
         CoversUnknownRequirement(req, cover) => {
             writeln!(
                 w,
-                "*   Unknown Requirement {} that {} covers\n    {}",
-                cover, req.id, req.location
+                "*   {} covers unknown requirement {}\n    {}",
+                req.id, cover, req.location
             )
         }
     }

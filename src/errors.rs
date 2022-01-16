@@ -10,8 +10,8 @@ pub enum Error {
     #[error("Duplicate Requirements: {0} {1}")]
     DuplicateRequirement(Rc<Requirement>, Rc<Requirement>),
 
-    #[error("Duplicate Attribute {1} in {0}")]
-    DuplicateAttribute(Location, String),
+    #[error("Duplicate Attribute {1} in {0} when parsing {2}")]
+    DuplicateAttribute(Location, String, String),
 
     #[error("IO Error: {1} in {0}")]
     IoError(PathBuf, io::Error),

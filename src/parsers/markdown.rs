@@ -324,9 +324,11 @@ fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> S
                 .covers
                 .is_empty()
             {
-                context
-                    .errors
-                    .push(DuplicateAttribute(context.location(), attr.to_owned()));
+                context.errors.push(DuplicateAttribute(
+                    context.location(),
+                    attr.to_owned(),
+                    context.req_under_construction.as_ref().unwrap().id.clone(),
+                ));
             }
             parse_link_attr(attr, first_line)
         }
@@ -338,9 +340,11 @@ fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> S
                 .depends
                 .is_empty()
             {
-                context
-                    .errors
-                    .push(DuplicateAttribute(context.location(), attr.to_owned()));
+                context.errors.push(DuplicateAttribute(
+                    context.location(),
+                    attr.to_owned(),
+                    context.req_under_construction.as_ref().unwrap().id.clone(),
+                ));
             }
             parse_link_attr(attr, first_line)
         }
@@ -353,9 +357,11 @@ fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> S
                 .get(attr)
                 .is_some()
             {
-                context
-                    .errors
-                    .push(DuplicateAttribute(context.location(), attr.to_owned()));
+                context.errors.push(DuplicateAttribute(
+                    context.location(),
+                    attr.to_owned(),
+                    context.req_under_construction.as_ref().unwrap().id.clone(),
+                ));
             }
             State::CollectTextAttr(attr.to_owned(), first_line.to_owned())
         }

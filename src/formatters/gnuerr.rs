@@ -28,12 +28,13 @@ where
                     r1.location.line,
                 )?;
             }
-            DuplicateAttribute(loc, attr) => {
+            DuplicateAttribute(loc, attr, req) => {
                 writeln!(
                     w,
-                    "{}:{}: Duplicate Attribute: {}",
+                    "{}:{}: {} has duplicate Attribute: {}",
                     loc.file.display(),
                     loc.line,
+                    req,
                     attr,
                 )?;
             }
@@ -98,18 +99,20 @@ where
             DependOnUnknownRequirement(req, depend) => {
                 writeln!(
                     w,
-                    concat!("{}:{}: Depends on unknown requirement {}",),
+                    concat!("{}:{}: {} Depends on unknown requirement {}",),
                     req.location.file.display(),
                     req.location.line,
+                    req.id,
                     depend
                 )?;
             }
             CoversUnknownRequirement(req, cover) => {
                 writeln!(
                     w,
-                    concat!("{}:{}: Covers unknown requirement {}",),
+                    concat!("{}:{}: {} Covers unknown requirement {}",),
                     req.location.file.display(),
                     req.location.line,
+                    req.id,
                     cover
                 )?;
             }
