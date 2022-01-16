@@ -56,7 +56,10 @@ enum State {
     CollectRefLink(String, Vec<Reference>),
 }
 
-pub fn markdown_parse<R: io::Read>(reader: R, path: &Path) -> (Vec<Rc<Requirement>>, Vec<Error>) {
+pub fn markdown_parse<R: io::BufRead>(
+    reader: &mut R,
+    path: &Path,
+) -> (Vec<Rc<Requirement>>, Vec<Error>) {
     let mut context = Context {
         path,
         errors: Vec::new(),
@@ -66,7 +69,6 @@ pub fn markdown_parse<R: io::Read>(reader: R, path: &Path) -> (Vec<Rc<Requiremen
         level: 0,
     };
 
-    let mut reader = io::BufReader::new(reader);
     let mut line = String::new();
     let mut state = State::LookForReq;
     loop {
@@ -453,7 +455,7 @@ Depends:
         "#;
 
         let p = Path::new("Test.md");
-        let (reqs, errs) = markdown_parse(s.as_bytes(), &p);
+        let (reqs, errs) = markdown_parse(&mut s.as_bytes(), &p);
 
         assert!(errs.is_empty());
 
@@ -484,7 +486,7 @@ Covers:
         "#;
 
         let p = Path::new("Test.md");
-        let (reqs, errs) = markdown_parse(s.as_bytes(), &p);
+        let (reqs, errs) = markdown_parse(&mut s.as_bytes(), &p);
 
         assert!(errs.is_empty());
 

@@ -163,7 +163,8 @@ impl<'a> Artefact<'a> {
                         data.errors = vec![err];
                     }
                     Ok(file) => {
-                        let (s, e) = markdown_parse(file, path);
+                        let mut r = io::BufReader::new(file);
+                        let (s, e) = markdown_parse(&mut r, path);
                         trace!(
                             "parsed {}: {} errors, {} requirements",
                             path.display(),
