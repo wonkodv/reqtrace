@@ -2,18 +2,21 @@
 name = "reqtrace"
 version = "0.1.0"
 authors = ["Wonko <wonko@hanstool.org>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-regex = "1"
-lazy_static = "1"
-once_cell = "1"
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
+regex = "1.5"
+lazy_static = "1.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+once_cell = "1.9"
 toml = "0.5"
-thiserror = "1"
-log = ""
-env_logger = ""
-structopt = ""
+thiserror = "1.0"
+log = "0.4.0"
+env_logger = "0.8.4"
+structopt = "0.3"
+tera = "1.15"
+syn = { version="1.0", features = ["parsing", "full", "extra-traits"]}
+proc-macro2 = {version = "1.0", features = ["span-locations"] }
