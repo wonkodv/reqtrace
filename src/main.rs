@@ -76,7 +76,7 @@ fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
 
     info!("using config file {}", opt.config_file.display());
 
-    cov_mark::hit!(DSG_CONFIG_TOML /* Use a Single TOML File as Configuration*/ );
+    cov_mark::hit!(DSG_CONFIG_TOML /* Use a Single TOML File as Configuration*/);
 
     let config: controller::Config = toml::from_slice(
         fs::read(&opt.config_file)

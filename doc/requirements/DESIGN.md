@@ -204,8 +204,19 @@ Todo:
 *   Define the exact format of each object
 
 
+### DSG_CONFIG_TOML: Use a Single TOML File as Configuration
 
-### Tracing Algorithm
+The configuration should be placed in one file `requirements.toml`.
+The format is TOML.
+The structure of the Configuration is detailed in the Manual
+
+Covers:
+*   REQ_CONFIG: Simple Configuration in One File
+
+Requires:
+*   MAN_CONFIG_STRUCTURE: Configuration Structure and Fields
+
+## Tracing Algorithm
 
 #### DSG_TRACE_UPWARDS: Trace upwards using Covers attribute
 

@@ -1,2 +1,2 @@
-pub mod rust;
 pub mod markdown;
+pub mod rust;

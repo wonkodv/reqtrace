@@ -17,8 +17,8 @@ where
                     line,
                 )?;
             }
-            Some(LocationInFile::String(_)) => {},
-            None => {},
+            Some(LocationInFile::String(_)) => {}
+            None => {}
         }
     }
     Ok(())

@@ -217,7 +217,11 @@ impl<'graph> Tracing<'graph> {
     /// Returns
     ///     -   added:  true if `req` was added, false if it was already there
     ///     -   idx:    the index of req
-    fn add_req(&mut self, req: &'graph Rc<Requirement>, node: NodeIdx) -> (bool, TracedRequirementIdx) {
+    fn add_req(
+        &mut self,
+        req: &'graph Rc<Requirement>,
+        node: NodeIdx,
+    ) -> (bool, TracedRequirementIdx) {
         match self.requirements_by_id.entry(&req.id) {
             Occupied(e) => {
                 let already_there_idx = *e.get();

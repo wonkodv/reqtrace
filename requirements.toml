@@ -15,7 +15,7 @@ parser = "markdown"
 
 [artefact.code]
 paths = ["src/**/*.rs"]
-parser = "rust_cov_mark"
+parser = "rust"
 
 [[trace]]
 upper = "requirements"

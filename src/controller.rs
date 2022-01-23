@@ -20,6 +20,21 @@ use log::*;
 use crate::errors::{Error, Result};
 use Error::*;
 
+fn glob_paths(paths: &Vec<String>) -> Result<Vec<PathBuf>> {
+    let mut result = Vec::new();
+
+    for path in paths {
+        let glob = glob::glob(path);
+        let glob = glob.map_err(|e| Error::ConfigError(format!("can not glob {path:?}: {e:?}")))?;
+        for path in glob {
+            let path = path.map_err(|e| Error::IoError(e.path().into(), e.into_error()))?;
+            result.push(path);
+        }
+    }
+
+    Ok(result)
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 struct ArtefactConfigSerialized {
     paths: Vec<String>,
@@ -39,7 +54,9 @@ impl ArtefactConfigSerialized {
                 if self.parser_options.is_some() {
                     todo!();
                 }
-                Ok(ArtefactConfig::Markdown(PathBuf::from(self.paths.remove(0))))
+                Ok(ArtefactConfig::Markdown(PathBuf::from(
+                    self.paths.remove(0),
+                )))
             }
             "rust" => {
                 let paths = glob_paths(&self.paths)?;
@@ -141,7 +158,7 @@ impl Controller {
 
     pub fn run_default_jobs(&self) -> Result<bool> {
         trace!("Running default jobs");
-        if ! self.default_jobs.is_empty() {
+        if !self.default_jobs.is_empty() {
             self.run_jobs_by_name(&self.default_jobs)
         } else {
             Err(ConfigError("no default_jobs configured".into()))

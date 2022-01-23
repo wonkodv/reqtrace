@@ -12,6 +12,7 @@ use std::{cell::UnsafeCell, rc::Rc};
 
 use crate::errors::Error;
 use crate::errors::Error::*;
+use crate::parsers;
 use crate::parsers::markdown::markdown_parse;
 
 pub const ATTR_COVERS: &str = "Covers";
@@ -163,8 +164,9 @@ impl fmt::Display for Requirement {
 }
 
 #[derive(Debug)]
-pub enum ArtefactConfig<'a> {
-    Markdown(&'a Path),
+pub enum ArtefactConfig {
+    Markdown(PathBuf),
+    Rust(Vec<PathBuf>),
     PrePopulated(Vec<Rc<Requirement>>),
 }
 
@@ -213,17 +215,36 @@ impl Artefact {
                             e.len(),
                             s.len()
                         );
-                        trace!(
-                            "parsed {}: {} errors, {} requirements",
-                            path.display(),
-                            e.len(),
-                            s.len()
-                        );
                         data.errors.append(&mut e);
                         data.requirements.append(&mut s);
                     }
                 }
             }
+
+            ArtefactConfig::Rust(paths) => {
+                for path in paths {
+                    let file = fs::File::open(path).map_err(|e| IoError(path.into(), e));
+                    match file {
+                        Err(err) => {
+                            warn!("{}", err);
+                            data.errors.push(err);
+                        }
+                        Ok(file) => {
+                            let mut r = io::BufReader::new(file);
+                            let (mut s, mut e) = parsers::rust::parse(&mut r, path);
+                            trace!(
+                                "parsed {}: {} errors, {} requirements",
+                                path.display(),
+                                e.len(),
+                                s.len()
+                            );
+                            data.errors.append(&mut e);
+                            data.requirements.append(&mut s);
+                        }
+                    }
+                }
+            }
+
             ArtefactConfig::PrePopulated(vec) => {
                 data.requirements = vec.clone();
             }
