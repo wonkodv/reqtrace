@@ -19,16 +19,16 @@ impl From<usize> for Fork {
 }
 
 impl Fork {
-    fn as_ref<'a>(self, graph: &'a Graph<'_>) -> &'a ForkData {
+    fn as_ref(self, graph: &Graph) -> &ForkData {
         let i: usize = self.into();
         &graph.forks[i]
     }
 
-    pub fn from(self, graph: &Graph<'_>) -> NodeIdx {
+    pub fn from(self, graph: &Graph) -> NodeIdx {
         self.as_ref(graph).from
     }
 
-    pub fn tines<'g>(self, graph: &'g Graph<'_>) -> impl Iterator<Item = Tine> {
+    pub fn tines(self, graph: &Graph) -> impl Iterator<Item = Tine> {
         (0..self.as_ref(graph).to.len())
             .into_iter()
             .map(move |tine| Tine { fork: self, tine })
@@ -42,10 +42,10 @@ pub struct Tine {
 }
 
 impl Tine {
-    pub fn to<'a>(self, graph: &'a Graph<'_>) -> NodeIdx {
+    pub fn to(self, graph: &Graph) -> NodeIdx {
         self.fork.as_ref(graph).to[self.tine]
     }
-    pub fn from(self, graph: &Graph<'_>) -> NodeIdx {
+    pub fn from(self, graph: &Graph) -> NodeIdx {
         self.fork.as_ref(graph).from
     }
 }
@@ -65,21 +65,21 @@ impl Into<usize> for NodeIdx {
     }
 }
 impl NodeIdx {
-    fn as_mut<'a>(self, graph: &'a mut Graph<'a>) -> &'a mut Node<'a> {
+    fn as_mut<'a>(self, graph: &'a mut Graph) -> &'a mut Node {
         let i: usize = self.into();
         graph.nodes.get_mut(i).unwrap()
     }
-    fn as_ref<'a>(self, graph: &'a Graph<'a>) -> &'a Node<'a> {
+    fn as_ref<'a>(self, graph: &'a Graph) -> &'a Node {
         let i: usize = self.into();
         &graph.nodes[i]
     }
-    pub fn lower<'a>(self, graph: &'a Graph<'a>) -> &'a [Fork] {
+    pub fn lower<'a>(self, graph: &'a Graph) -> &'a [Fork] {
         self.as_ref(graph).forks_down.as_slice()
     }
-    pub fn upper<'a>(self, graph: &'a Graph<'a>) -> &'a [Fork] {
+    pub fn upper<'a>(self, graph: &'a Graph) -> &'a [Fork] {
         self.as_ref(graph).forks_up.as_slice()
     }
-    pub fn artefact<'a>(self, graph: &'a Graph<'a>) -> &'a Artefact<'a> {
+    pub fn artefact<'a>(self, graph: &'a Graph) -> &'a Artefact {
         &self.as_ref(graph).artefact
     }
 }
@@ -94,22 +94,22 @@ struct ForkData {
 
 /// An artefact in the graph
 #[derive(Debug)]
-struct Node<'a> {
-    artefact: Artefact<'a>,
+struct Node {
+    artefact: Artefact,
     forks_up: Vec<Fork>,
     forks_down: Vec<Fork>,
 }
 
 /// The tracing Graph
 #[derive(Debug)]
-pub struct Graph<'a> {
-    nodes: Vec<Node<'a>>,
+pub struct Graph {
+    nodes: Vec<Node>,
     forks: Vec<ForkData>,
 
-    artefact_id_to_node: HashMap<&'a str, NodeIdx>,
+    artefact_id_to_node: HashMap<String, NodeIdx>,
 }
 
-impl<'a> Graph<'a> {
+impl Graph {
     pub fn new() -> Self {
         let nodes = Vec::new();
         let forks = Vec::new();
@@ -121,12 +121,12 @@ impl<'a> Graph<'a> {
         }
     }
 
-    fn node_mut(&mut self, idx: NodeIdx) -> &mut Node<'a> {
+    fn node_mut(&mut self, idx: NodeIdx) -> &mut Node {
         let idx: usize = idx.into();
         self.nodes.get_mut(idx).unwrap()
     }
 
-    fn node_ref(&self, idx: NodeIdx) -> &Node<'a> {
+    fn node_ref(&self, idx: NodeIdx) -> &Node {
         let idx: usize = idx.into();
         self.nodes.get(idx).unwrap()
     }
@@ -148,13 +148,13 @@ impl<'a> Graph<'a> {
     /// # Errors
     /// Returns [`DuplicateArtefactId`] if an artefact with the same id was
     /// already registered
-    pub fn add_artefact(&mut self, artefact: Artefact<'a>) -> Result<()> {
+    pub fn add_artefact(&mut self, artefact: Artefact) -> Result<()> {
         let node_id: NodeIdx = self.nodes.len().into();
 
-        let e = self.artefact_id_to_node.entry(artefact.id);
+        let e = self.artefact_id_to_node.entry(artefact.id.clone());
         match e {
             std::collections::hash_map::Entry::Occupied(_) => {
-                return Err(Error::DuplicateArtefact(artefact.id.into()));
+                return Err(Error::DuplicateArtefact(artefact.id.clone()));
             }
             std::collections::hash_map::Entry::Vacant(e) => {
                 e.insert(node_id);
@@ -203,13 +203,13 @@ impl<'a> Graph<'a> {
         Ok(())
     }
 
-    pub fn get_artefact<'i>(&'a self, id: &'i str) -> Result<&'a Artefact<'a>> {
+    pub fn get_artefact<'a, 'i>(&'a self, id: &'i str) -> Result<&'a Artefact> {
         let node_idx = self.node_idx_by_id(id)?;
         let node = self.node_ref(node_idx);
         Ok(&node.artefact)
     }
 
-    pub fn find_tine_from_to(&self, from: &'a str, to: &'a str) -> Result<Tine> {
+    pub fn find_tine_from_to(&self, from: &str, to: &str) -> Result<Tine> {
         let from_nid = if let Some(n) = self.artefact_id_to_node.get(from) {
             *n
         } else {
@@ -258,13 +258,13 @@ mod tests {
     use super::*;
     use crate::common::*;
 
-    fn make_graph<'a>() -> Graph<'a> {
-        let a_req = Artefact::new("REQ", ArtefactConfig::PrePopulated(vec![]));
-        let a_dsg = Artefact::new("DSG", ArtefactConfig::PrePopulated(vec![]));
-        let a_fmt = Artefact::new("FORMAT", ArtefactConfig::PrePopulated(vec![]));
-        let a_code = Artefact::new("Code", ArtefactConfig::PrePopulated(vec![]));
-        let a_dt = Artefact::new("DTests", ArtefactConfig::PrePopulated(vec![]));
-        let a_rt = Artefact::new("RTests", ArtefactConfig::PrePopulated(vec![]));
+    fn make_graph() -> Graph {
+        let a_req = Artefact::new("REQ".into(), ArtefactConfig::PrePopulated(vec![]));
+        let a_dsg = Artefact::new("DSG".into(), ArtefactConfig::PrePopulated(vec![]));
+        let a_fmt = Artefact::new("FORMAT".into(), ArtefactConfig::PrePopulated(vec![]));
+        let a_code = Artefact::new("Code".into(), ArtefactConfig::PrePopulated(vec![]));
+        let a_dt = Artefact::new("DTests".into(), ArtefactConfig::PrePopulated(vec![]));
+        let a_rt = Artefact::new("RTests".into(), ArtefactConfig::PrePopulated(vec![]));
 
         let mut g = Graph::new();
         g.add_artefact(a_req).unwrap();

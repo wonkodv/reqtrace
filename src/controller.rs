@@ -22,7 +22,7 @@ use Error::*;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ArtefactConfigSerialized {
-    paths: Vec<PathBuf>,
+    paths: Vec<String>,
     parser: String,
     parser_options: Option<HashMap<String, String>>,
     parse_against_self: Option<bool>,
@@ -30,25 +30,25 @@ struct ArtefactConfigSerialized {
 }
 
 impl ArtefactConfigSerialized {
-    fn to_artefact_config<'c>(&'c self) -> Result<ArtefactConfig<'c>> {
+    fn into_artefact_config(mut self) -> Result<ArtefactConfig> {
         match self.parser.as_str() {
             "markdown" => {
                 if self.paths.len() != 1 {
-                    return Err(ArtefactTypeOnlyAllowsOnePath(
-                        self.parser.clone(),
-                        self.paths.clone(),
-                    ));
+                    return Err(ArtefactTypeOnlyAllowsOnePath(self.parser, self.paths));
                 }
                 if self.parser_options.is_some() {
                     todo!();
                 }
-                Ok(ArtefactConfig::Markdown(&self.paths[0]))
+                Ok(ArtefactConfig::Markdown(PathBuf::from(self.paths.remove(0))))
             }
-            "rust_cov_mark" => {
-                error!("Parser rust_cov_mark not implemented");
-                Ok(ArtefactConfig::PrePopulated(vec![])) // TODO
+            "rust" => {
+                let paths = glob_paths(&self.paths)?;
+                Ok(ArtefactConfig::Rust(paths))
             }
-            x => Err(UnknownArtefactType(x.into())),
+            _ => {
+                error!("Unknown Artefact Type {}", &self.parser);
+                Err(UnknownArtefactType(self.parser))
+            }
         }
     }
 }
@@ -106,36 +106,43 @@ pub struct Job {
 }
 
 #[derive(Debug)]
-pub struct Controller<'config> {
-    config: &'config Config,
-    graph: Graph<'config>,
+pub struct Controller {
+    jobs: HashMap<String, Job>,
+    default_jobs: Vec<String>,
+    graph: Graph,
 }
 
-impl<'c> Controller<'c> {
-    pub fn new(config: &'c Config) -> Result<Self> {
+impl Controller {
+    pub fn new(config: Config) -> Result<Self> {
         let mut graph = Graph::new();
 
-        for (id, ac) in &config.artefact {
-            let ac = ac.to_artefact_config()?;
-            let a = Artefact::new(id.as_str(), ac);
+        for (id, ac) in config.artefact {
+            let ac = ac.into_artefact_config()?;
+            let a = Artefact::new(id, ac);
             graph.add_artefact(a)?;
         }
 
         for tc in &config.trace {
             graph.add_fork(&tc.upper, tc.lower.iter())?;
         }
+        let jobs = config.job.unwrap_or_default();
+        let default_jobs = config.default_jobs.unwrap_or_default();
 
-        Ok(Self { config, graph })
+        Ok(Self {
+            jobs,
+            graph,
+            default_jobs,
+        })
     }
 
     pub fn find_job(&self, job: &str) -> Option<&Job> {
-        Some(self.config.job.as_ref()?.get(job)?)
+        Some(self.jobs.get(job)?)
     }
 
     pub fn run_default_jobs(&self) -> Result<bool> {
         trace!("Running default jobs");
-        if let Some(ref default_jobs) = self.config.default_jobs {
-            self.run_jobs_by_name(default_jobs)
+        if ! self.default_jobs.is_empty() {
+            self.run_jobs_by_name(&self.default_jobs)
         } else {
             Err(ConfigError("no default_jobs configured".into()))
         }
@@ -147,6 +154,7 @@ impl<'c> Controller<'c> {
             if let Some(job) = self.find_job(&j) {
                 jobs.push(job)
             } else {
+                error!("Unknown Job {j}");
                 return Err(Error::UnknownJob(j.clone()));
             }
         }

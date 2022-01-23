@@ -42,10 +42,8 @@ struct Opt {
     jobs: Vec<String>,
 }
 
-fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
-    let opt = Opt::from_args();
-
-    // Requires MAN_LOG_CONFIG
+fn logging_setup(opt: &Opt) -> Result<(), Box<dyn std::error::Error>> {
+    // Requires MAN_LOG_CONFIG: Configure Logging
     let mut builder = env_logger::Builder::new();
     builder
         .filter_level(LevelFilter::Info)
@@ -67,10 +65,19 @@ fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
         }
         _ => (),
     }
-
     builder.init();
 
+    Ok(())
+}
+fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
+    let opt: Opt = Opt::from_args();
+
+    logging_setup(&opt)?;
+
     info!("using config file {}", opt.config_file.display());
+
+    cov_mark::hit!(DSG_CONFIG_TOML /* Use a Single TOML File as Configuration*/ );
+
     let config: controller::Config = toml::from_slice(
         fs::read(&opt.config_file)
             .map_err(|e| format!("{}: {}", &opt.config_file.display(), e))?
@@ -90,7 +97,7 @@ fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
         }
     })?;
 
-    let c = controller::Controller::new(&config)?;
+    let c = controller::Controller::new(config)?;
 
     let res = if opt.jobs.is_empty() {
         c.run_default_jobs()

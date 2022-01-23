@@ -39,11 +39,10 @@ where
     for req in reqs {
         writeln!(
             w,
-            "\n## {}: {}\n\nOrigin: `{}:{}`",
+            "\n## {}: {}\n\nOrigin: `{}`",
             req.id,
             req.title.as_ref().unwrap_or(&"".to_owned()),
-            req.location.file.display(),
-            req.location.line
+            req.location
         )?;
 
         if !req.covers.is_empty() {
@@ -78,7 +77,7 @@ where
     Ok(())
 }
 
-pub fn traced_requirements<'r, W, R>(reqs: R, graph: &Graph<'_>, w: &mut W) -> io::Result<()>
+pub fn traced_requirements<'r, W, R>(reqs: R, graph: &Graph, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
     R: Iterator<Item = &'r TracedRequirement<'r>>,
@@ -86,11 +85,14 @@ where
     for req in reqs {
         writeln!(
             w,
-            "\n## {}: {}\n\nOrigin: `{}:{}`",
+            "\n## {} {}\n\nOrigin: `{}`",
             req.requirement.id,
-            req.requirement.title.as_ref().unwrap_or(&"".to_owned()),
-            req.requirement.location.file.display(),
-            req.requirement.location.line
+            req.requirement
+                .title
+                .as_ref()
+                .map(|t| format!(":{t}"))
+                .unwrap_or_default(),
+            req.requirement.location
         )?;
 
         if !req.upper.is_empty() {
@@ -155,6 +157,17 @@ where
     Ok(())
 }
 
+fn format_location(location: &Location) -> String {
+    use crate::common::LocationInFile::*;
+    let file = location.file.display();
+    match &location.location_in_file {
+        None => format!("{file}"),
+        Some(Line(line)) => format!("{file} Line: {line}"),
+        Some(LineAndColumn(line, column)) => format!("{file} Line: {line} Column :{column}"),
+        Some(String(s)) => format!("{file} Location: {s}"),
+    }
+}
+
 pub fn err<'r, W>(error: &'r Error, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
@@ -163,17 +176,22 @@ where
         FormatError(loc, err) => {
             writeln!(
                 w,
-                "*   Format Error: {}\n    in {} Line {}",
+                "*   Format Error: {}\n    in {}",
                 err,
-                loc.file.display(),
-                loc.line
+                format_location(loc),
             )
         }
         DuplicateRequirement(r1, r2) => {
             writeln!(
                 w,
-                "*   Duplicate Requirement: {}\n    {}\n    {}",
-                r1.id, r2.location, r1.location,
+                concat!(
+                    "*   Duplicate Requirement: {}\n",
+                    "first seen in {}\n",
+                    "then again in {}"
+                ),
+                r1.id,
+                format_location(&r2.location),
+                format_location(&r1.location),
             )
         }
         DuplicateAttribute(loc, attr, req) => {
@@ -285,7 +303,7 @@ where
     Ok(())
 }
 
-pub fn tracing<W>(tracing: &Tracing<'_>, graph: &Graph<'_>, w: &mut W) -> io::Result<()>
+pub fn tracing<W>(tracing: &Tracing<'_>, graph: &Graph, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
@@ -364,7 +382,7 @@ where
         writeln!(w, "# Requirements")?;
         writeln!(w)?;
         let mut covered: Vec<_> = tracing.requirements().iter().collect();
-        covered.sort_unstable_by_key(|req| (req.artefact(graph).id, &req.requirement.id));
+        covered.sort_unstable_by_key(|req| (&req.artefact(graph).id, &req.requirement.id));
         traced_requirements(covered.into_iter(), graph, w)?;
     }
 

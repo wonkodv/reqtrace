@@ -26,13 +26,13 @@ struct Context<'a> {
     requirements: Vec<Rc<Requirement>>,
     req_under_construction: Option<Box<Requirement>>,
     path: &'a Path,
-    line_number: u32, // current line number
-    level: usize,     // Heading level of current requirement
+    line_number: usize, // current line number
+    level: usize,       // Heading level of current requirement
 }
 
 impl<'a> Context<'a> {
     fn location(&self) -> Location {
-        Location::new(self.path.to_owned(), self.line_number)
+        Location::new_with_line_no(self.path.to_owned(), self.line_number)
     }
 }
 

@@ -7,13 +7,19 @@ where
     R: Iterator<Item = &'r Rc<Requirement>>,
 {
     for req in reqs {
-        writeln!(
-            w,
-            "{}\t{}\t{};\"\tr",
-            req.id,
-            req.location.file.display(),
-            req.location.line
-        )?;
+        match req.location.location_in_file {
+            Some(LocationInFile::Line(line) | LocationInFile::LineAndColumn(line, _)) => {
+                writeln!(
+                    w,
+                    "{}\t{}\t{};\"\tr",
+                    req.id,
+                    req.location.file.display(),
+                    line,
+                )?;
+            }
+            Some(LocationInFile::String(_)) => {},
+            None => {},
+        }
     }
     Ok(())
 }

@@ -19,21 +19,63 @@ pub const ATTR_DEPENDS: &str = "Depends";
 pub const ATTR_DESCRIPTION: &str = "Description";
 pub const ATTR_TAGS: &str = "Tags";
 
+#[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
+pub enum LocationInFile {
+    Line(usize),
+    LineAndColumn(usize, usize),
+    String(String),
+}
+
+impl fmt::Display for LocationInFile {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            LocationInFile::Line(line) => write!(f, "{line}"),
+            LocationInFile::LineAndColumn(line, column) => write!(f, "{line}:{column}"),
+            LocationInFile::String(s) => write!(f, "{s}"),
+        }
+    }
+}
+
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Location {
     pub file: PathBuf,
-    pub line: u32,
+    pub location_in_file: Option<LocationInFile>,
 }
 
 impl Location {
-    pub fn new(file: PathBuf, line: u32) -> Self {
-        Self { file, line }
+    pub fn new_with_no_pos(file: PathBuf) -> Self {
+        Self {
+            file,
+            location_in_file: None,
+        }
+    }
+    pub fn new_with_line_no(file: PathBuf, line: usize) -> Self {
+        Self {
+            file,
+            location_in_file: Some(LocationInFile::Line(line)),
+        }
+    }
+    pub fn new_with_line_and_column(file: PathBuf, line: usize, column: usize) -> Self {
+        Self {
+            file,
+            location_in_file: Some(LocationInFile::LineAndColumn(line, column)),
+        }
+    }
+    pub fn new_with_str(file: PathBuf, pos: String) -> Self {
+        Self {
+            file,
+            location_in_file: Some(LocationInFile::String(pos)),
+        }
     }
 }
 
 impl fmt::Display for Location {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        return write!(f, "{}:{}", self.file.display(), self.line);
+        if let Some(loc) = &self.location_in_file {
+            write!(f, "{}:{}", self.file.display(), loc)
+        } else {
+            write!(f, "{}", self.file.display())
+        }
     }
 }
 
@@ -136,14 +178,14 @@ struct ArtefactData {
 }
 
 #[derive(Debug)]
-pub struct Artefact<'a> {
-    pub id: &'a str,
-    pub config: ArtefactConfig<'a>,
+pub struct Artefact {
+    pub id: String,
+    pub config: ArtefactConfig,
     data: OnceCell<ArtefactData>,
 }
 
-impl<'a> Artefact<'a> {
-    pub fn new(id: &'a str, config: ArtefactConfig<'a>) -> Self {
+impl Artefact {
+    pub fn new(id: String, config: ArtefactConfig) -> Self {
         let data = OnceCell::new();
         Self { id, config, data }
     }
@@ -160,19 +202,25 @@ impl<'a> Artefact<'a> {
                 match file {
                     Err(err) => {
                         warn!("{}", err);
-                        data.errors = vec![err];
+                        data.errors.push(err);
                     }
                     Ok(file) => {
                         let mut r = io::BufReader::new(file);
-                        let (s, e) = markdown_parse(&mut r, path);
+                        let (mut s, mut e) = markdown_parse(&mut r, path);
                         trace!(
                             "parsed {}: {} errors, {} requirements",
                             path.display(),
                             e.len(),
                             s.len()
                         );
-                        data.errors = e;
-                        data.requirements = s;
+                        trace!(
+                            "parsed {}: {} errors, {} requirements",
+                            path.display(),
+                            e.len(),
+                            s.len()
+                        );
+                        data.errors.append(&mut e);
+                        data.requirements.append(&mut s);
                     }
                 }
             }

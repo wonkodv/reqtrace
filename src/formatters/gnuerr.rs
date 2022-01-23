@@ -12,31 +12,20 @@ where
     for err in errors {
         match err {
             FormatError(loc, err) => {
-                writeln!(w, "{}:{}: {}", loc.file.display(), loc.line, err)?;
+                writeln!(w, "{}: {}", loc, err)?;
             }
             DuplicateRequirement(r1, r2) => {
                 writeln!(
                     w,
                     concat!(
-                        "{}:{}: Duplicate Requirement: {}\n",
-                        "{}:{}: note: previously seen here",
+                        "{}: Duplicate Requirement: {}\n",
+                        "{}: note: previously seen here",
                     ),
-                    r2.location.file.display(),
-                    r2.location.line,
-                    r1.id,
-                    r1.location.file.display(),
-                    r1.location.line,
+                    r2.location, r1.id, r1.location,
                 )?;
             }
             DuplicateAttribute(loc, attr, req) => {
-                writeln!(
-                    w,
-                    "{}:{}: {} has duplicate Attribute: {}",
-                    loc.file.display(),
-                    loc.line,
-                    req,
-                    attr,
-                )?;
+                writeln!(w, "{loc}: {req} has duplicate Attribute: {attr}")?;
             }
             IoError(path, err) => {
                 writeln!(w, "{}: IO Error: {}", path.display(), err,)?;
@@ -60,18 +49,16 @@ where
                 writeln!(
                     w,
                     concat!(
-                        "{}:{}: {} covered with wrong title \n",
+                        "{}: {} covered with wrong title \n",
                         "    expected: {}\n",
                         "    actual  : {}\n",
-                        "{}:{}: note: Defined here"
+                        "{}: note: Defined here"
                     ),
-                    lower.location.file.display(),
-                    lower.location.line,
+                    lower.location,
                     upper.id,
                     upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                     wrong_title,
-                    upper.location.file.display(),
-                    upper.location.line,
+                    upper.location,
                 )?;
             }
             DependWithWrongTitle {
@@ -82,38 +69,30 @@ where
                 writeln!(
                     w,
                     concat!(
-                        "{}:{}: {} depend with wrong title:\n",
+                        "{}: {} depend with wrong title:\n",
                         "    expected: {}\n",
                         "     actual : {}\n",
-                        "{}:{}: note: Defined here",
+                        "{}: note: Defined here",
                     ),
-                    upper.location.file.display(),
-                    upper.location.line,
+                    upper.location,
                     lower.id,
                     lower.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                     wrong_title,
-                    lower.location.file.display(),
-                    lower.location.line,
+                    lower.location,
                 )?;
             }
             DependOnUnknownRequirement(req, depend) => {
                 writeln!(
                     w,
-                    concat!("{}:{}: {} Depends on unknown requirement {}",),
-                    req.location.file.display(),
-                    req.location.line,
-                    req.id,
-                    depend
+                    "{}: {} Depends on unknown requirement {}",
+                    req.location, req.id, depend
                 )?;
             }
             CoversUnknownRequirement(req, cover) => {
                 writeln!(
                     w,
-                    concat!("{}:{}: {} Covers unknown requirement {}",),
-                    req.location.file.display(),
-                    req.location.line,
-                    req.id,
-                    cover
+                    "{}: {} Covers unknown requirement {}",
+                    req.location, req.id, cover
                 )?;
             }
         }
@@ -122,7 +101,7 @@ where
     Ok(())
 }
 
-pub fn tracing<W>(tracing: &Tracing<'_>, graph: &Graph<'_>, w: &mut W) -> io::Result<()>
+pub fn tracing<W>(tracing: &Tracing<'_>, graph: &Graph, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
@@ -135,22 +114,9 @@ where
     for req in tracing.uncovered() {
         let req = req.requirement;
         if let Some(title) = &req.title {
-            writeln!(
-                w,
-                "{}:{}: {}:{}",
-                req.location.file.display(),
-                req.location.line,
-                req.id,
-                title
-            )?;
+            writeln!(w, "{}: {}:{}", req.location, req.id, title)?;
         } else {
-            writeln!(
-                w,
-                "{}:{}: {}",
-                req.location.file.display(),
-                req.location.line,
-                req.id
-            )?;
+            writeln!(w, "{}: {}", req.location, req.id)?;
         }
     }
 
@@ -158,22 +124,9 @@ where
     for req in tracing.derived() {
         let req = req.requirement;
         if let Some(title) = &req.title {
-            writeln!(
-                w,
-                "{}:{}: {}:{}",
-                req.location.file.display(),
-                req.location.line,
-                req.id,
-                title
-            )?;
+            writeln!(w, "{}: {}:{}", req.location, req.id, title)?;
         } else {
-            writeln!(
-                w,
-                "{}:{}: {}",
-                req.location.file.display(),
-                req.location.line,
-                req.id
-            )?;
+            writeln!(w, "{}:{}", req.location, req.id)?;
         }
     }
 

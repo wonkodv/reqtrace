@@ -14,23 +14,23 @@ use Error::*;
 use std::collections::hash_map::Entry::{Occupied, Vacant};
 
 #[derive(Debug, Copy, Clone)]
-pub struct Coverage<'a> {
-    pub upper_requirement: &'a Rc<Requirement>,
-    pub lower_requirement: &'a Rc<Requirement>,
-    pub kind: CoverageKind<'a>,
+pub struct Coverage<'reqs> {
+    pub upper_requirement: &'reqs Rc<Requirement>,
+    pub lower_requirement: &'reqs Rc<Requirement>,
+    pub kind: CoverageKind<'reqs>,
     tine: Tine,
 }
 
 #[derive(Debug)]
-pub struct TracedRequirement<'a> {
-    pub requirement: &'a Rc<Requirement>,
-    pub upper: HashMap<Fork, Vec<Coverage<'a>>>,
-    pub lower: HashMap<Fork, Vec<Coverage<'a>>>,
+pub struct TracedRequirement<'reqs> {
+    pub requirement: &'reqs Rc<Requirement>,
+    pub upper: HashMap<Fork, Vec<Coverage<'reqs>>>,
+    pub lower: HashMap<Fork, Vec<Coverage<'reqs>>>,
     node: NodeIdx,
 }
 
-impl<'a> TracedRequirement<'a> {
-    pub fn artefact(&self, graph: &'a Graph<'a>) -> &'a Artefact<'a> {
+impl<'graph> TracedRequirement<'graph> {
+    pub fn artefact(&self, graph: &'graph Graph) -> &'graph Artefact {
         self.node.artefact(graph)
     }
 }
@@ -49,9 +49,9 @@ struct Link {
 /// `derived`, add all  reqs to `requirements`. for all upper, find a lower that covers or is
 /// depent on. if not found, add to uncovered
 #[derive(Debug)]
-pub struct Tracing<'a> {
-    requirements: Vec<TracedRequirement<'a>>,
-    requirements_by_id: HashMap<&'a str, TracedRequirementIdx>,
+pub struct Tracing<'graph> {
+    requirements: Vec<TracedRequirement<'graph>>,
+    requirements_by_id: HashMap<&'graph str, TracedRequirementIdx>,
     uncovered: HashSet<TracedRequirementIdx>,
     derived: HashSet<TracedRequirementIdx>,
     invalid_covers_links: Option<HashSet<Link>>,
@@ -59,8 +59,8 @@ pub struct Tracing<'a> {
     errors: Vec<Error>,
 }
 
-impl<'a> Tracing<'a> {
-    pub fn from_graph(graph: &'a Graph<'a>) -> Self {
+impl<'graph> Tracing<'graph> {
+    pub fn from_graph(graph: &'graph Graph) -> Self {
         let mut trace = Tracing {
             requirements: Vec::new(),
             requirements_by_id: HashMap::new(),
@@ -84,36 +84,36 @@ impl<'a> Tracing<'a> {
         self.errors.as_slice()
     }
 
-    pub fn uncovered<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'a>> {
+    pub fn uncovered<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'graph>> {
         self.uncovered
             .iter()
             .map(move |idx| &self.requirements[*idx])
     }
 
-    pub fn derived<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'a>> {
+    pub fn derived<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'graph>> {
         self.derived.iter().map(move |idx| &self.requirements[*idx])
     }
 
-    pub fn requirements(&self) -> &[TracedRequirement<'a>] {
+    pub fn requirements(&self) -> &[TracedRequirement<'graph>] {
         self.requirements.as_slice()
     }
 
-    pub fn requirement_by_id<'s>(&'s self, id: &str) -> Option<&'s TracedRequirement<'_>> {
+    pub fn requirement_by_id<'s>(&'s self, id: &str) -> Option<&'s TracedRequirement<'graph>> {
         self.requirements.get(*self.requirements_by_id.get(id)?)
     }
 }
 
 /// Computing Tracing Data
-impl<'a> Tracing<'a> {
+impl<'graph> Tracing<'graph> {
     /// Compute Tracing for one upper and some lower artefacts
-    fn add_fork(&mut self, fork: Fork, graph: &'a Graph<'a>) {
+    fn add_fork(&mut self, fork: Fork, graph: &'graph Graph) {
         let upper_artefact = &fork.from(graph).artefact(graph);
 
         trace!(
             "Trace {} against {}",
             upper_artefact.id,
             fork.tines(graph)
-                .map(|t| t.to(graph).artefact(graph).id)
+                .map(|t| t.to(graph).artefact(graph).id.clone())
                 .collect::<Vec<_>>()
                 .join(", ")
         );
@@ -183,7 +183,7 @@ impl<'a> Tracing<'a> {
         }
     }
 
-    fn add_lower_req(&mut self, req: &'a Rc<Requirement>, tine: Tine, graph: &Graph<'_>) {
+    fn add_lower_req(&mut self, req: &'graph Rc<Requirement>, tine: Tine, graph: &Graph) {
         let (added, idx) = self.add_req(req, tine.to(graph));
         if added {
             self.derived.insert(idx);
@@ -197,9 +197,9 @@ impl<'a> Tracing<'a> {
 
     fn add_upper_req(
         &mut self,
-        req: &'a Rc<Requirement>,
+        req: &'graph Rc<Requirement>,
         fork: Fork,
-        graph: &Graph<'_>,
+        graph: &Graph,
     ) -> TracedRequirementIdx {
         let (_added, idx) = self.add_req(req, fork.from(graph));
 
@@ -217,7 +217,7 @@ impl<'a> Tracing<'a> {
     /// Returns
     ///     -   added:  true if `req` was added, false if it was already there
     ///     -   idx:    the index of req
-    fn add_req(&mut self, req: &'a Rc<Requirement>, node: NodeIdx) -> (bool, TracedRequirementIdx) {
+    fn add_req(&mut self, req: &'graph Rc<Requirement>, node: NodeIdx) -> (bool, TracedRequirementIdx) {
         match self.requirements_by_id.entry(&req.id) {
             Occupied(e) => {
                 let already_there_idx = *e.get();
@@ -266,7 +266,7 @@ impl<'a> Tracing<'a> {
     /// Record coverage info for upper and lower requirement.
     /// remove lower from `derived`
     /// check that coverage with title used correct title
-    fn add_coverage(&mut self, cov: Coverage<'a>) {
+    fn add_coverage(&mut self, cov: Coverage<'graph>) {
         let lower_idx = self.requirements_by_id[cov.lower_requirement.id.as_str()];
         self.derived.remove(&lower_idx);
 

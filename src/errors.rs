@@ -17,7 +17,7 @@ pub enum Error {
     IoError(PathBuf, io::Error),
 
     #[error("Only one Path expected for {0}, got: {1:?}")]
-    ArtefactTypeOnlyAllowsOnePath(String, Vec<PathBuf>),
+    ArtefactTypeOnlyAllowsOnePath(String, Vec<String>),
 
     #[error("unknown Artefact type: {0}")]
     UnknownArtefactType(String),
