@@ -10,7 +10,7 @@ pub enum Error {
     #[error("Duplicate Requirements: {0} {1}")]
     DuplicateRequirement(Rc<Requirement>, Rc<Requirement>),
 
-    #[error("Duplicate Attribute {1} in {0} when parsing {2}")]
+    #[error("Duplicate Attribute {1} when parsing {2} at {0}")]
     DuplicateAttribute(Location, String, String),
 
     #[error("IO Error: {1} in {0}")]
@@ -39,6 +39,7 @@ pub enum Error {
         upper: Rc<Requirement>,
         lower: Rc<Requirement>,
         wrong_title: String,
+        location: Option<Location>,
     },
 
     #[error("Requirement Depended with Wrong Title {upper} -> {lower} with {wrong_title}")]
@@ -46,13 +47,14 @@ pub enum Error {
         upper: Rc<Requirement>,
         lower: Rc<Requirement>,
         wrong_title: String,
+        location: Option<Location>,
     },
 
-    #[error("Requirement {0} depends on unknown Requirement {1}")]
-    DependOnUnknownRequirement(Rc<Requirement>, String),
+    #[error("Requirement {0} depends on unknown Requirement {1} at {2:?}")]
+    DependOnUnknownRequirement(Rc<Requirement>, String, Option<Location>),
 
-    #[error("Requirement {0} Covers unknown Requirement {1}")]
-    CoversUnknownRequirement(Rc<Requirement>, String),
+    #[error("Requirement {0} Covers unknown Requirement {1} at {2:?}")]
+    CoversUnknownRequirement(Rc<Requirement>, String, Option<Location>),
 
     #[error("Empty Tracing Graph")]
     EmptyGraph,

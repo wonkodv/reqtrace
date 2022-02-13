@@ -228,8 +228,13 @@ fn parse_states<'a>(state: State, context: &mut Context<'_>, evt: &'a Event<'_>)
                 if let Some(ref_link) = REF_LINK_LINE.captures(line) {
                     let id = ref_link[1].to_owned();
                     let title = ref_link.get(2).map(|m| m.as_str().to_owned());
+                    let location = Some(context.location());
 
-                    vec.push(Reference { id, title });
+                    vec.push(Reference {
+                        id,
+                        title,
+                        location,
+                    });
                     State::CollectRefLink(attr, vec)
                 } else if line.trim().is_empty() {
                     commit_link_attr(context, attr, vec);
@@ -330,7 +335,7 @@ fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> S
                     context.req_under_construction.as_ref().unwrap().id.clone(),
                 ));
             }
-            parse_link_attr(attr, first_line)
+            parse_link_attr(context, attr, first_line)
         }
         ATTR_DEPENDS => {
             if !context
@@ -346,7 +351,7 @@ fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> S
                     context.req_under_construction.as_ref().unwrap().id.clone(),
                 ));
             }
-            parse_link_attr(attr, first_line)
+            parse_link_attr(context, attr, first_line)
         }
         _ => {
             if context
@@ -368,15 +373,17 @@ fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> S
     }
 }
 
-fn parse_link_attr(attr: &str, short_list: &str) -> State {
+fn parse_link_attr(context: &mut Context<'_>, attr: &str, short_list: &str) -> State {
     let mut vec = Vec::new();
     let short_list = short_list.trim();
     for id in short_list.split(',') {
-        let id = id.trim();
+        let id = id.trim().to_owned();
+        let location = Some(context.location());
         if !id.is_empty() {
             vec.push(Reference {
-                id: id.to_owned(),
+                id,
                 title: None,
+                location,
             });
         }
     }

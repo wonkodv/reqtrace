@@ -45,6 +45,7 @@ where
                 upper,
                 lower,
                 wrong_title,
+                location,
             } => {
                 writeln!(
                     w,
@@ -54,7 +55,7 @@ where
                         "    actual  : {}\n",
                         "{}: note: Defined here"
                     ),
-                    lower.location,
+                    location.as_ref().unwrap_or(&lower.location),
                     upper.id,
                     upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                     wrong_title,
@@ -65,6 +66,7 @@ where
                 upper,
                 lower,
                 wrong_title,
+                location,
             } => {
                 writeln!(
                     w,
@@ -74,25 +76,29 @@ where
                         "     actual : {}\n",
                         "{}: note: Defined here",
                     ),
-                    upper.location,
+                    location.as_ref().unwrap_or(&upper.location),
                     lower.id,
                     lower.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                     wrong_title,
                     lower.location,
                 )?;
             }
-            DependOnUnknownRequirement(req, depend) => {
+            DependOnUnknownRequirement(req, depend, location) => {
                 writeln!(
                     w,
                     "{}: {} Depends on unknown requirement {}",
-                    req.location, req.id, depend
+                    location.as_ref().unwrap_or(&req.location),
+                    req.id,
+                    depend
                 )?;
             }
-            CoversUnknownRequirement(req, cover) => {
+            CoversUnknownRequirement(req, cover, location) => {
                 writeln!(
                     w,
                     "{}: {} Covers unknown requirement {}",
-                    req.location, req.id, cover
+                    location.as_ref().unwrap_or(&req.location),
+                    req.id,
+                    cover
                 )?;
             }
         }

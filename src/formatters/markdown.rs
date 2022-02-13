@@ -223,6 +223,7 @@ where
             upper,
             lower,
             wrong_title,
+            location,
         } => {
             writeln!(
                 w,
@@ -242,29 +243,40 @@ where
                 lower.location,
                 upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
-            )
+            )?;
+            if let Some(location) = location {
+                writeln!(w, "*   Referenced at:              {}", location)?;
+            };
+            Ok(())
         }
         DependWithWrongTitle {
             upper,
             lower,
             wrong_title,
+            location,
         } => {
             writeln!(
                 w,
-                "*   Requirement depended on with wrong title:
-                    *   Upper Requirement {}
-                        {}
-                    *   Lower Requirement {}
-                        {}
-                    *   Expected Title: {}
-                    *   Actual Title:   {}",
+                concat!(
+                    "*   Requirement depended on with wrong title:\n",
+                    "*   Upper Requirement {}\n",
+                    "    {}\n",
+                    "*   Lower Requirement {}\n",
+                    "    {}\n",
+                    "*   Title of Lower Requirement: {}\n",
+                    "*   Title used to cover it:     {}\n",
+                ),
                 upper.id,
                 upper.location,
                 lower.id,
                 lower.location,
                 upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
-            )
+            )?;
+            if let Some(location) = location {
+                writeln!(w, "*   Referenced at:              {}", location)?;
+            };
+            Ok(())
         }
 
         ArtefactTypeOnlyAllowsOnePath(_, _) | EmptyGraph => {
@@ -273,18 +285,22 @@ where
         UnknownJob(j) => {
             writeln!(w, "unknown job {:?}", j)
         }
-        DependOnUnknownRequirement(req, depend) => {
+        DependOnUnknownRequirement(req, depend, location) => {
             writeln!(
                 w,
                 "*   {} depends on unknown Requirement {}\n    {}",
-                req.id, depend, req.location,
+                req.id,
+                depend,
+                location.as_ref().unwrap_or(&req.location),
             )
         }
-        CoversUnknownRequirement(req, cover) => {
+        CoversUnknownRequirement(req, cover, location) => {
             writeln!(
                 w,
-                "*   {} covers unknown requirement {}\n    {}",
-                req.id, cover, req.location
+                "*   {} covers unknown Requirement {}\n    {}",
+                req.id,
+                cover,
+                location.as_ref().unwrap_or(&req.location),
             )
         }
     }

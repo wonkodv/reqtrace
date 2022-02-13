@@ -104,7 +104,11 @@ impl Parser<'_> {
 
             let covers = tokens[0].to_string();
 
-            let reference = Reference { id: covers, title };
+            let reference = Reference {
+                id: covers,
+                title,
+                location: None,
+            };
 
             // TODO: add info from path of source file to make symbols unique
             let id = self.symbol_stack.join("::");

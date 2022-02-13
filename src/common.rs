@@ -84,6 +84,7 @@ impl fmt::Display for Location {
 pub struct Reference {
     pub id: String,
     pub title: Option<String>,
+    pub location: Option<Location>,
 }
 
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
@@ -306,7 +307,7 @@ impl Artefact {
     pub fn get_requirements_that_cover<'b>(
         &'b self,
         id: &'b str,
-    ) -> impl Iterator<Item = (&'b Rc<Requirement>, Option<&'b str>)> {
+    ) -> impl Iterator<Item = (&'b Rc<Requirement>, &'b Reference)> {
         let d = self.load();
 
         let mut i;
@@ -320,12 +321,8 @@ impl Artefact {
             if let Some(i) = &mut i {
                 if let Some((req_id, cov_id)) = i.next() {
                     let r = self.req_with_idx(*req_id);
-                    let dep = r.covers[*cov_id as usize].title.as_ref();
-                    if let Some(title) = dep {
-                        return Some((r, Some(title.as_str())));
-                    } else {
-                        return Some((r, None));
-                    }
+                    let reference = &r.covers[*cov_id as usize];
+                    return Some((r, reference));
                 }
             }
             None

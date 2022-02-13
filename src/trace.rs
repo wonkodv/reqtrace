@@ -18,6 +18,7 @@ pub struct Coverage<'reqs> {
     pub upper_requirement: &'reqs Rc<Requirement>,
     pub lower_requirement: &'reqs Rc<Requirement>,
     pub kind: CoverageKind<'reqs>,
+    pub location: Option<&'reqs Location>,
     tine: Tine,
 }
 
@@ -148,6 +149,7 @@ impl<'graph> Tracing<'graph> {
                             lower_requirement,
                             tine,
                             kind,
+                            location: depends.location.as_ref(),
                         };
 
                         self.add_coverage(cov);
@@ -158,11 +160,11 @@ impl<'graph> Tracing<'graph> {
             for tine in fork.tines(graph) {
                 let lower_artefact = &tine.to(graph).artefact(graph);
 
-                for (lower_requirement, referenced_title) in
+                for (lower_requirement, reference) in
                     lower_artefact.get_requirements_that_cover(&upper_requirement.id)
                 {
                     is_covered = true;
-                    let kind = if let Some(title) = referenced_title.as_ref() {
+                    let kind = if let Some(title) = reference.title.as_ref() {
                         CoverageKind::CoveredWithTitle(title)
                     } else {
                         CoverageKind::Covered
@@ -172,6 +174,7 @@ impl<'graph> Tracing<'graph> {
                         lower_requirement,
                         tine,
                         kind,
+                        location: reference.location.as_ref(),
                     };
 
                     self.add_coverage(cov);
@@ -313,6 +316,7 @@ impl<'graph> Tracing<'graph> {
                         upper: Rc::clone(cov.upper_requirement),
                         lower: Rc::clone(cov.lower_requirement),
                         wrong_title: title.into(),
+                        location: cov.location.cloned(),
                     };
                     warn!("{}", err);
                     self.errors.push(err);
@@ -324,6 +328,7 @@ impl<'graph> Tracing<'graph> {
                         upper: Rc::clone(cov.upper_requirement),
                         lower: Rc::clone(cov.lower_requirement),
                         wrong_title: title.into(),
+                        location: cov.location.cloned(),
                     };
                     warn!("{}", err);
                     self.errors.push(err);
@@ -335,20 +340,43 @@ impl<'graph> Tracing<'graph> {
 
     fn validate(&mut self) {
         for cov in self.invalid_covers_links.take().unwrap() {
+            let req = self
+                .requirement_by_id(&cov.lower)
+                .expect("requirement with wrong link exists")
+                .requirement;
+            let req = Rc::clone(req);
+            let reference: &Reference = req
+                .covers
+                .iter()
+                .filter(|r: &&Reference| r.id == cov.upper)
+                .next()
+                .expect("invalid link exists");
+            let location = reference.location.clone();
+
             // Covers: DSG_TRACE_COVERS_EXIST
-            let err = Error::CoversUnknownRequirement(
-                Rc::clone(self.requirement_by_id(&cov.lower).unwrap().requirement),
-                cov.upper,
-            );
+            let err = Error::CoversUnknownRequirement(req, cov.upper, location);
             warn!("{}", err);
             self.errors.push(err);
         }
         for dep in self.invalid_depends_links.take().unwrap() {
             // Covers: DSG_TRACE_DEPENDS_EXIST
+            let req = self
+                .requirement_by_id(&dep.upper)
+                .expect("requirement with wrong link exists")
+                .requirement;
+            let req = Rc::clone(req);
+            let reference = req
+                .depends
+                .iter()
+                .filter(|r: &&Reference| r.id == dep.lower)
+                .next()
+                .expect("invalid link exists");
+            let location = reference.location.clone();
 
             let err = Error::DependOnUnknownRequirement(
                 Rc::clone(self.requirement_by_id(&dep.upper).unwrap().requirement),
                 dep.lower,
+                location,
             );
             warn!("{}", err);
             self.errors.push(err);
