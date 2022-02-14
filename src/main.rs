@@ -1,18 +1,13 @@
 //! Requirement Tracing Tool
 
-#![allow(unused_imports, dead_code)] // TODO
 #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
+#![allow(dead_code)]
 #![allow(clippy::needless_lifetimes, clippy::enum_variant_names)]
 
 use log::*;
-use std::{
-    convert::TryInto,
-    fmt,
-    fs::{self, File},
-    path::PathBuf,
-};
-
+use std::fs;
 use std::io::Write;
+use std::path::PathBuf;
 
 mod common;
 mod controller;
@@ -22,6 +17,7 @@ mod genericvalue;
 mod graph;
 mod parsers;
 mod trace;
+mod util;
 
 use structopt::StructOpt;
 

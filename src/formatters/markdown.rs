@@ -6,7 +6,7 @@ use crate::{errors::Error, trace::Tracing};
 use Error::*;
 
 use lazy_static::lazy_static;
-use regex::{Captures, Regex};
+use regex::Regex;
 
 use crate::trace::TracedRequirement;
 

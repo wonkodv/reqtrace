@@ -1,14 +1,15 @@
-use std::{collections::HashMap, io, rc::Rc};
-use std::{io::BufRead, path::Path};
+use std::io;
+use std::path::Path;
+use std::rc::Rc;
 
 use lazy_static::lazy_static;
-use regex::{Captures, Regex};
+use regex::Captures;
+use regex::Regex;
 
 use super::super::common::*;
 use super::*;
 
 use crate::errors::Error;
-use Error::*;
 
 lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();

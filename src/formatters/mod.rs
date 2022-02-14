@@ -1,5 +1,4 @@
-use serde::{Deserialize, Serialize};
-use std::{io, path::PathBuf, rc::Rc};
+use std::{io, rc::Rc};
 
 use crate::{
     common::{Format, Requirement},
@@ -8,7 +7,6 @@ use crate::{
 };
 
 use crate::errors::Error;
-use Error::*;
 
 mod gnuerr;
 mod markdown;

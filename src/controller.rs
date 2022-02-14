@@ -1,94 +1,31 @@
 use crate::{
-    common::{Artefact, ArtefactConfig, Format},
+    common::{Artefact, Format},
     formatters,
     graph::Graph,
+    parsers::{self, ArtefactConfig},
     trace::Tracing,
 };
 use serde::{Deserialize, Serialize};
-use std::{
-    collections::HashMap,
-    convert::TryFrom,
-    fmt,
-    fs::{self, File},
-    io::{self, Write},
-    path::{Path, PathBuf},
-    time::Instant,
-};
+use std::{collections::HashMap, fs, io, path::PathBuf, time::Instant};
 
 use log::*;
 
 use crate::errors::{Error, Result};
 use Error::*;
 
-fn glob_paths(paths: &Vec<String>) -> Result<Vec<PathBuf>> {
-    let mut result = Vec::new();
-
-    for path in paths {
-        let glob = glob::glob(path);
-        let glob = glob.map_err(|e| Error::ConfigError(format!("can not glob {path:?}: {e:?}")))?;
-        for path in glob {
-            let path = path.map_err(|e| Error::IoError(e.path().into(), e.into_error()))?;
-            result.push(path);
-        }
-    }
-
-    Ok(result)
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-struct ArtefactConfigSerialized {
-    paths: Vec<String>,
-    parser: String,
-    parser_options: Option<HashMap<String, String>>,
-    parse_against_self: Option<bool>,
-    version_provider: Option<String>,
-}
-
-impl ArtefactConfigSerialized {
-    fn into_artefact_config(mut self) -> Result<ArtefactConfig> {
-        match self.parser.as_str() {
-            "markdown" => {
-                if self.paths.len() != 1 {
-                    return Err(ArtefactTypeOnlyAllowsOnePath(self.parser, self.paths));
-                }
-                if self.parser_options.is_some() {
-                    todo!();
-                }
-                Ok(ArtefactConfig::Markdown(PathBuf::from(
-                    self.paths.remove(0),
-                )))
-            }
-            "rust" => {
-                let paths = glob_paths(&self.paths)?;
-                Ok(ArtefactConfig::Rust(paths))
-            }
-            _ => {
-                error!("Unknown Artefact Type {}", &self.parser);
-                Err(UnknownArtefactType(self.parser))
-            }
-        }
-    }
-}
-
 #[derive(Serialize, Deserialize, Debug)]
 struct TraceConfig {
     upper: String,
     lower: Vec<String>,
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
-    artefact: HashMap<String, ArtefactConfigSerialized>,
+    artefact: HashMap<String, ArtefactConfig>,
     trace: Vec<TraceConfig>,
     job: Option<HashMap<String, Job>>,
     version_provider: Option<String>,
     default_jobs: Option<Vec<String>>,
-}
-
-impl Config {
-    pub fn from_toml_file<P: AsRef<Path>>(p: P) -> io::Result<Self> {
-        let config: Config = toml::from_slice(fs::read(p)?.as_slice())?;
-        Ok(config)
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -134,8 +71,8 @@ impl Controller {
         let mut graph = Graph::new();
 
         for (id, ac) in config.artefact {
-            let ac = ac.into_artefact_config()?;
-            let a = Artefact::new(id, ac);
+            let parser = parsers::ArtefactParser::from_config(ac);
+            let a = Artefact::new(id, parser);
             graph.add_artefact(a)?;
         }
 
@@ -205,7 +142,8 @@ impl Controller {
         if job.file.as_os_str() == "-" {
             out = Box::new(stdout.lock());
         } else {
-            let file = File::create(&job.file).map_err(|e| Error::IoError(job.file.clone(), e))?;
+            let file =
+                fs::File::create(&job.file).map_err(|e| Error::IoError(job.file.clone(), e))?;
             out = Box::new(file);
         }
 

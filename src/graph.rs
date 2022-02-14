@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::ops::Range;
 use std::rc::Rc;
 
 use crate::common::{Artefact, Requirement};
@@ -257,14 +256,15 @@ impl Graph {
 mod tests {
     use super::*;
     use crate::common::*;
+    use crate::parsers::ArtefactParser;
 
     fn make_graph() -> Graph {
-        let a_req = Artefact::new("REQ".into(), ArtefactConfig::PrePopulated(vec![]));
-        let a_dsg = Artefact::new("DSG".into(), ArtefactConfig::PrePopulated(vec![]));
-        let a_fmt = Artefact::new("FORMAT".into(), ArtefactConfig::PrePopulated(vec![]));
-        let a_code = Artefact::new("Code".into(), ArtefactConfig::PrePopulated(vec![]));
-        let a_dt = Artefact::new("DTests".into(), ArtefactConfig::PrePopulated(vec![]));
-        let a_rt = Artefact::new("RTests".into(), ArtefactConfig::PrePopulated(vec![]));
+        let a_req = Artefact::new("REQ".into(), ArtefactParser::PrePopulated(vec![]));
+        let a_dsg = Artefact::new("DSG".into(), ArtefactParser::PrePopulated(vec![]));
+        let a_fmt = Artefact::new("FORMAT".into(), ArtefactParser::PrePopulated(vec![]));
+        let a_code = Artefact::new("Code".into(), ArtefactParser::PrePopulated(vec![]));
+        let a_dt = Artefact::new("DTests".into(), ArtefactParser::PrePopulated(vec![]));
+        let a_rt = Artefact::new("RTests".into(), ArtefactParser::PrePopulated(vec![]));
 
         let mut g = Graph::new();
         g.add_artefact(a_req).unwrap();

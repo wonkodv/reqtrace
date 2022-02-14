@@ -1,13 +1,12 @@
 use log::*;
 
 use std::{
-    collections::{BTreeSet, HashMap, HashSet},
-    error, fmt,
+    collections::{HashMap, HashSet},
     rc::Rc,
 };
 
 use super::common::*;
-use crate::errors::{Error, Result};
+use crate::errors::Error;
 use crate::graph::*;
 use Error::*;
 
@@ -339,6 +338,10 @@ impl<'graph> Tracing<'graph> {
     }
 
     fn validate(&mut self) {
+        self.validate_upwards();
+        self.validate_downwards();
+    }
+    fn validate_downwards(&mut self) {
         for cov in self.invalid_covers_links.take().unwrap() {
             let req = self
                 .requirement_by_id(&cov.lower)
@@ -358,6 +361,9 @@ impl<'graph> Tracing<'graph> {
             warn!("{}", err);
             self.errors.push(err);
         }
+    }
+
+    fn validate_upwards(&mut self) {
         for dep in self.invalid_depends_links.take().unwrap() {
             // Covers: DSG_TRACE_DEPENDS_EXIST
             let req = self
@@ -400,5 +406,5 @@ pub struct DerivedRequirement<'a> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // TODO: tests
 }

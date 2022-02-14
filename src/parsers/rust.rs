@@ -1,6 +1,6 @@
 use std::{
-    io::{self, BufRead},
-    path::{Path, PathBuf},
+    io::{self},
+    path::Path,
     rc::Rc,
 };
 
@@ -201,7 +201,7 @@ fn location_from_span(path: &Path, span: &Span) -> Location {
 
 #[cfg(test)]
 mod test {
-    use std::io::{BufRead, BufReader};
+    use std::{io::BufReader, path::PathBuf};
 
     use crate::common::LocationInFile;
 
