@@ -31,6 +31,24 @@ fn requirement_link(req: &Rc<Requirement>) -> String {
     }
 }
 
+fn location_link(loc: &Location) -> String {
+    let file = &loc.file.display();
+    match &loc.location_in_file {
+        Some(LocationInFile::Line(line)) => {
+            format!("[{file}:{line}]({file}?plain=1#L{line})")
+        }
+        Some(LocationInFile::LineAndColumn(line, column)) => {
+            format!("[{file}:{line}:{column}]({file}?plain=1#L{line})")
+        }
+        Some(LocationInFile::String(string)) => {
+            format!("[{file}]({file}):{string}")
+        }
+        None => {
+            format!("[{file}]({file})")
+        }
+    }
+}
+
 pub fn requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
@@ -42,7 +60,7 @@ where
             "\n## {}: {}\n\nOrigin: `{}`",
             req.id,
             req.title.as_ref().unwrap_or(&"".to_owned()),
-            req.location
+            location_link(&req.location)
         )?;
 
         if !req.covers.is_empty() {
@@ -92,7 +110,7 @@ where
                 .as_ref()
                 .map(|t| format!(":{t}"))
                 .unwrap_or_default(),
-            req.requirement.location
+            location_link(&req.requirement.location)
         )?;
 
         if !req.upper.is_empty() {
@@ -157,17 +175,6 @@ where
     Ok(())
 }
 
-fn format_location(location: &Location) -> String {
-    use crate::common::LocationInFile::*;
-    let file = location.file.display();
-    match &location.location_in_file {
-        None => format!("{file}"),
-        Some(Line(line)) => format!("{file} Line: {line}"),
-        Some(LineAndColumn(line, column)) => format!("{file} Line: {line} Column :{column}"),
-        Some(String(s)) => format!("{file} Location: {s}"),
-    }
-}
-
 pub fn err<'r, W>(error: &'r Error, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
@@ -178,7 +185,7 @@ where
                 w,
                 "*   Format Error: {}\n    in {}",
                 err,
-                format_location(loc),
+                location_link(loc),
             )
         }
         DuplicateRequirement(r1, r2) => {
@@ -190,8 +197,8 @@ where
                     "then again in {}"
                 ),
                 r1.id,
-                format_location(&r2.location),
-                format_location(&r1.location),
+                location_link(&r2.location),
+                location_link(&r1.location),
             )
         }
         DuplicateAttribute(loc, attr, req) => {
@@ -238,14 +245,18 @@ where
                     "*   Title used to cover it:     {}\n",
                 ),
                 upper.id,
-                upper.location,
+                location_link(&upper.location),
                 lower.id,
-                lower.location,
+                location_link(&lower.location),
                 upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
             )?;
             if let Some(location) = location {
-                writeln!(w, "*   Referenced at:              {}", location)?;
+                writeln!(
+                    w,
+                    "*   Referenced at:              {}",
+                    location_link(&location)
+                )?;
             };
             Ok(())
         }
@@ -267,14 +278,18 @@ where
                     "*   Title used to cover it:     {}\n",
                 ),
                 upper.id,
-                upper.location,
+                location_link(&upper.location),
                 lower.id,
-                lower.location,
+                location_link(&lower.location),
                 upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
             )?;
             if let Some(location) = location {
-                writeln!(w, "*   Referenced at:              {}", location)?;
+                writeln!(
+                    w,
+                    "*   Referenced at:              {}",
+                    location_link(&location)
+                )?;
             };
             Ok(())
         }
@@ -291,7 +306,7 @@ where
                 "*   {} depends on unknown Requirement {}\n    {}",
                 req.id,
                 depend,
-                location.as_ref().unwrap_or(&req.location),
+                location_link(&location.as_ref().unwrap_or(&req.location)),
             )
         }
         CoversUnknownRequirement(req, cover, location) => {
@@ -300,7 +315,7 @@ where
                 "*   {} covers unknown Requirement {}\n    {}",
                 req.id,
                 cover,
-                location.as_ref().unwrap_or(&req.location),
+                location_link(&location.as_ref().unwrap_or(&req.location)),
             )
         }
     }

@@ -3,21 +3,21 @@
 # Tracing Errors
 
 *   DSG_JSON_CACHE depends on unknown Requirement FMT_JSON
-    doc/requirements/DESIGN.md:113
+    [doc/requirements/DESIGN.md:113](doc/requirements/DESIGN.md?plain=1#L113)
 *   DSG_JSON_EXPORT depends on unknown Requirement FMT_JSON
-    doc/requirements/DESIGN.md:133
+    [doc/requirements/DESIGN.md:133](doc/requirements/DESIGN.md?plain=1#L133)
 *   DSG_JSON_IMPORT depends on unknown Requirement FMT_JSON
-    doc/requirements/DESIGN.md:125
+    [doc/requirements/DESIGN.md:125](doc/requirements/DESIGN.md?plain=1#L125)
 *   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_ATTRIBUTES
-    doc/requirements/FORMATS.md:95
+    [doc/requirements/FORMATS.md:95](doc/requirements/FORMATS.md?plain=1#L95)
 *   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_DESC
-    doc/requirements/FORMATS.md:93
+    [doc/requirements/FORMATS.md:93](doc/requirements/FORMATS.md?plain=1#L93)
 *   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_DESC_HEADINGS
-    doc/requirements/FORMATS.md:94
+    [doc/requirements/FORMATS.md:94](doc/requirements/FORMATS.md?plain=1#L94)
 *   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_START
-    doc/requirements/FORMATS.md:92
+    [doc/requirements/FORMATS.md:92](doc/requirements/FORMATS.md?plain=1#L92)
 *   README depends on unknown Requirement REQ_LATE_ERRORS
-    README.md:27
+    [README.md:27](README.md?plain=1#L27)
 
 
 # Uncovered Requirements
@@ -131,7 +131,7 @@
 
 ## Controller::run 
 
-Origin: `src/controller.rs:162:16`
+Origin: `[src/controller.rs:162:16](src/controller.rs?plain=1#L162)`
 
 Covers:
 *   design
@@ -141,7 +141,7 @@ Covers:
 
 ## Controller::run_jobs 
 
-Origin: `src/controller.rs:125:20`
+Origin: `[src/controller.rs:125:20](src/controller.rs?plain=1#L125)`
 
 Covers:
 *   design
@@ -150,7 +150,7 @@ Covers:
 
 ## try_main 
 
-Origin: `src/main.rs:74:4`
+Origin: `[src/main.rs:74:4](src/main.rs?plain=1#L74)`
 
 Covers:
 *   design
@@ -159,7 +159,7 @@ Covers:
 
 ## DSG_ART_CACHING :Cache Parsing Results
 
-Origin: `doc/requirements/DESIGN.md:46`
+Origin: `[doc/requirements/DESIGN.md:46](doc/requirements/DESIGN.md?plain=1#L46)`
 
 Covers:
 *   requirements
@@ -173,7 +173,7 @@ Artefact manages a cache of already parsed requirements and only
 
 ## DSG_ART_CONFIG :Artefact Configuration Fields
 
-Origin: `doc/requirements/DESIGN.md:67`
+Origin: `[doc/requirements/DESIGN.md:67](doc/requirements/DESIGN.md?plain=1#L67)`
 
 Covers:
 *   Does not cover: requirements
@@ -191,7 +191,7 @@ Description:
 
 ## DSG_ART_EXTERNAL_PARSER :External Artefact Parser
 
-Origin: `doc/requirements/DESIGN.md:53`
+Origin: `[doc/requirements/DESIGN.md:53](doc/requirements/DESIGN.md?plain=1#L53)`
 
 Covers:
 *   Does not cover: requirements
@@ -210,7 +210,7 @@ References:
 
 ## DSG_ART_PARSE :Artefact Parsing
 
-Origin: `doc/requirements/DESIGN.md:42`
+Origin: `[doc/requirements/DESIGN.md:42](doc/requirements/DESIGN.md?plain=1#L42)`
 
 Covers:
 *   Does not cover: requirements
@@ -223,7 +223,7 @@ Artefact parses the requirements in the files it represents.
 
 ## DSG_CLI :Offer a simple Command Line Interface
 
-Origin: `doc/requirements/DESIGN.md:223`
+Origin: `[doc/requirements/DESIGN.md:223](doc/requirements/DESIGN.md?plain=1#L223)`
 
 Covers:
 *   requirements
@@ -237,7 +237,7 @@ The tool should be invoked via a simple CLI
 
 ## DSG_CONFIG_TOML :Use a Single TOML File as Configuration
 
-Origin: `doc/requirements/DESIGN.md:207`
+Origin: `[doc/requirements/DESIGN.md:207](doc/requirements/DESIGN.md?plain=1#L207)`
 
 Covers:
 *   requirements
@@ -257,7 +257,7 @@ Requires:
 
 ## DSG_EXPORT_DATA :Export data to stdout
 
-Origin: `doc/requirements/DESIGN.md:170`
+Origin: `[doc/requirements/DESIGN.md:170](doc/requirements/DESIGN.md?plain=1#L170)`
 
 Covers:
 *   Does not cover: requirements
@@ -270,7 +270,7 @@ Print results to stdout in a chosen format
 
 ## DSG_EXPORT_ERRORS :Export errors to stderr
 
-Origin: `doc/requirements/DESIGN.md:174`
+Origin: `[doc/requirements/DESIGN.md:174](doc/requirements/DESIGN.md?plain=1#L174)`
 
 Covers:
 *   Does not cover: requirements
@@ -283,7 +283,7 @@ Print Errors to stdout in a chosen format
 
 ## DSG_EXPORT_FORMAT :Allow Selecting the Export Format
 
-Origin: `doc/requirements/DESIGN.md:178`
+Origin: `[doc/requirements/DESIGN.md:178](doc/requirements/DESIGN.md?plain=1#L178)`
 
 Covers:
 *   Does not cover: requirements
@@ -297,7 +297,7 @@ chosen.
 
 ## DSG_EXPORT_FORMAT_JSON :Export to JSON
 
-Origin: `doc/requirements/DESIGN.md:185`
+Origin: `[doc/requirements/DESIGN.md:185](doc/requirements/DESIGN.md?plain=1#L185)`
 
 Covers:
 *   Does not cover: requirements
@@ -310,7 +310,7 @@ Errors, Requirements, Status, Tracing Info can be exported as JSON
 
 ## DSG_EXPORT_FORMAT_MARKDOWN :Export to Markdown
 
-Origin: `doc/requirements/DESIGN.md:189`
+Origin: `[doc/requirements/DESIGN.md:189](doc/requirements/DESIGN.md?plain=1#L189)`
 
 Covers:
 *   Does not cover: requirements
@@ -324,7 +324,7 @@ standalone Markdown File
 
 ## DSG_EXPORT_FORMAT_TEX :Export to TEX
 
-Origin: `doc/requirements/DESIGN.md:194`
+Origin: `[doc/requirements/DESIGN.md:194](doc/requirements/DESIGN.md?plain=1#L194)`
 
 Covers:
 *   Does not cover: requirements
@@ -345,7 +345,7 @@ Todo:
 
 ## DSG_FINGERPRINT_ART :Fingerprint of Artefacts
 
-Origin: `doc/requirements/DESIGN.md:135`
+Origin: `[doc/requirements/DESIGN.md:135](doc/requirements/DESIGN.md?plain=1#L135)`
 
 Covers:
 *   requirements
@@ -369,7 +369,7 @@ The Cache of an artefact is checked for up-to-dateness with a fingerprint.
 
 ## DSG_FINGERPRINT_TRACING :Fingerprint of Tracing
 
-Origin: `doc/requirements/DESIGN.md:154`
+Origin: `[doc/requirements/DESIGN.md:154](doc/requirements/DESIGN.md?plain=1#L154)`
 
 Covers:
 *   Does not cover: requirements
@@ -386,7 +386,7 @@ The Cache of an artefact is checked for up-to-dateness with a fingerprint.
 
 ## DSG_JOBS :Jobs control what operations to perform
 
-Origin: `doc/requirements/DESIGN.md:231`
+Origin: `[doc/requirements/DESIGN.md:231](doc/requirements/DESIGN.md?plain=1#L231)`
 
 Covers:
 *   Does not cover: requirements
@@ -400,7 +400,7 @@ should be presented in and the file to store results in.
 
 ## DSG_JOB_FORMAT :Specify Format of Results
 
-Origin: `doc/requirements/DESIGN.md:254`
+Origin: `[doc/requirements/DESIGN.md:254](doc/requirements/DESIGN.md?plain=1#L254)`
 
 Covers:
 *   requirements
@@ -414,7 +414,7 @@ Specify the Format that results are presented in
 
 ## DSG_JOB_PARSE :Parse all Artefacts
 
-Origin: `doc/requirements/DESIGN.md:236`
+Origin: `[doc/requirements/DESIGN.md:236](doc/requirements/DESIGN.md?plain=1#L236)`
 
 Covers:
 *   requirements
@@ -429,7 +429,7 @@ Parse the Artefacts
 
 ## DSG_JOB_PARSE_SOME :Parse a set of Artefacts
 
-Origin: `doc/requirements/DESIGN.md:242`
+Origin: `[doc/requirements/DESIGN.md:242](doc/requirements/DESIGN.md?plain=1#L242)`
 
 Covers:
 *   requirements
@@ -443,7 +443,7 @@ Parse one or more Artefacts to make finding errors easier.
 
 ## DSG_JOB_RETURN_CODE :Return Code Indicates if Tracing is Correct
 
-Origin: `doc/requirements/DESIGN.md:261`
+Origin: `[doc/requirements/DESIGN.md:261](doc/requirements/DESIGN.md?plain=1#L261)`
 
 Covers:
 *   requirements
@@ -458,7 +458,7 @@ If configured for a Job, the return code will indicate if a Job found Errors or 
 
 ## DSG_JOB_TRACE :Trace Requirements
 
-Origin: `doc/requirements/DESIGN.md:248`
+Origin: `[doc/requirements/DESIGN.md:248](doc/requirements/DESIGN.md?plain=1#L248)`
 
 Covers:
 *   requirements
@@ -473,7 +473,7 @@ Trace Requirements
 
 ## DSG_JSON_CACHE :JSON for Storing State
 
-Origin: `doc/requirements/DESIGN.md:107`
+Origin: `[doc/requirements/DESIGN.md:107](doc/requirements/DESIGN.md?plain=1#L107)`
 
 Covers:
 *   requirements
@@ -488,7 +488,7 @@ JSON is used to store parsing results and computed coverage
 
 ## DSG_JSON_CACHE_SORT :JSON Cache sorted
 
-Origin: `doc/requirements/DESIGN.md:115`
+Origin: `[doc/requirements/DESIGN.md:115](doc/requirements/DESIGN.md?plain=1#L115)`
 
 Covers:
 *   Does not cover: requirements
@@ -501,7 +501,7 @@ Sort lists, smaller diff
 
 ## DSG_JSON_EXPORT :JSON for Exporting Results
 
-Origin: `doc/requirements/DESIGN.md:127`
+Origin: `[doc/requirements/DESIGN.md:127](doc/requirements/DESIGN.md?plain=1#L127)`
 
 Covers:
 *   requirements
@@ -516,7 +516,7 @@ Tracing results can be exported as json
 
 ## DSG_JSON_IMPORT :JSON for Importing Requirements
 
-Origin: `doc/requirements/DESIGN.md:119`
+Origin: `[doc/requirements/DESIGN.md:119](doc/requirements/DESIGN.md?plain=1#L119)`
 
 Covers:
 *   requirements
@@ -531,7 +531,7 @@ Artefacts which can not be parsed by the tool are generated by other tools and i
 
 ## DSG_REQ_FIELDS :Requirement Fields
 
-Origin: `doc/requirements/DESIGN.md:8`
+Origin: `[doc/requirements/DESIGN.md:8](doc/requirements/DESIGN.md?plain=1#L8)`
 
 Covers:
 *   requirements
@@ -561,7 +561,7 @@ Attributes of a requirement that this tool requires:
 
 ## DSG_TRACE_COVERS_EXIST :Cover Links must exist
 
-Origin: `doc/requirements/DESIGN.md:337`
+Origin: `[doc/requirements/DESIGN.md:337](doc/requirements/DESIGN.md?plain=1#L337)`
 
 Covers:
 *   requirements
@@ -578,7 +578,7 @@ D.Artefact traces against U.Artefact
 
 ## DSG_TRACE_DELEGATION :Trace Requirements inside same Artefact
 
-Origin: `doc/requirements/DESIGN.md:286`
+Origin: `[doc/requirements/DESIGN.md:286](doc/requirements/DESIGN.md?plain=1#L286)`
 
 Covers:
 *   requirements
@@ -597,7 +597,7 @@ D.Artefact directly traces against U.Artefact.
 
 ## DSG_TRACE_DEPENDS_EXIST :Depend Links must exist
 
-Origin: `doc/requirements/DESIGN.md:330`
+Origin: `[doc/requirements/DESIGN.md:330](doc/requirements/DESIGN.md?plain=1#L330)`
 
 Covers:
 *   requirements
@@ -614,7 +614,7 @@ D.Artefact traces against U.Artefact
 
 ## DSG_TRACE_DERIVED :Mark requirements that do not cover anything
 
-Origin: `doc/requirements/DESIGN.md:296`
+Origin: `[doc/requirements/DESIGN.md:296](doc/requirements/DESIGN.md?plain=1#L296)`
 
 Covers:
 *   requirements
@@ -628,7 +628,7 @@ Requirement R is derived if there is no Requirement U so that R covers U.
 
 ## DSG_TRACE_DOWNWARDS :Trace downwards using Depends attribute
 
-Origin: `doc/requirements/DESIGN.md:279`
+Origin: `[doc/requirements/DESIGN.md:279](doc/requirements/DESIGN.md?plain=1#L279)`
 
 Covers:
 *   requirements
@@ -645,7 +645,7 @@ D.Artefact directly traces against U.Artefact
 
 ## DSG_TRACE_TRACE_TITLE :When tracing upwards or downwards match title
 
-Origin: `doc/requirements/DESIGN.md:308`
+Origin: `[doc/requirements/DESIGN.md:308](doc/requirements/DESIGN.md?plain=1#L308)`
 
 Covers:
 *   requirements
@@ -673,7 +673,7 @@ Example:
 
 ## DSG_TRACE_UNCOVERED :Mark requirements that are not covered
 
-Origin: `doc/requirements/DESIGN.md:302`
+Origin: `[doc/requirements/DESIGN.md:302](doc/requirements/DESIGN.md?plain=1#L302)`
 
 Covers:
 *   requirements
@@ -687,7 +687,7 @@ Requirement R is uncovered if there is no Requirement D so that D covers R.
 
 ## DSG_TRACE_UPWARDS :Trace upwards using Covers attribute
 
-Origin: `doc/requirements/DESIGN.md:272`
+Origin: `[doc/requirements/DESIGN.md:272](doc/requirements/DESIGN.md?plain=1#L272)`
 
 Covers:
 *   requirements
@@ -704,7 +704,7 @@ D.Artefact directly traces against U.Artefact
 
 ## FMT_CODE_MANUAL :Code depends on Manual Entry
 
-Origin: `doc/requirements/FORMATS.md:235`
+Origin: `[doc/requirements/FORMATS.md:235](doc/requirements/FORMATS.md?plain=1#L235)`
 
 Covers:
 *   Does not cover: requirements
@@ -718,7 +718,7 @@ Code with a comment like `=> MAN_ID(:TITLE)` makes a requirement of the code lin
 
 ## FMT_FILE_ENCODINGS :Handle File Encodings
 
-Origin: `doc/requirements/FORMATS.md:48`
+Origin: `[doc/requirements/FORMATS.md:48](doc/requirements/FORMATS.md?plain=1#L48)`
 
 Covers:
 *   requirements
@@ -734,7 +734,7 @@ replaced.
 
 ## FMT_ID_v2 :Requirement Identifier
 
-Origin: `doc/requirements/FORMATS.md:29`
+Origin: `[doc/requirements/FORMATS.md:29](doc/requirements/FORMATS.md?plain=1#L29)`
 
 Covers:
 *   requirements
@@ -756,7 +756,7 @@ History:
 
 ## FMT_JSON_REQUIREMENT :JSON Requirements Format
 
-Origin: `doc/requirements/FORMATS.md:222`
+Origin: `[doc/requirements/FORMATS.md:222](doc/requirements/FORMATS.md?plain=1#L222)`
 
 Covers:
 *   requirements
@@ -768,7 +768,7 @@ Covered By:
 
 ## FMT_MARKDOWN_REQUIREMENT :Markdown File Format
 
-Origin: `doc/requirements/FORMATS.md:81`
+Origin: `[doc/requirements/FORMATS.md:81](doc/requirements/FORMATS.md?plain=1#L81)`
 
 Covers:
 *   requirements
@@ -785,7 +785,7 @@ attributes.
 
 ## FMT_MD_ATTRIBUTES :Attributes
 
-Origin: `doc/requirements/FORMATS.md:121`
+Origin: `[doc/requirements/FORMATS.md:121](doc/requirements/FORMATS.md?plain=1#L121)`
 
 Covers:
 *   Does not cover: requirements
@@ -822,7 +822,7 @@ a colon and the title of the referenced requirement.
 
 ## FMT_MD_DESC :Description
 
-Origin: `doc/requirements/FORMATS.md:103`
+Origin: `[doc/requirements/FORMATS.md:103](doc/requirements/FORMATS.md?plain=1#L103)`
 
 Covers:
 *   Does not cover: requirements
@@ -841,7 +841,7 @@ the requirement.
 
 ## FMT_MD_DESC_HEADINGS :Heading Level in Description is adjusted
 
-Origin: `doc/requirements/FORMATS.md:115`
+Origin: `[doc/requirements/FORMATS.md:115](doc/requirements/FORMATS.md?plain=1#L115)`
 
 Covers:
 *   Does not cover: requirements
@@ -857,7 +857,7 @@ removing as many leading `#` as the requirement had
 
 ## FMT_MD_OPT_PREFIX :List of Prefixes
 
-Origin: `doc/requirements/FORMATS.md:180`
+Origin: `[doc/requirements/FORMATS.md:180](doc/requirements/FORMATS.md?plain=1#L180)`
 
 Covers:
 *   Does not cover: requirements
@@ -877,7 +877,7 @@ performed and all matching lines lead to a requirement.
 
 ## FMT_MD_START :Requirement Start
 
-Origin: `doc/requirements/FORMATS.md:98`
+Origin: `[doc/requirements/FORMATS.md:98](doc/requirements/FORMATS.md?plain=1#L98)`
 
 Covers:
 *   Does not cover: requirements
@@ -892,7 +892,7 @@ TITLE`.
 
 ## FMT_MONO :Mono Requirement File
 
-Origin: `doc/requirements/FORMATS.md:197`
+Origin: `[doc/requirements/FORMATS.md:197](doc/requirements/FORMATS.md?plain=1#L197)`
 
 Covers:
 *   requirements
@@ -916,7 +916,7 @@ attributes:
 
 ## FMT_RUST_COV :Rust Coverage Marks
 
-Origin: `doc/requirements/FORMATS.md:228`
+Origin: `[doc/requirements/FORMATS.md:228](doc/requirements/FORMATS.md?plain=1#L228)`
 
 Covers:
 *   requirements
@@ -931,7 +931,7 @@ Parse `cov_mark::hit!(REQ_ID)` and `cov_mark::hit!(REQ_ID) # TITLE`
 
 ## FMT_UNICODE_NORMALIZE :Normalize Unicode during read
 
-Origin: `doc/requirements/FORMATS.md:57`
+Origin: `[doc/requirements/FORMATS.md:57](doc/requirements/FORMATS.md?plain=1#L57)`
 
 Covers:
 *   requirements
@@ -955,7 +955,7 @@ This means that
 
 ## README :Requirement Tracing
 
-Origin: `README.md`
+Origin: `[README.md](README.md)`
 
 Covered By:
 *   requirements
@@ -974,7 +974,7 @@ Covered By:
 
 ## REQ_ARTEFACT_PARSE_ID :Parse Artefact Identifier
 
-Origin: `doc/requirements/REQUIREMENTS.md:76`
+Origin: `[doc/requirements/REQUIREMENTS.md:76](doc/requirements/REQUIREMENTS.md?plain=1#L76)`
 
 Covers:
 *   Does not cover: readme
@@ -988,7 +988,7 @@ an expanded RCS Keyword (like `$Id: /path/to/artefact.md$42$`).
 
 ## REQ_ARTEFACT_QUERY_ID :Query Tool for Artefact Identifier
 
-Origin: `doc/requirements/REQUIREMENTS.md:81`
+Origin: `[doc/requirements/REQUIREMENTS.md:81](doc/requirements/REQUIREMENTS.md?plain=1#L81)`
 
 Covers:
 *   Does not cover: readme
@@ -1001,7 +1001,7 @@ An identifier can be gotten from an external tool like `git describe --tags`.
 
 ## REQ_CONFIG :Simple Configuration in One File
 
-Origin: `doc/requirements/REQUIREMENTS.md:158`
+Origin: `[doc/requirements/REQUIREMENTS.md:158](doc/requirements/REQUIREMENTS.md?plain=1#L158)`
 
 Covers:
 *   readme
@@ -1017,7 +1017,7 @@ editable for humans and machine readable.
 
 ## REQ_CONFIGURABLE_OUTPUT :The Output Format is Configurable
 
-Origin: `doc/requirements/REQUIREMENTS.md:51`
+Origin: `[doc/requirements/REQUIREMENTS.md:51](doc/requirements/REQUIREMENTS.md?plain=1#L51)`
 
 Covers:
 *   Does not cover: readme
@@ -1030,7 +1030,7 @@ The Format in which Information is returned is configurable
 
 ## REQ_DELEGATION :Coverage Delegation
 
-Origin: `doc/requirements/REQUIREMENTS.md:96`
+Origin: `[doc/requirements/REQUIREMENTS.md:96](doc/requirements/REQUIREMENTS.md?plain=1#L96)`
 
 Covers:
 *   Does not cover: readme
@@ -1048,7 +1048,7 @@ requirement.
 
 ## REQ_DOWN :Downward Coverage
 
-Origin: `doc/requirements/REQUIREMENTS.md:90`
+Origin: `[doc/requirements/REQUIREMENTS.md:90](doc/requirements/REQUIREMENTS.md?plain=1#L90)`
 
 Covers:
 *   readme
@@ -1066,7 +1066,7 @@ its Dependencies attribute.
 
 ## REQ_ERROR :Useful Parser Errors
 
-Origin: `doc/requirements/REQUIREMENTS.md:104`
+Origin: `[doc/requirements/REQUIREMENTS.md:104](doc/requirements/REQUIREMENTS.md?plain=1#L104)`
 
 Covers:
 *   readme
@@ -1081,7 +1081,7 @@ line number of the artefact.
 
 ## REQ_EXTENSIBLE :Extensible Parsing
 
-Origin: `doc/requirements/REQUIREMENTS.md:38`
+Origin: `[doc/requirements/REQUIREMENTS.md:38](doc/requirements/REQUIREMENTS.md?plain=1#L38)`
 
 Covers:
 *   readme
@@ -1097,7 +1097,7 @@ incorporated.
 
 ## REQ_FAST :Fast
 
-Origin: `doc/requirements/REQUIREMENTS.md:170`
+Origin: `[doc/requirements/REQUIREMENTS.md:170](doc/requirements/REQUIREMENTS.md?plain=1#L170)`
 
 Covers:
 *   readme
@@ -1113,7 +1113,7 @@ Show results quickly, especially if only a small query is given.
 
 ## REQ_FORMATS :Well defined Formats
 
-Origin: `doc/requirements/REQUIREMENTS.md:63`
+Origin: `[doc/requirements/REQUIREMENTS.md:63](doc/requirements/REQUIREMENTS.md?plain=1#L63)`
 
 Covers:
 *   readme
@@ -1134,7 +1134,7 @@ defined.
 
 ## REQ_HUMAN_READABLE :Human Readable Output
 
-Origin: `doc/requirements/REQUIREMENTS.md:59`
+Origin: `[doc/requirements/REQUIREMENTS.md:59](doc/requirements/REQUIREMENTS.md?plain=1#L59)`
 
 Covers:
 *   readme
@@ -1148,7 +1148,7 @@ Information can be returned in a format that can easily be read by humans
 
 ## REQ_IDENTIFIEABLE :Show versions of input artefacts in output
 
-Origin: `doc/requirements/REQUIREMENTS.md:43`
+Origin: `[doc/requirements/REQUIREMENTS.md:43](doc/requirements/REQUIREMENTS.md?plain=1#L43)`
 
 Covers:
 *   Does not cover: readme
@@ -1165,7 +1165,7 @@ For example by its:
 
 ## REQ_INSTALL :Easy to install
 
-Origin: `doc/requirements/REQUIREMENTS.md:33`
+Origin: `[doc/requirements/REQUIREMENTS.md:33](doc/requirements/REQUIREMENTS.md?plain=1#L33)`
 
 Covers:
 *   Does not cover: readme
@@ -1178,7 +1178,7 @@ no package management, libraries, dependencies
 
 ## REQ_MACHINE_FRIENDLY :Easy to include in automated work flows
 
-Origin: `doc/requirements/REQUIREMENTS.md:23`
+Origin: `[doc/requirements/REQUIREMENTS.md:23](doc/requirements/REQUIREMENTS.md?plain=1#L23)`
 
 Covers:
 *   readme
@@ -1193,7 +1193,7 @@ For ease of integration into other tools, all functionality must be available vi
 
 ## REQ_MACHINE_READABLE :Machine Readable Output
 
-Origin: `doc/requirements/REQUIREMENTS.md:55`
+Origin: `[doc/requirements/REQUIREMENTS.md:55](doc/requirements/REQUIREMENTS.md?plain=1#L55)`
 
 Covers:
 *   readme
@@ -1208,7 +1208,7 @@ Information can be returned in a format that can easily be read by other tools
 
 ## REQ_MATCH_ID :Match by ID
 
-Origin: `doc/requirements/REQUIREMENTS.md:110`
+Origin: `[doc/requirements/REQUIREMENTS.md:110](doc/requirements/REQUIREMENTS.md?plain=1#L110)`
 
 Covers:
 *   Does not cover: readme
@@ -1224,7 +1224,7 @@ A Requirements covers another by its ID.
 
 ## REQ_NO_OVERCACHING :No over-caching
 
-Origin: `doc/requirements/REQUIREMENTS.md:174`
+Origin: `[doc/requirements/REQUIREMENTS.md:174](doc/requirements/REQUIREMENTS.md?plain=1#L174)`
 
 Covers:
 *   Does not cover: readme
@@ -1238,7 +1238,7 @@ If the user has to flush the cache, this is a bug in the Program.
 
 ## REQ_QUERIES :Configurable Information Granularity
 
-Origin: `doc/requirements/REQUIREMENTS.md:164`
+Origin: `[doc/requirements/REQUIREMENTS.md:164](doc/requirements/REQUIREMENTS.md?plain=1#L164)`
 
 Covers:
 *   Does not cover: readme
@@ -1253,7 +1253,7 @@ relevant information is computed.
 
 ## REQ_TRACE :Determine whcih requirements cover which
 
-Origin: `doc/requirements/REQUIREMENTS.md:6`
+Origin: `[doc/requirements/REQUIREMENTS.md:6](doc/requirements/REQUIREMENTS.md?plain=1#L6)`
 
 Covers:
 *   Does not cover: readme
@@ -1275,7 +1275,7 @@ another requirement or is derived.
 
 ## REQ_UNICODE_SAFE :Sane Handling of unicode
 
-Origin: `doc/requirements/REQUIREMENTS.md:68`
+Origin: `[doc/requirements/REQUIREMENTS.md:68](doc/requirements/REQUIREMENTS.md?plain=1#L68)`
 
 Covers:
 *   Does not cover: readme
@@ -1292,7 +1292,7 @@ as different bytes.
 
 ## REQ_UNIQUE_ID_v2 :Requirements have a unique Identifier
 
-Origin: `doc/requirements/REQUIREMENTS.md:11`
+Origin: `[doc/requirements/REQUIREMENTS.md:11](doc/requirements/REQUIREMENTS.md?plain=1#L11)`
 
 Covers:
 *   Does not cover: readme
@@ -1309,7 +1309,7 @@ History:
 
 ## REQ_UP :Upward Coverage
 
-Origin: `doc/requirements/REQUIREMENTS.md:85`
+Origin: `[doc/requirements/REQUIREMENTS.md:85](doc/requirements/REQUIREMENTS.md?plain=1#L85)`
 
 Covers:
 *   readme
@@ -1327,7 +1327,7 @@ Coverage attribute.
 
 ## REQ_USER_FRIENDLY :Simple to use Interface
 
-Origin: `doc/requirements/REQUIREMENTS.md:19`
+Origin: `[doc/requirements/REQUIREMENTS.md:19](doc/requirements/REQUIREMENTS.md?plain=1#L19)`
 
 Covers:
 *   Does not cover: readme
@@ -1340,7 +1340,7 @@ The User Interface should be slim and straight forward.
 
 ## REQ_VAL_COVERAGE :Validate Coverage
 
-Origin: `doc/requirements/REQUIREMENTS.md:145`
+Origin: `[doc/requirements/REQUIREMENTS.md:145](doc/requirements/REQUIREMENTS.md?plain=1#L145)`
 
 Covers:
 *   Does not cover: readme
@@ -1354,7 +1354,7 @@ relevant artefacts.
 
 ## REQ_VAL_GRAPH :Validate Graph
 
-Origin: `doc/requirements/REQUIREMENTS.md:150`
+Origin: `[doc/requirements/REQUIREMENTS.md:150](doc/requirements/REQUIREMENTS.md?plain=1#L150)`
 
 Covers:
 *   Does not cover: readme
@@ -1370,7 +1370,7 @@ if:
 
 ## REQ_VAL_TITLE :Check matching title
 
-Origin: `doc/requirements/REQUIREMENTS.md:114`
+Origin: `[doc/requirements/REQUIREMENTS.md:114](doc/requirements/REQUIREMENTS.md?plain=1#L114)`
 
 Covers:
 *   readme
@@ -1411,7 +1411,7 @@ comparing the requirement's title.
 
 ## REQ_VCS :Allow Version Control
 
-Origin: `doc/requirements/REQUIREMENTS.md:27`
+Origin: `[doc/requirements/REQUIREMENTS.md:27](doc/requirements/REQUIREMENTS.md?plain=1#L27)`
 
 Covers:
 *   readme
@@ -1429,7 +1429,7 @@ Version Control and produce usable diff.
 
 ## UC_ANALYZE_IMPACT :Analyze Dependencies of Requirement
 
-Origin: `doc/requirements/REQUIREMENTS.md:216`
+Origin: `[doc/requirements/REQUIREMENTS.md:216](doc/requirements/REQUIREMENTS.md?plain=1#L216)`
 
 Covers:
 *   Does not cover: readme
@@ -1445,7 +1445,7 @@ Parameters:
 
 ## UC_ANALYZE_SINGLE :Analyze a Requirement
 
-Origin: `doc/requirements/REQUIREMENTS.md:208`
+Origin: `[doc/requirements/REQUIREMENTS.md:208](doc/requirements/REQUIREMENTS.md?plain=1#L208)`
 
 Covers:
 *   Does not cover: readme
@@ -1462,7 +1462,7 @@ Parameters:
 
 ## UC_CACHE_STATUS :Query Parsing State
 
-Origin: `doc/requirements/REQUIREMENTS.md:184`
+Origin: `[doc/requirements/REQUIREMENTS.md:184](doc/requirements/REQUIREMENTS.md?plain=1#L184)`
 
 Covers:
 *   Does not cover: readme
@@ -1475,7 +1475,7 @@ All artefacts are checked for changes since last parsing
 
 ## UC_CHECK :Check for correct Tracing
 
-Origin: `doc/requirements/REQUIREMENTS.md:204`
+Origin: `[doc/requirements/REQUIREMENTS.md:204](doc/requirements/REQUIREMENTS.md?plain=1#L204)`
 
 Covers:
 *   Does not cover: readme
@@ -1489,7 +1489,7 @@ Like `UC_TRACE` but the only output of interest is whether there were tracing er
 
 ## UC_PARSE :Parse Artefacts
 
-Origin: `doc/requirements/REQUIREMENTS.md:188`
+Origin: `[doc/requirements/REQUIREMENTS.md:188](doc/requirements/REQUIREMENTS.md?plain=1#L188)`
 
 Covers:
 *   Does not cover: readme
@@ -1507,7 +1507,7 @@ Parameters:
 
 ## UC_TRACE :Compute Tracing
 
-Origin: `doc/requirements/REQUIREMENTS.md:196`
+Origin: `[doc/requirements/REQUIREMENTS.md:196](doc/requirements/REQUIREMENTS.md?plain=1#L196)`
 
 Covers:
 *   Does not cover: readme
@@ -1525,7 +1525,7 @@ Parameters:
 
 ## UC_VALIDATE :Validate Configuration
 
-Origin: `doc/requirements/REQUIREMENTS.md:180`
+Origin: `[doc/requirements/REQUIREMENTS.md:180](doc/requirements/REQUIREMENTS.md?plain=1#L180)`
 
 Covers:
 *   Does not cover: readme
