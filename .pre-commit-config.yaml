@@ -3,5 +3,26 @@ repos:
     rev: v1.1
     hooks:
     -   id: fmt
+        stages: ["commit"]
     -   id: cargo-check
+        stages: ["commit"]
     -   id: test
+        stages: ["push"]
+-   repo: local
+    hooks:
+    - id: trace
+      name: trace
+      description: verify that all requirements are traced correctly
+      entry: cargo run check
+      language: system
+      types: ["file"]
+      stages: ["manual"] # TODO: "push",
+      pass_filenames: false
+    - id: tmx
+      name: tmx
+      description: build traceability matrix
+      entry: cargo run build
+      language: system
+      types: ["file"]
+      stages: ["push", "manual"]
+      pass_filenames: false
