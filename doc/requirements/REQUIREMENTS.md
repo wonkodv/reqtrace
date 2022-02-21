@@ -22,8 +22,7 @@ The User Interface should be slim and straight forward.
 
 ## REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
 
-The tool should be easy to include in automated work flows, IDEs, CI Pipelines
-etc.
+For ease of integration into other tools, all functionality must be available via a CLI.
 
 ## REQ_VCS: Allow Version Control
 
@@ -175,12 +174,6 @@ Show results quickly, especially if only a small query is given.
 ## REQ_NO_OVERCACHING: No over-caching
 
 If the user has to flush the cache, this is a bug in the Program.
-
-
-## REQ_CLI: Offer a simple Command Line Interface
-
-For ease of integration into other tools, all functionality must be available via a CLI.
-
 
 # Usecases
 

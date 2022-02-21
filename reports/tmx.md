@@ -16,10 +16,8 @@
     doc/requirements/FORMATS.md:94
 *   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_START
     doc/requirements/FORMATS.md:92
-*   README depends on unknown Requirement REQ_GROUPING
-    README.md:15
 *   README depends on unknown Requirement REQ_LATE_ERRORS
-    README.md:28
+    README.md:27
 
 
 # Uncovered Requirements
@@ -73,7 +71,6 @@
 *   [REQ_HUMAN_READABLE](#req_human_readable-human-readable-output "Human Readable Output")
 *   [REQ_IDENTIFIEABLE](#req_identifieable-show-versions-of-input-artefacts-in-output "Show versions of input artefacts in output")
 *   [REQ_INSTALL](#req_install-easy-to-install "Easy to install")
-*   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
 *   [REQ_QUERIES](#req_queries-configurable-information-granularity "Configurable Information Granularity")
 *   [REQ_UNIQUE_ID_v2](#req_unique_id_v2-requirements-have-a-unique-identifier "Requirements have a unique Identifier")
 *   [REQ_USER_FRIENDLY](#req_user_friendly-simple-to-use-interface "Simple to use Interface")
@@ -109,11 +106,8 @@
 *   [REQ_ARTEFACT_QUERY_ID](#req_artefact_query_id-query-tool-for-artefact-identifier "Query Tool for Artefact Identifier")
 *   [REQ_CONFIGURABLE_OUTPUT](#req_configurable_output-the-output-format-is-configurable "The Output Format is Configurable")
 *   [REQ_DELEGATION](#req_delegation-coverage-delegation "Coverage Delegation")
-*   [REQ_HUMAN_READABLE](#req_human_readable-human-readable-output "Human Readable Output")
 *   [REQ_IDENTIFIEABLE](#req_identifieable-show-versions-of-input-artefacts-in-output "Show versions of input artefacts in output")
 *   [REQ_INSTALL](#req_install-easy-to-install "Easy to install")
-*   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
-*   [REQ_MACHINE_READABLE](#req_machine_readable-machine-readable-output "Machine Readable Output")
 *   [REQ_MATCH_ID](#req_match_id-match-by-id "Match by ID")
 *   [REQ_NO_OVERCACHING](#req_no_overcaching-no-over-caching "No over-caching")
 *   [REQ_QUERIES](#req_queries-configurable-information-granularity "Configurable Information Granularity")
@@ -233,7 +227,7 @@ Origin: `doc/requirements/DESIGN.md:223`
 
 Covers:
 *   requirements
-    *   [REQ_CLI](#req_cli-offer-a-simple-command-line-interface "Offer a simple Command Line Interface")
+    *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
 
 Covered By:
 *   Not Covered by: formats, code
@@ -974,11 +968,13 @@ Covered By:
     *   [REQ_FAST](#req_fast-fast "Fast")
     *   [REQ_VAL_TITLE](#req_val_title-check-matching-title "Check matching title")
     *   [REQ_CONFIG](#req_config-simple-configuration-in-one-file "Simple Configuration in One File")
-    *   [REQ_CLI](#req_cli-offer-a-simple-command-line-interface "Offer a simple Command Line Interface")
+    *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
+    *   [REQ_HUMAN_READABLE](#req_human_readable-human-readable-output "Human Readable Output")
+    *   [REQ_MACHINE_READABLE](#req_machine_readable-machine-readable-output "Machine Readable Output")
 
 ## REQ_ARTEFACT_PARSE_ID :Parse Artefact Identifier
 
-Origin: `doc/requirements/REQUIREMENTS.md:77`
+Origin: `doc/requirements/REQUIREMENTS.md:76`
 
 Covers:
 *   Does not cover: readme
@@ -992,7 +988,7 @@ an expanded RCS Keyword (like `$Id: /path/to/artefact.md$42$`).
 
 ## REQ_ARTEFACT_QUERY_ID :Query Tool for Artefact Identifier
 
-Origin: `doc/requirements/REQUIREMENTS.md:82`
+Origin: `doc/requirements/REQUIREMENTS.md:81`
 
 Covers:
 *   Does not cover: readme
@@ -1003,24 +999,9 @@ Covered By:
 Description:
 An identifier can be gotten from an external tool like `git describe --tags`.
 
-## REQ_CLI :Offer a simple Command Line Interface
-
-Origin: `doc/requirements/REQUIREMENTS.md:180`
-
-Covers:
-*   readme
-    *   [README](#readme-requirement-tracing "Requirement Tracing")
-
-Covered By:
-*   design, formats
-    *   [DSG_CLI](#dsg_cli-offer-a-simple-command-line-interface "Offer a simple Command Line Interface")
-
-Description:
-For ease of integration into other tools, all functionality must be available via a CLI.
-
 ## REQ_CONFIG :Simple Configuration in One File
 
-Origin: `doc/requirements/REQUIREMENTS.md:159`
+Origin: `doc/requirements/REQUIREMENTS.md:158`
 
 Covers:
 *   readme
@@ -1036,7 +1017,7 @@ editable for humans and machine readable.
 
 ## REQ_CONFIGURABLE_OUTPUT :The Output Format is Configurable
 
-Origin: `doc/requirements/REQUIREMENTS.md:52`
+Origin: `doc/requirements/REQUIREMENTS.md:51`
 
 Covers:
 *   Does not cover: readme
@@ -1049,7 +1030,7 @@ The Format in which Information is returned is configurable
 
 ## REQ_DELEGATION :Coverage Delegation
 
-Origin: `doc/requirements/REQUIREMENTS.md:97`
+Origin: `doc/requirements/REQUIREMENTS.md:96`
 
 Covers:
 *   Does not cover: readme
@@ -1067,7 +1048,7 @@ requirement.
 
 ## REQ_DOWN :Downward Coverage
 
-Origin: `doc/requirements/REQUIREMENTS.md:91`
+Origin: `doc/requirements/REQUIREMENTS.md:90`
 
 Covers:
 *   readme
@@ -1085,7 +1066,7 @@ its Dependencies attribute.
 
 ## REQ_ERROR :Useful Parser Errors
 
-Origin: `doc/requirements/REQUIREMENTS.md:105`
+Origin: `doc/requirements/REQUIREMENTS.md:104`
 
 Covers:
 *   readme
@@ -1100,7 +1081,7 @@ line number of the artefact.
 
 ## REQ_EXTENSIBLE :Extensible Parsing
 
-Origin: `doc/requirements/REQUIREMENTS.md:39`
+Origin: `doc/requirements/REQUIREMENTS.md:38`
 
 Covers:
 *   readme
@@ -1116,7 +1097,7 @@ incorporated.
 
 ## REQ_FAST :Fast
 
-Origin: `doc/requirements/REQUIREMENTS.md:171`
+Origin: `doc/requirements/REQUIREMENTS.md:170`
 
 Covers:
 *   readme
@@ -1132,7 +1113,7 @@ Show results quickly, especially if only a small query is given.
 
 ## REQ_FORMATS :Well defined Formats
 
-Origin: `doc/requirements/REQUIREMENTS.md:64`
+Origin: `doc/requirements/REQUIREMENTS.md:63`
 
 Covers:
 *   readme
@@ -1153,10 +1134,11 @@ defined.
 
 ## REQ_HUMAN_READABLE :Human Readable Output
 
-Origin: `doc/requirements/REQUIREMENTS.md:60`
+Origin: `doc/requirements/REQUIREMENTS.md:59`
 
 Covers:
-*   Does not cover: readme
+*   readme
+    *   [README](#readme-requirement-tracing "Requirement Tracing")
 
 Covered By:
 *   Not Covered by: design, formats
@@ -1166,7 +1148,7 @@ Information can be returned in a format that can easily be read by humans
 
 ## REQ_IDENTIFIEABLE :Show versions of input artefacts in output
 
-Origin: `doc/requirements/REQUIREMENTS.md:44`
+Origin: `doc/requirements/REQUIREMENTS.md:43`
 
 Covers:
 *   Does not cover: readme
@@ -1183,7 +1165,7 @@ For example by its:
 
 ## REQ_INSTALL :Easy to install
 
-Origin: `doc/requirements/REQUIREMENTS.md:34`
+Origin: `doc/requirements/REQUIREMENTS.md:33`
 
 Covers:
 *   Does not cover: readme
@@ -1199,21 +1181,23 @@ no package management, libraries, dependencies
 Origin: `doc/requirements/REQUIREMENTS.md:23`
 
 Covers:
-*   Does not cover: readme
+*   readme
+    *   [README](#readme-requirement-tracing "Requirement Tracing")
 
 Covered By:
-*   Not Covered by: design, formats
+*   design, formats
+    *   [DSG_CLI](#dsg_cli-offer-a-simple-command-line-interface "Offer a simple Command Line Interface")
 
 Description:
-The tool should be easy to include in automated work flows, IDEs, CI Pipelines
-etc.
+For ease of integration into other tools, all functionality must be available via a CLI.
 
 ## REQ_MACHINE_READABLE :Machine Readable Output
 
-Origin: `doc/requirements/REQUIREMENTS.md:56`
+Origin: `doc/requirements/REQUIREMENTS.md:55`
 
 Covers:
-*   Does not cover: readme
+*   readme
+    *   [README](#readme-requirement-tracing "Requirement Tracing")
 
 Covered By:
 *   design, formats
@@ -1224,7 +1208,7 @@ Information can be returned in a format that can easily be read by other tools
 
 ## REQ_MATCH_ID :Match by ID
 
-Origin: `doc/requirements/REQUIREMENTS.md:111`
+Origin: `doc/requirements/REQUIREMENTS.md:110`
 
 Covers:
 *   Does not cover: readme
@@ -1240,7 +1224,7 @@ A Requirements covers another by its ID.
 
 ## REQ_NO_OVERCACHING :No over-caching
 
-Origin: `doc/requirements/REQUIREMENTS.md:175`
+Origin: `doc/requirements/REQUIREMENTS.md:174`
 
 Covers:
 *   Does not cover: readme
@@ -1254,7 +1238,7 @@ If the user has to flush the cache, this is a bug in the Program.
 
 ## REQ_QUERIES :Configurable Information Granularity
 
-Origin: `doc/requirements/REQUIREMENTS.md:165`
+Origin: `doc/requirements/REQUIREMENTS.md:164`
 
 Covers:
 *   Does not cover: readme
@@ -1291,7 +1275,7 @@ another requirement or is derived.
 
 ## REQ_UNICODE_SAFE :Sane Handling of unicode
 
-Origin: `doc/requirements/REQUIREMENTS.md:69`
+Origin: `doc/requirements/REQUIREMENTS.md:68`
 
 Covers:
 *   Does not cover: readme
@@ -1325,7 +1309,7 @@ History:
 
 ## REQ_UP :Upward Coverage
 
-Origin: `doc/requirements/REQUIREMENTS.md:86`
+Origin: `doc/requirements/REQUIREMENTS.md:85`
 
 Covers:
 *   readme
@@ -1356,7 +1340,7 @@ The User Interface should be slim and straight forward.
 
 ## REQ_VAL_COVERAGE :Validate Coverage
 
-Origin: `doc/requirements/REQUIREMENTS.md:146`
+Origin: `doc/requirements/REQUIREMENTS.md:145`
 
 Covers:
 *   Does not cover: readme
@@ -1370,7 +1354,7 @@ relevant artefacts.
 
 ## REQ_VAL_GRAPH :Validate Graph
 
-Origin: `doc/requirements/REQUIREMENTS.md:151`
+Origin: `doc/requirements/REQUIREMENTS.md:150`
 
 Covers:
 *   Does not cover: readme
@@ -1386,7 +1370,7 @@ if:
 
 ## REQ_VAL_TITLE :Check matching title
 
-Origin: `doc/requirements/REQUIREMENTS.md:115`
+Origin: `doc/requirements/REQUIREMENTS.md:114`
 
 Covers:
 *   readme
@@ -1427,7 +1411,7 @@ comparing the requirement's title.
 
 ## REQ_VCS :Allow Version Control
 
-Origin: `doc/requirements/REQUIREMENTS.md:28`
+Origin: `doc/requirements/REQUIREMENTS.md:27`
 
 Covers:
 *   readme
@@ -1445,7 +1429,7 @@ Version Control and produce usable diff.
 
 ## UC_ANALYZE_IMPACT :Analyze Dependencies of Requirement
 
-Origin: `doc/requirements/REQUIREMENTS.md:223`
+Origin: `doc/requirements/REQUIREMENTS.md:216`
 
 Covers:
 *   Does not cover: readme
@@ -1461,7 +1445,7 @@ Parameters:
 
 ## UC_ANALYZE_SINGLE :Analyze a Requirement
 
-Origin: `doc/requirements/REQUIREMENTS.md:215`
+Origin: `doc/requirements/REQUIREMENTS.md:208`
 
 Covers:
 *   Does not cover: readme
@@ -1478,7 +1462,7 @@ Parameters:
 
 ## UC_CACHE_STATUS :Query Parsing State
 
-Origin: `doc/requirements/REQUIREMENTS.md:191`
+Origin: `doc/requirements/REQUIREMENTS.md:184`
 
 Covers:
 *   Does not cover: readme
@@ -1491,7 +1475,7 @@ All artefacts are checked for changes since last parsing
 
 ## UC_CHECK :Check for correct Tracing
 
-Origin: `doc/requirements/REQUIREMENTS.md:211`
+Origin: `doc/requirements/REQUIREMENTS.md:204`
 
 Covers:
 *   Does not cover: readme
@@ -1505,7 +1489,7 @@ Like `UC_TRACE` but the only output of interest is whether there were tracing er
 
 ## UC_PARSE :Parse Artefacts
 
-Origin: `doc/requirements/REQUIREMENTS.md:195`
+Origin: `doc/requirements/REQUIREMENTS.md:188`
 
 Covers:
 *   Does not cover: readme
@@ -1523,7 +1507,7 @@ Parameters:
 
 ## UC_TRACE :Compute Tracing
 
-Origin: `doc/requirements/REQUIREMENTS.md:203`
+Origin: `doc/requirements/REQUIREMENTS.md:196`
 
 Covers:
 *   Does not cover: readme
@@ -1541,7 +1525,7 @@ Parameters:
 
 ## UC_VALIDATE :Validate Configuration
 
-Origin: `doc/requirements/REQUIREMENTS.md:187`
+Origin: `doc/requirements/REQUIREMENTS.md:180`
 
 Covers:
 *   Does not cover: readme

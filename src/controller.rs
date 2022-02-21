@@ -160,6 +160,7 @@ impl Controller {
         let write_res = match &job.query {
             Query::Trace => {
                 cov_mark::hit!(DSG_JOB_TRACE);
+                // TODO: 3 jobs will compute tracing 3 times !
                 let t = Tracing::from_graph(&self.graph);
                 if !t.errors().is_empty() {
                     success = false;

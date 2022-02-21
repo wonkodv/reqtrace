@@ -12,7 +12,6 @@ or does not this:
     *   =>  REQ_FORMATS
     *   =>  REQ_UP
     *   =>  REQ_DOWN
-    *   =>  REQ_GROUPING
     *   =>  REQ_ERROR
 *   All state, internal representations, output etc. work well with Version
     Control Systems => REQ_VCS
@@ -20,26 +19,28 @@ or does not this:
 *   Use a Requirement Title if the ID has little meaning => REQ_VAL_TITLE
 *   Work well with Open Source Packages, integrate nicely with the ecosystem of
     Continous Delivery Pipeline on public Source Code Hosters like github
-    =>  REQ_CONFIG: Simple Configuration in One File
-    =>  REQ_CLI: Offer a simple Command Line Interface
+    *   =>  REQ_CONFIG: Simple Configuration in One File
+    *   =>  REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
 *   Don't give up early. Upon Errors (parsing, tracing) the tool should
     recover and continue where possible and show a result along with all
     encountered errors.
-    => REQ_LATE_ERRORS
+    *   => REQ_LATE_ERRORS
+*   Produce (Error) Reports in a variety of useful formats
+    *   =>  REQ_HUMAN_READABLE
+    *   =>  REQ_MACHINE_READABLE
 
 
 State of this Project
 =====================
 
-Currently in Alpha. It works, it can trace itself, but a lot is not yet implemented.
-This is my first rust project and I'm
-figuring things out as I go. PRs,
-comments, phone calls that help make
-this a better tool or more idiomatic
-rust are welcome.
+Currently in Alpha.
+It can Parse Markdown and rust code and generate reports in markdown. (Also a tags-file of requirements and
+gnu-style error report for vim users)
 
-look at <reports/tmx.md>
+A lot of features are not yet implemented; take a look at the [Tracing Report](reports/tmx.md)
 
+This is my first rust project and I'm figuring things out as I go.
+PRs, comments, issues, phone calls that help make this a better tool or me a better rust dev are welcome.
 
 
 Wording

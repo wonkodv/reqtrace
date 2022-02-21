@@ -225,7 +225,7 @@ Requires:
 The tool should be invoked via a simple CLI
 
 Covers:
-*   REQ_CLI: Offer a simple Command Line Interface
+*   REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
 
 
 ### DSG_JOBS: Jobs control what operations to perform
