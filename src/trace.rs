@@ -60,7 +60,7 @@ pub struct Tracing<'graph> {
 }
 
 impl<'graph> Tracing<'graph> {
-    pub fn from_graph(graph: &'graph Graph) -> Self {
+    pub fn from_graph(graph: &'graph Graph, trace_in_artefacts: bool) -> Self {
         let mut trace = Tracing {
             requirements: Vec::new(),
             requirements_by_id: HashMap::new(),
@@ -73,6 +73,12 @@ impl<'graph> Tracing<'graph> {
 
         for fork in graph.iter_forks() {
             trace.add_fork(fork, graph)
+        }
+
+        if trace_in_artefacts {
+            for node in graph.iter_nodes() {
+                trace.trace_node_self_reference(node, graph);
+            }
         }
 
         trace.validate();
@@ -181,6 +187,24 @@ impl<'graph> Tracing<'graph> {
             }
             if !is_covered {
                 self.uncovered.insert(upper_requirement_idx);
+            }
+        }
+    }
+
+    /// Compute Tracing inside of an aRtefact (
+    fn trace_node_self_reference(&self, node: NodeIdx, graph: &Graph) -> _ {
+        let artefact = node.artefact(graph);
+        for requirement in artefact.get_requirements() {
+            for reference in requirement.depends {
+                if let Some(upper_requirement) = artefact.get_requirement_with_id(reference.id) {
+                    let cov = Coverage {
+                        upper_requirement,
+                        requirement,
+                        tine,
+                        kind,
+                        location: reference.location.as_ref(),
+                    };
+                }
             }
         }
     }

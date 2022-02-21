@@ -22,6 +22,7 @@ struct TraceConfig {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
     artefact: HashMap<String, ArtefactConfig>,
+    trace_in_artefact: bool,
     trace: Vec<TraceConfig>,
     job: Option<HashMap<String, Job>>,
     version_provider: Option<String>,
