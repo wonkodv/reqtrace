@@ -31,20 +31,22 @@ fn requirement_link(req: &Rc<Requirement>) -> String {
     }
 }
 
+/// requirement Id as markdown link
+/// TODO: currently works only on GITHUB and only if generated file lands in root/*/
 fn location_link(loc: &Location) -> String {
     let file = &loc.file.display();
     match &loc.location_in_file {
         Some(LocationInFile::Line(line)) => {
-            format!("[{file}:{line}]({file}?plain=1#L{line})")
+            format!("[{file}:{line}](../{file}?plain=1#L{line})")
         }
         Some(LocationInFile::LineAndColumn(line, column)) => {
-            format!("[{file}:{line}:{column}]({file}?plain=1#L{line})")
+            format!("[{file}:{line}:{column}](../{file}?plain=1#L{line})")
         }
         Some(LocationInFile::String(string)) => {
-            format!("[{file}]({file}):{string}")
+            format!("[{file}](../{file}):{string}")
         }
         None => {
-            format!("[{file}]({file})")
+            format!("[{file}](../{file})")
         }
     }
 }
