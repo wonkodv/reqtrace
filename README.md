@@ -4,7 +4,7 @@ Requirement Tracing
 
 Tool to trace Software requirements.
 
-Primary Design Coals that mostly came from dealing with a tool which does this,
+Primary Design Goals that mostly came from dealing with a tool which does this,
 or does not this:
 *   Can Parse any kind of artefacts in a (somewhat) sane way by working Well
     with other Tools/languages
@@ -31,6 +31,11 @@ State of this Project
 =====================
 
 Currently in Alpha. It works, it can trace itself, but a lot is not yet implemented.
+This is my first rust project and I'm
+figuring things out as I go. PRs,
+comments, phone calls that help make
+this a better tool or more idiomatic
+rust are welcome.
 
 look at <reports/tmx.md>
 
