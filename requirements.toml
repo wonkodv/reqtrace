@@ -44,7 +44,7 @@ format = "Tags"
 file = ".tags"
 set_return_code = false
 
-[job.build]
+[job.tmx]
 query = "Trace"
 format = "Markdown"
 file = "reports/tmx.md"

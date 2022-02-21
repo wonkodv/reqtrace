@@ -146,6 +146,10 @@ impl Controller {
         if job.file.as_os_str() == "-" {
             out = Box::new(stdout.lock());
         } else {
+            if let Some(p) = &job.file.parent() {
+                std::fs::create_dir_all(p).map_err(|e| Error::IoError(p.to_path_buf(), e))?;
+            }
+
             let file =
                 fs::File::create(&job.file).map_err(|e| Error::IoError(job.file.clone(), e))?;
             out = Box::new(file);

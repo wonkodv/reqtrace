@@ -21,7 +21,7 @@ repos:
     - id: tmx
       name: tmx
       description: build traceability matrix
-      entry: cargo run build
+      entry: cargo run tmx
       language: system
       types: ["file"]
       stages: ["push", "manual"]
