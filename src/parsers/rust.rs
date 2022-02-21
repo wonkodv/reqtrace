@@ -1,14 +1,17 @@
 use std::{
+    fs,
     io::{self},
-    path::Path,
+    path::{Path, PathBuf},
     rc::Rc,
 };
 
 use crate::{
     common::{Location, Reference, Requirement},
-    errors,
+    errors::{self, Error},
+    util::glob_paths,
 };
 
+use log::warn;
 use proc_macro2::Span;
 use syn::{
     parse_file,
@@ -17,6 +20,44 @@ use syn::{
 };
 
 use quote::ToTokens;
+
+use super::ArtefactConfig;
+
+#[derive(Debug)]
+pub struct RustParser {
+    paths: Vec<PathBuf>,
+}
+
+impl RustParser {
+    pub fn from_config(config: ArtefactConfig) -> Result<Self, Error> {
+        assert!(config.parser == "rust");
+        let paths = glob_paths(&config.paths)?;
+        Ok(Self { paths })
+    }
+}
+
+impl super::Parser for RustParser {
+    fn parse(&mut self) -> (Vec<Rc<Requirement>>, Vec<Error>) {
+        let mut requirements = Vec::new();
+        let mut errors = Vec::new();
+        for path in &self.paths {
+            let file = fs::File::open(path).map_err(|e| Error::IoError(path.into(), e));
+            match file {
+                Err(err) => {
+                    warn!("{}", err);
+                    return (vec![], vec![err]);
+                }
+                Ok(file) => {
+                    let mut r = io::BufReader::new(file);
+                    let (r, e) = parse(&mut r, path);
+                    requirements.extend(r);
+                    errors.extend(e);
+                }
+            }
+        }
+        (requirements, errors)
+    }
+}
 
 pub fn parse(
     reader: &mut impl io::BufRead,

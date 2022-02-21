@@ -255,16 +255,33 @@ impl Graph {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::common::*;
-    use crate::parsers::ArtefactParser;
+    use crate::{common::*, parsers};
 
     fn make_graph() -> Graph {
-        let a_req = Artefact::new("REQ".into(), ArtefactParser::PrePopulated(vec![]));
-        let a_dsg = Artefact::new("DSG".into(), ArtefactParser::PrePopulated(vec![]));
-        let a_fmt = Artefact::new("FORMAT".into(), ArtefactParser::PrePopulated(vec![]));
-        let a_code = Artefact::new("Code".into(), ArtefactParser::PrePopulated(vec![]));
-        let a_dt = Artefact::new("DTests".into(), ArtefactParser::PrePopulated(vec![]));
-        let a_rt = Artefact::new("RTests".into(), ArtefactParser::PrePopulated(vec![]));
+        let a_req = Artefact::new(
+            "REQ".into(),
+            parsers::PrePopulated::default().into_artefact_parser(),
+        );
+        let a_dsg = Artefact::new(
+            "DSG".into(),
+            parsers::PrePopulated::default().into_artefact_parser(),
+        );
+        let a_fmt = Artefact::new(
+            "FORMAT".into(),
+            parsers::PrePopulated::default().into_artefact_parser(),
+        );
+        let a_code = Artefact::new(
+            "Code".into(),
+            parsers::PrePopulated::default().into_artefact_parser(),
+        );
+        let a_dt = Artefact::new(
+            "DTests".into(),
+            parsers::PrePopulated::default().into_artefact_parser(),
+        );
+        let a_rt = Artefact::new(
+            "RTests".into(),
+            parsers::PrePopulated::default().into_artefact_parser(),
+        );
 
         let mut g = Graph::new();
         g.add_artefact(a_req).unwrap();

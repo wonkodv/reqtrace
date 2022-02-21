@@ -22,6 +22,48 @@ lazy_static! {
 }
 
 #[derive(Debug)]
+pub struct MarkdownParser {
+    path: PathBuf,
+}
+
+impl MarkdownParser {
+    pub fn from_config(mut config: ArtefactConfig) -> Result<Self, Error> {
+        assert!(config.parser == "markdown");
+
+        if config.paths.len() != 1 {
+            return Err(Error::ArtefactTypeOnlyAllowsOnePath(
+                config.parser,
+                config.paths,
+            ));
+        }
+        if config.parser_options.is_some() {
+            return Err(Error::ConfigError(
+                "readme parser does not support options".into(),
+            ));
+        }
+
+        let path = config.paths.remove(0).into();
+
+        Ok(Self { path })
+    }
+}
+impl Parser for MarkdownParser {
+    fn parse(&mut self) -> (Vec<Rc<Requirement>>, Vec<Error>) {
+        let file = fs::File::open(&self.path).map_err(|e| Error::IoError((&self.path).into(), e));
+        match file {
+            Err(err) => {
+                warn!("{}", err);
+                return (vec![], vec![err]);
+            }
+            Ok(file) => {
+                let mut r = io::BufReader::new(file);
+                markdown_parse(&mut r, &self.path)
+            }
+        }
+    }
+}
+
+#[derive(Debug)]
 struct Context<'a> {
     errors: Vec<Error>,
     requirements: Vec<Rc<Requirement>>,
@@ -80,7 +122,9 @@ pub fn markdown_parse<R: io::BufRead>(
         context.line_number += 1;
         match reader.read_line(&mut line) {
             Err(e) => {
-                context.errors.push(IoError(context.path.to_owned(), e));
+                context
+                    .errors
+                    .push(Error::IoError(context.path.to_owned(), e));
                 break;
             }
             Ok(0) => {
@@ -209,7 +253,7 @@ fn parse_states<'a>(state: State, context: &mut Context<'_>, evt: &'a Event<'_>)
                 if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
                     start_attribute(context, &attr_line)
                 } else {
-                    context.errors.push(FormatError(
+                    context.errors.push(Error::FormatError(
                         context.location(),
                         "Expected an Attribute line like `Comment:`".into(),
                     ));
@@ -242,7 +286,7 @@ fn parse_states<'a>(state: State, context: &mut Context<'_>, evt: &'a Event<'_>)
                     State::LookForAttr
                 } else {
                     commit_link_attr(context, attr, vec);
-                    context.errors.push(FormatError(
+                    context.errors.push(Error::FormatError(
                         context.location(),
                         "Expected a Reference like `* REQ_ID: Title`".into(),
                     ));
@@ -330,7 +374,7 @@ fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> S
                 .covers
                 .is_empty()
             {
-                context.errors.push(DuplicateAttribute(
+                context.errors.push(Error::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
                     context.req_under_construction.as_ref().unwrap().id.clone(),
@@ -346,7 +390,7 @@ fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> S
                 .depends
                 .is_empty()
             {
-                context.errors.push(DuplicateAttribute(
+                context.errors.push(Error::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
                     context.req_under_construction.as_ref().unwrap().id.clone(),
@@ -363,7 +407,7 @@ fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> S
                 .get(attr)
                 .is_some()
             {
-                context.errors.push(DuplicateAttribute(
+                context.errors.push(Error::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
                     context.req_under_construction.as_ref().unwrap().id.clone(),
