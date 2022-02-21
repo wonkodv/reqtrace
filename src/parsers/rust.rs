@@ -151,11 +151,6 @@ impl Parser<'_> {
                 location: None,
             };
 
-            // TODO: add info from path of source file to make symbols unique
-            let id = self.symbol_stack.join("::");
-
-            let covers = vec![reference];
-
             if tokens.len() > 1 {
                 self.errors.push(errors::Error::FormatError(
                     location.clone(),
@@ -163,16 +158,25 @@ impl Parser<'_> {
                 ));
             }
 
-            let req = Requirement {
-                id,
-                location,
-                covers,
-                ..Requirement::default()
-            };
+            // TODO: add info from path of source file to make symbols unique
+            let id = self.symbol_stack.join("::");
 
-            let req = Rc::new(req);
-
-            self.requirements.push(req);
+            match self.requirements.last_mut() {
+                Some(last) if last.id == id => {
+                    Rc::get_mut(last).unwrap().covers.push(reference);
+                }
+                _ => {
+                    let covers = vec![reference];
+                    let req = Requirement {
+                        id,
+                        location,
+                        covers,
+                        ..Requirement::default()
+                    };
+                    let req = Rc::new(req);
+                    self.requirements.push(req);
+                }
+            }
         }
         true
     }
