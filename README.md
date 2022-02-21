@@ -27,6 +27,14 @@ or does not this:
     => REQ_LATE_ERRORS
 
 
+State of this Project
+=====================
+
+Currently in Alpha. It works, it can trace itself, but a lot is not yet implemented.
+
+look at <reports/tmx.md>
+
+
 
 Wording
 =======
