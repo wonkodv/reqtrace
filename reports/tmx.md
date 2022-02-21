@@ -2,24 +2,24 @@
 
 # Tracing Errors
 
-*   DSG_JSON_EXPORT depends on unknown Requirement FMT_JSON
-    doc/requirements/DESIGN.md:133
-*   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_DESC
-    doc/requirements/FORMATS.md:93
-*   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_ATTRIBUTES
-    doc/requirements/FORMATS.md:95
-*   README depends on unknown Requirement REQ_GROUPING
-    README.md:15
-*   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_DESC_HEADINGS
-    doc/requirements/FORMATS.md:94
 *   DSG_JSON_CACHE depends on unknown Requirement FMT_JSON
     doc/requirements/DESIGN.md:113
-*   README depends on unknown Requirement REQ_LATE_ERRORS
-    README.md:28
+*   DSG_JSON_EXPORT depends on unknown Requirement FMT_JSON
+    doc/requirements/DESIGN.md:133
 *   DSG_JSON_IMPORT depends on unknown Requirement FMT_JSON
     doc/requirements/DESIGN.md:125
+*   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_ATTRIBUTES
+    doc/requirements/FORMATS.md:95
+*   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_DESC
+    doc/requirements/FORMATS.md:93
+*   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_DESC_HEADINGS
+    doc/requirements/FORMATS.md:94
 *   FMT_MARKDOWN_REQUIREMENT depends on unknown Requirement FMT_MD_START
     doc/requirements/FORMATS.md:92
+*   README depends on unknown Requirement REQ_GROUPING
+    README.md:15
+*   README depends on unknown Requirement REQ_LATE_ERRORS
+    README.md:28
 
 
 # Uncovered Requirements
@@ -140,10 +140,10 @@
 Origin: `src/controller.rs:162:16`
 
 Covers:
-*   Does not cover: formats
 *   design
     *   [DSG_JOB_PARSE](#dsg_job_parse-parse-all-artefacts "Parse all Artefacts")
     *   [DSG_JOB_TRACE](#dsg_job_trace-trace-requirements "Trace Requirements")
+*   Does not cover: formats
 
 ## Controller::run_jobs 
 
@@ -156,7 +156,7 @@ Covers:
 
 ## try_main 
 
-Origin: `src/main.rs:75:4`
+Origin: `src/main.rs:74:4`
 
 Covers:
 *   design
@@ -338,9 +338,6 @@ Covers:
 Covered By:
 *   Not Covered by: formats, code
 
-Todo:
-*   Define the exact format of each object
-
 Description:
 Errors, Requirements, Status, Tracing Info can be exported as tex macro calls,
 do that the output can be used via `\include{}` in a tex project that defines
@@ -348,6 +345,9 @@ the relevant macros.
 
 Tag:
 *   TODO
+
+Todo:
+*   Define the exact format of each object
 
 ## DSG_FINGERPRINT_ART :Fingerprint of Artefacts
 
@@ -360,6 +360,10 @@ Covers:
 Covered By:
 *   Not Covered by: formats, code
 
+Comment:
+Since the version is included in the fingerprint, the details can be changed
+easily.
+
 Description:
 The Cache of an artefact is checked for up-to-dateness with a fingerprint.
 
@@ -368,10 +372,6 @@ The Cache of an artefact is checked for up-to-dateness with a fingerprint.
 *   for all files that make up an Artefact:
     *   The sha256 of the file if it is small
     *   The modification time and size if it is large
-
-Comment:
-Since the version is included in the fingerprint, the details can be changed
-easily.
 
 ## DSG_FINGERPRINT_TRACING :Fingerprint of Tracing
 
@@ -713,8 +713,8 @@ D.Artefact directly traces against U.Artefact
 Origin: `doc/requirements/FORMATS.md:235`
 
 Covers:
-*   Does not cover: design
 *   Does not cover: requirements
+*   Does not cover: design
 
 Covered By:
 *   Not Covered by: code
@@ -727,9 +727,9 @@ Code with a comment like `=> MAN_ID(:TITLE)` makes a requirement of the code lin
 Origin: `doc/requirements/FORMATS.md:48`
 
 Covers:
-*   Does not cover: design
 *   requirements
     *   [REQ_UNICODE_SAFE](#req_unicode_safe-sane-handling-of-unicode "Sane Handling of unicode")
+*   Does not cover: design
 
 Covered By:
 *   Not Covered by: code
@@ -750,24 +750,24 @@ Covers:
 Covered By:
 *   Not Covered by: code
 
-History:
-*   v2: use to Unicode Identifiers
+Comment:
+Discussion in the [README](README.md#requirement-ids)
 
 Description:
 Requirement identifier consist of letters, digits and underscore, specifically
 they match the Regular Expression
 
-Comment:
-Discussion in the [README](README.md#requirement-ids)
+History:
+*   v2: use to Unicode Identifiers
 
 ## FMT_JSON_REQUIREMENT :JSON Requirements Format
 
 Origin: `doc/requirements/FORMATS.md:222`
 
 Covers:
-*   Does not cover: design
 *   requirements
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
+*   Does not cover: design
 
 Covered By:
 *   Not Covered by: code
@@ -777,9 +777,9 @@ Covered By:
 Origin: `doc/requirements/FORMATS.md:81`
 
 Covers:
-*   Does not cover: design
 *   requirements
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
+*   Does not cover: design
 
 Covered By:
 *   Not Covered by: code
@@ -794,11 +794,20 @@ attributes.
 Origin: `doc/requirements/FORMATS.md:121`
 
 Covers:
-*   Does not cover: design
 *   Does not cover: requirements
+*   Does not cover: design
 
 Covered By:
 *   Not Covered by: code
+
+Comment:
+`Covers: Some, IDs,`
+
+or
+
+    `Covers:
+    *   Some
+    *   IDs
 
 Description:
 Attributes are parsed from paragraphs that start with a single word followed by
@@ -816,15 +825,6 @@ the same format as requirement IDs.
 
 long lists, where each item starts with a requirement id, optionally followed by
 a colon and the title of the referenced requirement.
-
-Comment:
-`Covers: Some, IDs,`
-
-or
-
-    `Covers:
-    *   Some
-    *   IDs
 
 ## FMT_MD_DESC :Description
 
@@ -886,8 +886,8 @@ performed and all matching lines lead to a requirement.
 Origin: `doc/requirements/FORMATS.md:98`
 
 Covers:
-*   Does not cover: design
 *   Does not cover: requirements
+*   Does not cover: design
 
 Covered By:
 *   Not Covered by: code
@@ -901,9 +901,9 @@ TITLE`.
 Origin: `doc/requirements/FORMATS.md:197`
 
 Covers:
-*   Does not cover: design
 *   requirements
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
+*   Does not cover: design
 
 Covered By:
 *   Not Covered by: code
@@ -947,17 +947,17 @@ Covers:
 Covered By:
 *   Not Covered by: code
 
+Comment:
+See [Rust RFC 2457](https://rust-lang.github.io/rfcs/2457-non-ascii-idents.html) on the topic.
+
+This means two requirement ids are equal if their NFC forms are equal.
+
 Description:
 All input strings are unicode normalizes as
 [NFC](https://www.unicode.org/reports/tr15/#Normalization_Forms_Table).
 This means that
 *   All output derived from input will be NFC normalized
 *   Identifier Matching can be done on the byte level
-
-Comment:
-See [Rust RFC 2457](https://rust-lang.github.io/rfcs/2457-non-ascii-idents.html) on the topic.
-
-This means two requirement ids are equal if their NFC forms are equal.
 
 ## README :Requirement Tracing
 
@@ -1469,12 +1469,12 @@ Covers:
 Covered By:
 *   Not Covered by: design, formats
 
-Parameters:
-*   Requirement Id
-
 Description:
 For a Requirement, look up what it covers, and where it is covered itself and
 where coverage is missing.
+
+Parameters:
+*   Requirement Id
 
 ## UC_CACHE_STATUS :Query Parsing State
 
