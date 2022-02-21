@@ -1,6 +1,6 @@
 use core::fmt;
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::path::PathBuf;
 use std::rc::Rc;
 
@@ -87,7 +87,7 @@ pub struct Requirement {
     pub covers: Vec<Reference>,
     pub depends: Vec<Reference>,
     pub tags: Vec<String>,
-    pub attributes: HashMap<String, String>,
+    pub attributes: BTreeMap<String, String>,
 }
 
 impl fmt::Display for Requirement {

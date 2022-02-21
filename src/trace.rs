@@ -1,16 +1,17 @@
 use log::*;
 
-use std::{
-    collections::{HashMap, HashSet},
-    rc::Rc,
-};
+use std::collections::BTreeMap;
+use std::collections::BTreeSet;
+use std::collections::HashMap;
+use std::rc::Rc;
 
 use super::common::*;
 use crate::errors::Error;
 use crate::graph::*;
 use Error::*;
 
-use std::collections::hash_map::Entry::{Occupied, Vacant};
+use std::collections::hash_map::Entry::Occupied;
+use std::collections::hash_map::Entry::Vacant;
 
 #[derive(Debug, Copy, Clone)]
 pub struct Coverage<'reqs> {
@@ -24,8 +25,8 @@ pub struct Coverage<'reqs> {
 #[derive(Debug)]
 pub struct TracedRequirement<'reqs> {
     pub requirement: &'reqs Rc<Requirement>,
-    pub upper: HashMap<Fork, Vec<Coverage<'reqs>>>,
-    pub lower: HashMap<Fork, Vec<Coverage<'reqs>>>,
+    pub upper: BTreeMap<Fork, Vec<Coverage<'reqs>>>,
+    pub lower: BTreeMap<Fork, Vec<Coverage<'reqs>>>,
     node: NodeIdx,
 }
 
@@ -37,7 +38,7 @@ impl<'graph> TracedRequirement<'graph> {
 
 type TracedRequirementIdx = usize;
 
-#[derive(Debug, Hash, PartialEq, Eq)]
+#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 struct Link {
     lower: String,
     upper: String,
@@ -52,10 +53,10 @@ struct Link {
 pub struct Tracing<'graph> {
     requirements: Vec<TracedRequirement<'graph>>,
     requirements_by_id: HashMap<&'graph str, TracedRequirementIdx>,
-    uncovered: HashSet<TracedRequirementIdx>,
-    derived: HashSet<TracedRequirementIdx>,
-    invalid_covers_links: Option<HashSet<Link>>,
-    invalid_depends_links: Option<HashSet<Link>>,
+    uncovered: BTreeSet<TracedRequirementIdx>,
+    derived: BTreeSet<TracedRequirementIdx>,
+    invalid_covers_links: Option<BTreeSet<Link>>,
+    invalid_depends_links: Option<BTreeSet<Link>>,
     errors: Vec<Error>,
 }
 
@@ -64,10 +65,10 @@ impl<'graph> Tracing<'graph> {
         let mut trace = Tracing {
             requirements: Vec::new(),
             requirements_by_id: HashMap::new(),
-            uncovered: HashSet::new(),
-            derived: HashSet::new(),
-            invalid_covers_links: Some(HashSet::new()),
-            invalid_depends_links: Some(HashSet::new()),
+            uncovered: BTreeSet::new(),
+            derived: BTreeSet::new(),
+            invalid_covers_links: Some(BTreeSet::new()),
+            invalid_depends_links: Some(BTreeSet::new()),
             errors: Vec::new(),
         };
 

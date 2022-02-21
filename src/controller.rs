@@ -6,7 +6,7 @@ use crate::{
     trace::Tracing,
 };
 use serde::{Deserialize, Serialize};
-use std::{collections::HashMap, fs, io, path::PathBuf, time::Instant};
+use std::{collections::BTreeMap, fs, io, path::PathBuf, time::Instant};
 
 use log::*;
 
@@ -21,9 +21,9 @@ struct TraceConfig {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
-    artefact: HashMap<String, ArtefactConfig>,
+    artefact: BTreeMap<String, ArtefactConfig>,
     trace: Vec<TraceConfig>,
-    job: Option<HashMap<String, Job>>,
+    job: Option<BTreeMap<String, Job>>,
     version_provider: Option<String>,
     default_jobs: Option<Vec<String>>,
 }
@@ -62,7 +62,7 @@ pub struct Job {
 
 #[derive(Debug)]
 pub struct Controller {
-    jobs: HashMap<String, Job>,
+    jobs: BTreeMap<String, Job>,
     default_jobs: Vec<String>,
     graph: Graph,
 }

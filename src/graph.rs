@@ -1,10 +1,10 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::rc::Rc;
 
 use crate::common::{Artefact, Requirement};
 use crate::errors::{Error, Result};
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Fork(usize);
 impl Into<usize> for Fork {
     fn into(self) -> usize {
@@ -34,7 +34,7 @@ impl Fork {
     }
 }
 
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Tine {
     pub fork: Fork,
     pub tine: usize,
@@ -105,14 +105,14 @@ pub struct Graph {
     nodes: Vec<Node>,
     forks: Vec<ForkData>,
 
-    artefact_id_to_node: HashMap<String, NodeIdx>,
+    artefact_id_to_node: BTreeMap<String, NodeIdx>,
 }
 
 impl Graph {
     pub fn new() -> Self {
         let nodes = Vec::new();
         let forks = Vec::new();
-        let artefact_id_to_node = HashMap::new();
+        let artefact_id_to_node = BTreeMap::new();
         Self {
             nodes,
             forks,
@@ -152,10 +152,10 @@ impl Graph {
 
         let e = self.artefact_id_to_node.entry(artefact.id.clone());
         match e {
-            std::collections::hash_map::Entry::Occupied(_) => {
+            std::collections::btree_map::Entry::Occupied(_) => {
                 return Err(Error::DuplicateArtefact(artefact.id.clone()));
             }
-            std::collections::hash_map::Entry::Vacant(e) => {
+            std::collections::btree_map::Entry::Vacant(e) => {
                 e.insert(node_id);
             }
         }

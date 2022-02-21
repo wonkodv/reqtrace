@@ -13,7 +13,6 @@ mod common;
 mod controller;
 mod errors;
 mod formatters;
-mod genericvalue;
 mod graph;
 mod parsers;
 mod trace;

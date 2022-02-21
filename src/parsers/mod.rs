@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::fs;
 use std::mem;
 use std::path::PathBuf;
@@ -23,16 +23,16 @@ mod rust;
 pub struct ArtefactConfig {
     pub paths: Vec<String>,
     pub parser: String,
-    pub parser_options: Option<HashMap<String, String>>,
+    pub parser_options: Option<BTreeMap<String, String>>,
     pub version_provider: Option<String>,
 }
 
 #[derive(Debug, Default)]
 pub struct ArtefactData {
     pub requirements: Vec<Rc<Requirement>>,
-    pub id_to_req: HashMap<String, u16>, // ID => Req  with  ID
-    pub id_to_covering_req: HashMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Covers
-    pub id_to_depending_req: HashMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Depends
+    pub id_to_req: BTreeMap<String, u16>, // ID => Req  with  ID
+    pub id_to_covering_req: BTreeMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Covers
+    pub id_to_depending_req: BTreeMap<String, Vec<(u16, u16)>>, // ID => Reqs where ID in Req.Depends
     pub errors: Vec<Error>,
 }
 
