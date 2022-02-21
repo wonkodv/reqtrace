@@ -1,6 +1,10 @@
 version_provider = "git"
 default_jobs = ["errors"]
 
+[artefact.readme]
+paths = ["README.md", ]
+parser = "readme"
+
 [artefact.requirements]
 paths = ["doc/requirements/REQUIREMENTS.md", ]
 parser = "markdown"
@@ -16,6 +20,10 @@ parser = "markdown"
 [artefact.code]
 paths = ["src/**/*.rs"]
 parser = "rust"
+
+[[trace]]
+upper = "readme"
+lower = ["requirements", ]
 
 [[trace]]
 upper = "requirements"

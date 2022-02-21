@@ -12,9 +12,11 @@ use crate::common::Requirement;
 use crate::errors::Error;
 
 use self::markdown::MarkdownParser;
+use self::readme::ReadmeParser;
 use self::rust::RustParser;
 
 mod markdown;
+mod readme;
 mod rust;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -73,6 +75,7 @@ impl ArtefactParser {
         match config.parser.as_str() {
             "markdown" => parser = Box::new(MarkdownParser::from_config(config)?),
             "rust" => parser = Box::new(RustParser::from_config(config)?),
+            "readme" => parser = Box::new(ReadmeParser::from_config(config)?),
             _ => {
                 return Err(Error::UnknownArtefactType(config.parser));
             }
