@@ -1,5 +1,6 @@
 version_provider = "git"
-default_jobs = ["errors"]
+default_jobs = ["check"]
+
 
 [artefact.readme]
 paths = ["README.md", ]
@@ -41,15 +42,15 @@ lower= ["code", ]
 query = "Parse"
 format = "Tags"
 file = ".tags"
+set_return_code = false
 
-[job.tmx]
+[job.build]
 query = "Trace"
 format = "Markdown"
 file = "reports/tmx.md"
+set_return_code = false
 
-
-[job.errors]
+[job.check]
 query = "Trace"
 format = "GnuError"
 file = "-"
-

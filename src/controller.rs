@@ -57,6 +57,7 @@ pub struct Job {
     pub query: Query,
     pub format: Format,
     pub file: PathBuf,
+    pub set_return_code: Option<bool>,
 }
 
 #[derive(Debug)]
@@ -120,7 +121,10 @@ impl Controller {
         let mut success = true;
         for (job, job_name) in jobs.iter().zip(job_names.iter()) {
             if !self.run(job, job_name)? {
-                success = false;
+                if job.set_return_code.unwrap_or(true) {
+                    cov_mark::hit!(DSG_JOB_RETURN_CODE);
+                    success = false;
+                }
             }
         }
 
@@ -151,6 +155,7 @@ impl Controller {
 
         let write_res = match &job.query {
             Query::Trace => {
+                cov_mark::hit!(DSG_JOB_TRACE);
                 let t = Tracing::from_graph(&self.graph);
                 if !t.errors().is_empty() {
                     success = false;
@@ -158,6 +163,7 @@ impl Controller {
                 formatters::tracing(&t, &self.graph, &job.format, &mut out)
             }
             Query::Parse => {
+                cov_mark::hit!(DSG_JOB_PARSE);
                 let reqs = self.graph.get_all_reqs();
                 if self.graph.get_parsing_errors().next().is_some() {
                     success = false;
@@ -168,7 +174,10 @@ impl Controller {
             Query::ShowRequirementImpact { id: _ } => todo!(),
             Query::ValidateGraph => todo!(),
             Query::CacheStatus => todo!(),
-            Query::ParseArtefacts { artefacts: _ } => todo!(),
+            Query::ParseArtefacts { artefacts: _ } => {
+                // cov_mark::hit!(DSG_JOB_PARSE_SOME); // Parse a set of Artefacts
+                todo!()
+            }
         };
 
         write_res.map_err(|e| IoError(job.file.clone(), e))?;

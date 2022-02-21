@@ -216,6 +216,57 @@ Covers:
 Requires:
 *   MAN_CONFIG_STRUCTURE: Configuration Structure and Fields
 
+
+## Command Line Interface
+
+
+### DSG_CLI: Offer a simple Command Line Interface
+
+The tool should be invoked via a simple CLI
+
+Covers:
+*   REQ_CLI: Offer a simple Command Line Interface
+
+
+### DSG_JOBS: Jobs control what operations to perform
+
+One or more Jobs can be configured. Each Job specifies an operation to perform, the format that results
+should be presented in and the file to store results in.
+
+### DSG_JOB_PARSE: Parse all Artefacts
+
+Parse the Artefacts
+
+Covers: UC_PARSE
+
+### DSG_JOB_PARSE_SOME: Parse a set of Artefacts
+
+Parse one or more Artefacts to make finding errors easier.
+
+Covers: UC_PARSE
+
+### DSG_JOB_TRACE: Trace Requirements
+
+Trace Requirements
+
+Covers: UC_TRACE
+
+### DSG_JOB_FORMAT: Specify Format of Results
+
+Specify the Format that results are presented in
+
+Covers:
+*   REQ_FORMATS: Well defined Formats
+
+#### DSG_JOB_RETURN_CODE: Return Code Indicates if Tracing is Correct
+
+If configured for a Job, the return code will indicate if a Job found Errors or not
+
+Covers:
+*   UC_CHECK: Check for correct Tracing
+
+
+
 ## Tracing Algorithm
 
 #### DSG_TRACE_UPWARDS: Trace upwards using Covers attribute

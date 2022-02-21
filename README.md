@@ -20,7 +20,8 @@ or does not this:
 *   Use a Requirement Title if the ID has little meaning => REQ_VAL_TITLE
 *   Work well with Open Source Packages, integrate nicely with the ecosystem of
     Continous Delivery Pipeline on public Source Code Hosters like github
-    =>  REQ_CONFIG: Simple Configuration in one File
+    =>  REQ_CONFIG: Simple Configuration in One File
+    =>  REQ_CLI: Offer a simple Command Line Interface
 *   Don't give up early. Upon Errors (parsing, tracing) the tool should
     recover and continue where possible and show a result along with all
     encountered errors.

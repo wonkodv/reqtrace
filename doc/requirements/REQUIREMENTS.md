@@ -177,6 +177,10 @@ Show results quickly, especially if only a small query is given.
 If the user has to flush the cache, this is a bug in the Program.
 
 
+## REQ_CLI: Offer a simple Command Line Interface
+
+For ease of integration into other tools, all functionality must be available via a CLI.
+
 
 # Usecases
 
@@ -203,6 +207,10 @@ stored in a file and bad tracing is reported.
 
 Parameters:
 *   Tracing Report
+
+## UC_CHECK: Check for correct Tracing
+
+Like `UC_TRACE` but the only output of interest is whether there were tracing errors or not
 
 ## UC_ANALYZE_SINGLE: Analyze a Requirement
 
