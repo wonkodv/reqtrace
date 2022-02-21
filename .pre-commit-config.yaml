@@ -1,15 +1,22 @@
 repos:
--   repo: https://github.com/wonkodv/pre-commit-rust
-    rev: v1.1
-    hooks:
-    -   id: fmt
-        stages: ["commit"]
-    -   id: cargo-check
-        stages: ["commit"]
-    -   id: test
-        stages: ["push"]
 -   repo: local
     hooks:
+    - id: fmt
+      name: fmt
+      description: format
+      entry: cargo fmt
+      language: system
+      types: ["rust"]
+      stages: ["commit"]
+      pass_filenames: false
+    - id: test
+      name: test
+      description: run tests
+      entry: cargo test
+      language: system
+      types: ["rust"]
+      stages: ["push"]
+      pass_filenames: false
     - id: trace
       name: trace
       description: verify that all requirements are traced correctly
