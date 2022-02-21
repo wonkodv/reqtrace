@@ -11,7 +11,8 @@ use regex::Regex;
 use crate::trace::TracedRequirement;
 
 lazy_static! {
-    static ref REPLACE: Regex = Regex::new(r"[^A-Za-z0-9_-]").unwrap(); // TODO: is this defined somewhere?
+    static ref REPLACE_WITH_DASH: Regex = Regex::new(r"[ ]").unwrap(); // TODO: is this defined somewhere?
+    static ref REMOVE: Regex = Regex::new(r"[^A-Za-z0-9_-]").unwrap(); // TODO: is this defined somewhere?
 }
 
 /// requirement Id as markdown link
@@ -19,13 +20,15 @@ fn requirement_link(req: &Rc<Requirement>) -> String {
     if let Some(title) = &req.title {
         let replaced = format!("{}-{}", req.id, title);
         let replaced = replaced.to_lowercase();
-        let replaced = REPLACE.replace_all(&replaced, "-");
+        let replaced = REPLACE_WITH_DASH.replace_all(&replaced, "-");
+        let replaced = REMOVE.replace_all(&replaced, "");
 
         format!("[{}](#{} \"{}\")", req.id, replaced, title)
     } else {
         let replaced = &req.id;
         let replaced = replaced.to_lowercase();
-        let replaced = REPLACE.replace_all(&replaced, "-");
+        let replaced = REPLACE_WITH_DASH.replace_all(&replaced, "-");
+        let replaced = REMOVE.replace_all(&replaced, "");
 
         format!("[{}](#{})", req.id, replaced)
     }
@@ -59,11 +62,15 @@ where
     for req in reqs {
         writeln!(
             w,
-            "\n## {}: {}\n\nOrigin: `{}`",
+            "\n## {}: {}\n\nOrigin: {}",
             req.id,
             req.title.as_ref().unwrap_or(&"".to_owned()),
             location_link(&req.location)
         )?;
+
+        if let Some(description) = req.attributes.get("Description") {
+            writeln!(w, "\n\n{}", description)?;
+        }
 
         if !req.covers.is_empty() {
             writeln!(w, "\nCovers:")?;
@@ -87,10 +94,12 @@ where
         }
 
         for (k, v) in &req.attributes {
-            let v = v.trim();
-            if !v.is_empty() {
-                writeln!(w, "\n{}:", k)?;
-                writeln!(w, "{}", v)?;
+            if k != "Description" {
+                let v = v.trim();
+                if !v.is_empty() {
+                    writeln!(w, "\n{}:", k)?;
+                    writeln!(w, "{}", v)?;
+                }
             }
         }
     }
@@ -105,15 +114,19 @@ where
     for req in reqs {
         writeln!(
             w,
-            "\n## {} {}\n\nOrigin: `{}`",
+            "\n## {}{}\n\nOrigin: {}",
             req.requirement.id,
             req.requirement
                 .title
                 .as_ref()
-                .map(|t| format!(":{t}"))
+                .map(|t| format!(": {t}"))
                 .unwrap_or_default(),
             location_link(&req.requirement.location)
         )?;
+
+        if let Some(description) = req.requirement.attributes.get("Description") {
+            writeln!(w, "\n\n{}", description)?;
+        }
 
         if !req.upper.is_empty() {
             writeln!(w, "\nCovers:")?;
@@ -167,10 +180,12 @@ where
         }
 
         for (k, v) in &req.requirement.attributes {
-            let v = v.trim();
-            if !v.is_empty() {
-                writeln!(w, "\n{}:", k)?;
-                writeln!(w, "{}", v)?;
+            if k != "Description" {
+                let v = v.trim();
+                if !v.is_empty() {
+                    writeln!(w, "\n{}:", k)?;
+                    writeln!(w, "{}", v)?;
+                }
             }
         }
     }
