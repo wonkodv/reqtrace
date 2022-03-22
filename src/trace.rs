@@ -342,6 +342,7 @@ impl<'graph> Tracing<'graph> {
         self.validate_upwards();
         self.validate_downwards();
     }
+
     fn validate_downwards(&mut self) {
         for cov in self.invalid_covers_links.take().unwrap() {
             let req = self

@@ -71,3 +71,33 @@ pub mod lazy {
         }
     }
 }
+
+#[cfg(test)]
+mod test {
+
+    use std::sync::atomic::{AtomicU8, Ordering};
+
+    use super::*;
+
+    static SENTINEL: AtomicU8 = AtomicU8::new(0);
+
+    fn produce(input: Vec<u8>) -> String {
+        SENTINEL.fetch_add(1, Ordering::Relaxed);
+        String::from_utf8(input).unwrap()
+    }
+
+    #[test]
+    fn test_lazy() {
+        SENTINEL.store(0, Ordering::Relaxed);
+
+        let l: lazy::Lazy<String, Vec<u8>> = lazy::Lazy::new(produce, vec![65, 66, 67]);
+
+        assert!(SENTINEL.load(Ordering::Relaxed) == 0);
+
+        let s: &String = &*l;
+
+        assert!(SENTINEL.load(Ordering::Relaxed) == 1);
+
+        assert!(s.as_str() == "ABC");
+    }
+}

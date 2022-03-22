@@ -17,7 +17,7 @@ use super::ArtefactConfig;
 
 lazy_static! {
     static ref REF_LINK_LINE: Regex =
-        Regex::new(r"=>\s+(\p{XID_Start}\p{XID_Continue}+)(?::\s*(.+))?\s*$").unwrap();
+        Regex::new(r"=>\s*(\p{XID_Start}\p{XID_Continue}+)(?::\s*(.+?))?\s*$").unwrap();
 }
 
 #[derive(Debug)]
@@ -114,4 +114,47 @@ pub fn parse<R: io::BufRead>(path: &Path, reader: R) -> (Vec<Rc<Requirement>>, V
     let requirements = vec![Rc::new(requirement)];
 
     (requirements, errors)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_req_regex_matches_no_title() {
+        let cap = REF_LINK_LINE.captures("Some text => REQ_ID").unwrap();
+        assert_eq!(&cap[1], "REQ_ID");
+        assert_eq!(cap.get(2), None);
+    }
+    #[test]
+    fn test_req_regex_matches_title() {
+        let cap = REF_LINK_LINE
+            .captures("Some text => REQ_ID:     Req Title        ")
+            .unwrap();
+        assert_eq!(&cap[1], "REQ_ID");
+        assert_eq!(&cap[2], "Req Title");
+    }
+
+    #[test]
+    fn test_readme() {
+        let text = "First Line
+            second line
+            some text => REQ_1
+            some more text
+            another requirement =>REQ_2: title
+            ";
+
+        let (requirements, errors) = parse(&PathBuf::from("path/to/Read_Me.md"), text.as_bytes());
+        assert!(errors.is_empty());
+        assert!(requirements.len() == 1);
+        let r = &requirements[0];
+        assert!(r.id == "Read_Me"); // from file name
+        assert!(r.title == Some("First Line".to_owned()));
+        dbg!(&r.depends);
+        assert!(r.depends.len() == 2);
+        assert!(r.depends[0].id == "REQ_1");
+        assert!(r.depends[0].title == None);
+        assert!(r.depends[1].id == "REQ_2");
+        assert!(r.depends[1].title == Some("title".to_owned()));
+    }
 }

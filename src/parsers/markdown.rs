@@ -14,10 +14,10 @@ use crate::errors::Error;
 lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();
     static ref REQUIREMENT_LINE: Regex =
-        Regex::new(r"^(#+)\s*(\p{XID_Start}\p{XID_Continue}+):\s*(.+)\s*$").unwrap();
+        Regex::new(r"^(#+)\s*(\p{XID_Start}\p{XID_Continue}+):\s*(.+?)\s*$").unwrap();
     static ref ATTRIBUTE_LINE: Regex = Regex::new(r"^([A-Z][a-z]+):\s(.*)\s*$").unwrap();
     static ref REF_LINK_LINE: Regex =
-        Regex::new(r"^*\s+(\p{XID_Start}\p{XID_Continue}+)(?::\s*(.+))?\s*$").unwrap();
+        Regex::new(r"^*\s+(\p{XID_Start}\p{XID_Continue}+)(?::\s*(.+?))?\s*$").unwrap();
     static ref BAD_HEADLINE_UNDERLINE: Regex = Regex::new(r"^(====*)|(----*)").unwrap(); // TODO: use
 }
 
@@ -487,7 +487,7 @@ mod tests {
     fn test_reflink_regex_matches() {
         let cap = REF_LINK_LINE.captures("*   REQ: Title of req \n").unwrap();
         assert_eq!(&cap[1], "REQ");
-        assert_eq!(&cap[2], "Title of req ");
+        assert_eq!(&cap[2], "Title of req");
 
         let cap = REF_LINK_LINE.captures("*   REQ \n").unwrap();
         assert_eq!(&cap[1], "REQ");
@@ -535,9 +535,9 @@ Depends:
         assert_eq!(req.depends[1].title, Some("T".into()));
     }
 
-    /// Regression test, Used to parse the rest of the line into 1 Requirement with empty ID
+    /// Regression test. A buggy version parsed the rest of the line into 1 Requirement with empty ID
     #[test]
-    fn test_markdown_parser_reflinks() {
+    fn test_markdown_parser_no_reflinks() {
         let s = r#"
 ## REQ: Title Title
 Covers:
