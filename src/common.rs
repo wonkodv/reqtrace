@@ -158,7 +158,6 @@ pub enum Format {
     Json,
     Markdown,
     Tags,
-    Latex,
     TemplateFile(PathBuf),
     TemplateString(String),
 }

@@ -10,7 +10,20 @@ use crate::errors::Error;
 
 mod gnuerr;
 mod markdown;
+mod serialize;
 mod tags;
+
+pub fn graph<W>(graph: &Graph, format: &Format, writer: &mut W) -> io::Result<()>
+where
+    W: io::Write,
+{
+    match format {
+        //    Format::Markdown => markdown::graph(graph, writer),
+        Format::Json => serialize::graph(graph, &format, writer),
+        Format::Markdown => markdown::requirements(requiremens, writer),
+        _ => todo!(),
+    }
+}
 
 pub fn requirements<'r, W, R>(requiremens: R, format: &Format, writer: &mut W) -> io::Result<()>
 where
@@ -19,6 +32,7 @@ where
 {
     match format {
         Format::Tags => tags::requirements(requiremens, writer),
+        Format::Markdown => markdown::requirements(requiremens, writer),
         _ => todo!(),
     }
 }
