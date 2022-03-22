@@ -1,9 +1,8 @@
-
 # Requirements
 
 Things this tool should do in no particular order
 
-## REQ_TRACE: Determine whcih requirements cover which
+## REQ_TRACE: Determine which requirements cover which
 
 Compute tracing for each Requirement, wether it is covered, uncovered, covers
 another requirement or is derived.
@@ -11,29 +10,20 @@ another requirement or is derived.
 ## REQ_UNIQUE_ID_v2: Requirements have a unique Identifier
 
 Each requirement must be identifiable by a short, unique string.
-All unicode symbols must be possible, though parsers may restrict this
+All unicode symbols typically used as identifiers must be possible,
+though parsers may restrict this
 
 History:
 *   v2: Unicode
-
-## REQ_USER_FRIENDLY: Simple to use Interface
-
-The User Interface should be slim and straight forward.
 
 ## REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
 
 For ease of integration into other tools, all functionality must be available via a CLI.
 
-## REQ_VCS: Allow Version Control
-
-
-All Config, state, intermediate results are in Plain Text based formats that are usable in
-Version Control and produce usable diff.
-
 ## REQ_INSTALL: Easy to install
 
-no package management, libraries, dependencies
-
+The tool should be distributed as an executable without depending on
+libraries, files, etc.
 
 ## REQ_EXTENSIBLE: Extensible Parsing
 
@@ -47,10 +37,6 @@ For example by its:
 *   git describe
 *   hash
 *   file modification time
-
-## REQ_CONFIGURABLE_OUTPUT: The Output Format is Configurable
-
-The Format in which Information is returned is configurable
 
 ## REQ_MACHINE_READABLE: Machine Readable Output
 
@@ -72,15 +58,6 @@ Code Points. Also Unicode Encodings like UTF-8 can encode the same Codepoint
 as different bytes.
 
 This must be handled.
-
-## REQ_ARTEFACT_PARSE_ID: Parse Artefact Identifier
-
-An identifier can be parsed from the line, for example a version string, or
-an expanded RCS Keyword (like `$Id: /path/to/artefact.md$42$`).
-
-## REQ_ARTEFACT_QUERY_ID: Query Tool for Artefact Identifier
-
-An identifier can be gotten from an external tool like `git describe --tags`.
 
 ## REQ_UP: Upward Coverage
 
@@ -147,75 +124,40 @@ the wrong coverage.
 An error is reported for a Coverage claim for which no Requirement exists in the
 relevant artefacts.
 
-## REQ_VAL_GRAPH: Validate Graph
-
-An error is reported for an invalid tracing graph. A Tracing Graph is invalid,
-if:
-*   there is a loop
-*   a Node has no edges leading in or out
-
 
 ##  REQ_CONFIG: Simple Configuration in One File
 
 All Configuration is stored in a single file using a common Format that is
 editable for humans and machine readable.
 
-
-## REQ_QUERIES: Configurable Information Granularity
-
-Instead of returning every detail about the Tracing, specific parts of
-information can be queried, so that the output is as slim as possible and only
-relevant information is computed.
-
 ## REQ_FAST: Fast
 
 Show results quickly, especially if only a small query is given.
 
-## REQ_NO_OVERCACHING: No over-caching
+## REQ_CACHE_FRIENDLY: Work well with build systems that cache
 
-If the user has to flush the cache, this is a bug in the Program.
+Report all files which are consumed, so that build systems like make or
+ninja can know when an input has changed an rerun the tool.
 
 # Usecases
-
-## UC_VALIDATE: Validate Configuration
-
-The configuration is loaded, the Tracing Graph validated. This Step should be fast.
-
-## UC_CACHE_STATUS: Query Parsing State
-
-All artefacts are checked for changes since last parsing
 
 ## UC_PARSE: Parse Artefacts
 
 A Set of artefacts are parsed, reporting all requirements and errors.
 
-
 Parameters:
 *   Artefacts to Parse
 
-## UC_TRACE: Compute Tracing
+## UC_TMX: Create Traceability Matrix
 
 All requirements are matched up and down the Tracing Graph. The results are
 stored in a file and bad tracing is reported.
 
 Parameters:
-*   Tracing Report
+*   Tracing Report Format
+*   Tracing Report File
 
 ## UC_CHECK: Check for correct Tracing
 
-Like `UC_TRACE` but the only output of interest is whether there were tracing errors or not
-
-## UC_ANALYZE_SINGLE: Analyze a Requirement
-
-For a Requirement, look up what it covers, and where it is covered itself and
-where coverage is missing.
-
-Parameters:
-*   Requirement Id
-
-## UC_ANALYZE_IMPACT: Analyze Dependencies of Requirement
-
-For a Requirement, look up all requirements that it depends upon transitively.
-
-Parameters:
-*   Requirement Id
+Like `UC_TRACE` but the only output of interest is whether there were tracing errors or not,
+for use in CI/CD Pipelines.

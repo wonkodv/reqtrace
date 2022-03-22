@@ -68,6 +68,8 @@ pub fn parse<R: io::BufRead>(path: &Path, reader: R) -> (Vec<Rc<Requirement>>, V
     let mut title = None;
     let mut depends = Vec::<Reference>::new();
 
+    cov_mark::hit!(FMT_README); // Single Requirement Per File
+
     for (no, line) in reader.lines().enumerate() {
         match line {
             Ok(line) => {

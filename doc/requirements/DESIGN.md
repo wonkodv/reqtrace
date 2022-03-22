@@ -16,6 +16,7 @@ Optional Attributes that are handled:
 *   Coverage: List of requirement IDs that are covered by this one
 *   Dependencies: List of requirement IDs which cover this one
 *   Tags:   List of Strings that can be used to categorize requirements
+*   Delegates: List of requirements in the same artefact that can be covered instead of this one
 
 Attributes inferred during requirement Parsing:
 *   Location:   Artefact that defines this requirement and the location inside
@@ -43,23 +44,6 @@ them as needed.
 
 Artefact parses the requirements in the files it represents.
 
-### DSG_ART_CACHING: Cache Parsing Results
-
-Artefact manages a cache of already parsed requirements and only 
-
-Covers:
-*   REQ_FAST
-
-### DSG_ART_EXTERNAL_PARSER: External Artefact Parser
-
-If files can not be parsed by this tool, an external program is invoked which
-writes  the requirements into a temporary file or to its `stdout` stream in the
-JSON format, or as Text which is then processed by the regex parsers.
-
-TODO: think about filenames, locations, regexparser, how to configure it and so on.
-
-
-
 References:
 *   FMT_JSON
 *   FMT_JSON_REQUIREMENT
@@ -69,10 +53,9 @@ References:
 *   ID
 *   paths:  List of Paths or pattern with which to find the files
 *   parser:   id of a parsing strategy, e.g. `Markdown Requirements`, `Rust
-    Coverage Marks`, `External`
+    Coverage Marks`, `JSON`
 *   parser arguments: Object that is passed to the parser
 *   caching: boolean, whether to cache or parse on every access
-
 
 ## Formats
 
@@ -84,37 +67,10 @@ little changed.
 
 Candidates:
 *   JSON
-*   ?
+*   CBOR
 
-for smaller diff, all lists should be sorted 
+Text based formats will work better with SVCS
 
-
-### Computing effort Considerations
-
-Depending on the artefact type, parsing an artefact may not be slower than
-retrieving the information from a cache, but it may also be a lot slower, if the
-artefact format is complicated (large pdf) and the cache format good.
-
-To minimize the computing effort for accessing the cache, the following datasets
-are stored in a file each:
-*   Requirements parsed from one artefact
-*   Coverage Links from one artefact to another
-
-To prevent over caching a fingerprint of the Artefact is stored in the cached
-requirements, and the fingerprint of all related artefacts is stored with the
-coverage links.
-
-#### DSG_JSON_CACHE: JSON for Storing State
-
-JSON is used to store parsing results and computed coverage
-
-Covers: REQ_VCS, REQ_FAST
-
-Depends: FMT_JSON
-
-#### DSG_JSON_CACHE_SORT: JSON Cache sorted
-
-Sort lists, smaller diff
 
 #### DSG_JSON_IMPORT: JSON for Importing Requirements
 
@@ -126,83 +82,18 @@ Depends: FMT_JSON
 
 #### DSG_JSON_EXPORT: JSON for Exporting Results
 
-Tracing results can be exported as json
+Errors, Requirements, Status, Tracing Info can be exported as JSON
 
 Covers: REQ_VCS, REQ_MACHINE_READABLE
 
 Depends: FMT_JSON
-
-#### DSG_FINGERPRINT_ART: Fingerprint of Artefacts
-
-The Cache of an artefact is checked for up-to-dateness with a fingerprint.
-
-The fingerprint of an artefact is computed as hash over:
-*   version of the tool
-*   parsing-type of the artefact
-*   for all files that make up an Artefact:
-    *   The sha256 of the file if it is small
-    *   The modification time and size if it is large
-
-
-Covers:
-*   REQ_NO_OVERCACHING
-
-Comment:
-Since the version is included in the fingerprint, the details can be changed
-easily.
-
-#### DSG_FINGERPRINT_TRACING: Fingerprint of Tracing
-
-The Cache of an artefact is checked for up-to-dateness with a fingerprint.
-
-The fingerprint of a tracing is computed as hash over:
-*   version of the tool
-*   The tracing graph
-*   The fingerprint of the artefacts
-
-
-### Export Formats
-
-Exporting data is kept as simple as possible by behaving like a good unix tool.
-Results are printed on stdio, errors are printed on stderr.
-The format can be chosen in config or on the command line.
-
-#### DSG_EXPORT_DATA: Export data to stdout
-
-Print results to stdout in a chosen format
-
-#### DSG_EXPORT_ERRORS: Export errors to stderr
-
-Print Errors to stdout in a chosen format
-
-#### DSG_EXPORT_FORMAT: Allow Selecting the Export Format
-
-The format in which errors and results are written to the out streams can be
-chosen.
-
-
-
-#### DSG_EXPORT_FORMAT_JSON: Export to JSON
-
-Errors, Requirements, Status, Tracing Info can be exported as JSON
 
 #### DSG_EXPORT_FORMAT_MARKDOWN: Export to Markdown
 
 Errors, Requirements, Status, Tracing Info can be exported as a useful
 standalone Markdown File
 
-#### DSG_EXPORT_FORMAT_TEX: Export to TEX
-
-Errors, Requirements, Status, Tracing Info can be exported as tex macro calls,
-do that the output can be used via `\include{}` in a tex project that defines
-the relevant macros.
-
-Tag:
-*   TODO
-
-Todo:
-*   Define the exact format of each object
-
+Covers: REQ_VCS, REQ_HUMAN_READABLE
 
 ### DSG_CONFIG_TOML: Use a Single TOML File as Configuration
 
@@ -213,19 +104,27 @@ The structure of the Configuration is detailed in the Manual
 Covers:
 *   REQ_CONFIG: Simple Configuration in One File
 
-Requires:
-*   MAN_CONFIG_STRUCTURE: Configuration Structure and Fields
-
-
 ## Command Line Interface
 
 
 ### DSG_CLI: Offer a simple Command Line Interface
 
-The tool should be invoked via a simple CLI
+The tool should be invoked via a simple CLI and set the exit code to indicate if a job was successful.
 
 Covers:
 *   REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
+
+### DSG_CLI_RETURN_CODE: Set return Code to indicate success
+
+Set the process' return code to:
+*   `2` if there were fatal errors (invalid configuration or similar)
+*   `1` if there were errors (file not found, parser errors, uncovered requirement, derived
+    requirement, ...)
+*   `0` otherwise
+
+Covers:
+*   REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
+*   UC_CHECK: Check for correct Tracing
 
 
 ### DSG_JOBS: Jobs control what operations to perform
@@ -251,21 +150,22 @@ Trace Requirements
 
 Covers: UC_TRACE
 
-### DSG_JOB_FORMAT: Specify Format of Results
+### DSG_JOB_FORMAT: Specify Format of Reports
 
 Specify the Format that results are presented in
 
 Covers:
 *   REQ_FORMATS: Well defined Formats
 
+### DSG_JOB_FILE: Specify File to Store Reports in
+
+Specify the file that results are stored in, treating `-` as the stdout channel.
+
 #### DSG_JOB_RETURN_CODE: Return Code Indicates if Tracing is Correct
 
-If configured for a Job, the return code will indicate if a Job found Errors or not
-
-Covers:
-*   UC_CHECK: Check for correct Tracing
-
-
+It can be specified for each job, if the return code should be set or not,
+allowing for example, to update the tmx without indicating an error if the tracing is not
+perfect yet.
 
 ## Tracing Algorithm
 
@@ -288,7 +188,7 @@ Covers: REQ_TRACE, REQ_MATCH_ID, REQ_DOWN
 A Requirement can delegate to a requirement in the same artefact, so that itself
 does not need to be covered.
 
-Requirement U covers Requirement D if D.id appears in U.Depends and
+Requirement U covers Requirement D if D.id appears in U.Delegates and
 D.Artefact directly traces against U.Artefact.
 
 Covers: REQ_TRACE, REQ_MATCH_ID, REQ_DELEGATION
@@ -303,8 +203,8 @@ Covers: REQ_TRACE
 
 Requirement R is uncovered if there is no Requirement D so that D covers R.
 
-
 Covers: REQ_TRACE
+
 #### DSG_TRACE_TRACE_TITLE: When tracing upwards or downwards match title
 
 When tracing Upwards or Downwards, emit an error if the title of the coverage does
@@ -334,6 +234,7 @@ there must exist a Requirement D with with D.Id == L.id and
 D.Artefact traces against U.Artefact
 
 Covers: REQ_TRACE, REQ_DOWN
+
 #### DSG_TRACE_COVERS_EXIST: Cover Links must exist
 
 For every Link L in  D.Depends of a Requirement D,

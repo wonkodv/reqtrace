@@ -107,6 +107,8 @@ struct Parser<'a> {
 
 impl Parser<'_> {
     fn parse_macro(&mut self, node: &syn::ExprMacro) -> bool {
+        cov_mark::hit!(FMT_RUST_COV);
+
         let seg = &node.mac.path.segments;
         if seg.len() != 2 {
             return false;

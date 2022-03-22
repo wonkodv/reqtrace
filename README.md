@@ -1,21 +1,30 @@
 Requirement Tracing
 ===================
 
-
 Tool to trace Software requirements.
+
 
 Primary Design Goals that mostly came from dealing with a tool which does this,
 or does not this:
-*   Can Parse any kind of artefacts in a (somewhat) sane way by working Well
-    with other Tools/languages
-    *   =>  REQ_EXTENSIBLE
-    *   =>  REQ_FORMATS
+*   Do one thing well. This tool is mainly concerned with tracing requirements.
+    *   =>  REQ_TRACE
     *   =>  REQ_UP
     *   =>  REQ_DOWN
-    *   =>  REQ_ERROR
-*   All state, internal representations, output etc. work well with Version
-    Control Systems => REQ_VCS
-*   Fast => REQ_FAST
+*   Parse only simple files. Implement a few useful parsers. Complicated or expensive analysis is done by external
+    tools and imported via well defined formats like JSON.
+    *   =>  REQ_EXTENSIBLE
+    *   =>  REQ_FORMATS
+*   Produce only simple files. Implement reports in in a few human friendly formats (like markdown) for easy
+    inspection and machine friendly formats (like JSON) for further analysis and generation of more sophisticated
+    reports.
+    *   =>  REQ_HUMAN_READABLE
+    *   =>  REQ_MACHINE_READABLE
+    *   =>  REQ_FORMATS
+*   Be Fast. By not doing expensive parsing or output generation, this tool can execute quickly. Other tools like
+    make or ninja can then compose various tools. The interchange formats become the cache and only minimal work
+    is done.
+    *   =>  REQ_FAST
+    *   =>  REQ_CACHE_FRIENDLY
 *   Use a Requirement Title if the ID has little meaning => REQ_VAL_TITLE
 *   Work well with Open Source Packages, integrate nicely with the ecosystem of
     Continous Delivery Pipeline on public Source Code Hosters like github
@@ -25,17 +34,12 @@ or does not this:
     recover and continue where possible and show a result along with all
     encountered errors.
     *   => REQ_LATE_ERRORS
-*   Produce (Error) Reports in a variety of useful formats
-    *   =>  REQ_HUMAN_READABLE
-    *   =>  REQ_MACHINE_READABLE
 
 
 State of this Project
 =====================
 
-Currently in Alpha.
-It can Parse Markdown and rust code and generate reports in markdown. (Also a tags-file of requirements and
-gnu-style error report for vim users)
+Currently in development. v0.1.0 is stable enough to try things out, but everything can still change.
 
 A lot of features are not yet implemented; take a look at the [Tracing Report](reports/tmx.md)
 

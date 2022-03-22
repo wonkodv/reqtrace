@@ -64,15 +64,9 @@ fn logging_setup(opt: &Opt) -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
-fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
-    let opt: Opt = Opt::from_args();
 
-    logging_setup(&opt)?;
-
+fn get_config(opt: &Opt) -> Result<controller::Config, Box<dyn std::error::Error>> {
     info!("using config file {}", opt.config_file.display());
-
-    cov_mark::hit!(DSG_CONFIG_TOML /* Use a Single TOML File as Configuration*/);
-
     let config: controller::Config = toml::from_slice(
         fs::read(&opt.config_file)
             .map_err(|e| format!("{}: {}", &opt.config_file.display(), e))?
@@ -91,27 +85,51 @@ fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
             format!("{}:  TOML Error {}", &opt.config_file.display(), e)
         }
     })?;
+    cov_mark::hit!(DSG_CONFIG_TOML /* Use a Single TOML File as Configuration*/);
 
-    let c = controller::Controller::new(config)?;
+    Ok(config)
+}
 
+fn run_cli_jobs(
+    controller: &controller::Controller,
+    opt: &Opt,
+) -> Result<bool, Box<dyn std::error::Error>> {
     let res = if opt.jobs.is_empty() {
-        c.run_default_jobs()
+        controller.run_default_jobs()
     } else {
-        c.run_jobs_by_name(&opt.jobs)
+        cov_mark::hit!(DSG_JOBS);
+        controller.run_jobs_by_name(&opt.jobs)
     };
+    cov_mark::hit!(DSG_CLI);
 
     res.map_err(|e: errors::Error| Box::new(e).into())
 }
 
-fn main() {
+fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
+    let opt: Opt = Opt::from_args();
+    logging_setup(&opt)?;
+    let config = get_config(&opt)?;
+    let controller = controller::Controller::new(config)?;
+    run_cli_jobs(&controller, &opt)
+}
+
+fn main_rc() -> i32 {
     let r = try_main();
-    match r {
+    let rc = match r {
         Err(e) => {
             error!("{}", e);
             eprintln!("Fatal Error: {}", e);
-            std::process::exit(2);
+            2
         }
-        Ok(true) => std::process::exit(0),
-        Ok(false) => std::process::exit(1),
-    }
+        Ok(true) => 0,
+        Ok(false) => 1,
+    };
+
+    cov_mark::hit!(DSG_RETURN_CODE);
+
+    rc
+}
+
+fn main() {
+    std::process::exit(main_rc());
 }
