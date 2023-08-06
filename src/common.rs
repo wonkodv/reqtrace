@@ -114,11 +114,11 @@ impl Artefact {
     }
 
     pub fn get_errors(&self) -> &[Error] {
-        return &self.data.errors;
+        &self.data.errors
     }
 
     pub fn get_requirements(&self) -> &[Rc<Requirement>] {
-        return &self.data.requirements;
+        &self.data.requirements
     }
 
     pub fn get_requirement_with_id(&self, id: &str) -> Option<&Rc<Requirement>> {

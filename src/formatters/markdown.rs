@@ -272,7 +272,7 @@ where
                 writeln!(
                     w,
                     "*   Referenced at:              {}",
-                    location_link(&location)
+                    location_link(location)
                 )?;
             };
             Ok(())
@@ -305,7 +305,7 @@ where
                 writeln!(
                     w,
                     "*   Referenced at:              {}",
-                    location_link(&location)
+                    location_link(location)
                 )?;
             };
             Ok(())
@@ -323,7 +323,7 @@ where
                 "*   {} depends on unknown Requirement {}\n    {}",
                 req.id,
                 depend,
-                location_link(&location.as_ref().unwrap_or(&req.location)),
+                location_link(location.as_ref().unwrap_or(&req.location)),
             )
         }
         CoversUnknownRequirement(req, cover, location) => {
@@ -332,7 +332,7 @@ where
                 "*   {} covers unknown Requirement {}\n    {}",
                 req.id,
                 cover,
-                location_link(&location.as_ref().unwrap_or(&req.location)),
+                location_link(location.as_ref().unwrap_or(&req.location)),
             )
         }
         GenericError(err) => {

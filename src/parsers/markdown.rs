@@ -53,7 +53,7 @@ impl Parser for MarkdownParser {
         match file {
             Err(err) => {
                 warn!("{}", err);
-                return (vec![], vec![err]);
+                (vec![], vec![err])
             }
             Ok(file) => {
                 let mut r = io::BufReader::new(file);
@@ -513,7 +513,7 @@ Depends:
         "#;
 
         let p = Path::new("Test.md");
-        let (reqs, errs) = markdown_parse(&mut s.as_bytes(), &p);
+        let (reqs, errs) = markdown_parse(&mut s.as_bytes(), p);
 
         assert!(errs.is_empty());
 
@@ -544,7 +544,7 @@ Covers:
         "#;
 
         let p = Path::new("Test.md");
-        let (reqs, errs) = markdown_parse(&mut s.as_bytes(), &p);
+        let (reqs, errs) = markdown_parse(&mut s.as_bytes(), p);
 
         assert!(errs.is_empty());
 

@@ -31,7 +31,7 @@ impl super::Parser for ReadmeParser {
         match file {
             Err(err) => {
                 warn!("{}", err);
-                return (vec![], vec![err]);
+                (vec![], vec![err])
             }
             Ok(file) => {
                 let r = io::BufReader::new(file);
@@ -75,19 +75,17 @@ pub fn parse<R: io::BufRead>(path: &Path, reader: R) -> (Vec<Rc<Requirement>>, V
             Ok(line) => {
                 if title.is_none() {
                     title = Some(line)
-                } else {
-                    if let Some(ref_link) = REF_LINK_LINE.captures(&line) {
-                        let id = ref_link[1].to_owned();
-                        let title = ref_link.get(2).map(|m| m.as_str().to_owned());
-                        let location = Some(Location::new_with_line_no(path.to_path_buf(), no + 1));
+                } else if let Some(ref_link) = REF_LINK_LINE.captures(&line) {
+                    let id = ref_link[1].to_owned();
+                    let title = ref_link.get(2).map(|m| m.as_str().to_owned());
+                    let location = Some(Location::new_with_line_no(path.to_path_buf(), no + 1));
 
-                        let reference = Reference {
-                            id,
-                            title,
-                            location,
-                        };
-                        depends.push(reference);
-                    }
+                    let reference = Reference {
+                        id,
+                        title,
+                        location,
+                    };
+                    depends.push(reference);
                 }
             }
 
@@ -155,7 +153,7 @@ mod tests {
         dbg!(&r.depends);
         assert!(r.depends.len() == 2);
         assert!(r.depends[0].id == "REQ_1");
-        assert!(r.depends[0].title == None);
+        assert!(r.depends[0].title.is_none());
         assert!(r.depends[1].id == "REQ_2");
         assert!(r.depends[1].title == Some("title".to_owned()));
     }

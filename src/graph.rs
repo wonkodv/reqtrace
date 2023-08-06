@@ -6,9 +6,9 @@ use crate::errors::{Error, Result};
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Fork(usize);
-impl Into<usize> for Fork {
-    fn into(self) -> usize {
-        self.0
+impl From<Fork> for usize {
+    fn from(val: Fork) -> Self {
+        val.0
     }
 }
 impl From<usize> for Fork {
@@ -28,9 +28,7 @@ impl Fork {
     }
 
     pub fn tines(self, graph: &Graph) -> impl Iterator<Item = Tine> {
-        (0..self.as_ref(graph).to.len())
-            .into_iter()
-            .map(move |tine| Tine { fork: self, tine })
+        (0..self.as_ref(graph).to.len()).map(move |tine| Tine { fork: self, tine })
     }
 }
 
@@ -58,9 +56,9 @@ impl From<usize> for NodeIdx {
         Self(val)
     }
 }
-impl Into<usize> for NodeIdx {
-    fn into(self) -> usize {
-        self.0
+impl From<NodeIdx> for usize {
+    fn from(val: NodeIdx) -> Self {
+        val.0
     }
 }
 impl NodeIdx {
@@ -136,10 +134,10 @@ impl Graph {
     }
 
     pub fn node_idx_by_id(&self, id: &str) -> Result<NodeIdx> {
-        return Ok(*self
+        Ok(*self
             .artefact_id_to_node
             .get(id)
-            .ok_or_else(|| Error::UnknownArtefact(id.into()))?);
+            .ok_or_else(|| Error::UnknownArtefact(id.into()))?)
     }
 
     /// Add [`Artefact`] to the graph
@@ -244,11 +242,11 @@ impl Graph {
     }
 
     pub fn iter_forks(&self) -> impl Iterator<Item = Fork> {
-        (0..self.forks.len()).into_iter().map(Fork)
+        (0..self.forks.len()).map(Fork)
     }
 
     pub fn iter_nodes(&self) -> impl Iterator<Item = NodeIdx> {
-        (0..self.nodes.len()).into_iter().map(NodeIdx)
+        (0..self.nodes.len()).map(NodeIdx)
     }
 }
 

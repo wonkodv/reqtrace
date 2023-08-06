@@ -89,7 +89,7 @@ impl Controller {
     }
 
     pub fn find_job(&self, job: &str) -> Option<&Job> {
-        Some(self.jobs.get(job)?)
+        self.jobs.get(job)
     }
 
     pub fn run_default_jobs(&self) -> Result<bool> {
@@ -104,7 +104,7 @@ impl Controller {
     pub fn run_jobs_by_name(&self, job_names: &[String]) -> Result<bool> {
         let mut jobs = Vec::new();
         for j in job_names {
-            if let Some(job) = self.find_job(&j) {
+            if let Some(job) = self.find_job(j) {
                 jobs.push(job)
             } else {
                 return Err(Error::UnknownJob(j.clone()));
@@ -117,11 +117,9 @@ impl Controller {
         let start = Instant::now();
         let mut success = true;
         for (job, job_name) in jobs.iter().zip(job_names.iter()) {
-            if !self.run(job, job_name)? {
-                if job.set_return_code.unwrap_or(true) {
-                    cov_mark::hit!(DSG_JOB_RETURN_CODE);
-                    success = false;
-                }
+            if !self.run(job, job_name)? && job.set_return_code.unwrap_or(true) {
+                cov_mark::hit!(DSG_JOB_RETURN_CODE);
+                success = false;
             }
         }
 

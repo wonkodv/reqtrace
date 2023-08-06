@@ -51,7 +51,7 @@ pub mod lazy {
                 // SAFETY: this function is the only that can hand out references into state, and
                 // it does so only when state == LazyState::Init in which case state is no longer
                 // mutated.
-                transmute(state)
+                &mut *state
             };
 
             if let LazyState::Init(t) = state {
@@ -94,7 +94,7 @@ mod test {
 
         assert!(SENTINEL.load(Ordering::Relaxed) == 0);
 
-        let s: &String = &*l;
+        let s: &String = &l;
 
         assert!(SENTINEL.load(Ordering::Relaxed) == 1);
 

@@ -351,8 +351,7 @@ impl<'graph> Tracing<'graph> {
             let reference: &Reference = req
                 .covers
                 .iter()
-                .filter(|r: &&Reference| r.id == cov.upper)
-                .next()
+                .find(|r: &&Reference| r.id == cov.upper)
                 .expect("invalid link exists");
             let location = reference.location.clone();
 
@@ -374,8 +373,7 @@ impl<'graph> Tracing<'graph> {
             let reference = req
                 .depends
                 .iter()
-                .filter(|r: &&Reference| r.id == dep.lower)
-                .next()
+                .find(|r: &&Reference| r.id == dep.lower)
                 .expect("invalid link exists");
             let location = reference.location.clone();
 
