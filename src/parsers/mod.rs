@@ -71,11 +71,10 @@ impl Parser for PrePopulated {
 
 impl ArtefactParser {
     fn try_from_config(config: ArtefactConfig) -> Result<Box<dyn Parser>, Error> {
-        let parser: Box<dyn Parser>;
-        match config.parser.as_str() {
-            "markdown" => parser = Box::new(MarkdownParser::from_config(config)?),
-            "rust" => parser = Box::new(RustParser::from_config(config)?),
-            "readme" => parser = Box::new(ReadmeParser::from_config(config)?),
+        let parser: Box<dyn Parser> = match config.parser.as_str() {
+            "markdown" => Box::new(MarkdownParser::from_config(config)?),
+            "rust" => Box::new(RustParser::from_config(config)?),
+            "readme" => Box::new(ReadmeParser::from_config(config)?),
             _ => {
                 return Err(Error::UnknownArtefactType(config.parser));
             }

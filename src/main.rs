@@ -56,11 +56,8 @@ fn logging_setup(opt: &Opt) -> Result<(), Box<dyn std::error::Error>> {
         })
         .parse_env("REQTRACE_LOG");
 
-    match opt.log_level {
-        Some(ref ll) => {
-            builder.parse_filters(ll);
-        }
-        _ => (),
+    if let Some(ref ll) = opt.log_level {
+        builder.parse_filters(ll);
     }
     builder.init();
 

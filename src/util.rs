@@ -29,9 +29,12 @@ pub mod lazy {
         Init(T),
     }
 
+    type Init<T, D> = fn(D) -> T;
+    type State<T, D> = LazyState<T, Init<T, D>, D>;
+
     #[derive(Debug)]
     pub struct Lazy<T, D> {
-        state: UnsafeCell<LazyState<T, fn(D) -> T, D>>,
+        state: UnsafeCell<State<T, D>>,
     }
 
     impl<T, D> Lazy<T, D> {
@@ -51,6 +54,7 @@ pub mod lazy {
                 // SAFETY: this function is the only that can hand out references into state, and
                 // it does so only when state == LazyState::Init in which case state is no longer
                 // mutated.
+                // Due to the UnsafeCell, Lazy is !Sync, so there can be no data races
                 &mut *state
             };
 

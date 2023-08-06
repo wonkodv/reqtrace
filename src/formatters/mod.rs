@@ -18,8 +18,14 @@ where
     W: io::Write,
 {
     match format {
-        //   Format::Markdown => markdown::graph(graph, writer),
-        // TODO      Format::Json => serialize::graph(graph, format, writer),
+        Format::Markdown => {
+            todo!();
+            //markdown::graph(graph, writer)
+        }
+        Format::Json => {
+            todo!();
+            // serialize::graph(graph, format, writer)
+        }
         _ => todo!(),
     }
 }
