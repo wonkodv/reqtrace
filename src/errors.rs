@@ -61,6 +61,9 @@ pub enum Error {
 
     #[error("Unknown Job {0}")]
     UnknownJob(String),
+
+    #[error("{0}")]
+    GenericError(Box<dyn std::error::Error>),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

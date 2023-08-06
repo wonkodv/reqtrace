@@ -18,9 +18,8 @@ where
     W: io::Write,
 {
     match format {
-        //    Format::Markdown => markdown::graph(graph, writer),
-        Format::Json => serialize::graph(graph, &format, writer),
-        Format::Markdown => markdown::requirements(requiremens, writer),
+        //   Format::Markdown => markdown::graph(graph, writer),
+        // Format::Json => serialize::graph(graph, &format, serde_json::Serializer::pretty(writer)),
         _ => todo!(),
     }
 }

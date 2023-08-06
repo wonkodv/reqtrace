@@ -335,6 +335,9 @@ where
                 location_link(&location.as_ref().unwrap_or(&req.location)),
             )
         }
+        GenericError(err) => {
+            writeln!(w, "*    {} ", err)
+        }
     }
 }
 

@@ -1,8 +1,11 @@
 //! Requirement Tracing Tool
 
 #![warn(missing_debug_implementations, rust_2018_idioms, missing_docs)]
-#![allow(dead_code)]
 #![allow(clippy::needless_lifetimes, clippy::enum_variant_names)]
+#![cfg_attr(
+    debug_assertions,
+    allow(dead_code, unused_imports, unused_variables, unreachable_code)
+)]
 
 use log::*;
 use std::fs;
