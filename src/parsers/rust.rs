@@ -141,9 +141,9 @@ impl Parser<'_> {
             3 => {
                 // TODO: match Ident and String Literal
                 let id = tokens[0].to_string(); // an identifier
-                let title = tokens[2].to_string(); // a literal String
+                let mut title = tokens[2].to_string(); // a literal String
                 if title.starts_with('"') && title.ends_with('"') {
-                    let title = title.replace('"', "");
+                    title = title.replace('"', "");
                 } else {
                     todo!("an error");
                 }
@@ -253,7 +253,7 @@ fn location_from_span(path: &Path, span: &Span) -> Location {
 mod test {
     use std::{io::BufReader, path::PathBuf};
 
-    use crate::common::{LocationInFile, RequirementBuilder};
+    use crate::common::RequirementBuilder;
 
     use super::*;
 

@@ -19,7 +19,7 @@ pub fn glob_paths(paths: &Vec<String>) -> Result<Vec<PathBuf>, Error> {
 
 pub mod lazy {
     use std::cell::UnsafeCell;
-    use std::intrinsics::transmute;
+
     use std::mem;
 
     #[derive(Debug)]

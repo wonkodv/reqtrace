@@ -1,17 +1,11 @@
 use super::super::common::*;
-use std::{collections::HashSet, io, rc::Rc};
+use std::rc::Rc;
 
 use crate::graph::Graph;
-use crate::{errors::Error, trace::Tracing};
-use Error::*;
+use crate::trace::Tracing;
 
-use lazy_static::lazy_static;
-use regex::Regex;
 use serde::ser::SerializeStruct;
-use serde::{ser, Serialize, Serializer};
-use serde_json::json;
-
-use crate::trace::TracedRequirement;
+use serde::Serializer;
 
 const VERSION: u32 = 1;
 
