@@ -21,7 +21,7 @@
 *   DSG_JSON_IMPORT covers unknown Requirement REQ_VCS
     [doc/requirements/DESIGN.md:79](../doc/requirements/DESIGN.md?plain=1#L79)
 *   main_rc covers unknown Requirement DSG_RETURN_CODE
-    [src/main.rs:130:4](../src/main.rs?plain=1#L130)
+    [src/main.rs:132:4](../src/main.rs?plain=1#L132)
 
 
 # Uncovered Requirements
@@ -31,7 +31,6 @@
 *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
 *   [DSG_JOB_FILE](#dsg_job_file-specify-file-to-store-reports-in "Specify File to Store Reports in")
 *   [DSG_JOB_FORMAT](#dsg_job_format-specify-format-of-reports "Specify Format of Reports")
-*   [DSG_JOB_PARSE_SOME](#dsg_job_parse_some-parse-a-set-of-artefacts "Parse a set of Artefacts")
 *   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields")
 *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist")
 *   [DSG_TRACE_DELEGATION](#dsg_trace_delegation-trace-requirements-inside-same-artefact "Trace Requirements inside same Artefact")
@@ -98,17 +97,18 @@
 
 ## Controller::run
 
-Origin: [src/controller.rs:161:16](../src/controller.rs?plain=1#L161)
+Origin: [src/controller.rs:158:16](../src/controller.rs?plain=1#L158)
 
 Covers:
 *   design
     *   [DSG_JOB_PARSE](#dsg_job_parse-parse-all-artefacts "Parse all Artefacts")
+    *   [DSG_JOB_PARSE_SOME](#dsg_job_parse_some-parse-a-set-of-artefacts "Parse a set of Artefacts")
     *   [DSG_JOB_TRACE](#dsg_job_trace-trace-requirements "Trace Requirements")
 *   Does not cover: formats
 
 ## Controller::run_jobs
 
-Origin: [src/controller.rs:122:20](../src/controller.rs?plain=1#L122)
+Origin: [src/controller.rs:121:16](../src/controller.rs?plain=1#L121)
 
 Covers:
 *   design
@@ -126,7 +126,7 @@ Covers:
 
 ## get_config
 
-Origin: [src/main.rs:90:4](../src/main.rs?plain=1#L90)
+Origin: [src/main.rs:92:4](../src/main.rs?plain=1#L92)
 
 Covers:
 *   design
@@ -135,7 +135,7 @@ Covers:
 
 ## main_rc
 
-Origin: [src/main.rs:130:4](../src/main.rs?plain=1#L130)
+Origin: [src/main.rs:132:4](../src/main.rs?plain=1#L132)
 
 Covers:
 *   Does not cover: design
@@ -152,7 +152,7 @@ Covers:
 
 ## run_cli_jobs
 
-Origin: [src/main.rs:102:8](../src/main.rs?plain=1#L102)
+Origin: [src/main.rs:104:8](../src/main.rs?plain=1#L104)
 
 Covers:
 *   design
@@ -354,7 +354,8 @@ Covers:
     *   [UC_PARSE](#uc_parse-parse-artefacts "Parse Artefacts")
 
 Covered By:
-*   Not Covered by: formats, code
+*   formats, code
+    *   [Controller::run](#controllerrun)
 
 ## DSG_JOB_RETURN_CODE: Return Code Indicates if Tracing is Correct
 
@@ -943,7 +944,7 @@ See this projects README for examples.
 Origin: [doc/requirements/FORMATS.md:228](../doc/requirements/FORMATS.md?plain=1#L228)
 
 
-Parse `cov_mark::hit!(REQ_ID)` and `cov_mark::hit!(REQ_ID) # TITLE`
+Parse `requirement_covered!(REQ_ID)` and `requirement_covered!(REQ_ID,"TITLE")`
 
 
 
