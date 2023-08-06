@@ -33,11 +33,8 @@ where
         Format::Tags => tags::requirements(requirements, writer),
         Format::Markdown => markdown::requirements(requirements, writer),
         Format::Json => {
-            let mut ser = serde_json::Serializer::pretty(writer);
-            match serialize::requirements(requirements, &mut ser) {
-                Ok(o) => Ok(()),
-                Err(err) => todo!(),
-            }
+            serialize::requirements(requirements, &mut serde_json::Serializer::pretty(writer))?;
+            Ok(())
         }
         _ => todo!(),
     }
@@ -68,7 +65,10 @@ where
     match format {
         Format::Markdown => markdown::tracing(tracing, graph, writer),
         Format::GnuError => gnuerr::tracing(tracing, graph, writer),
-        // TODO      Format::Json => serialize::tracing(tracing, graph, format, writer),
+        Format::Json => {
+            serialize::tracing(tracing, graph, &mut serde_json::Serializer::pretty(writer))?;
+            Ok(())
+        }
         _ => todo!(),
     }
 }

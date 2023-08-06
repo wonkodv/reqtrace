@@ -1,0 +1,1867 @@
+{
+  "version": 1,
+  "requirements": [
+    {
+      "id": "Controller::run_jobs",
+      "location": {
+        "file": "src/controller.rs",
+        "location_in_file": {
+          "LineAndColumn": [
+            122,
+            20
+          ]
+        }
+      },
+      "title": null,
+      "covers": [
+        {
+          "id": "DSG_JOB_RETURN_CODE",
+          "title": null,
+          "location": null
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "Controller::run",
+      "location": {
+        "file": "src/controller.rs",
+        "location_in_file": {
+          "LineAndColumn": [
+            161,
+            16
+          ]
+        }
+      },
+      "title": null,
+      "covers": [
+        {
+          "id": "DSG_JOB_TRACE",
+          "title": null,
+          "location": null
+        },
+        {
+          "id": "DSG_JOB_PARSE",
+          "title": null,
+          "location": null
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "get_config",
+      "location": {
+        "file": "src/main.rs",
+        "location_in_file": {
+          "LineAndColumn": [
+            90,
+            4
+          ]
+        }
+      },
+      "title": null,
+      "covers": [
+        {
+          "id": "DSG_CONFIG_TOML",
+          "title": null,
+          "location": null
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "run_cli_jobs",
+      "location": {
+        "file": "src/main.rs",
+        "location_in_file": {
+          "LineAndColumn": [
+            102,
+            8
+          ]
+        }
+      },
+      "title": null,
+      "covers": [
+        {
+          "id": "DSG_JOBS",
+          "title": null,
+          "location": null
+        },
+        {
+          "id": "DSG_CLI",
+          "title": null,
+          "location": null
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "main_rc",
+      "location": {
+        "file": "src/main.rs",
+        "location_in_file": {
+          "LineAndColumn": [
+            130,
+            4
+          ]
+        }
+      },
+      "title": null,
+      "covers": [
+        {
+          "id": "DSG_RETURN_CODE",
+          "title": null,
+          "location": null
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "parse",
+      "location": {
+        "file": "src/parsers/readme.rs",
+        "location_in_file": {
+          "LineAndColumn": [
+            71,
+            4
+          ]
+        }
+      },
+      "title": null,
+      "covers": [
+        {
+          "id": "FMT_README",
+          "title": null,
+          "location": null
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "Parser < '_ >::parse_macro",
+      "location": {
+        "file": "src/parsers/rust.rs",
+        "location_in_file": {
+          "LineAndColumn": [
+            110,
+            8
+          ]
+        }
+      },
+      "title": null,
+      "covers": [
+        {
+          "id": "FMT_RUST_COV",
+          "title": null,
+          "location": null
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "DSG_REQ_FIELDS",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 8
+        }
+      },
+      "title": "Requirement Fields",
+      "covers": [
+        {
+          "id": "REQ_UP",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 32
+            }
+          }
+        },
+        {
+          "id": "REQ_DOWN",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 33
+            }
+          }
+        },
+        {
+          "id": "REQ_DELEGATION",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 34
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Attributes of a requirement that this tool requires:\n*   ID: a short string that uniquely identifies this requirement\n\n*   Title:  Text that briefly summarizes this requirement (on line)\n*   Description: Text that gives detailed description\n*   Coverage: List of requirement IDs that are covered by this one\n*   Dependencies: List of requirement IDs which cover this one\n*   Tags:   List of Strings that can be used to categorize requirements\n*   Delegates: List of requirements in the same artefact that can be covered instead of this one\n\n*   Location:   Artefact that defines this requirement and the location inside\n    the artefact where it is defined\n\n\n*   Comment: Text with even more details, further reading, etc. that has a lower\n    priority than Description which may be excluded from reports\n\n"
+      }
+    },
+    {
+      "id": "DSG_ART_PARSE",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 43
+        }
+      },
+      "title": "Artefact Parsing",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Artefact parses the requirements in the files it represents.\n\n",
+        "References": "*   FMT_JSON\n*   FMT_JSON_REQUIREMENT\n\n"
+      }
+    },
+    {
+      "id": "DSG_ART_CONFIG",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 51
+        }
+      },
+      "title": "Artefact Configuration Fields",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "*   ID\n*   paths:  List of Paths or pattern with which to find the files\n*   parser:   id of a parsing strategy, e.g. `Markdown Requirements`, `Rust\n    Coverage Marks`, `JSON`\n*   parser arguments: Object that is passed to the parser\n*   caching: boolean, whether to cache or parse on every access\n\n"
+      }
+    },
+    {
+      "id": "DSG_JSON_IMPORT",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 75
+        }
+      },
+      "title": "JSON for Importing Requirements",
+      "covers": [
+        {
+          "id": "REQ_VCS",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 79
+            }
+          }
+        },
+        {
+          "id": "REQ_EXTENSIBLE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 79
+            }
+          }
+        }
+      ],
+      "depends": [
+        {
+          "id": "FMT_JSON",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 81
+            }
+          }
+        }
+      ],
+      "tags": [],
+      "attributes": {
+        "Description": "Artefacts which can not be parsed by the tool are generated by other tools and imported via JSON\n\n"
+      }
+    },
+    {
+      "id": "DSG_JSON_EXPORT",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 83
+        }
+      },
+      "title": "JSON for Exporting Results",
+      "covers": [
+        {
+          "id": "REQ_VCS",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 87
+            }
+          }
+        },
+        {
+          "id": "REQ_MACHINE_READABLE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 87
+            }
+          }
+        }
+      ],
+      "depends": [
+        {
+          "id": "FMT_JSON",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 89
+            }
+          }
+        }
+      ],
+      "tags": [],
+      "attributes": {
+        "Description": "Errors, Requirements, Status, Tracing Info can be exported as JSON\n\n"
+      }
+    },
+    {
+      "id": "DSG_EXPORT_FORMAT_MARKDOWN",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 91
+        }
+      },
+      "title": "Export to Markdown",
+      "covers": [
+        {
+          "id": "REQ_VCS",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 96
+            }
+          }
+        },
+        {
+          "id": "REQ_HUMAN_READABLE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 96
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Errors, Requirements, Status, Tracing Info can be exported as a useful\nstandalone Markdown File\n\n"
+      }
+    },
+    {
+      "id": "DSG_CONFIG_TOML",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 98
+        }
+      },
+      "title": "Use a Single TOML File as Configuration",
+      "covers": [
+        {
+          "id": "REQ_CONFIG",
+          "title": "Simple Configuration in One File",
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 105
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "The configuration should be placed in one file `requirements.toml`.\nThe format is TOML.\nThe structure of the Configuration is detailed in the Manual\n\n"
+      }
+    },
+    {
+      "id": "DSG_CLI",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 110
+        }
+      },
+      "title": "Offer a simple Command Line Interface",
+      "covers": [
+        {
+          "id": "REQ_MACHINE_FRIENDLY",
+          "title": "Easy to include in automated work flows",
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 115
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "The tool should be invoked via a simple CLI and set the exit code to indicate if a job was successful.\n\n"
+      }
+    },
+    {
+      "id": "DSG_CLI_RETURN_CODE",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 117
+        }
+      },
+      "title": "Set return Code to indicate success",
+      "covers": [
+        {
+          "id": "REQ_MACHINE_FRIENDLY",
+          "title": "Easy to include in automated work flows",
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 126
+            }
+          }
+        },
+        {
+          "id": "UC_CHECK",
+          "title": "Check for correct Tracing",
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 127
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Set the process' return code to:\n*   `2` if there were fatal errors (invalid configuration or similar)\n*   `1` if there were errors (file not found, parser errors, uncovered requirement, derived\n    requirement, ...)\n*   `0` otherwise\n\n"
+      }
+    },
+    {
+      "id": "DSG_JOBS",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 130
+        }
+      },
+      "title": "Jobs control what operations to perform",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "One or more Jobs can be configured. Each Job specifies an operation to perform, the format that results\nshould be presented in and the file to store results in.\n\n"
+      }
+    },
+    {
+      "id": "DSG_JOB_PARSE",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 135
+        }
+      },
+      "title": "Parse all Artefacts",
+      "covers": [
+        {
+          "id": "UC_PARSE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 139
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Parse the Artefacts\n\n"
+      }
+    },
+    {
+      "id": "DSG_JOB_PARSE_SOME",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 141
+        }
+      },
+      "title": "Parse a set of Artefacts",
+      "covers": [
+        {
+          "id": "UC_PARSE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 145
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Parse one or more Artefacts to make finding errors easier.\n\n"
+      }
+    },
+    {
+      "id": "DSG_JOB_TRACE",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 147
+        }
+      },
+      "title": "Trace Requirements",
+      "covers": [
+        {
+          "id": "UC_TRACE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 151
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Trace Requirements\n\n"
+      }
+    },
+    {
+      "id": "DSG_JOB_FORMAT",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 153
+        }
+      },
+      "title": "Specify Format of Reports",
+      "covers": [
+        {
+          "id": "REQ_FORMATS",
+          "title": "Well defined Formats",
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 158
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Specify the Format that results are presented in\n\n"
+      }
+    },
+    {
+      "id": "DSG_JOB_FILE",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 160
+        }
+      },
+      "title": "Specify File to Store Reports in",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Specify the file that results are stored in, treating `-` as the stdout channel.\n\n"
+      }
+    },
+    {
+      "id": "DSG_JOB_RETURN_CODE",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 164
+        }
+      },
+      "title": "Return Code Indicates if Tracing is Correct",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "It can be specified for each job, if the return code should be set or not,\nallowing for example, to update the tmx without indicating an error if the tracing is not\nperfect yet.\n\n"
+      }
+    },
+    {
+      "id": "DSG_TRACE_UPWARDS",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 172
+        }
+      },
+      "title": "Trace upwards using Covers attribute",
+      "covers": [
+        {
+          "id": "REQ_TRACE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 177
+            }
+          }
+        },
+        {
+          "id": "REQ_MATCH_ID",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 177
+            }
+          }
+        },
+        {
+          "id": "REQ_UP",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 177
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Requirement U covers Requirement D if U.id appears in D.Covers and\nD.Artefact directly traces against U.Artefact\n\n"
+      }
+    },
+    {
+      "id": "DSG_TRACE_DOWNWARDS",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 179
+        }
+      },
+      "title": "Trace downwards using Depends attribute",
+      "covers": [
+        {
+          "id": "REQ_TRACE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 184
+            }
+          }
+        },
+        {
+          "id": "REQ_MATCH_ID",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 184
+            }
+          }
+        },
+        {
+          "id": "REQ_DOWN",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 184
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Requirement U covers Requirement D if D.id appears in U.Depends and\nD.Artefact directly traces against U.Artefact\n\n"
+      }
+    },
+    {
+      "id": "DSG_TRACE_DELEGATION",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 186
+        }
+      },
+      "title": "Trace Requirements inside same Artefact",
+      "covers": [
+        {
+          "id": "REQ_TRACE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 194
+            }
+          }
+        },
+        {
+          "id": "REQ_MATCH_ID",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 194
+            }
+          }
+        },
+        {
+          "id": "REQ_DELEGATION",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 194
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "A Requirement can delegate to a requirement in the same artefact, so that itself\ndoes not need to be covered.\n\nD.Artefact directly traces against U.Artefact.\n\n"
+      }
+    },
+    {
+      "id": "DSG_TRACE_DERIVED",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 196
+        }
+      },
+      "title": "Mark requirements that do not cover anything",
+      "covers": [
+        {
+          "id": "REQ_TRACE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 200
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Requirement R is derived if there is no Requirement U so that R covers U.\n\n"
+      }
+    },
+    {
+      "id": "DSG_TRACE_UNCOVERED",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 202
+        }
+      },
+      "title": "Mark requirements that are not covered",
+      "covers": [
+        {
+          "id": "REQ_TRACE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 206
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Requirement R is uncovered if there is no Requirement D so that D covers R.\n\n"
+      }
+    },
+    {
+      "id": "DSG_TRACE_TRACE_TITLE",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 208
+        }
+      },
+      "title": "When tracing upwards or downwards match title",
+      "covers": [
+        {
+          "id": "REQ_TRACE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 226
+            }
+          }
+        },
+        {
+          "id": "REQ_VAL_TITLE",
+          "title": "Check matching title",
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 227
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "When tracing Upwards or Downwards, emit an error if the title of the coverage does\nnot match the title of the covered requirement\n\n",
+        "Example": "    ### REQ_U: Title of Upper\n\n    An Upper Requirement\n\n    ### REQ_D: Title of Lower\n\n    A Lower Requirement that covers REQ_U with an exactly mathcing title.\n\n    Covers:\n    *   REQ_U: Title of Upper\n\n"
+      }
+    },
+    {
+      "id": "DSG_TRACE_DEPENDS_EXIST",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 230
+        }
+      },
+      "title": "Depend Links must exist",
+      "covers": [
+        {
+          "id": "REQ_TRACE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 236
+            }
+          }
+        },
+        {
+          "id": "REQ_DOWN",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 236
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "For every Link L in  U.Depends of a Requirement U,\nthere must exist a Requirement D with with D.Id == L.id and \nD.Artefact traces against U.Artefact\n\n"
+      }
+    },
+    {
+      "id": "DSG_TRACE_COVERS_EXIST",
+      "location": {
+        "file": "doc/requirements/DESIGN.md",
+        "location_in_file": {
+          "Line": 238
+        }
+      },
+      "title": "Cover Links must exist",
+      "covers": [
+        {
+          "id": "REQ_TRACE",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 244
+            }
+          }
+        },
+        {
+          "id": "REQ_UP",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/DESIGN.md",
+            "location_in_file": {
+              "Line": 244
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "For every Link L in  D.Depends of a Requirement D,\nthere must exist a Requirement U with with U.Id == L.id and \nD.Artefact traces against U.Artefact\n\n"
+      }
+    },
+    {
+      "id": "FMT_ID_v2",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 29
+        }
+      },
+      "title": "Requirement Identifier",
+      "covers": [
+        {
+          "id": "REQ_FORMATS",
+          "title": "Well defined Formats",
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 39
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Comment": "Discussion in the [README](README.md#requirement-ids)\n\n",
+        "Description": "Requirement identifier consist of letters, digits and underscore, specifically\nthey match the Regular Expression\n\n\n\n",
+        "History": "*   v2: use to Unicode Identifiers\n\n\n"
+      }
+    },
+    {
+      "id": "FMT_FILE_ENCODINGS",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 48
+        }
+      },
+      "title": "Handle File Encodings",
+      "covers": [
+        {
+          "id": "REQ_UNICODE_SAFE",
+          "title": "Sane Handling of unicode",
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 54
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "When not otherwise specified, Text Files are read as UTF-8 and encoding errors are\nreplaced.\n\n"
+      }
+    },
+    {
+      "id": "FMT_UNICODE_NORMALIZE",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 57
+        }
+      },
+      "title": "Normalize Unicode during read",
+      "covers": [
+        {
+          "id": "REQ_UNICODE_SAFE",
+          "title": "Sane Handling of unicode",
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 66
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Comment": "See [Rust RFC 2457](https://rust-lang.github.io/rfcs/2457-non-ascii-idents.html) on the topic.\n\nThis means two requirement ids are equal if their NFC forms are equal.\n\n\n",
+        "Description": "All input strings are unicode normalizes as\n[NFC](https://www.unicode.org/reports/tr15/#Normalization_Forms_Table).\nThis means that\n*   All output derived from input will be NFC normalized\n*   Identifier Matching can be done on the byte level\n\n"
+      }
+    },
+    {
+      "id": "FMT_MARKDOWN_REQUIREMENT",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 81
+        }
+      },
+      "title": "Markdown File Format",
+      "covers": [
+        {
+          "id": "REQ_FORMATS",
+          "title": "Well defined Formats",
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 89
+            }
+          }
+        }
+      ],
+      "depends": [
+        {
+          "id": "FMT_MD_START",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 92
+            }
+          }
+        },
+        {
+          "id": "FMT_MD_DESC",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 93
+            }
+          }
+        },
+        {
+          "id": "FMT_MD_DESC_HEADINGS",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 94
+            }
+          }
+        },
+        {
+          "id": "FMT_MD_ATTRIBUTES",
+          "title": null,
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 95
+            }
+          }
+        }
+      ],
+      "tags": [],
+      "attributes": {
+        "Description": "The artefact is a Markdown file with freely chosen layout.  A Requirement is in\na heading line with requirement ID and title, followed by description and other\nattributes.\n\n"
+      }
+    },
+    {
+      "id": "FMT_MD_START",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 98
+        }
+      },
+      "title": "Requirement Start",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "A Requirement starts with a `#` heading of any level that has the form `ID:\nTITLE`.\n\n"
+      }
+    },
+    {
+      "id": "FMT_MD_DESC",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 103
+        }
+      },
+      "title": "Description",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "The paragraphs following the start of the requirement make up the description of\nthe requirement.\n\n*   The Start of another Requirement.\n*   The start of an Attribute Paragraph\n*   A Heading the same level or less. This ends the Requirement.\n\n\n\n"
+      }
+    },
+    {
+      "id": "FMT_MD_DESC_HEADINGS",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 115
+        }
+      },
+      "title": "Heading Level in Description is adjusted",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Headings with a lower level than the starting one, that do not start a nested\nrequirement are added to the description. Their heading level is adjusted by\nremoving as many leading `#` as the requirement had\n\n"
+      }
+    },
+    {
+      "id": "FMT_MD_ATTRIBUTES",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 121
+        }
+      },
+      "title": "Attributes",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Comment": "\n    `Covers: Some, IDs,`\n\nor\n\n    `Covers:\n    *   Some\n    *   IDs\n\n",
+        "Description": "Attributes are parsed from paragraphs that start with a single word followed by\na colon. Once the first Attribute Paragraph is encountered, the Parser will add\nto the Attribute Value until:\n\n*   The start of another Attribute Paragraph\n*   A Heading the same level or less. This ends the Requirement.\n\n*   Text: can span multiple Paragraphs\n*   Short List: Comma separated list of IDs\n*   Long list:  one paragraph that only consists of bullet points\n\nthe same format as requirement IDs.\n\nlong lists, where each item starts with a requirement id, optionally followed by\na colon and the title of the referenced requirement.\n\n"
+      }
+    },
+    {
+      "id": "FMT_MD_OPT_PREFIX",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 180
+        }
+      },
+      "title": "List of Prefixes",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "A List of strings can be passed, which is used to prevent the parser from\ncreating unintended requirements from headlines which accidentally have the\nright form.\n\nnormal headings, if the identifier of the would be requirement does not start\nwith one of the list of prefixes. If the list is empty, no prefix matching is\nperformed and all matching lines lead to a requirement.\n\n\n"
+      }
+    },
+    {
+      "id": "FMT_README",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 197
+        }
+      },
+      "title": "Single Requirement Per File",
+      "covers": [
+        {
+          "id": "REQ_FORMATS",
+          "title": "Well defined Formats",
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 210
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Comment": "See this projects README for examples.\n\n",
+        "Description": "Artefact of type MonoRequirement emit exactly one Requirement with the following\nattributes:\n*   Id: The stem of the file path (i.e. `README.md`)\n*   Title:  The first line containing Word-Characters with all non-word\n    characters trimmed of both ends of the line. (Allowing Markdown heading,\n    C style comments, ...)\n*   Depends: Every Requirement-Id that immediately follows a fat arrow (`=>`).\n\n"
+      }
+    },
+    {
+      "id": "FMT_JSON_REQUIREMENT",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 222
+        }
+      },
+      "title": "JSON Requirements Format",
+      "covers": [
+        {
+          "id": "REQ_FORMATS",
+          "title": "Well defined Formats",
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 226
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "FMT_RUST_COV",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 228
+        }
+      },
+      "title": "Rust Coverage Marks",
+      "covers": [
+        {
+          "id": "REQ_FORMATS",
+          "title": "Well defined Formats",
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 233
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Parse `cov_mark::hit!(REQ_ID)` and `cov_mark::hit!(REQ_ID) # TITLE`\n\n"
+      }
+    },
+    {
+      "id": "FMT_JSON",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 264
+        }
+      },
+      "title": "Json as Data Format",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "each list sorted to minimize diff !\n\n  * Unique ID\n  * Version Info\n  * If File\n    * Path\n    * Hash over File\n  * If Group\n    * Child Artefacts (have no upwards or downwards artefact links)\n  * Upwards Artefact IDs\n  * Downwards Aretefact IDs\n  * Requirements defined in that Artefact\n    * ID\n    * Title\n    * Description\n    * Location\n    * Covers REQ_Id\\*\n    * Covered-by Req_Id\n\n\nFor human readability,\neach value or key-value pair should be on its own line,\nindented with 4 space per level.\n\n"
+      }
+    },
+    {
+      "id": "FMT_EXP_MD_ERROR",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 303
+        }
+      },
+      "title": "Markdown Export Format for Errors",
+      "covers": [
+        {
+          "id": "DSG_EXPORT_FORMAT_MARKDOWN",
+          "title": "Export to Markdown",
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 309
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Errors are printed as one chapter per type, each error a bullet point with description and\nlinks to relevant error detail inside the same document.\n\n"
+      }
+    },
+    {
+      "id": "FMT_EXP_MD_REQ",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 311
+        }
+      },
+      "title": "Markdown Export Format for Requirements",
+      "covers": [
+        {
+          "id": "DSG_EXPORT_FORMAT_MARKDOWN",
+          "title": "Export to Markdown",
+          "location": {
+            "file": "doc/requirements/FORMATS.md",
+            "location_in_file": {
+              "Line": 324
+            }
+          }
+        }
+      ],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Each Requirement is a chapter with `ID: Title`.\nThe chapter contains:\n\n*   Description\n*   Covers and Depends\n    *   as specified in the requirement\n    *   links to actually traced requirements grouped by edge\n*   All other Attributes\n\n"
+      }
+    },
+    {
+      "id": "FMT_CTAGS",
+      "location": {
+        "file": "doc/requirements/FORMATS.md",
+        "location_in_file": {
+          "Line": 327
+        }
+      },
+      "title": "Export Requirements as CTags",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Emit Tag with type R for the Requirement\nType C for where a req is covered\nType D for where it is depended on.\n\n"
+      }
+    },
+    {
+      "id": "README",
+      "location": {
+        "file": "README.md",
+        "location_in_file": null
+      },
+      "title": "Requirement Tracing",
+      "covers": [],
+      "depends": [
+        {
+          "id": "REQ_TRACE",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 10
+            }
+          }
+        },
+        {
+          "id": "REQ_UP",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 11
+            }
+          }
+        },
+        {
+          "id": "REQ_DOWN",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 12
+            }
+          }
+        },
+        {
+          "id": "REQ_EXTENSIBLE",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 15
+            }
+          }
+        },
+        {
+          "id": "REQ_FORMATS",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 16
+            }
+          }
+        },
+        {
+          "id": "REQ_HUMAN_READABLE",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 20
+            }
+          }
+        },
+        {
+          "id": "REQ_MACHINE_READABLE",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 21
+            }
+          }
+        },
+        {
+          "id": "REQ_FORMATS",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 22
+            }
+          }
+        },
+        {
+          "id": "REQ_FAST",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 26
+            }
+          }
+        },
+        {
+          "id": "REQ_CACHE_FRIENDLY",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 27
+            }
+          }
+        },
+        {
+          "id": "REQ_VAL_TITLE",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 28
+            }
+          }
+        },
+        {
+          "id": "REQ_CONFIG",
+          "title": "Simple Configuration in One File",
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 31
+            }
+          }
+        },
+        {
+          "id": "REQ_MACHINE_FRIENDLY",
+          "title": "Easy to include in automated work flows",
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 32
+            }
+          }
+        },
+        {
+          "id": "REQ_LATE_ERRORS",
+          "title": null,
+          "location": {
+            "file": "README.md",
+            "location_in_file": {
+              "Line": 36
+            }
+          }
+        }
+      ],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "REQ_TRACE",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 5
+        }
+      },
+      "title": "Determine which requirements cover which",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Compute tracing for each Requirement, wether it is covered, uncovered, covers\nanother requirement or is derived.\n\n"
+      }
+    },
+    {
+      "id": "REQ_UNIQUE_ID_v2",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 10
+        }
+      },
+      "title": "Requirements have a unique Identifier",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Each requirement must be identifiable by a short, unique string.\nAll unicode symbols typically used as identifiers must be possible,\nthough parsers may restrict this\n\n",
+        "History": "*   v2: Unicode\n\n"
+      }
+    },
+    {
+      "id": "REQ_MACHINE_FRIENDLY",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 19
+        }
+      },
+      "title": "Easy to include in automated work flows",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "For ease of integration into other tools, all functionality must be available via a CLI.\n\n"
+      }
+    },
+    {
+      "id": "REQ_INSTALL",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 23
+        }
+      },
+      "title": "Easy to install",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "The tool should be distributed as an executable without depending on\nlibraries, files, etc.\n\n"
+      }
+    },
+    {
+      "id": "REQ_EXTENSIBLE",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 28
+        }
+      },
+      "title": "Extensible Parsing",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "If internal parsers are not able to work on an Artefact, external tools can be\nincorporated.\n\n"
+      }
+    },
+    {
+      "id": "REQ_IDENTIFIEABLE",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 33
+        }
+      },
+      "title": "Show versions of input artefacts in output",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "When reading the output, each input must be clearly identifiable.\nFor example by its:\n*   git describe\n*   hash\n*   file modification time\n\n"
+      }
+    },
+    {
+      "id": "REQ_MACHINE_READABLE",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 41
+        }
+      },
+      "title": "Machine Readable Output",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Information can be returned in a format that can easily be read by other tools\n\n"
+      }
+    },
+    {
+      "id": "REQ_HUMAN_READABLE",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 45
+        }
+      },
+      "title": "Human Readable Output",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Information can be returned in a format that can easily be read by humans\n\n"
+      }
+    },
+    {
+      "id": "REQ_FORMATS",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 49
+        }
+      },
+      "title": "Well defined Formats",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "To work with external programs as parsers or to process the output, the formats used must be well\ndefined.\n\n"
+      }
+    },
+    {
+      "id": "REQ_UNICODE_SAFE",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 54
+        }
+      },
+      "title": "Sane Handling of unicode",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Some Characters can be represented by multiple different sequences of Unicode\nCode Points. Also Unicode Encodings like UTF-8 can encode the same Codepoint\nas different bytes.\n\n\n"
+      }
+    },
+    {
+      "id": "REQ_UP",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 62
+        }
+      },
+      "title": "Upward Coverage",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "A Requirement covers a higher one by including the id of the higer one in its\nCoverage attribute.\n\n"
+      }
+    },
+    {
+      "id": "REQ_DOWN",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 67
+        }
+      },
+      "title": "Downward Coverage",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "A Requirement is covered by a lower one by including the id of the lower one in\nits Dependencies attribute.\n\n"
+      }
+    },
+    {
+      "id": "REQ_DELEGATION",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 73
+        }
+      },
+      "title": "Coverage Delegation",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "A Requirement delegates to another requirement in the same artefact by including\nthe id of the lower one in its Dependencies attribute.\n\nrequirement.\n\n"
+      }
+    },
+    {
+      "id": "REQ_ERROR",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 81
+        }
+      },
+      "title": "Useful Parser Errors",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Parser Errors give the precise location and type of the problem, for example filename with\nline number of the artefact.\n\n\n"
+      }
+    },
+    {
+      "id": "REQ_MATCH_ID",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 87
+        }
+      },
+      "title": "Match by ID",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "A Requirements covers another by its ID.\n\n"
+      }
+    },
+    {
+      "id": "REQ_VAL_TITLE",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 91
+        }
+      },
+      "title": "Check matching title",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Comment": "This is only really necessary where the requirement ids are not informative.\nFor example a Requirement with the id `DSG_123` and the title `Delete Everything`\ncould be covered by a line of code like:\n\n    create_temporary_file();    COVERS(DSG_123)\n\nWhich gives little information to the reader. It is not obvious if the\nrequirement has nothing to do with the object that covers it.\n\nBy also providing the title of the requirement, things can get even worse, if\nthe title is wrong as the reader now believes to know which requirement is\nmeant.\n\n    create_temporary_file();    COVERS(DSG_123, \"Create Temporary File\")\n\nThis is is prevented, by checking the tile. The above case would produce\na verification Error. The code would have to be changed like the following for\nthe tool to accept it without warning:\n\n    create_temporary_file();    COVERS(DSG_123, \"Delete Everything\")\n\nAt this point you have defeated the tool, but now a review can easily discover\nthe wrong coverage.\n\n\n",
+        "Description": "A Coverage link that is established by requirement ID can be verified by\ncomparing the requirement's title.\n\n"
+      }
+    },
+    {
+      "id": "REQ_VAL_COVERAGE",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 122
+        }
+      },
+      "title": "Validate Coverage",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "An error is reported for a Coverage claim for which no Requirement exists in the\nrelevant artefacts.\n\n\n"
+      }
+    },
+    {
+      "id": "REQ_CONFIG",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 128
+        }
+      },
+      "title": "Simple Configuration in One File",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "All Configuration is stored in a single file using a common Format that is\neditable for humans and machine readable.\n\n"
+      }
+    },
+    {
+      "id": "REQ_FAST",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 133
+        }
+      },
+      "title": "Fast",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Show results quickly, especially if only a small query is given.\n\n"
+      }
+    },
+    {
+      "id": "REQ_CACHE_FRIENDLY",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 137
+        }
+      },
+      "title": "Work well with build systems that cache",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Report all files which are consumed, so that build systems like make or\nninja can know when an input has changed an rerun the tool.\n\n"
+      }
+    },
+    {
+      "id": "UC_PARSE",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 144
+        }
+      },
+      "title": "Parse Artefacts",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "A Set of artefacts are parsed, reporting all requirements and errors.\n\n",
+        "Parameters": "*   Artefacts to Parse\n\n"
+      }
+    },
+    {
+      "id": "UC_TMX",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 151
+        }
+      },
+      "title": "Create Traceability Matrix",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "All requirements are matched up and down the Tracing Graph. The results are\nstored in a file and bad tracing is reported.\n\n",
+        "Parameters": "*   Tracing Report Format\n*   Tracing Report File\n\n"
+      }
+    },
+    {
+      "id": "UC_CHECK",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 160
+        }
+      },
+      "title": "Check for correct Tracing",
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {
+        "Description": "Like `UC_TRACE` but the only output of interest is whether there were tracing errors or not,\nfor use in CI/CD Pipelines.\n"
+      }
+    }
+  ]
+}

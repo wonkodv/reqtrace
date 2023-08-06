@@ -51,7 +51,7 @@ file = "reports/tmx.md"
 set_return_code = false
 
 [job.export]
-query = "Trace"
+query = "Parse"
 format = "Json"
 file = "reports/tmx.json"
 set_return_code = false

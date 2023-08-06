@@ -26,3 +26,9 @@ where
     s.serialize_field("requirements", &requirements)?;
     s.end()
 }
+pub fn tracing<S>(tracing: &Tracing<'_>, graph: &Graph, serializer: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    todo!()
+}
