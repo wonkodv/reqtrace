@@ -54,54 +54,63 @@ fn location_link(loc: &Location) -> String {
     }
 }
 
+pub fn requirement<W>(req: &Requirement, w: &mut W) -> io::Result<()>
+where
+    W: io::Write,
+{
+    writeln!(
+        w,
+        "\n## {}: {}\n\nOrigin: {}",
+        req.id,
+        req.title.as_ref().unwrap_or(&"".to_owned()),
+        location_link(&req.location)
+    )?;
+
+    if let Some(description) = req.attributes.get("Description") {
+        writeln!(w, "\n\n{}", description)?;
+    }
+
+    if !req.covers.is_empty() {
+        writeln!(w, "\nCovers:")?;
+        for c in &req.covers {
+            if let Some(title) = &c.title {
+                writeln!(w, "*   {}: {}", c.id, title)?;
+            } else {
+                writeln!(w, "*   {}", c.id,)?;
+            }
+        }
+    }
+    if !req.depends.is_empty() {
+        writeln!(w, "\nDepends:")?;
+        for d in &req.depends {
+            if let Some(title) = &d.title {
+                writeln!(w, "*   {}: {}", d.id, title)?;
+            } else {
+                writeln!(w, "*   {}", d.id,)?;
+            }
+        }
+    }
+
+    for (k, v) in &req.attributes {
+        if k != "Description" {
+            let v = v.trim();
+            if !v.is_empty() {
+                writeln!(w, "\n{}:", k)?;
+                writeln!(w, "{}", v)?;
+            }
+        }
+    }
+
+    Ok(())
+}
+
 pub fn requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
     R: Iterator<Item = &'r Rc<Requirement>>,
 {
     for req in reqs {
-        writeln!(
-            w,
-            "\n## {}: {}\n\nOrigin: {}",
-            req.id,
-            req.title.as_ref().unwrap_or(&"".to_owned()),
-            location_link(&req.location)
-        )?;
-
-        if let Some(description) = req.attributes.get("Description") {
-            writeln!(w, "\n\n{}", description)?;
-        }
-
-        if !req.covers.is_empty() {
-            writeln!(w, "\nCovers:")?;
-            for c in &req.covers {
-                if let Some(title) = &c.title {
-                    writeln!(w, "*   {}: {}", c.id, title)?;
-                } else {
-                    writeln!(w, "*   {}", c.id,)?;
-                }
-            }
-        }
-        if !req.depends.is_empty() {
-            writeln!(w, "\nDepends:")?;
-            for d in &req.depends {
-                if let Some(title) = &d.title {
-                    writeln!(w, "*   {}: {}", d.id, title)?;
-                } else {
-                    writeln!(w, "*   {}", d.id,)?;
-                }
-            }
-        }
-
-        for (k, v) in &req.attributes {
-            if k != "Description" {
-                let v = v.trim();
-                if !v.is_empty() {
-                    writeln!(w, "\n{}:", k)?;
-                    writeln!(w, "{}", v)?;
-                }
-            }
-        }
+        requirement(req, w)?
     }
     Ok(())
 }

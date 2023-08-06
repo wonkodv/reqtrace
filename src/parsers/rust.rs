@@ -140,7 +140,6 @@ impl Parser<'_> {
 
             3 => {
                 // TODO: match Ident and String Literal
-                dbg!(&tokens);
                 let id = tokens[0].to_string(); // an identifier
                 let title = tokens[2].to_string(); // a literal String
                 if title.starts_with('"') && title.ends_with('"') {

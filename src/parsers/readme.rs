@@ -148,7 +148,6 @@ mod tests {
         let r = &requirements[0];
         assert!(r.id == "Read_Me"); // from file name
         assert!(r.title == Some("First Line".to_owned()));
-        dbg!(&r.depends);
         assert!(r.depends.len() == 2);
         assert!(r.depends[0].id == "REQ_1");
         assert!(r.depends[0].title.is_none());
