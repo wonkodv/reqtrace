@@ -1,4 +1,5 @@
 use core::fmt;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::path::PathBuf;
@@ -11,6 +12,10 @@ use crate::util;
 pub const ATTR_COVERS: &str = "Covers";
 pub const ATTR_DEPENDS: &str = "Depends";
 pub const ATTR_DESCRIPTION: &str = "Description";
+
+lazy_static::lazy_static! {
+    static ref LOCATION_RE: Regex = Regex::new(r"^(?P<file>.*?)(?::(?P<line>\d+))?(?::(?P<column>\d+))?$").unwrap();
+}
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 pub enum LocationInFile {
@@ -60,6 +65,36 @@ impl Location {
             location_in_file: Some(LocationInFile::String(pos)),
         }
     }
+
+    fn from_str(location: &str) -> Result<Self, String> {
+        let caps = LOCATION_RE
+            .captures(location)
+            .ok_or("Invalid Location Pattern")?;
+        let file = PathBuf::from(&caps["file"]);
+
+        let location_in_file = if let Some(line) = caps.name("line") {
+            let line = line.as_str();
+            let line = line
+                .parse()
+                .map_err(|e| format!("Error parsing line {line}: {e}"))?;
+            if let Some(column) = caps.name("column") {
+                let column = column.as_str();
+                let column = column
+                    .parse()
+                    .map_err(|e| format!("Error parsing column {column}: {e}"))?;
+                Some(LocationInFile::LineAndColumn(line, column))
+            } else {
+                Some(LocationInFile::Line(line))
+            }
+        } else {
+            None
+        };
+
+        Ok(Self {
+            file,
+            location_in_file,
+        })
+    }
 }
 
 impl fmt::Display for Location {
@@ -82,8 +117,8 @@ pub struct Reference {
 #[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
 pub struct Requirement {
     pub id: String,
-    pub location: Location,
     pub title: Option<String>,
+    pub location: Location,
     pub covers: Vec<Reference>,
     pub depends: Vec<Reference>,
     pub tags: Vec<String>,
@@ -93,6 +128,88 @@ pub struct Requirement {
 impl fmt::Display for Requirement {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(&self.id)
+    }
+}
+
+pub struct RequirementBuilder {
+    req: Requirement,
+}
+
+impl RequirementBuilder {
+    pub fn new(id: &str) -> Self {
+        Self {
+            req: Requirement {
+                id: id.to_owned(),
+                ..Requirement::default()
+            },
+        }
+    }
+
+    pub fn title(mut self, s: &str) -> Self {
+        self.req.title = Some(s.to_owned());
+        self
+    }
+
+    pub fn location(mut self, location: &str) -> Result<Self, String> {
+        let l = Location::from_str(location)?;
+        self.req.location = l;
+        Ok(self)
+    }
+
+    pub fn covers(
+        mut self,
+        id: &str,
+        title: Option<&str>,
+        location: Option<&str>,
+    ) -> Result<Self, String> {
+        let id = id.to_owned();
+        let title = title.map(|t| t.to_owned());
+        let location = {
+            if let Some(location) = location {
+                Some(Location::from_str(location)?)
+            } else {
+                None
+            }
+        };
+
+        self.req.covers.push(Reference {
+            id,
+            title,
+            location,
+        });
+        Ok(self)
+    }
+
+    pub fn depends(
+        mut self,
+        id: &str,
+        title: Option<&str>,
+        location: &str,
+    ) -> Result<Self, String> {
+        let id = id.to_owned();
+        let title = title.map(|t| t.to_owned());
+        let location = Some(Location::from_str(location)?);
+
+        self.req.covers.push(Reference {
+            id,
+            title,
+            location,
+        });
+        Ok(self)
+    }
+
+    pub fn tag(mut self, tag: &str) -> Self {
+        self.req.tags.push(tag.to_owned());
+        self
+    }
+
+    pub fn attribute(mut self, key: &str, value: &str) -> Self {
+        self.req.attributes.insert(key.to_owned(), value.to_owned());
+        self
+    }
+
+    pub fn build(self) -> Requirement {
+        self.req
     }
 }
 
