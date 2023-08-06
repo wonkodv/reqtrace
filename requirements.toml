@@ -1,5 +1,5 @@
 version_provider = "git"
-default_jobs = ["check"]
+default_jobs = ["tmx", "export"]
 
 
 [artefact.readme]

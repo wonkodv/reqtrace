@@ -21,7 +21,7 @@
 *   DSG_JSON_IMPORT covers unknown Requirement REQ_VCS
     [doc/requirements/DESIGN.md:79](../doc/requirements/DESIGN.md?plain=1#L79)
 *   main_rc covers unknown Requirement DSG_RETURN_CODE
-    [src/main.rs:128:4](../src/main.rs?plain=1#L128)
+    [src/main.rs:130:4](../src/main.rs?plain=1#L130)
 
 
 # Uncovered Requirements
@@ -98,7 +98,7 @@
 
 ## Controller::run
 
-Origin: [src/controller.rs:162:16](../src/controller.rs?plain=1#L162)
+Origin: [src/controller.rs:161:16](../src/controller.rs?plain=1#L161)
 
 Covers:
 *   design
@@ -108,7 +108,7 @@ Covers:
 
 ## Controller::run_jobs
 
-Origin: [src/controller.rs:125:20](../src/controller.rs?plain=1#L125)
+Origin: [src/controller.rs:122:20](../src/controller.rs?plain=1#L122)
 
 Covers:
 *   design
@@ -126,7 +126,7 @@ Covers:
 
 ## get_config
 
-Origin: [src/main.rs:88:4](../src/main.rs?plain=1#L88)
+Origin: [src/main.rs:90:4](../src/main.rs?plain=1#L90)
 
 Covers:
 *   design
@@ -135,7 +135,7 @@ Covers:
 
 ## main_rc
 
-Origin: [src/main.rs:128:4](../src/main.rs?plain=1#L128)
+Origin: [src/main.rs:130:4](../src/main.rs?plain=1#L130)
 
 Covers:
 *   Does not cover: design
@@ -152,7 +152,7 @@ Covers:
 
 ## run_cli_jobs
 
-Origin: [src/main.rs:100:8](../src/main.rs?plain=1#L100)
+Origin: [src/main.rs:102:8](../src/main.rs?plain=1#L102)
 
 Covers:
 *   design

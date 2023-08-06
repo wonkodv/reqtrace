@@ -142,6 +142,7 @@ impl Controller {
 
         if job.file.as_os_str() == "-" {
             out = Box::new(stdout.lock());
+            log::info!("writing {job_name} to stdout");
         } else {
             if let Some(p) = &job.file.parent() {
                 std::fs::create_dir_all(p).map_err(|e| Error::IoError(p.to_path_buf(), e))?;
@@ -150,6 +151,7 @@ impl Controller {
             let file =
                 fs::File::create(&job.file).map_err(|e| Error::IoError(job.file.clone(), e))?;
             out = Box::new(file);
+            log::info!("writing {} to {}", &job_name, job.file.display());
         }
 
         let mut success = true;
@@ -187,7 +189,7 @@ impl Controller {
         if success {
             log::info!("Job {} successful", job_name);
         } else {
-            log::warn!("Job {} failed", job_name);
+            log::warn!("Job {} detected Errors", job_name);
         }
 
         Ok(success)
