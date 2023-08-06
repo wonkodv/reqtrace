@@ -8,8 +8,6 @@ use crate::{
 use serde::{Deserialize, Serialize};
 use std::{collections::BTreeMap, fs, io, path::PathBuf, time::Instant};
 
-use log::*;
-
 use crate::errors::{Error, Result};
 use Error::*;
 
@@ -95,7 +93,7 @@ impl Controller {
     }
 
     pub fn run_default_jobs(&self) -> Result<bool> {
-        trace!("Running default jobs");
+        log::trace!("Running default jobs");
         if !self.default_jobs.is_empty() {
             self.run_jobs_by_name(&self.default_jobs)
         } else {
@@ -109,7 +107,6 @@ impl Controller {
             if let Some(job) = self.find_job(&j) {
                 jobs.push(job)
             } else {
-                error!("Unknown Job {j}");
                 return Err(Error::UnknownJob(j.clone()));
             }
         }
@@ -128,7 +125,7 @@ impl Controller {
             }
         }
 
-        info!(
+        log::info!(
             "ran {} jobs in {}ms, result: {}",
             job_names.len(),
             start.elapsed().as_millis(),
@@ -139,7 +136,7 @@ impl Controller {
     }
 
     pub fn run(&self, job: &Job, job_name: &str) -> Result<bool> {
-        trace!("Job {} {:?}", job_name, job);
+        log::trace!("Job {} {:?}", job_name, job);
         let stdout = io::stdout();
         let mut out: Box<dyn io::Write>;
 
@@ -188,9 +185,9 @@ impl Controller {
         write_res.map_err(|e| IoError(job.file.clone(), e))?;
 
         if success {
-            info!("Job {} successful", job_name);
+            log::info!("Job {} successful", job_name);
         } else {
-            warn!("Job {} failed", job_name);
+            log::warn!("Job {} failed", job_name);
         }
 
         Ok(success)

@@ -7,7 +7,6 @@
     allow(dead_code, unused_imports, unused_variables, unreachable_code)
 )]
 
-use log::*;
 use std::fs;
 use std::io::Write;
 use std::path::PathBuf;
@@ -41,10 +40,10 @@ struct Opt {
 }
 
 fn logging_setup(opt: &Opt) -> Result<(), Box<dyn std::error::Error>> {
-    // Requires MAN_LOG_CONFIG: Configure Logging
+    // Covers MAN_LOG_CONFIG: Configure Logging
     let mut builder = env_logger::Builder::new();
     builder
-        .filter_level(LevelFilter::Info)
+        .filter_level(log::LevelFilter::Info)
         .format(|buf, record| {
             writeln!(
                 buf,
@@ -69,7 +68,7 @@ fn logging_setup(opt: &Opt) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn get_config(opt: &Opt) -> Result<controller::Config, Box<dyn std::error::Error>> {
-    info!("using config file {}", opt.config_file.display());
+    log::info!("using config file {}", opt.config_file.display());
     let config: controller::Config = toml::from_slice(
         fs::read(&opt.config_file)
             .map_err(|e| format!("{}: {}", &opt.config_file.display(), e))?
@@ -120,7 +119,7 @@ fn main_rc() -> i32 {
     let r = try_main();
     let rc = match r {
         Err(e) => {
-            error!("{}", e);
+            log::error!("{}", e);
             eprintln!("Fatal Error: {}", e);
             2
         }

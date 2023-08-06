@@ -1,5 +1,3 @@
-use log::*;
-
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 use std::collections::HashMap;
@@ -110,7 +108,7 @@ impl<'graph> Tracing<'graph> {
     fn add_fork(&mut self, fork: Fork, graph: &'graph Graph) {
         let upper_artefact = &fork.from(graph).artefact(graph);
 
-        trace!(
+        log::trace!(
             "Trace {} against {}",
             upper_artefact.id,
             fork.tines(graph)
@@ -232,7 +230,7 @@ impl<'graph> Tracing<'graph> {
                 if req != already_there.requirement {
                     let err =
                         DuplicateRequirement(Rc::clone(already_there.requirement), Rc::clone(req));
-                    warn!("{}", err);
+                    log::trace!("{}", err);
                     self.errors.push(err);
                 }
                 assert_eq!(already_there.node, node);
@@ -318,7 +316,7 @@ impl<'graph> Tracing<'graph> {
                         wrong_title: title.into(),
                         location: cov.location.cloned(),
                     };
-                    warn!("{}", err);
+                    log::trace!("{}", err);
                     self.errors.push(err);
                 }
             }
@@ -330,7 +328,7 @@ impl<'graph> Tracing<'graph> {
                         wrong_title: title.into(),
                         location: cov.location.cloned(),
                     };
-                    warn!("{}", err);
+                    log::trace!("{}", err);
                     self.errors.push(err);
                 }
             }
@@ -360,7 +358,7 @@ impl<'graph> Tracing<'graph> {
 
             // Covers: DSG_TRACE_COVERS_EXIST
             let err = Error::CoversUnknownRequirement(req, cov.upper, location);
-            warn!("{}", err);
+            log::trace!("{}", err);
             self.errors.push(err);
         }
     }
@@ -386,7 +384,7 @@ impl<'graph> Tracing<'graph> {
                 dep.lower,
                 location,
             );
-            warn!("{}", err);
+            log::trace!("{}", err);
             self.errors.push(err);
         }
     }
