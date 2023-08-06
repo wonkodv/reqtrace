@@ -143,7 +143,7 @@ impl Parser<'_> {
                 let id = tokens[0].to_string(); // an identifier
                 let mut title = tokens[2].to_string(); // a literal String
                 if title.starts_with('"') && title.ends_with('"') {
-                    title = title.replace('"', "");
+                    title = title.replace('"', ""); // TODO: better parsing?
                 } else {
                     todo!("an error");
                 }
@@ -317,7 +317,7 @@ mod test {
             RequirementBuilder::new("module_name::(Struct as Trait)::foo")
                 .location("src/filename.rs:5:24")
                 .unwrap()
-                .covers("REQ_ID", Some("\"Title String\""), None) // TODO: parse rust String
+                .covers("REQ_ID", Some("Title String"), None)
                 .unwrap() // TODO:"src/filename.rs:5:24")?
                 .build()
         );
