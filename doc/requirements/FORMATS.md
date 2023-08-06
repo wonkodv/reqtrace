@@ -227,7 +227,7 @@ Covers:
 
 ## FMT_RUST_COV: Rust Coverage Marks
 
-Parse `cov_mark::hit!(REQ_ID)` and `cov_mark::hit!(REQ_ID) # TITLE`
+Parse `requirement_covered!(REQ_ID)` and `requirement_covered!(REQ_ID,"TITLE")`
 
 Covers:
 *   REQ_FORMATS: Well defined Formats

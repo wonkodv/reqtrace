@@ -10,6 +10,12 @@ use std::fs;
 use std::io::Write;
 use std::path::PathBuf;
 
+macro_rules! requirement_covered {
+    ($id:ident) => {};
+    ($id:ident,$title:literal) => {};
+    ($id:ident,$title:literal) => {};
+}
+
 mod common;
 mod controller;
 mod errors;
@@ -83,7 +89,7 @@ fn get_config(opt: &Opt) -> Result<controller::Config, Box<dyn std::error::Error
             format!("{}:  TOML Error {}", &opt.config_file.display(), e)
         }
     })?;
-    cov_mark::hit!(DSG_CONFIG_TOML /* Use a Single TOML File as Configuration*/);
+    requirement_covered!(DSG_CONFIG_TOML, "Use a Single TOML File as Configuration");
 
     Ok(config)
 }
@@ -95,10 +101,10 @@ fn run_cli_jobs(
     let res = if opt.jobs.is_empty() {
         controller.run_default_jobs()
     } else {
-        cov_mark::hit!(DSG_JOBS);
+        requirement_covered!(DSG_JOBS);
         controller.run_jobs_by_name(&opt.jobs)
     };
-    cov_mark::hit!(DSG_CLI);
+    requirement_covered!(DSG_CLI);
 
     res.map_err(|e: errors::Error| Box::new(e).into())
 }
@@ -123,7 +129,7 @@ fn main_rc() -> i32 {
         Ok(false) => 1,
     };
 
-    cov_mark::hit!(DSG_RETURN_CODE);
+    requirement_covered!(DSG_RETURN_CODE);
 
     rc
 }

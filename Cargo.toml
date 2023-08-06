@@ -31,5 +31,5 @@ syn = { version="1.0", features = ["parsing", "full", "extra-traits", "visit", "
 proc-macro2 = {version = "1.0", features = ["span-locations"] }
 quote = "1.0"
 
-# unit testing / tracing
-cov-mark = "1.1"
+[dev-dependencies]
+pretty_assertions = "1.4.0"

@@ -118,7 +118,7 @@ impl Controller {
         let mut success = true;
         for (job, job_name) in jobs.iter().zip(job_names.iter()) {
             if !self.run(job, job_name)? && job.set_return_code.unwrap_or(true) {
-                cov_mark::hit!(DSG_JOB_RETURN_CODE);
+                requirement_covered!(DSG_JOB_RETURN_CODE);
                 success = false;
             }
         }
@@ -155,7 +155,7 @@ impl Controller {
 
         let write_res = match &job.query {
             Query::Trace => {
-                cov_mark::hit!(DSG_JOB_TRACE);
+                requirement_covered!(DSG_JOB_TRACE);
                 // TODO: 3 jobs will compute tracing 3 times !
                 let t = Tracing::from_graph(&self.graph);
                 if !t.errors().is_empty() {
@@ -164,7 +164,7 @@ impl Controller {
                 formatters::tracing(&t, &self.graph, &job.format, &mut out)
             }
             Query::Parse => {
-                cov_mark::hit!(DSG_JOB_PARSE);
+                requirement_covered!(DSG_JOB_PARSE);
                 let reqs = self.graph.get_all_reqs();
                 if self.graph.get_parsing_errors().next().is_some() {
                     success = false;
@@ -176,7 +176,7 @@ impl Controller {
             Query::ValidateGraph => todo!(),
             Query::CacheStatus => todo!(),
             Query::ParseArtefacts { artefacts: _ } => {
-                // cov_mark::hit!(DSG_JOB_PARSE_SOME); // Parse a set of Artefacts
+                requirement_covered!(DSG_JOB_PARSE_SOME, "Parse a set of Artefacts");
                 todo!()
             }
         };
