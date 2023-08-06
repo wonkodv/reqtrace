@@ -10,7 +10,7 @@ where
 {
     for err in errors {
         match err {
-            FormatError(loc, err) => {
+            Format(loc, err) => {
                 writeln!(w, "{}: {}", loc, err)?;
             }
             DuplicateRequirement(r1, r2) => {
@@ -26,12 +26,12 @@ where
             DuplicateAttribute(loc, attr, req) => {
                 writeln!(w, "{loc}: {req} has duplicate Attribute: {attr}")?;
             }
-            IoError(path, err) => {
+            Io(path, err) => {
                 writeln!(w, "{}: IO Error: {}", path.display(), err,)?;
             }
             ArtefactTypeOnlyAllowsOnePath(_, _)
             | UnknownArtefactType(_)
-            | ConfigError(_)
+            | Config(_)
             | DuplicateArtefact(_)
             | UnknownArtefact(_)
             | EmptyGraph
@@ -100,7 +100,7 @@ where
                     cover
                 )?;
             }
-            GenericError(err) => {
+            Generic(err) => {
                 writeln!(w, "Error: {} ", err)?;
             }
         }

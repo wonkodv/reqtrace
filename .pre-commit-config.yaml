@@ -17,6 +17,14 @@ repos:
       files: \.rs$
       stages: ["commit"]
       pass_filenames: false
+    - id: clippy
+      name: clippy
+      description: clippy
+      entry: cargo clippy
+      language: system
+      files: \.rs$
+      stages: ["push"]
+      pass_filenames: false
     - id: test
       name: test
       description: run tests
@@ -36,7 +44,7 @@ repos:
     - id: tmx
       name: tmx
       description: build traceability matrix
-      entry: cargo run tmx
+      entry: cargo run tmx export
       language: system
       types: ["file"]
       stages: ["push", "manual"]

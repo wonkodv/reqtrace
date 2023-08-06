@@ -5,7 +5,7 @@ use crate::common::{Location, Requirement};
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error("Invalid Format {0}: {1}")]
-    FormatError(Location, String),
+    Format(Location, String),
 
     #[error("Duplicate Requirements: {0} {1}")]
     DuplicateRequirement(Rc<Requirement>, Rc<Requirement>),
@@ -14,7 +14,7 @@ pub enum Error {
     DuplicateAttribute(Location, String, String),
 
     #[error("IO Error: {1} in {0}")]
-    IoError(PathBuf, io::Error),
+    Io(PathBuf, io::Error),
 
     #[error("Only one Path expected for {0}, got: {1:?}")]
     ArtefactTypeOnlyAllowsOnePath(String, Vec<String>),
@@ -23,7 +23,7 @@ pub enum Error {
     UnknownArtefactType(String),
 
     #[error("Config Error: {0}")]
-    ConfigError(String),
+    Config(String),
 
     #[error("Artefact added twice: {0}")]
     DuplicateArtefact(String),
@@ -63,7 +63,7 @@ pub enum Error {
     UnknownJob(String),
 
     #[error("{0}")]
-    GenericError(Box<dyn std::error::Error>),
+    Generic(Box<dyn std::error::Error>),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

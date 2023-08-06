@@ -192,12 +192,12 @@ where
     Ok(())
 }
 
-pub fn err<'r, W>(error: &'r Error, w: &mut W) -> io::Result<()>
+pub fn err<W>(error: &Error, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
     match error {
-        FormatError(loc, err) => {
+        Format(loc, err) => {
             writeln!(
                 w,
                 "*   Format Error: {}\n    in {}",
@@ -225,13 +225,13 @@ where
                 attr, req, loc
             )
         }
-        IoError(path, err) => {
+        Io(path, err) => {
             writeln!(w, "*   IO Error: {}\n   {}", err, path.display())
         }
         UnknownArtefactType(t) => {
             writeln!(w, "*   Unknown Artefact Type: {}", t)
         }
-        ConfigError(s) => {
+        Config(s) => {
             writeln!(w, "*   Config  Error: {:?}", s)
         }
         DuplicateArtefact(a) => {
@@ -335,7 +335,7 @@ where
                 location_link(location.as_ref().unwrap_or(&req.location)),
             )
         }
-        GenericError(err) => {
+        Generic(err) => {
             writeln!(w, "*    {} ", err)
         }
     }

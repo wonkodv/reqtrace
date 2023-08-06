@@ -27,7 +27,7 @@ pub struct ReadmeParser {
 
 impl super::Parser for ReadmeParser {
     fn parse(&mut self) -> (Vec<Rc<Requirement>>, Vec<Error>) {
-        let file = fs::File::open(&self.path).map_err(|e| Error::IoError((&self.path).into(), e));
+        let file = fs::File::open(&self.path).map_err(|e| Error::Io((&self.path).into(), e));
         match file {
             Err(err) => {
                 warn!("{}", err);
@@ -52,7 +52,7 @@ impl ReadmeParser {
             ));
         }
         if config.parser_options.is_some() {
-            return Err(Error::ConfigError(
+            return Err(Error::Config(
                 "readme parser does not support options".into(),
             ));
         }
@@ -97,9 +97,7 @@ pub fn parse<R: io::BufRead>(path: &Path, reader: R) -> (Vec<Rc<Requirement>>, V
         if let Some(stem) = path.file_stem() {
             stem.to_string_lossy().to_string()
         } else {
-            errors.push(Error::ConfigError(
-                "file for 'readme' parser has no stem".into(),
-            ));
+            errors.push(Error::Config("file for 'readme' parser has no stem".into()));
             "README".to_string()
         }
     };

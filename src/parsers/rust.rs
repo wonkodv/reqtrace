@@ -41,7 +41,7 @@ impl super::Parser for RustParser {
         let mut requirements = Vec::new();
         let mut errors = Vec::new();
         for path in &self.paths {
-            let file = fs::File::open(path).map_err(|e| Error::IoError(path.into(), e));
+            let file = fs::File::open(path).map_err(|e| Error::Io(path.into(), e));
             match file {
                 Err(err) => {
                     warn!("{}", err);
@@ -69,12 +69,12 @@ pub fn parse(
     let mut source = String::new();
     match reader.read_to_string(&mut source) {
         Err(e) => {
-            errors.push(errors::Error::IoError(path.into(), e));
+            errors.push(errors::Error::Io(path.into(), e));
         }
         Ok(_bytes) => match parse_file(&source) {
             Err(e) => {
                 let pos = e.span().start();
-                errors.push(errors::Error::FormatError(
+                errors.push(errors::Error::Format(
                     Location::new_with_line_and_column(path.into(), pos.line, pos.column),
                     e.to_string(),
                 ));
@@ -124,7 +124,7 @@ impl Parser<'_> {
 
         let tokens: Vec<_> = node.mac.tokens.clone().into_iter().collect();
         if tokens.is_empty() {
-            self.errors.push(errors::Error::FormatError(
+            self.errors.push(errors::Error::Format(
                 location,
                 "cov_mark::hit!() without Requirement Id".to_string(),
             ));
@@ -138,7 +138,7 @@ impl Parser<'_> {
                     let _ = span;
                 }
                 _ => {
-                    self.errors.push(errors::Error::FormatError(
+                    self.errors.push(errors::Error::Format(
                         location.clone(),
                         "cov_mark::hit! not using Parentheses".to_string(),
                     ));
@@ -154,7 +154,7 @@ impl Parser<'_> {
             };
 
             if tokens.len() > 1 {
-                self.errors.push(errors::Error::FormatError(
+                self.errors.push(errors::Error::Format(
                     location.clone(),
                     "cov_mark::hit!() more than 1 argument/token".to_string(),
                 ));

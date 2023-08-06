@@ -62,21 +62,21 @@ impl From<NodeIdx> for usize {
     }
 }
 impl NodeIdx {
-    fn as_mut<'a>(self, graph: &'a mut Graph) -> &'a mut Node {
+    fn as_mut(self, graph: &mut Graph) -> &mut Node {
         let i: usize = self.into();
         graph.nodes.get_mut(i).unwrap()
     }
-    fn as_ref<'a>(self, graph: &'a Graph) -> &'a Node {
+    fn as_ref(self, graph: &Graph) -> &Node {
         let i: usize = self.into();
         &graph.nodes[i]
     }
-    pub fn lower<'a>(self, graph: &'a Graph) -> &'a [Fork] {
+    pub fn lower(self, graph: &Graph) -> &[Fork] {
         self.as_ref(graph).forks_down.as_slice()
     }
-    pub fn upper<'a>(self, graph: &'a Graph) -> &'a [Fork] {
+    pub fn upper(self, graph: &Graph) -> &[Fork] {
         self.as_ref(graph).forks_up.as_slice()
     }
-    pub fn artefact<'a>(self, graph: &'a Graph) -> &'a Artefact {
+    pub fn artefact(self, graph: &Graph) -> &Artefact {
         &self.as_ref(graph).artefact
     }
 }
@@ -176,9 +176,9 @@ impl Graph {
     ///
     /// *   `upper` is the id of a previously added [`Artefact`]
     /// *   `lower` is a list of ids of previously added [`Artefact`]s
-    pub fn add_fork<'r, S: AsRef<str>, I: Iterator<Item = S>>(
+    pub fn add_fork<S: AsRef<str>, I: Iterator<Item = S>>(
         &mut self,
-        upper: &'r str,
+        upper: &str,
         lower: I,
     ) -> Result<()> {
         let fork_idx: Fork = self.forks.len().into();
@@ -200,7 +200,7 @@ impl Graph {
         Ok(())
     }
 
-    pub fn get_artefact<'a, 'i>(&'a self, id: &'i str) -> Result<&'a Artefact> {
+    pub fn get_artefact<'a>(&'a self, id: &str) -> Result<&'a Artefact> {
         let node_idx = self.node_idx_by_id(id)?;
         let node = self.node_ref(node_idx);
         Ok(&node.artefact)
@@ -229,13 +229,13 @@ impl Graph {
         Err(Error::UnknownFork(from.into(), to.into()))
     }
 
-    pub fn get_parsing_errors<'r>(&'r self) -> impl Iterator<Item = &'r Error> {
+    pub fn get_parsing_errors(&self) -> impl Iterator<Item = &'_ Error> {
         self.nodes
             .iter()
             .flat_map(|node| node.artefact.get_errors())
     }
 
-    pub fn get_all_reqs<'r>(&'r self) -> impl Iterator<Item = &'r Rc<Requirement>> {
+    pub fn get_all_reqs(&self) -> impl Iterator<Item = &'_ Rc<Requirement>> {
         self.nodes
             .iter()
             .flat_map(|node| node.artefact.get_requirements())

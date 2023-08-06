@@ -7,9 +7,9 @@ pub fn glob_paths(paths: &Vec<String>) -> Result<Vec<PathBuf>, Error> {
 
     for path in paths {
         let glob = glob::glob(path);
-        let glob = glob.map_err(|e| Error::ConfigError(format!("can not glob {path:?}: {e:?}")))?;
+        let glob = glob.map_err(|e| Error::Config(format!("can not glob {path:?}: {e:?}")))?;
         for path in glob {
-            let path = path.map_err(|e| Error::IoError(e.path().into(), e.into_error()))?;
+            let path = path.map_err(|e| Error::Io(e.path().into(), e.into_error()))?;
             result.push(path);
         }
     }

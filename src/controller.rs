@@ -97,7 +97,7 @@ impl Controller {
         if !self.default_jobs.is_empty() {
             self.run_jobs_by_name(&self.default_jobs)
         } else {
-            Err(ConfigError("no default_jobs configured".into()))
+            Err(Config("no default_jobs configured".into()))
         }
     }
 
@@ -143,11 +143,10 @@ impl Controller {
             log::info!("writing {job_name} to stdout");
         } else {
             if let Some(p) = &job.file.parent() {
-                std::fs::create_dir_all(p).map_err(|e| Error::IoError(p.to_path_buf(), e))?;
+                std::fs::create_dir_all(p).map_err(|e| Error::Io(p.to_path_buf(), e))?;
             }
 
-            let file =
-                fs::File::create(&job.file).map_err(|e| Error::IoError(job.file.clone(), e))?;
+            let file = fs::File::create(&job.file).map_err(|e| Error::Io(job.file.clone(), e))?;
             out = Box::new(file);
             log::info!("writing {} to {}", &job_name, job.file.display());
         }
@@ -182,7 +181,7 @@ impl Controller {
             }
         };
 
-        write_res.map_err(|e| IoError(job.file.clone(), e))?;
+        write_res.map_err(|e| Io(job.file.clone(), e))?;
 
         if success {
             log::info!("Job {} successful", job_name);

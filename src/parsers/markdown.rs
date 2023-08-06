@@ -37,7 +37,7 @@ impl MarkdownParser {
             ));
         }
         if config.parser_options.is_some() {
-            return Err(Error::ConfigError(
+            return Err(Error::Config(
                 "readme parser does not support options".into(),
             ));
         }
@@ -49,7 +49,7 @@ impl MarkdownParser {
 }
 impl Parser for MarkdownParser {
     fn parse(&mut self) -> (Vec<Rc<Requirement>>, Vec<Error>) {
-        let file = fs::File::open(&self.path).map_err(|e| Error::IoError((&self.path).into(), e));
+        let file = fs::File::open(&self.path).map_err(|e| Error::Io((&self.path).into(), e));
         match file {
             Err(err) => {
                 warn!("{}", err);
@@ -122,9 +122,7 @@ pub fn markdown_parse<R: io::BufRead>(
         context.line_number += 1;
         match reader.read_line(&mut line) {
             Err(e) => {
-                context
-                    .errors
-                    .push(Error::IoError(context.path.to_owned(), e));
+                context.errors.push(Error::Io(context.path.to_owned(), e));
                 break;
             }
             Ok(0) => {
@@ -156,7 +154,7 @@ pub fn markdown_parse<R: io::BufRead>(
     (context.requirements, context.errors)
 }
 
-fn parse_states<'a>(state: State, context: &mut Context<'_>, evt: &'a Event<'_>) -> State {
+fn parse_states(state: State, context: &mut Context<'_>, evt: &Event<'_>) -> State {
     match evt {
         Event::Req(req_line) => {
             match state {
@@ -253,7 +251,7 @@ fn parse_states<'a>(state: State, context: &mut Context<'_>, evt: &'a Event<'_>)
                 if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
                     start_attribute(context, &attr_line)
                 } else {
-                    context.errors.push(Error::FormatError(
+                    context.errors.push(Error::Format(
                         context.location(),
                         "Expected an Attribute line like `Comment:`".into(),
                     ));
@@ -286,7 +284,7 @@ fn parse_states<'a>(state: State, context: &mut Context<'_>, evt: &'a Event<'_>)
                     State::LookForAttr
                 } else {
                     commit_link_attr(context, attr, vec);
-                    context.errors.push(Error::FormatError(
+                    context.errors.push(Error::Format(
                         context.location(),
                         "Expected a Reference like `* REQ_ID: Title`".into(),
                     ));
@@ -344,7 +342,7 @@ fn maybe_commit_req(context: &mut Context<'_>) {
     }
 }
 
-fn add_req<'a>(context: &mut Context<'_>, req_line: &Captures<'a>) -> State {
+fn add_req(context: &mut Context<'_>, req_line: &Captures<'_>) -> State {
     maybe_commit_req(context);
     context.level = req_line[1].len();
     let id = req_line[2].to_owned();
@@ -361,7 +359,7 @@ fn add_req<'a>(context: &mut Context<'_>, req_line: &Captures<'a>) -> State {
     State::LookForDesc
 }
 
-fn start_attribute<'a>(context: &mut Context<'_>, attr_line: &Captures<'a>) -> State {
+fn start_attribute(context: &mut Context<'_>, attr_line: &Captures<'_>) -> State {
     let attr = &attr_line[1];
     let first_line = &attr_line[2];
     match attr {
