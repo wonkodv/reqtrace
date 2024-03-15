@@ -15,7 +15,7 @@ Major Components
     This function executes each `job` that was requested by the command line or configured as default job
 *   [Parsers](https://github.com/wonkodv/reqtrace/blob/v0.1.1/src/parsers/) turn one or more files into a list of
     requirements
-*   [`common::artefact`](https://github.com/wonkodv/reqtrace/blob/v0.1.1/src/artefact.rs#L217): Holds one element in the tracing
+*   [`common::artefact`](https://github.com/wonkodv/reqtrace/blob/v0.1.1/src/common.rs#L217): Holds one element in the tracing
     graph, like a document, a group of source files. Parses those files on demand using a parser of the right format. After
     parsing, holds all the requirements of the artefact
 *   [`graph::Graph`](https://github.com/wonkodv/reqtrace/blob/v0.1.1/src/graph.rs#L102): Holds all the artefacts, and
