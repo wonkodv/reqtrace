@@ -43,9 +43,7 @@ Currently in development. v0.1.0 is stable enough to try things out, but everyth
 
 A lot of features are not yet implemented; take a look at the [Tracing Report](reports/tmx.md)
 
-This is my first rust project and I'm figuring things out as I go.
-PRs, comments, issues, phone calls that help make this a better tool or me a better rust dev are welcome.
-
+Have a look at [`hitchhiker.md`](hitchhiker.md) for a guided tour through the code.
 
 Wording
 =======
