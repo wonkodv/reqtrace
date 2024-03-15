@@ -32,6 +32,7 @@ pub mod lazy {
     type Init<T, D> = fn(D) -> T;
     type State<T, D> = LazyState<T, Init<T, D>, D>;
 
+    /// A Lazy Cell, that produces T from D on first use
     #[derive(Debug)]
     pub struct Lazy<T, D> {
         state: UnsafeCell<State<T, D>>,
@@ -43,35 +44,36 @@ pub mod lazy {
                 state: UnsafeCell::new(LazyState::NotInit(f, d)),
             }
         }
-    }
 
-    impl<T, D> std::ops::Deref for Lazy<T, D> {
-        type Target = T;
-
-        fn deref(&self) -> &Self::Target {
-            let state: *mut LazyState<_, _, _> = self.state.get();
-            let state: &mut LazyState<T, fn(D) -> T, D> = unsafe {
+        pub fn get(&self) -> &T {
+            let state: *mut LazyState<T, fn(D) -> T, D> = self.state.get();
+            let state: &mut LazyState<T, fn(D) -> T, D> = {
                 // SAFETY: this function is the only that can hand out references into state, and
                 // it does so only when state == LazyState::Init in which case state is no longer
                 // mutated.
                 // Due to the UnsafeCell, Lazy is !Sync, so there can be no data races
-                &mut *state
+                #[allow(unsafe_code)]
+                unsafe {
+                    &mut *state
+                }
             };
 
+            // if t was already produced,  return a reference to it
             if let LazyState::Init(t) = state {
                 return t;
             }
 
             let old = mem::replace(state, LazyState::UnderConstruction);
 
-            if let LazyState::NotInit(func, data) = old {
-                let new = func(data);
-                *state = LazyState::Init(new);
-                if let LazyState::Init(t) = state {
-                    return t;
-                }
-            }
-            unreachable!("state was not Init and not NotInit");
+            let LazyState::NotInit(func, data) = old else {
+                unreachable!("state was not Init and not NotInit");
+            };
+            let new = func(data);
+            *state = LazyState::Init(new);
+            let LazyState::Init(t) = state else {
+                unreachable!("state was not Init, even though we just set it so");
+            };
+            return t;
         }
     }
 }
@@ -98,7 +100,13 @@ mod test {
 
         assert!(SENTINEL.load(Ordering::Relaxed) == 0);
 
-        let s: &String = &l;
+        let s: &String = &l.get();
+
+        assert!(SENTINEL.load(Ordering::Relaxed) == 1);
+
+        assert!(s.as_str() == "ABC");
+
+        let s: &String = &l.get();
 
         assert!(SENTINEL.load(Ordering::Relaxed) == 1);
 

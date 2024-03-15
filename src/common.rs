@@ -227,19 +227,19 @@ impl Artefact {
 
     fn req_with_idx(&self, idx: u16) -> &Rc<Requirement> {
         let idx: usize = idx.into();
-        &self.data.requirements[idx]
+        &self.data.get().requirements[idx]
     }
 
     pub fn get_errors(&self) -> &[Error] {
-        &self.data.errors
+        &self.data.get().errors
     }
 
     pub fn get_requirements(&self) -> &[Rc<Requirement>] {
-        &self.data.requirements
+        &self.data.get().requirements
     }
 
     pub fn get_requirement_with_id(&self, id: &str) -> Option<&Rc<Requirement>> {
-        if let Some(idx) = self.data.id_to_req.get(id) {
+        if let Some(idx) = self.data.get().id_to_req.get(id) {
             return Some(self.req_with_idx(*idx));
         }
         None
@@ -250,7 +250,7 @@ impl Artefact {
         id: &'b str,
     ) -> impl Iterator<Item = (&'b Rc<Requirement>, &'b Reference)> {
         let mut i;
-        if let Some(covs) = self.data.id_to_covering_req.get(id) {
+        if let Some(covs) = self.data.get().id_to_covering_req.get(id) {
             i = Some(covs.iter());
         } else {
             i = None;

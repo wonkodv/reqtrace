@@ -3,6 +3,12 @@ name = "reqtrace"
 version = "0.1.0"
 authors = ["Wonko <wonko@hanstool.org>"]
 edition = "2021"
+description = "A Requirement Tracing tool"
+license = "GPL-2.0"
+repository = "http://github.com/wonkodv/reqtrace"
+keywords = [ "requirement tracing", "requirements" ]
+categories  = [ "development-tools" ]
+readme = "readme.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -20,7 +26,7 @@ structopt = "0.3"
 # error handling / logging
 thiserror = "1.0"
 log = "0.4.0"
-env_logger = "0.9"
+env_logger = "0.10"
 
 # parsing
 regex = "1.5"
@@ -33,3 +39,38 @@ quote = "1.0"
 
 [dev-dependencies]
 pretty_assertions = "1.4.0"
+
+
+
+[lints.rust]
+unsafe_code = "warn" # 😢 TODO: forbid once we have LazyCell
+
+[lints.clippy]
+unusual_byte_groupings = "allow"
+zero_prefixed_literal = "allow"
+
+cargo = "warn"
+multiple_crate_versions = { level = "allow", priority=2} # 😢
+
+
+pedantic = "warn"
+cast_possible_wrap = "allow"         # working with numbers is hard :/
+cast_possible_truncation = "allow"   # working with numbers is hard :/
+cast_precision_loss = "allow"        # working with numbers is hard :/
+cast_sign_loss = "allow"             # working with numbers is hard :/
+
+
+clone_on_ref_ptr = "warn"
+format_push_string = "warn"
+get_unwrap = "warn"
+pattern_type_mismatch = "warn"
+redundant_type_annotations = "warn"
+same_name_method = "warn"
+self_named_module_files = "warn"
+str_to_string= "warn"
+string_to_string = "warn"
+try_err = "warn"
+unneeded_field_pattern="warn"
+unseparated_literal_suffix  = "warn"
+verbose_file_reads = "warn"
+shadow_unrelated = "warn" # ?
