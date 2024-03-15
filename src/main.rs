@@ -25,26 +25,26 @@ mod parsers;
 mod trace;
 mod util;
 
-use structopt::StructOpt;
+use clap::Parser;
 
 /// A StructOpt example
-#[derive(StructOpt, Debug)]
-#[structopt()]
-struct Opt {
-    #[structopt(short = "q", long = "quiet")]
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Arguments {
+    #[arg(short, long)]
     quiet: bool,
 
-    #[structopt(short = "l", long = "log-level")]
+    #[arg(short, long)]
     log_level: Option<String>,
 
-    #[structopt(short = "c", long = "config", default_value = "requirements.toml")]
+    #[arg(short, long = "config", default_value = "requirements.toml")]
     config_file: PathBuf,
 
-    #[structopt()]
+    #[arg()]
     jobs: Vec<String>,
 }
 
-fn logging_setup(opt: &Opt) -> Result<(), Box<dyn std::error::Error>> {
+fn logging_setup(opt: &Arguments) -> Result<(), Box<dyn std::error::Error>> {
     // Covers MAN_LOG_CONFIG: Configure Logging
     let mut builder = env_logger::Builder::new();
     builder
@@ -69,7 +69,7 @@ fn logging_setup(opt: &Opt) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn get_config(opt: &Opt) -> Result<controller::Config, Box<dyn std::error::Error>> {
+fn get_config(opt: &Arguments) -> Result<controller::Config, Box<dyn std::error::Error>> {
     log::info!("using config file {}", opt.config_file.display());
     let config: controller::Config = toml::from_slice(
         fs::read(&opt.config_file)
@@ -96,7 +96,7 @@ fn get_config(opt: &Opt) -> Result<controller::Config, Box<dyn std::error::Error
 
 fn run_cli_jobs(
     controller: &controller::Controller,
-    opt: &Opt,
+    opt: &Arguments,
 ) -> Result<bool, Box<dyn std::error::Error>> {
     let res = if opt.jobs.is_empty() {
         controller.run_default_jobs()
@@ -110,7 +110,7 @@ fn run_cli_jobs(
 }
 
 fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
-    let opt: Opt = Opt::from_args();
+    let opt: Arguments = Arguments::parse();
     logging_setup(&opt)?;
     let config = get_config(&opt)?;
     let controller = controller::Controller::new(config)?;

@@ -1,6 +1,6 @@
 [package]
 name = "reqtrace"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Wonko <wonko@hanstool.org>"]
 edition = "2021"
 description = "A Requirement Tracing tool"
@@ -21,7 +21,7 @@ glob = "0.3"
 
 # config
 toml = "0.5"
-structopt = "0.3"
+clap = { version = "4.5", features = ["derive"] }
 
 # error handling / logging
 thiserror = "1.0"
