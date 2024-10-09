@@ -88,12 +88,6 @@ attributes.
 Covers:
 *   REQ_FORMATS: Well defined Formats
 
-Depends:
-*   FMT_MD_START
-*   FMT_MD_DESC
-*   FMT_MD_DESC_HEADINGS
-*   FMT_MD_ATTRIBUTES
-
 
 ### FMT_MD_START: Requirement Start
 

@@ -5,7 +5,7 @@ Tool to trace Software requirements.
 
 
 Primary Design Goals that mostly came from dealing with a tool which does this,
-or does not this:
+or lacks this:
 *   Do one thing well. This tool is mainly concerned with tracing requirements.
     *   =>  REQ_TRACE
     *   =>  REQ_UP
@@ -13,6 +13,7 @@ or does not this:
 *   Parse only simple files. Implement a few useful parsers. Complicated or expensive analysis is done by external
     tools and imported via well defined formats like JSON.
     *   =>  REQ_EXTENSIBLE
+    *   =>  REQ_FORMATS
     *   =>  REQ_FORMATS
 *   Produce only simple files. Implement reports in in a few human friendly formats (like markdown) for easy
     inspection and machine friendly formats (like JSON) for further analysis and generation of more sophisticated
@@ -33,7 +34,7 @@ or does not this:
 *   Don't give up early. Upon Errors (parsing, tracing) the tool should
     recover and continue where possible and show a result along with all
     encountered errors.
-    *   => REQ_LATE_ERRORS
+    *   => REQ_LATE_ERROR
 
 
 State of this Project

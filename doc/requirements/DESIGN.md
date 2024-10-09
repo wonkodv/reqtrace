@@ -3,7 +3,7 @@
 
 ## Requirements
 
-Requirement Objects are dumb data containers for one Requirement
+Requirement Objects are dumb containers containing the data of one Requirement
 
 ### DSG_REQ_FIELDS: Requirement Fields
 
@@ -34,19 +34,29 @@ Covers:
 *   REQ_DELEGATION
 
 
-## Artefacts
+## Artefact                                                      `
 
-Artefacts represent a (group of) files. They load cached requirements or parse
+An Artefact represents a (group of) files.
+They load cached requirements or parse
 them as needed.
+
+### DSG_ART_FILES: An artefact loads one or more Files
+
+An Artefact represents one or more files of the same type.
+
+Covers:
+*   ARCH_ARTEFACT
 
 
 ### DSG_ART_PARSE: Artefact Parsing
 
-Artefact parses the requirements in the files it represents.
+On demand, the Artefact parses the requirements in the files it represents.
+The artefact stores the (untraced) requirements and all parsing errors
 
-References:
-*   FMT_JSON
-*   FMT_JSON_REQUIREMENT
+Covers:
+*   ARCH_ARTEFACT
+*   REQ_LATE_ERRORS
+
 
 ### DSG_ART_CONFIG: Artefact Configuration Fields
 
@@ -57,6 +67,14 @@ References:
 *   parser arguments: Object that is passed to the parser
 *   caching: boolean, whether to cache or parse on every access
 
+Covers:
+*   ARCH_ARTEFACT
+
+### DSG_ART_IGNORE_DERIVED: Ignore Derived Requirements
+
+Artefacts can be configured to ignore derived requirements
+
+
 ## Formats
 
 ### Data Format Considerations
@@ -66,11 +84,26 @@ needs to be well supported, text based and produce a reasonably small diff if
 little changed.
 
 Candidates:
-*   JSON
-*   CBOR
+*   Machine Readable
+    *   JSON
+    *   YAML
+    *   TOML
+    *   CBOR
+*   Human readable
+    *   Markdown
+    *   Tex
+    *   HTML
+    *   Typst
+    *   (JSON, YAML)
+    *   TOML
 
-Text based formats will work better with SVCS
+Text based formats will work better with SVCS, debugging and plumbing in other tools with limited libraries e.g. Bash scripts.
+For the machine readable format, JSON is chosen. The possible benefits of other formats (easier to write for humans, smaller size, more data types) are not
+needed to represent tracing information.
+For human readability, Markdown is the most readable format. Other formats might be more useful for further processing with tools, but that can be achived by
+generating them from the json export.
 
+For configuration files, JSON is not comfortable enough to maintain, YAML is too complex, so TOML is chosen.
 
 #### DSG_JSON_IMPORT: JSON for Importing Requirements
 
@@ -167,43 +200,95 @@ It can be specified for each job, if the return code should be set or not,
 allowing for example, to update the tmx without indicating an error if the tracing is not
 perfect yet.
 
-## Tracing Algorithm
+## DSG_TRACING_GRPAH: Tracing Graph
+
+The Class `Graph` holds a graph of `Artefact` objects as
+given by the Configuration.
+It computes which `Requirement`s are covered.
+
+Covers:
+*   ARCH_TRACING_GRAPH
+
+### DSG_TG_FORK: Trace Edge Groups
+
+The Graph of artefacts has the following properties:
+
+*   Nodes in the graph are:
+    * Forks
+    * Artefacts
+*   Edges in the Graph have a direction.
+*   Edges always connect an Artefact to a Fork
+
+As example, in this project, `DSG` Requirements from `DESIGN.md` are
+covered either by code, or by `FMT` Requirements from `FORMATS.md`.
+Code an `FORMATS.md` both have an edge to the same Fork below
+`DESIGN.md`.
+Each Design also has to be covered by a unit test, so unit tests are
+below a separate fork below `DESIGN.md`
+
+Covers:
+*   ARCH_TRACING_GRAPH
+
+### DSG_TG_VAL_NO_LOOP: Validate that the Graph has no Loops
+
+After assembling of the graph, if a loop can be found in the graph of artefacts, an error is emitted.
+This prevents further tracing.
+
+Covers:
+*   ARCH_TRACING_GRAPH
+### DSG_TG_VALIDATE_EDGE: Validate Edge is used at least once
+
+After tracing, if an edge can be found, along which no requirement is
+covered, an error is emitted. This is likely a misconfiguration.
+
+Covers:
+*   ARCH_TRACING_GRAPH
 
 #### DSG_TRACE_UPWARDS: Trace upwards using Covers attribute
 
 Requirement U covers Requirement D if U.id appears in D.Covers and
 D.Artefact directly traces against U.Artefact
 
-Covers: REQ_TRACE, REQ_MATCH_ID, REQ_UP
+Covers:
+*   REQ_TRACE
+*   REQ_MATCH_ID
+*   REQ_UP
+*   ARCH_TRACING_GRAPH
 
 #### DSG_TRACE_DOWNWARDS: Trace downwards using Depends attribute
 
 Requirement U covers Requirement D if D.id appears in U.Depends and
 D.Artefact directly traces against U.Artefact
 
-Covers: REQ_TRACE, REQ_MATCH_ID, REQ_DOWN
+Covers:
+*   REQ_TRACE
+*   REQ_MATCH_ID
+*   REQ_DOWN
+*   ARCH_TRACING_GRAPH
 
-#### DSG_TRACE_DELEGATION: Trace Requirements inside same Artefact
-
-A Requirement can delegate to a requirement in the same artefact, so that itself
-does not need to be covered.
-
-Requirement U covers Requirement D if D.id appears in U.Delegates and
-D.Artefact directly traces against U.Artefact.
-
-Covers: REQ_TRACE, REQ_MATCH_ID, REQ_DELEGATION
-
-#### DSG_TRACE_DERIVED: Mark requirements that do not cover anything
+#### DSG_TRACE_DERIVED: Record requirements that do not cover anything
 
 Requirement R is derived if there is no Requirement U so that R covers U.
 
-Covers: REQ_TRACE
+Covers:
+*   REQ_TRACE
+*   ARCH_TRACING_GRAPH
 
-#### DSG_TRACE_UNCOVERED: Mark requirements that are not covered
 
-Requirement R is uncovered if there is no Requirement D so that D covers R.
 
-Covers: REQ_TRACE
+#### DSG_TRACE_UNCOVERED: Record requirements that are not completely covered
+
+Record Requirement R as Uncovered along Fork F if there is no
+Requirement D which covers R, where R is from the Artefact above F and
+D is from one of the artefacts below D.
+
+For example in this Project, a DSG Requirement is covered if it is
+covered by a unittest AND (it is covered by Code OR it is covered by
+a FMT requirement).
+
+Covers:
+*   REQ_TRACE
+*   ARCH_TRACING_GRAPH
 
 #### DSG_TRACE_TRACE_TITLE: When tracing upwards or downwards match title
 
@@ -225,6 +310,7 @@ Example:
 Covers:
 *   REQ_TRACE
 *   REQ_VAL_TITLE: Check matching title
+*   ARCH_TRACING_GRAPH
 
 
 #### DSG_TRACE_DEPENDS_EXIST: Depend Links must exist
@@ -233,7 +319,10 @@ For every Link L in  U.Depends of a Requirement U,
 there must exist a Requirement D with with D.Id == L.id and 
 D.Artefact traces against U.Artefact
 
-Covers: REQ_TRACE, REQ_DOWN
+Covers:
+*   REQ_TRACE
+*   REQ_DOWN
+*   ARCH_TRACING_GRAPH
 
 #### DSG_TRACE_COVERS_EXIST: Cover Links must exist
 
@@ -241,4 +330,6 @@ For every Link L in  D.Depends of a Requirement D,
 there must exist a Requirement U with with U.Id == L.id and 
 D.Artefact traces against U.Artefact
 
-Covers: REQ_TRACE, REQ_UP
+*   REQ_TRACE
+*   REQ_DOWN
+*   ARCH_TRACING_GRAPH

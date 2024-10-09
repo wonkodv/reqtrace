@@ -4,7 +4,6 @@ The Tool consists of the following Components
 
 *   Formatters:     Format Information
 *   Parsers:        Extract Requirements from Files in various Ways
-*   Cache:          Store Information for later retrieval
 *   Artefacts:      Manage Input Files, depends on Parser / Cache
 *   Tracing Graph:  Manage Artefacts compute Tracing
 *   Controller:     Read Config, Build Graph, query Information, pass it to
@@ -28,11 +27,12 @@ Covers:
 *  REQ_USER_FRIENDLY: Simple to use Interface
 *  REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
 
-## Controller
+## ARCH_CONTROLLER: Controller
 
 The Controller Reads the Configuration file, and builds the tracing graph as
 needed to answer the query. It then obtains the queried information, stores it
 to the requested location in the requested format
+
 
 ### ARCH_CTRL_CONFIG: Single Config File
 
@@ -69,7 +69,7 @@ Covers:
 *   REQ_CONFIGURABLE_OUTPUT: The Output Format is Configurable
 
 
-## Tracing Graph
+## ARCH_TRACING_GRAPH: Tracing Graph
 
 The Tracing Graph organizes Artefacts into a directed graph without loops.
 Each Node in the Graph represents a single Artefact. An Edge from Artefact `A`
@@ -79,40 +79,25 @@ more requirements in `A`.
 Edges belong to a group. Each requirement in an Artefact must be covered at
 least once for each group of edges that lead out of it.
 
-### ARCH_TG_VALIDATE_LOOP: Validate that the Graph has no Loops
 
-At leas One Requirement must be matched by an edge, otheriwse an error is
-emitted.
 
-### ARCH_TG_VALIDATE_EDGE: Validate Edge is used at least once
+## ARCH_ARTEFACT: Artefact
 
-At leas One Requirement must be matched by an edge, otheriwse an error is
-emitted.
+Artefacts are the Nodes in the Tracing Graph.
 
-### ARCH_TG_TRACE_EDGE_GROUP: Trace Edge Groups
+An artefact represents Requirements from a file, or several related files.
+Artefacts parse files with Parsers and store requirements
 
-Edges belong to a group. Each requirement in an Artefact must be covered at
-least once for each group of edges that lead out of it.
+## ARCH_PARSER: Parser
 
-### ARCH_TG_TRACE_COVERED: 
-### ARCH_TG_TRACE_UNCOVERED: 
-### ARCH_TG_TRACE_DERIVED: 
-
-## Artefacts
-
-TODO
-
-## Cache
-TODO
-## Parser
-TODO
+A Parser processes an input file and emits Requirements
 
 
 ## Formatter
 
-Formatter is the component that formats data in the requested format.
+Formatter is the component that formats data in the requested output format.
 
-### ARCH_FORMATTER
+### ARCH_FORMATTER: Format output in requested Format
 
 Given Data and a requested format, the formatter formats the given data in the
 given format.

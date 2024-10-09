@@ -4,7 +4,7 @@ Things this tool should do in no particular order
 
 ## REQ_TRACE: Determine which requirements cover which
 
-Compute tracing for each Requirement, wether it is covered, uncovered, covers
+Compute tracing for each Requirement, whether it is covered, uncovered, covers
 another requirement or is derived.
 
 ## REQ_UNIQUE_ID_v2: Requirements have a unique Identifier
@@ -78,11 +78,15 @@ the id of the lower one in its Dependencies attribute.
 It does not need to be covered itself through upward coverage of a lower
 requirement.
 
-## REQ_ERROR: Useful Parser Errors
+## REQ_PARSER_ERROR: Useful Parser Errors
 
 Parser Errors give the precise location and type of the problem, for example filename with
 line number of the artefact.
 
+## REQ_LATE_ERROR: Collect Errors but continue processing
+
+When errors are encountered in parsing, tracing or outputting, processing
+continues as long as possible and then all errors are reported.
 
 ## REQ_MATCH_ID: Match by ID
 
