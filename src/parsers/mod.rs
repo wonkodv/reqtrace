@@ -25,6 +25,7 @@ pub struct ArtefactConfig {
     pub parser: String,
     pub parser_options: Option<BTreeMap<String, String>>,
     pub version_provider: Option<String>,
+    pub ignore_derived_requirements: Option<bool>,
 }
 
 #[derive(Debug, Default)]

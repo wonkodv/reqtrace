@@ -70,8 +70,9 @@ impl Controller {
         let mut graph = Graph::new();
 
         for (id, ac) in config.artefact {
+            let ignore_derived = ac.ignore_derived_requirements;
             let parser = parsers::ArtefactParser::from_config(ac);
-            let a = Artefact::new(id, parser);
+            let a = Artefact::new(id, parser, ignore_derived.unwrap_or(false));
             graph.add_artefact(a)?;
         }
 

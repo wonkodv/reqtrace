@@ -121,7 +121,7 @@ impl<'graph> Tracing<'graph> {
             let lower_artefact = &tine.to(graph).artefact(graph);
 
             for r in lower_artefact.get_requirements() {
-                self.add_lower_req(r, tine, graph);
+                self.add_lower_req(r, tine, graph, lower_artefact.ignore_derived_requirements);
             }
         }
 
@@ -184,10 +184,22 @@ impl<'graph> Tracing<'graph> {
         }
     }
 
-    fn add_lower_req(&mut self, req: &'graph Rc<Requirement>, tine: Tine, graph: &Graph) {
+    /// Add req as a Lower Requirement.
+    ///
+    /// Add req to derived unless `ignore_derived_requirement`
+    /// record the tine in the TracedRequirement of req.
+    fn add_lower_req(
+        &mut self,
+        req: &'graph Rc<Requirement>,
+        tine: Tine,
+        graph: &Graph,
+        ignore_derived_requirement: bool,
+    ) {
         let (added, idx) = self.add_req(req, tine.to(graph));
         if added {
-            self.derived.insert(idx);
+            if !ignore_derived_requirement {
+                self.derived.insert(idx);
+            }
         }
         self.requirements
             .get_mut(idx)
@@ -196,6 +208,9 @@ impl<'graph> Tracing<'graph> {
             .insert(tine.fork, vec![]);
     }
 
+    /// Add req as a Upper Requirement.
+    ///
+    /// record the tine in the TracedRequirement of req.
     fn add_upper_req(
         &mut self,
         req: &'graph Rc<Requirement>,
@@ -214,6 +229,8 @@ impl<'graph> Tracing<'graph> {
     }
 
     /// Ensure Requirement is in `requirements`.
+    ///
+    /// If not seen before, add all req.covers and req.depends to the invalid lists
     ///
     /// Returns
     ///     -   added:  true if `req` was added, false if it was already there
@@ -238,6 +255,8 @@ impl<'graph> Tracing<'graph> {
                 (false, already_there_idx)
             }
             Vacant(e) => {
+                // mark all `covers` and `depends` as invalid
+                // later, in add_coverage each covered connection is removed.
                 for cov in &req.covers {
                     // Covers: DSG_TRACE_COVERS_EXIST
                     self.invalid_covers_links.as_mut().unwrap().insert(Link {
@@ -255,10 +274,11 @@ impl<'graph> Tracing<'graph> {
 
                 let t = TracedRequirement {
                     requirement: req,
-                    upper: Default::default(),
-                    lower: Default::default(),
+                    upper: BTreeMap::default(),
+                    lower: BTreeMap::default(),
                     node,
                 };
+
                 let idx = self.requirements.len();
                 self.requirements.push(t);
                 e.insert(idx);

@@ -217,12 +217,17 @@ impl RequirementBuilder {
 pub struct Artefact {
     pub id: String,
     data: util::lazy::Lazy<ArtefactData, ArtefactParser>,
+    pub ignore_derived_requirements: bool,
 }
 
 impl Artefact {
-    pub fn new(id: String, parser: ArtefactParser) -> Self {
+    pub fn new(id: String, parser: ArtefactParser, ignore_derived_requirements: bool) -> Self {
         let data = util::lazy::Lazy::new(ArtefactParser::parse, parser);
-        Self { id, data }
+        Self {
+            id,
+            data,
+            ignore_derived_requirements,
+        }
     }
 
     fn req_with_idx(&self, idx: u16) -> &Rc<Requirement> {
