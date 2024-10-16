@@ -6,8 +6,11 @@ use lazy_static::lazy_static;
 use regex::Captures;
 use regex::Regex;
 
-use super::super::common::*;
-use super::*;
+use super::super::common::{
+    Location, Reference, Requirement, ATTR_COVERS, ATTR_DEPENDS, ATTR_DESCRIPTION,
+};
+use super::warn;
+use super::{fs, ArtefactConfig, Parser, PathBuf};
 
 use crate::errors::Error;
 
@@ -58,7 +61,7 @@ impl Parser for MarkdownParser {
             }
             Ok(file) => {
                 let mut r = io::BufReader::new(file);
-                markdown_parse(&mut r, &self.path)
+                parse(&mut r, &self.path)
             }
         }
     }
@@ -100,10 +103,7 @@ enum State {
     CollectRefLink(String, Vec<Reference>),
 }
 
-pub fn markdown_parse<R: io::BufRead>(
-    reader: &mut R,
-    path: &Path,
-) -> (Vec<Rc<Requirement>>, Vec<Error>) {
+pub fn parse<R: io::BufRead>(reader: &mut R, path: &Path) -> (Vec<Rc<Requirement>>, Vec<Error>) {
     let mut context = Context {
         path,
         errors: Vec::new(),
@@ -159,165 +159,177 @@ pub fn markdown_parse<R: io::BufRead>(
 
 fn parse_states(state: State, context: &mut Context<'_>, evt: &Event<'_>) -> State {
     match evt {
-        Event::Req(req_line) => {
-            match state {
-                State::CollectDesc(desc) => {
-                    commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
-                }
-                State::CollectDescNl(desc) => {
-                    commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
-                }
-                State::CollectTextAttr(attr, val) => {
-                    commit_attr(context, attr, val);
-                }
-                State::CollectRefLink(attr, vec) => {
-                    commit_link_attr(context, attr, vec);
-                }
-                _ => {}
-            }
-            add_req(context, req_line)
+        Event::Req(req_line) => parse_state_req(state, context, req_line),
+        Event::Heading => parse_state_heading(state, context),
+        Event::Eof => parse_state_eof(state, context),
+        Event::Line(line) => parse_state_line(state, line, context),
+        Event::Empty => parse_state_empty(state, context),
+    }
+}
+
+fn parse_state_empty(state: State, context: &mut Context<'_>) -> State {
+    match state {
+        State::LookForReq => state,
+        State::LookForDesc => state,
+        State::CollectDesc(mut desc) => {
+            desc.push('\n');
+            State::CollectDescNl(desc)
         }
-
-        Event::Heading => match state {
-            State::LookForReq => state,
-            State::LookForDesc => State::LookForReq,
-            State::CollectDesc(desc) => {
-                commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
-                State::LookForReq
-            }
-            State::CollectDescNl(desc) => {
-                commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
-                State::LookForReq
-            }
-            State::LookForAttr => State::LookForReq,
-            State::CollectTextAttr(attr, val) => {
-                commit_attr(context, attr, val);
-                State::LookForReq
-            }
-            State::CollectRefLink(attr, vec) => {
-                commit_link_attr(context, attr, vec);
-                State::LookForReq
-            }
-        },
-
-        Event::Eof => {
-            match state {
-                State::LookForReq => {}
-                State::LookForDesc => {
-                    maybe_commit_req(context);
-                }
-                State::CollectDesc(desc) => {
-                    commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
-                    maybe_commit_req(context);
-                }
-                State::CollectDescNl(desc) => {
-                    commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
-                    maybe_commit_req(context);
-                }
-                State::LookForAttr => {
-                    maybe_commit_req(context);
-                }
-                State::CollectTextAttr(attr, val) => {
-                    commit_attr(context, attr, val);
-                    maybe_commit_req(context);
-                }
-                State::CollectRefLink(attr, vec) => {
-                    commit_link_attr(context, attr, vec);
-                    maybe_commit_req(context);
-                }
-            }
-            State::LookForReq // does not matter
+        State::CollectDescNl(mut desc) => {
+            desc.push('\n');
+            State::CollectDescNl(desc)
         }
+        State::LookForAttr => state,
+        State::CollectTextAttr(attr, mut val) => {
+            val.push('\n');
+            State::CollectTextAttr(attr, val)
+        }
+        State::CollectRefLink(attr, vec) => {
+            commit_link_attr(context, attr, vec);
+            State::LookForAttr
+        }
+    }
+}
 
-        Event::Line(line) => match state {
-            State::LookForReq => state,
-            State::LookForDesc => {
-                if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
-                    start_attribute(context, &attr_line)
-                } else {
-                    State::CollectDesc(line.to_owned().to_owned())
-                }
+fn parse_state_line(state: State, line: &&str, context: &mut Context<'_>) -> State {
+    match state {
+        State::LookForReq => state,
+        State::LookForDesc => {
+            if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
+                start_attribute(context, &attr_line)
+            } else {
+                State::CollectDesc(line.to_owned().to_owned())
             }
-            State::CollectDesc(mut desc) => {
-                desc.push_str(line);
+        }
+        State::CollectDesc(mut desc) => {
+            desc.push_str(line);
+            State::CollectDesc(desc)
+        }
+        State::CollectDescNl(desc) => {
+            if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
+                commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
+                start_attribute(context, &attr_line)
+            } else {
                 State::CollectDesc(desc)
             }
-            State::CollectDescNl(desc) => {
-                if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
-                    commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
-                    start_attribute(context, &attr_line)
-                } else {
-                    State::CollectDesc(desc)
-                }
+        }
+        State::LookForAttr => {
+            if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
+                start_attribute(context, &attr_line)
+            } else {
+                context.errors.push(Error::Format(
+                    context.location(),
+                    "Expected an Attribute line like `Comment:`".into(),
+                ));
+                State::LookForReq
             }
-            State::LookForAttr => {
-                if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
-                    start_attribute(context, &attr_line)
-                } else {
-                    context.errors.push(Error::Format(
-                        context.location(),
-                        "Expected an Attribute line like `Comment:`".into(),
-                    ));
-                    State::LookForReq
-                }
-            }
-            State::CollectTextAttr(attr, mut val) => {
-                if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
-                    commit_attr(context, attr, val);
-                    start_attribute(context, &attr_line)
-                } else {
-                    val.push_str(line);
-                    State::CollectTextAttr(attr, val)
-                }
-            }
-            State::CollectRefLink(attr, mut vec) => {
-                if let Some(ref_link) = REF_LINK_LINE.captures(line) {
-                    let id = ref_link[1].to_owned();
-                    let title = ref_link.get(2).map(|m| m.as_str().to_owned());
-                    let location = Some(context.location());
-
-                    vec.push(Reference {
-                        id,
-                        title,
-                        location,
-                    });
-                    State::CollectRefLink(attr, vec)
-                } else if line.trim().is_empty() {
-                    commit_link_attr(context, attr, vec);
-                    State::LookForAttr
-                } else {
-                    commit_link_attr(context, attr, vec);
-                    context.errors.push(Error::Format(
-                        context.location(),
-                        "Expected a Reference like `* REQ_ID: Title`".into(),
-                    ));
-                    State::LookForReq
-                }
-            }
-        },
-
-        Event::Empty => match state {
-            State::LookForReq => state,
-            State::LookForDesc => state,
-            State::CollectDesc(mut desc) => {
-                desc.push('\n');
-                State::CollectDescNl(desc)
-            }
-            State::CollectDescNl(mut desc) => {
-                desc.push('\n');
-                State::CollectDescNl(desc)
-            }
-            State::LookForAttr => state,
-            State::CollectTextAttr(attr, mut val) => {
-                val.push('\n');
+        }
+        State::CollectTextAttr(attr, mut val) => {
+            if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
+                commit_attr(context, attr, val);
+                start_attribute(context, &attr_line)
+            } else {
+                val.push_str(line);
                 State::CollectTextAttr(attr, val)
             }
-            State::CollectRefLink(attr, vec) => {
+        }
+        State::CollectRefLink(attr, mut vec) => {
+            if let Some(ref_link) = REF_LINK_LINE.captures(line) {
+                let id = ref_link[1].to_owned();
+                let title = ref_link.get(2).map(|m| m.as_str().to_owned());
+                let location = Some(context.location());
+
+                vec.push(Reference {
+                    id,
+                    title,
+                    location,
+                });
+                State::CollectRefLink(attr, vec)
+            } else if line.trim().is_empty() {
                 commit_link_attr(context, attr, vec);
                 State::LookForAttr
+            } else {
+                commit_link_attr(context, attr, vec);
+                context.errors.push(Error::Format(
+                    context.location(),
+                    "Expected a Reference like `* REQ_ID: Title`".into(),
+                ));
+                State::LookForReq
             }
-        },
+        }
     }
+}
+
+fn parse_state_eof(state: State, context: &mut Context<'_>) -> State {
+    match state {
+        State::LookForReq => {}
+        State::LookForDesc => {
+            maybe_commit_req(context);
+        }
+        State::CollectDesc(desc) => {
+            commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
+            maybe_commit_req(context);
+        }
+        State::CollectDescNl(desc) => {
+            commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
+            maybe_commit_req(context);
+        }
+        State::LookForAttr => {
+            maybe_commit_req(context);
+        }
+        State::CollectTextAttr(attr, val) => {
+            commit_attr(context, attr, val);
+            maybe_commit_req(context);
+        }
+        State::CollectRefLink(attr, vec) => {
+            commit_link_attr(context, attr, vec);
+            maybe_commit_req(context);
+        }
+    }
+    State::LookForReq
+}
+
+fn parse_state_heading(state: State, context: &mut Context<'_>) -> State {
+    match state {
+        State::LookForReq => state,
+        State::LookForDesc => State::LookForReq,
+        State::CollectDesc(desc) => {
+            commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
+            State::LookForReq
+        }
+        State::CollectDescNl(desc) => {
+            commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
+            State::LookForReq
+        }
+        State::LookForAttr => State::LookForReq,
+        State::CollectTextAttr(attr, val) => {
+            commit_attr(context, attr, val);
+            State::LookForReq
+        }
+        State::CollectRefLink(attr, vec) => {
+            commit_link_attr(context, attr, vec);
+            State::LookForReq
+        }
+    }
+}
+
+fn parse_state_req(state: State, context: &mut Context<'_>, req_line: &Captures<'_>) -> State {
+    match state {
+        State::CollectDesc(desc) => {
+            commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
+        }
+        State::CollectDescNl(desc) => {
+            commit_attr(context, ATTR_DESCRIPTION.to_owned(), desc);
+        }
+        State::CollectTextAttr(attr, val) => {
+            commit_attr(context, attr, val);
+        }
+        State::CollectRefLink(attr, vec) => {
+            commit_link_attr(context, attr, vec);
+        }
+        _ => {}
+    }
+    add_req(context, req_line)
 }
 
 fn commit_attr(context: &mut Context<'_>, attr: String, val: String) {
@@ -353,8 +365,8 @@ fn add_req(context: &mut Context<'_>, req_line: &Captures<'_>) -> State {
     let location = context.location();
     let r = Requirement {
         id,
-        location,
         title,
+        location,
         ..Requirement::default()
     };
     context.req_under_construction = Some(Box::new(r));
@@ -405,8 +417,7 @@ fn start_attribute(context: &mut Context<'_>, attr_line: &Captures<'_>) -> State
                 .as_ref()
                 .unwrap()
                 .attributes
-                .get(attr)
-                .is_some()
+                .contains_key(attr)
             {
                 context.errors.push(Error::DuplicateAttribute(
                     context.location(),
@@ -497,7 +508,7 @@ mod tests {
 
     #[test]
     fn test_markdown_parser() {
-        let s = r#"
+        let s = r"
 ## REQ: Title Title
 
 Description
@@ -511,10 +522,10 @@ Covers: COV, Cov
 Depends:
 *   DEP
 *   DEP_WT: T
-        "#;
+        ";
 
         let p = Path::new("Test.md");
-        let (reqs, errs) = markdown_parse(&mut s.as_bytes(), p);
+        let (reqs, errs) = parse(&mut s.as_bytes(), p);
 
         assert!(errs.is_empty());
 
@@ -539,13 +550,13 @@ Depends:
     /// Regression test. A buggy version parsed the rest of the line into 1 Requirement with empty ID
     #[test]
     fn test_markdown_parser_no_reflinks() {
-        let s = r#"
+        let s = r"
 ## REQ: Title Title
 Covers:
-        "#;
+        ";
 
         let p = Path::new("Test.md");
-        let (reqs, errs) = markdown_parse(&mut s.as_bytes(), p);
+        let (reqs, errs) = parse(&mut s.as_bytes(), p);
 
         assert!(errs.is_empty());
 

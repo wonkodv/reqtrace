@@ -27,7 +27,7 @@ mod util;
 
 use clap::Parser;
 
-/// A StructOpt example
+/// A `StructOpt` example
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Arguments {
@@ -44,7 +44,7 @@ struct Arguments {
     jobs: Vec<String>,
 }
 
-fn logging_setup(opt: &Arguments) -> Result<(), Box<dyn std::error::Error>> {
+fn logging_setup(opt: &Arguments) {
     // Covers MAN_LOG_CONFIG: Configure Logging
     let mut builder = env_logger::Builder::new();
     builder
@@ -65,8 +65,6 @@ fn logging_setup(opt: &Arguments) -> Result<(), Box<dyn std::error::Error>> {
         builder.parse_filters(ll);
     }
     builder.init();
-
-    Ok(())
 }
 
 fn get_config(opt: &Arguments) -> Result<controller::Config, Box<dyn std::error::Error>> {
@@ -111,7 +109,7 @@ fn run_cli_jobs(
 
 fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
     let opt: Arguments = Arguments::parse();
-    logging_setup(&opt)?;
+    logging_setup(&opt);
     let config = get_config(&opt)?;
     let controller = controller::Controller::new(config)?;
     run_cli_jobs(&controller, &opt)
@@ -119,19 +117,18 @@ fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
 
 fn main_rc() -> i32 {
     let r = try_main();
-    let rc = match r {
+
+    requirement_covered!(DSG_RETURN_CODE);
+
+    match r {
         Err(e) => {
             log::error!("{}", e);
-            eprintln!("Fatal Error: {}", e);
+            eprintln!("Fatal Error: {e}");
             2
         }
         Ok(true) => 0,
         Ok(false) => 1,
-    };
-
-    requirement_covered!(DSG_RETURN_CODE);
-
-    rc
+    }
 }
 
 fn main() {

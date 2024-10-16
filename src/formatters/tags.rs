@@ -1,4 +1,4 @@
-use super::super::common::*;
+use super::super::common::{LocationInFile, Requirement};
 use std::{io, rc::Rc};
 
 pub fn requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
@@ -25,13 +25,12 @@ where
                     line,
                 ));
             }
-            Some(LocationInFile::String(_)) => {}
-            None => {}
+            Some(LocationInFile::String(_)) | None => {}
         }
     }
     lines.sort();
     for l in lines {
-        w.write_all(l.as_bytes())?
+        w.write_all(l.as_bytes())?;
     }
 
     Ok(())

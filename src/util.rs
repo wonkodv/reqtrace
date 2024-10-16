@@ -9,8 +9,8 @@ pub fn glob_paths(paths: &Vec<String>) -> Result<Vec<PathBuf>, Error> {
         let glob = glob::glob(path);
         let glob = glob.map_err(|e| Error::Config(format!("can not glob {path:?}: {e:?}")))?;
         for entry in glob {
-            let path = entry.map_err(|e| Error::Io(e.path().into(), e.to_string()))?;
-            result.push(path);
+            let entry = entry.map_err(|e| Error::Io(e.path().into(), e.to_string()))?;
+            result.push(entry);
         }
     }
 
@@ -73,7 +73,7 @@ pub mod lazy {
             let LazyState::Init(t) = state else {
                 unreachable!("state was not Init, even though we just set it so");
             };
-            return t;
+            t
         }
     }
 }
@@ -100,13 +100,13 @@ mod test {
 
         assert!(SENTINEL.load(Ordering::Relaxed) == 0);
 
-        let s: &String = &l.get();
+        let s: &String = l.get();
 
         assert!(SENTINEL.load(Ordering::Relaxed) == 1);
 
         assert!(s.as_str() == "ABC");
 
-        let s: &String = &l.get();
+        let s: &String = l.get();
 
         assert!(SENTINEL.load(Ordering::Relaxed) == 1);
 

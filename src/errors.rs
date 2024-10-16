@@ -68,7 +68,7 @@ pub enum Error {
 }
 
 impl Error {
-    pub fn io(path: &std::path::Path, err: std::io::Error) -> Self {
+    pub fn io(path: &std::path::Path, err: &std::io::Error) -> Self {
         Self::Io(path.to_owned(), err.to_string())
     }
 }

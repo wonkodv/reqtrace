@@ -64,7 +64,7 @@ impl From<NodeIdx> for usize {
 impl NodeIdx {
     fn as_mut(self, graph: &mut Graph) -> &mut Node {
         let i: usize = self.into();
-        graph.nodes.get_mut(i).unwrap()
+        &mut graph.nodes[i]
     }
     fn as_ref(self, graph: &Graph) -> &Node {
         let i: usize = self.into();
@@ -120,17 +120,17 @@ impl Graph {
 
     fn node_mut(&mut self, idx: NodeIdx) -> &mut Node {
         let idx: usize = idx.into();
-        self.nodes.get_mut(idx).unwrap()
+        &mut self.nodes[idx]
     }
 
     fn node_ref(&self, idx: NodeIdx) -> &Node {
         let idx: usize = idx.into();
-        self.nodes.get(idx).unwrap()
+        &self.nodes[idx]
     }
 
     fn fork_ref(&self, idx: Fork) -> &ForkData {
         let idx: usize = idx.into();
-        self.forks.get(idx).unwrap()
+        &self.forks[idx]
     }
 
     pub fn node_idx_by_id(&self, id: &str) -> Result<NodeIdx> {

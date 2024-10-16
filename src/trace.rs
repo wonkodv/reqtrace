@@ -3,10 +3,13 @@ use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use super::common::*;
+use super::common::{Artefact, Location, Reference, Requirement};
 use crate::errors::Error;
-use crate::graph::*;
-use Error::*;
+use crate::graph::{Fork, Graph, NodeIdx, Tine};
+use Error::{
+    CoveredWithWrongTitle, CoversUnknownRequirement, DependOnUnknownRequirement,
+    DependWithWrongTitle, DuplicateRequirement,
+};
 
 use std::collections::hash_map::Entry::Occupied;
 use std::collections::hash_map::Entry::Vacant;
@@ -71,7 +74,7 @@ impl<'graph> Tracing<'graph> {
         };
 
         for fork in graph.iter_forks() {
-            trace.add_fork(fork, graph)
+            trace.add_fork(fork, graph);
         }
 
         trace.validate();
@@ -193,7 +196,7 @@ impl<'graph> Tracing<'graph> {
     /// Add req as a Lower Requirement.
     ///
     /// Add req to derived unless `ignore_derived_requirement`
-    /// record the tine in the TracedRequirement of req.
+    /// record the tine in the `TracedRequirement` of req.
     fn add_lower_req(
         &mut self,
         req: &'graph Rc<Requirement>,
@@ -202,16 +205,12 @@ impl<'graph> Tracing<'graph> {
         ignore_derived_requirement: bool,
     ) {
         let idx = self.add_req(req, tine.to(graph), ignore_derived_requirement);
-        self.requirements
-            .get_mut(idx)
-            .unwrap()
-            .upper
-            .insert(tine.fork, vec![]);
+        self.requirements[idx].upper.insert(tine.fork, vec![]);
     }
 
     /// Add req as a Upper Requirement.
     ///
-    /// record the tine in the TracedRequirement of req.
+    /// record the tine in the `TracedRequirement` of req.
     fn add_upper_req(
         &mut self,
         req: &'graph Rc<Requirement>,
@@ -221,11 +220,7 @@ impl<'graph> Tracing<'graph> {
     ) -> TracedRequirementIdx {
         let idx = self.add_req(req, fork.from(graph), ignore_derived_requirement);
 
-        self.requirements
-            .get_mut(idx)
-            .unwrap()
-            .lower
-            .insert(fork, vec![]);
+        self.requirements[idx].lower.insert(fork, vec![]);
 
         idx
     }
@@ -245,7 +240,7 @@ impl<'graph> Tracing<'graph> {
         match self.requirements_by_id.entry(&req.id) {
             Occupied(e) => {
                 let already_there_idx = *e.get();
-                let already_there = &self.requirements.get_mut(already_there_idx).unwrap();
+                let already_there = &&mut self.requirements[already_there_idx];
                 if req != already_there.requirement {
                     let err =
                         DuplicateRequirement(Rc::clone(already_there.requirement), Rc::clone(req));
@@ -300,18 +295,14 @@ impl<'graph> Tracing<'graph> {
         let lower_idx = self.requirements_by_id[cov.lower_requirement.id.as_str()];
         self.derived.remove(&lower_idx);
 
-        self.requirements
-            .get_mut(lower_idx)
-            .unwrap()
+        self.requirements[lower_idx]
             .upper
             .get_mut(&cov.tine.fork)
             .unwrap()
             .push(cov);
 
         let upper_idx = self.requirements_by_id[cov.upper_requirement.id.as_str()];
-        self.requirements
-            .get_mut(upper_idx)
-            .unwrap()
+        self.requirements[upper_idx]
             .lower
             .get_mut(&cov.tine.fork)
             .unwrap()

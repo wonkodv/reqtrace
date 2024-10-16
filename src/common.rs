@@ -31,13 +31,13 @@ impl PartialOrd for LocationInFile {
             LocationInFile::Line(line) => match other {
                 LocationInFile::Line(other_line) => Some(line.cmp(other_line)),
                 LocationInFile::LineAndColumn(other_line, other_column) => {
-                    Some((line, &0usize).cmp(&(other_line, other_column)))
+                    Some((line, &0_usize).cmp(&(other_line, other_column)))
                 }
                 LocationInFile::String(_) => None,
             },
             LocationInFile::LineAndColumn(line, column) => match other {
                 LocationInFile::Line(other_line) => {
-                    Some((line, column).cmp(&(other_line, &0usize)))
+                    Some((line, column).cmp(&(other_line, &0_usize)))
                 }
                 LocationInFile::LineAndColumn(other_line, other_column) => {
                     Some((line, column).cmp(&(other_line, other_column)))
@@ -55,7 +55,7 @@ impl PartialOrd for LocationInFile {
 impl fmt::Display for LocationInFile {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            LocationInFile::Line(line) => write!(f, "{line}"),
+            LocationInFile::Line(ref line) => write!(f, "{line}"),
             LocationInFile::LineAndColumn(line, column) => write!(f, "{line}:{column}"),
             LocationInFile::String(s) => write!(f, "{s}"),
         }
@@ -197,7 +197,7 @@ impl RequirementBuilder {
         location: Option<&str>,
     ) -> Result<Self, String> {
         let id = id.to_owned();
-        let title = title.map(|t| t.to_owned());
+        let title = title.map(std::borrow::ToOwned::to_owned);
         let location = {
             if let Some(location) = location {
                 Some(Location::from_str(location)?)
@@ -221,7 +221,7 @@ impl RequirementBuilder {
         location: &str,
     ) -> Result<Self, String> {
         let id = id.to_owned();
-        let title = title.map(|t| t.to_owned());
+        let title = title.map(std::borrow::ToOwned::to_owned);
         let location = Some(Location::from_str(location)?);
 
         self.req.covers.push(Reference {

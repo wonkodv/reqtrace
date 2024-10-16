@@ -1,4 +1,4 @@
-use super::super::common::*;
+use super::super::common::Requirement;
 use std::rc::Rc;
 
 use crate::errors::Error;
@@ -83,7 +83,7 @@ pub struct Trace {
     version: u32,
     artefacts: Vec<Artefact>,
     coverages: Vec<Fork>,
-    trace_errors: Vec<Error>,
+    errors: Vec<Error>,
     derived: Vec<Requirement>,
 }
 

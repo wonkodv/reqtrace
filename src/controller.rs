@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use std::{collections::BTreeMap, fs, io, path::PathBuf, rc::Rc, time::Instant};
 
 use crate::errors::{Error, Result};
-use Error::*;
+use Error::{Io, UnknownJob};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct TraceConfig {
@@ -72,8 +72,8 @@ impl Controller {
 
         Ok(Self {
             jobs,
-            graph,
             default_jobs,
+            graph,
         })
     }
 
@@ -86,7 +86,7 @@ impl Controller {
         if !self.default_jobs.is_empty() {
             self.run_jobs_by_name(&self.default_jobs)
         } else {
-            Err(Config("no default_jobs configured".into()))
+            Err(Error::Config("no default_jobs configured".into()))
         }
     }
 
@@ -94,7 +94,7 @@ impl Controller {
         let mut jobs = Vec::new();
         for j in job_names {
             if let Some(job) = self.find_job(j) {
-                jobs.push(job)
+                jobs.push(job);
             } else {
                 return Err(Error::UnknownJob(j.clone()));
             }

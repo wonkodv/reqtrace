@@ -4,7 +4,7 @@ use std::mem;
 use std::path::PathBuf;
 use std::rc::Rc;
 
-use log::*;
+use log::warn;
 use serde::Deserialize;
 use serde::Serialize;
 
@@ -53,7 +53,7 @@ pub struct PrePopulated {
 }
 
 impl PrePopulated {
-    /// Turn into ArtefactParser, usefull to write Tests on Artefacts
+    /// Turn into `ArtefactParser`, usefull to write Tests on Artefacts
     pub fn into_artefact_parser(self) -> ArtefactParser {
         ArtefactParser {
             parser: Box::new(self),
@@ -101,7 +101,7 @@ impl ArtefactParser {
         data.errors = errors;
 
         for (req_idx, req) in data.requirements.iter().enumerate() {
-            let old = data.id_to_req.insert(req.id.to_owned(), req_idx as u16);
+            let old = data.id_to_req.insert(req.id.clone(), req_idx as u16);
             if let Some(old_idx) = old {
                 let old_idx: usize = old_idx.into();
 
@@ -118,15 +118,15 @@ impl ArtefactParser {
 
             for (cov_idx, cov) in req.covers.iter().enumerate() {
                 data.id_to_covering_req
-                    .entry(cov.id.to_owned())
+                    .entry(cov.id.clone())
                     .or_default()
-                    .push((req_idx as u16, cov_idx as u16))
+                    .push((req_idx as u16, cov_idx as u16));
             }
             for (dep_idx, dep) in req.depends.iter().enumerate() {
                 data.id_to_depending_req
-                    .entry(dep.id.to_owned())
+                    .entry(dep.id.clone())
                     .or_default()
-                    .push((req_idx as u16, dep_idx as u16))
+                    .push((req_idx as u16, dep_idx as u16));
             }
         }
 

@@ -41,7 +41,7 @@ impl super::Parser for RustParser {
         let mut requirements = Vec::new();
         let mut errors = Vec::new();
         for path in &self.paths {
-            let file = fs::File::open(path).map_err(|e| Error::io(path, e));
+            let file = fs::File::open(path).map_err(|e| Error::io(path, &e));
             match file {
                 Err(err) => {
                     warn!("{}", err);
@@ -69,7 +69,7 @@ pub fn parse(
     let mut source = String::new();
     match reader.read_to_string(&mut source) {
         Err(e) => {
-            errors.push(errors::Error::io(path, e));
+            errors.push(errors::Error::io(path, &e));
         }
         Ok(_bytes) => match parse_file(&source) {
             Err(e) => {
@@ -119,24 +119,25 @@ impl Parser<'_> {
 
         let tokens: Vec<_> = node.mac.tokens.clone().into_iter().collect();
 
-        if let Some((id, title)) = match tokens.len() {
+        if let Some((referenced_id, title)) = match tokens.len() {
             0 => {
                 self.errors.push(errors::Error::Format(
                     location_from_span(self.path, &seg[0].ident.span()),
-                    "requirement_covered!() has no arguments".to_string(),
+                    "requirement_covered!() has no arguments".to_owned(),
                 ));
                 None
             }
-            1 => match &tokens[0] {
-                proc_macro2::TokenTree::Ident(id) => Some((id.to_string(), None)),
-                _ => {
+            1 => {
+                if let proc_macro2::TokenTree::Ident(id) = &tokens[0] {
+                    Some((id.to_string(), None))
+                } else {
                     self.errors.push(errors::Error::Format(
                         location_from_span(self.path, &tokens[0].span()),
-                        "requirement_covered!() single argument is not an identifier".to_string(),
+                        "requirement_covered!() single argument is not an identifier".to_owned(),
                     ));
                     None
                 }
-            },
+            }
 
             3 => {
                 // TODO: match Ident and String Literal
@@ -158,7 +159,7 @@ impl Parser<'_> {
             }
         } {
             let reference = Reference {
-                id,
+                id: referenced_id,
                 title,
                 location: None,
             };
@@ -276,7 +277,7 @@ mod test {
                 }
             }
         "
-        .to_string();
+        .to_owned();
 
         let (reqs, errors) = parse(
             &mut BufReader::new(s.as_bytes()),
@@ -304,7 +305,7 @@ mod test {
                 }
             }
         "#
-        .to_string();
+        .to_owned();
 
         let (reqs, errors) = parse(
             &mut BufReader::new(s.as_bytes()),

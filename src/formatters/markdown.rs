@@ -1,9 +1,10 @@
-use super::super::common::*;
+#![allow(clippy::too_many_lines)]
+
+use super::super::common::{Location, LocationInFile, Requirement};
 use std::{collections::HashSet, io, rc::Rc};
 
 use crate::graph::Graph;
 use crate::{errors::Error, trace::Tracing};
-use Error::*;
 
 use lazy_static::lazy_static;
 use regex::Regex;
@@ -62,12 +63,12 @@ where
         w,
         "\n## {}: {}\n\nOrigin: {}",
         req.id,
-        req.title.as_ref().unwrap_or(&"".to_owned()),
+        req.title.as_ref().unwrap_or(&String::new()),
         location_link(&req.location)
     )?;
 
     if let Some(description) = req.attributes.get("Description") {
-        writeln!(w, "\n\n{}", description)?;
+        writeln!(w, "\n\n{description}")?;
     }
 
     if !req.covers.is_empty() {
@@ -95,8 +96,8 @@ where
         if k != "Description" {
             let v = v.trim();
             if !v.is_empty() {
-                writeln!(w, "\n{}:", k)?;
-                writeln!(w, "{}", v)?;
+                writeln!(w, "\n{k}:")?;
+                writeln!(w, "{v}")?;
             }
         }
     }
@@ -112,7 +113,7 @@ where
     let mut reqs = reqs.collect::<Vec<_>>();
     reqs.sort_by(|r, o| r.id.cmp(&o.id));
     for req in reqs {
-        requirement(req, w)?
+        requirement(req, w)?;
     }
     Ok(())
 }
@@ -136,7 +137,7 @@ where
         )?;
 
         if let Some(description) = req.requirement.attributes.get("Description") {
-            writeln!(w, "\n\n{}", description)?;
+            writeln!(w, "\n\n{description}")?;
         }
 
         if !req.upper.is_empty() {
@@ -194,8 +195,8 @@ where
             if k != "Description" {
                 let v = v.trim();
                 if !v.is_empty() {
-                    writeln!(w, "\n{}:", k)?;
-                    writeln!(w, "{}", v)?;
+                    writeln!(w, "\n{k}:")?;
+                    writeln!(w, "{v}")?;
                 }
             }
         }
@@ -208,7 +209,7 @@ where
     W: io::Write,
 {
     match error {
-        Format(loc, err) => {
+        Error::Format(loc, err) => {
             writeln!(
                 w,
                 "*   Format Error: {}\n    in {}",
@@ -216,7 +217,7 @@ where
                 location_link(loc),
             )
         }
-        DuplicateRequirement(r1, r2) => {
+        Error::DuplicateRequirement(r1, r2) => {
             writeln!(
                 w,
                 concat!(
@@ -229,32 +230,31 @@ where
                 location_link(&r1.location),
             )
         }
-        DuplicateAttribute(loc, attr, req) => {
+        Error::DuplicateAttribute(loc, attr, req) => {
             writeln!(
                 w,
-                "*   Duplicate Attribute: {} when parsing {}\n    {}",
-                attr, req, loc
+                "*   Duplicate Attribute: {attr} when parsing {req}\n    {loc}"
             )
         }
-        Io(path, err) => {
+        Error::Io(path, err) => {
             writeln!(w, "*   IO Error: {}\n   {}", err, path.display())
         }
-        UnknownArtefactType(t) => {
-            writeln!(w, "*   Unknown Artefact Type: {}", t)
+        Error::UnknownArtefactType(t) => {
+            writeln!(w, "*   Unknown Artefact Type: {t}")
         }
-        Config(s) => {
-            writeln!(w, "*   Config  Error: {:?}", s)
+        Error::Config(s) => {
+            writeln!(w, "*   Config  Error: {s:?}")
         }
-        DuplicateArtefact(a) => {
-            writeln!(w, "*   Duplicate Artefact: {}", a)
+        Error::DuplicateArtefact(a) => {
+            writeln!(w, "*   Duplicate Artefact: {a}")
         }
-        UnknownArtefact(a) => {
-            writeln!(w, "*    Unknown Artefact: {}", a)
+        Error::UnknownArtefact(a) => {
+            writeln!(w, "*    Unknown Artefact: {a}")
         }
-        UnknownFork(from, to) => {
-            writeln!(w, "*    Unknown Edge {} -> {}", from, to)
+        Error::UnknownFork(from, to) => {
+            writeln!(w, "*    Unknown Edge {from} -> {to}")
         }
-        CoveredWithWrongTitle {
+        Error::CoveredWithWrongTitle {
             upper,
             lower,
             wrong_title,
@@ -288,7 +288,7 @@ where
             };
             Ok(())
         }
-        DependWithWrongTitle {
+        Error::DependWithWrongTitle {
             upper,
             lower,
             wrong_title,
@@ -322,13 +322,13 @@ where
             Ok(())
         }
 
-        ArtefactTypeOnlyAllowsOnePath(_, _) | EmptyGraph => {
-            writeln!(w, "{:?}", error)
+        Error::ArtefactTypeOnlyAllowsOnePath(_, _) | Error::EmptyGraph => {
+            writeln!(w, "{error:?}")
         }
-        UnknownJob(j) => {
-            writeln!(w, "unknown job {:?}", j)
+        Error::UnknownJob(j) => {
+            writeln!(w, "unknown job {j:?}")
         }
-        DependOnUnknownRequirement(req, depend, location) => {
+        Error::DependOnUnknownRequirement(req, depend, location) => {
             writeln!(
                 w,
                 "*   {} depends on unknown Requirement {}\n    {}",
@@ -337,7 +337,7 @@ where
                 location_link(location.as_ref().unwrap_or(&req.location)),
             )
         }
-        CoversUnknownRequirement(req, cover, location) => {
+        Error::CoversUnknownRequirement(req, cover, location) => {
             writeln!(
                 w,
                 "*   {} covers unknown Requirement {}\n    {}",

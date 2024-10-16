@@ -75,15 +75,15 @@ pub fn parse<R: io::BufRead>(path: &Path, reader: R) -> (Vec<Rc<Requirement>>, V
         match line {
             Ok(line) => {
                 if title.is_none() {
-                    title = Some(line)
+                    title = Some(line);
                 } else if let Some(ref_link) = REF_LINK_LINE.captures(&line) {
                     let id = ref_link[1].to_owned();
-                    let title = ref_link.get(2).map(|m| m.as_str().to_owned());
+                    let referenced_title = ref_link.get(2).map(|m| m.as_str().to_owned());
                     let location = Some(Location::new_with_line_no(path.to_path_buf(), no + 1));
 
                     let reference = Reference {
                         id,
-                        title,
+                        title: referenced_title,
                         location,
                     };
                     depends.push(reference);
@@ -99,15 +99,15 @@ pub fn parse<R: io::BufRead>(path: &Path, reader: R) -> (Vec<Rc<Requirement>>, V
             stem.to_string_lossy().to_string()
         } else {
             errors.push(Error::Config("file for 'readme' parser has no stem".into()));
-            "README".to_string()
+            "README".to_owned()
         }
     };
     let location = Location::new_with_no_pos(path.to_path_buf());
     let requirement = Requirement {
         id,
         title,
-        depends,
         location,
+        depends,
         ..Requirement::default()
     };
     let requirements = vec![Rc::new(requirement)];
