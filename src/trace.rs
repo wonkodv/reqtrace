@@ -51,7 +51,7 @@ struct Link {
 pub struct Tracing<'graph> {
     requirements: Vec<TracedRequirement<'graph>>,
     requirements_by_id: HashMap<&'graph str, TracedRequirementIdx>,
-    uncovered: BTreeSet<TracedRequirementIdx>,
+    uncovered: BTreeSet<(TracedRequirementIdx, Fork)>,
     derived: BTreeSet<TracedRequirementIdx>,
     invalid_covers_links: Option<BTreeSet<Link>>,
     invalid_depends_links: Option<BTreeSet<Link>>,
@@ -86,7 +86,8 @@ impl<'graph> Tracing<'graph> {
     pub fn uncovered<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'graph>> {
         self.uncovered
             .iter()
-            .map(move |idx| &self.requirements[*idx])
+            .map(move |idx| &self.requirements[idx.0]) // TODO: yield info about the Fork along
+                                                       // which it wasn't traced
     }
 
     pub fn derived<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'graph>> {
@@ -126,7 +127,12 @@ impl<'graph> Tracing<'graph> {
         }
 
         for upper_requirement in upper_artefact.get_requirements() {
-            let upper_requirement_idx = self.add_upper_req(upper_requirement, fork, graph);
+            let upper_requirement_idx = self.add_upper_req(
+                upper_requirement,
+                fork,
+                graph,
+                upper_artefact.ignore_derived_requirements,
+            );
             let mut is_covered = false;
             for depends in &upper_requirement.depends {
                 // Covers: DSG_TRACE_DOWNWARDS: Trace downwards using Depends attribute
@@ -179,7 +185,7 @@ impl<'graph> Tracing<'graph> {
                 }
             }
             if !is_covered {
-                self.uncovered.insert(upper_requirement_idx);
+                self.uncovered.insert((upper_requirement_idx, fork));
             }
         }
     }
@@ -195,12 +201,7 @@ impl<'graph> Tracing<'graph> {
         graph: &Graph,
         ignore_derived_requirement: bool,
     ) {
-        let (added, idx) = self.add_req(req, tine.to(graph));
-        if added {
-            if !ignore_derived_requirement {
-                self.derived.insert(idx);
-            }
-        }
+        let idx = self.add_req(req, tine.to(graph), ignore_derived_requirement);
         self.requirements
             .get_mut(idx)
             .unwrap()
@@ -216,8 +217,9 @@ impl<'graph> Tracing<'graph> {
         req: &'graph Rc<Requirement>,
         fork: Fork,
         graph: &Graph,
+        ignore_derived_requirement: bool,
     ) -> TracedRequirementIdx {
-        let (_added, idx) = self.add_req(req, fork.from(graph));
+        let idx = self.add_req(req, fork.from(graph), ignore_derived_requirement);
 
         self.requirements
             .get_mut(idx)
@@ -233,13 +235,13 @@ impl<'graph> Tracing<'graph> {
     /// If not seen before, add all req.covers and req.depends to the invalid lists
     ///
     /// Returns
-    ///     -   added:  true if `req` was added, false if it was already there
     ///     -   idx:    the index of req
     fn add_req(
         &mut self,
         req: &'graph Rc<Requirement>,
         node: NodeIdx,
-    ) -> (bool, TracedRequirementIdx) {
+        ignore_derived_requirement: bool,
+    ) -> TracedRequirementIdx {
         match self.requirements_by_id.entry(&req.id) {
             Occupied(e) => {
                 let already_there_idx = *e.get();
@@ -252,7 +254,7 @@ impl<'graph> Tracing<'graph> {
                 }
                 assert_eq!(already_there.node, node);
 
-                (false, already_there_idx)
+                already_there_idx
             }
             Vacant(e) => {
                 // mark all `covers` and `depends` as invalid
@@ -282,8 +284,11 @@ impl<'graph> Tracing<'graph> {
                 let idx = self.requirements.len();
                 self.requirements.push(t);
                 e.insert(idx);
+                if !ignore_derived_requirement {
+                    self.derived.insert(idx);
+                }
 
-                (true, idx)
+                idx
             }
         }
     }

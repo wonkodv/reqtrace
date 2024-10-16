@@ -265,32 +265,32 @@ mod tests {
         let a_req = Artefact::new(
             "REQ".into(),
             parsers::PrePopulated::default().into_artefact_parser(),
-            false
+            false,
         );
         let a_dsg = Artefact::new(
             "DSG".into(),
             parsers::PrePopulated::default().into_artefact_parser(),
-            false
+            false,
         );
         let a_fmt = Artefact::new(
             "FORMAT".into(),
             parsers::PrePopulated::default().into_artefact_parser(),
-            false
+            false,
         );
         let a_code = Artefact::new(
             "Code".into(),
             parsers::PrePopulated::default().into_artefact_parser(),
-            false
+            false,
         );
         let a_dt = Artefact::new(
             "DTests".into(),
             parsers::PrePopulated::default().into_artefact_parser(),
-            false
+            false,
         );
         let a_rt = Artefact::new(
             "RTests".into(),
             parsers::PrePopulated::default().into_artefact_parser(),
-            false
+            false,
         );
 
         let mut g = Graph::new();

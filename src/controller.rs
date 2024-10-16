@@ -31,23 +31,11 @@ pub enum Query {
     /// Validate the Graph without parsing Artefacts
     ValidateGraph,
 
-    /// Query Artefacts and Tracing Edges to see which are outdated
-    CacheStatus,
-
-    /// Parse a list of artefacts
-    ParseArtefacts { artefacts: Vec<String> },
-
     /// Parse all Artefacts
     Parse,
 
     /// Trace all Edges in Graph
     Trace,
-
-    /// Analise a Single Requirement
-    ShowRequirement { id: String },
-
-    /// Show all Requirements which are below the passed one
-    ShowRequirementImpact { id: String },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -172,14 +160,7 @@ impl Controller {
                 }
                 formatters::requirements(reqs, &job.format, &mut out)
             }
-            Query::ShowRequirement { id: _ } => todo!(),
-            Query::ShowRequirementImpact { id: _ } => todo!(),
             Query::ValidateGraph => todo!(),
-            Query::CacheStatus => todo!(),
-            Query::ParseArtefacts { artefacts: _ } => {
-                requirement_covered!(DSG_JOB_PARSE_SOME, "Parse a set of Artefacts");
-                todo!()
-            }
         };
 
         write_res.map_err(|e| Io(job.file.clone(), e))?;
