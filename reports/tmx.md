@@ -1,41 +1,14 @@
 
 
-# Tracing Errors
-
-*   DSG_JSON_EXPORT covers unknown Requirement REQ_VCS
-    [doc/requirements/DESIGN.md:120](../doc/requirements/DESIGN.md?plain=1#L120)
-*   DSG_JSON_IMPORT covers unknown Requirement REQ_VCS
-    [doc/requirements/DESIGN.md:112](../doc/requirements/DESIGN.md?plain=1#L112)
-*   DSG_TRACE_CHECK_TITLE covers unknown Requirement ARCH_TRACING_GRAPH
-    [doc/requirements/DESIGN.md:360](../doc/requirements/DESIGN.md?plain=1#L360)
-*   DSG_TRACE_COVERS_EXIST covers unknown Requirement ARCH_TRACING_GRAPH
-    [doc/requirements/DESIGN.md:374](../doc/requirements/DESIGN.md?plain=1#L374)
-*   DSG_TRACE_DEPENDS_EXIST covers unknown Requirement ARCH_TRACING_GRAPH
-    [doc/requirements/DESIGN.md:384](../doc/requirements/DESIGN.md?plain=1#L384)
-*   DSG_TRACE_DERIVED covers unknown Requirement ARCH_TRACING_GRAPH
-    [doc/requirements/DESIGN.md:324](../doc/requirements/DESIGN.md?plain=1#L324)
-*   DSG_TRACE_DOWNWARDS covers unknown Requirement ARCH_TRACING_GRAPH
-    [doc/requirements/DESIGN.md:316](../doc/requirements/DESIGN.md?plain=1#L316)
-*   DSG_TRACE_UNCOVERED covers unknown Requirement ARCH_TRACING_GRAPH
-    [doc/requirements/DESIGN.md:338](../doc/requirements/DESIGN.md?plain=1#L338)
-*   DSG_TRACE_UPWARDS covers unknown Requirement ARCH_TRACING_GRAPH
-    [doc/requirements/DESIGN.md:305](../doc/requirements/DESIGN.md?plain=1#L305)
-*   DSG_TRACE_VALIDATE_EDGE covers unknown Requirement ARCH_TRACING_GRAPH
-    [doc/requirements/DESIGN.md:294](../doc/requirements/DESIGN.md?plain=1#L294)
-*   main_rc covers unknown Requirement DSG_RETURN_CODE
-    [src/main.rs:121:4](../src/main.rs?plain=1#L121)
-
-
 # Uncovered Requirements
 
 *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
 *   [ARCH_FORMATTER](#arch_formatter-format-output-in-requested-format "Format output in requested Format")
 *   [ARCH_PARSER](#arch_parser-parser "Parser")
 *   [DSG_ART_CONFIG](#dsg_art_config-artefact-configuration-fields "Artefact Configuration Fields")
-*   [DSG_ART_FILES](#dsg_art_files-an-artefact-loads-one-or-more-files "An artefact loads one or more Files")
+*   [DSG_ART_FILES](#dsg_art_files-artefact-loads-one-or-more-files "Artefact loads one or more Files")
 *   [DSG_ART_IGNORE_DERIVED](#dsg_art_ignore_derived-ignore-derived-requirements "Ignore Derived Requirements")
-*   [DSG_ART_PARSE](#dsg_art_parse-artefact-parsing "Artefact Parsing")
-*   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
+*   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing")
 *   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File")
 *   [DSG_GRAPH](#dsg_graph-artefact-graph "Artefact Graph")
 *   [DSG_GRAPH_FORKS](#dsg_graph_forks-trace-edge-groups "Trace Edge Groups")
@@ -66,13 +39,7 @@
 *   [FMT_MD_OPT_PREFIX](#fmt_md_opt_prefix-list-of-prefixes "List of Prefixes")
 *   [FMT_MD_START](#fmt_md_start-requirement-start "Requirement Start")
 *   [FMT_UNICODE_NORMALIZE](#fmt_unicode_normalize-normalize-unicode-during-read "Normalize Unicode during read")
-*   [REQ_CACHE_FRIENDLY](#req_cache_friendly-work-well-with-build-systems-that-cache "Work well with build systems that cache")
-*   [REQ_FAST](#req_fast-fast "Fast")
 *   [REQ_IDENTIFIEABLE](#req_identifieable-show-versions-of-input-artefacts-in-output "Show versions of input artefacts in output")
-*   [REQ_INSTALL](#req_install-easy-to-install "Easy to install")
-*   [REQ_PARSER_ERROR](#req_parser_error-useful-parser-errors "Useful Parser Errors")
-*   [REQ_UNIQUE_ID_v2](#req_unique_id_v2-requirements-have-a-unique-identifier "Requirements have a unique Identifier")
-*   [REQ_VAL_COVERAGE](#req_val_coverage-validate-coverage "Validate Coverage")
 
 
 # Derived Requirements
@@ -84,14 +51,12 @@
 *   [DSG_JOBS](#dsg_jobs-jobs-control-what-operations-to-perform "Jobs control what operations to perform")
 *   [DSG_JOB_FILE](#dsg_job_file-specify-file-to-store-reports-in "Specify File to Store Reports in")
 *   [DSG_JOB_RETURN_CODE](#dsg_job_return_code-return-code-indicates-if-tracing-is-correct "Return Code Indicates if Tracing is Correct")
-*   [DSG_TRACE_VALIDATE_EDGE](#dsg_trace_validate_edge-validate-edge-is-used-at-least-once "Validate Edge is used at least once")
 *   [FMT_CTAGS](#fmt_ctags-export-requirements-as-ctags "Export Requirements as CTags")
 *   [FMT_MD_ATTRIBUTES](#fmt_md_attributes-attributes "Attributes")
 *   [FMT_MD_DESC](#fmt_md_desc-description "Description")
 *   [FMT_MD_DESC_HEADINGS](#fmt_md_desc_headings-heading-level-in-description-is-adjusted "Heading Level in Description is adjusted")
 *   [FMT_MD_OPT_PREFIX](#fmt_md_opt_prefix-list-of-prefixes "List of Prefixes")
 *   [FMT_MD_START](#fmt_md_start-requirement-start "Requirement Start")
-*   [main_rc](#main_rc)
 
 
 # Requirements
@@ -99,7 +64,7 @@
 
 ## ARCH_ARTEFACT: Artefact
 
-Origin: [doc/requirements/ARCHITECTURE.md:36](../doc/requirements/ARCHITECTURE.md?plain=1#L36)
+Origin: [doc/requirements/ARCHITECTURE.md:41](../doc/requirements/ARCHITECTURE.md?plain=1#L41)
 
 
 An artefact represents Requirements from a file, or several related files.
@@ -112,8 +77,8 @@ Covers:
 
 Covered By:
 *   design
-    *   [DSG_ART_FILES](#dsg_art_files-an-artefact-loads-one-or-more-files "An artefact loads one or more Files")
-    *   [DSG_ART_PARSE](#dsg_art_parse-artefact-parsing "Artefact Parsing")
+    *   [DSG_ART_FILES](#dsg_art_files-artefact-loads-one-or-more-files "Artefact loads one or more Files")
+    *   [DSG_ART_PARSE](#dsg_art_parse-artefact-parses-input-lazily "Artefact parses input lazily")
     *   [DSG_ART_CONFIG](#dsg_art_config-artefact-configuration-fields "Artefact Configuration Fields")
 
 ## ARCH_CLI: Command Line Interface
@@ -122,19 +87,24 @@ Origin: [doc/requirements/ARCHITECTURE.md:22](../doc/requirements/ARCHITECTURE.m
 
 
 All functionality of the tool is exposed in a simple command line interface.
+The CLI is shipped as a statically linked binary.
+Other Tools can interface with the CLI to provide caching, lazy parsing of complicated input formats
+and generation of complicated output formats
 
 
 
 Covers:
 *   requirements
     *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
+    *   [REQ_INSTALL](#req_install-easy-to-install "Easy to install")
+    *   [REQ_FAST](#req_fast-fast "Fast")
 
 Covered By:
 *   Not Covered by: design
 
 ## ARCH_CONTROLLER: Controller
 
-Origin: [doc/requirements/ARCHITECTURE.md:29](../doc/requirements/ARCHITECTURE.md?plain=1#L29)
+Origin: [doc/requirements/ARCHITECTURE.md:34](../doc/requirements/ARCHITECTURE.md?plain=1#L34)
 
 
 The Controller Reads the Configuration file, and builds the tracing graph as
@@ -153,7 +123,7 @@ Covered By:
 
 ## ARCH_FORMATTER: Format output in requested Format
 
-Origin: [doc/requirements/ARCHITECTURE.md:68](../doc/requirements/ARCHITECTURE.md?plain=1#L68)
+Origin: [doc/requirements/ARCHITECTURE.md:73](../doc/requirements/ARCHITECTURE.md?plain=1#L73)
 
 
 The formatter stores all available kinds of information in different
@@ -170,7 +140,7 @@ Covered By:
 
 ## ARCH_GRAPH: Graph
 
-Origin: [doc/requirements/ARCHITECTURE.md:48](../doc/requirements/ARCHITECTURE.md?plain=1#L48)
+Origin: [doc/requirements/ARCHITECTURE.md:53](../doc/requirements/ARCHITECTURE.md?plain=1#L53)
 
 
 The Graph organizes Artefacts into a directed graph without loops.
@@ -195,7 +165,7 @@ Covered By:
 
 ## ARCH_PARSER: Parser
 
-Origin: [doc/requirements/ARCHITECTURE.md:41](../doc/requirements/ARCHITECTURE.md?plain=1#L41)
+Origin: [doc/requirements/ARCHITECTURE.md:46](../doc/requirements/ARCHITECTURE.md?plain=1#L46)
 
 
 A Parser processes an input file and emits Requirements
@@ -211,7 +181,7 @@ Covered By:
 
 ## ARCH_TRACE: Tracer
 
-Origin: [doc/requirements/ARCHITECTURE.md:60](../doc/requirements/ARCHITECTURE.md?plain=1#L60)
+Origin: [doc/requirements/ARCHITECTURE.md:65](../doc/requirements/ARCHITECTURE.md?plain=1#L65)
 
 
 The tracer walks the graph and calculates tracing information
@@ -226,6 +196,32 @@ Covers:
 Covered By:
 *   design
     *   [DSG_TRACE](#dsg_trace-walk-the-graph-and-trace-requirements "Walk the Graph and trace requirements")
+    *   [DSG_TRACE_VALIDATE_EDGE](#dsg_trace_validate_edge-validate-edge-is-used-at-least-once "Validate Edge is used at least once")
+    *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using Covers attribute")
+    *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using Depends attribute")
+    *   [DSG_TRACE_DERIVED](#dsg_trace_derived-record-requirements-that-do-not-cover-anything "Record requirements that do not cover anything")
+    *   [DSG_TRACE_UNCOVERED](#dsg_trace_uncovered-record-requirements-that-are-not-completely-covered "Record requirements that are not completely covered")
+    *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title")
+    *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist")
+    *   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist")
+
+## Artefact::new
+
+Origin: [src/common.rs:261:8](../src/common.rs?plain=1#L261)
+
+Covers:
+*   design
+    *   [DSG_ART_PARSE](#dsg_art_parse-artefact-parses-input-lazily "Artefact parses input lazily")
+*   Does not cover: formats
+
+## ArtefactParser::parse
+
+Origin: [src/parsers/mod.rs:114:16](../src/parsers/mod.rs?plain=1#L114)
+
+Covers:
+*   design
+    *   [DSG_ART_PARSE_DETECT_DUPLICATE](#dsg_art_parse_detect_duplicate-detect-duplicates "Detect duplicates")
+*   Does not cover: formats
 
 ## Controller::run
 
@@ -255,6 +251,15 @@ Covers:
 *   formats
     *   [FMT_RUST_COV](#fmt_rust_cov-rust-coverage-marks "Rust Coverage Marks")
 
+## Tracing < 'graph >::add_req
+
+Origin: [src/trace.rs:249:20](../src/trace.rs?plain=1#L249)
+
+Covers:
+*   design
+    *   [DSG_TRACE_DETECT_DUPLICATE](#dsg_trace_detect_duplicate-detect-duplicate-requirements-in-different-artefacts "Detect duplicate Requirements in different Artefacts")
+*   Does not cover: formats
+
 ## get_config
 
 Origin: [src/main.rs:90:4](../src/main.rs?plain=1#L90)
@@ -269,7 +274,8 @@ Covers:
 Origin: [src/main.rs:121:4](../src/main.rs?plain=1#L121)
 
 Covers:
-*   Does not cover: design
+*   design
+    *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
 *   Does not cover: formats
 
 ## parse
@@ -293,7 +299,7 @@ Covers:
 
 ## DSG_ART_CONFIG: Artefact Configuration Fields
 
-Origin: [doc/requirements/DESIGN.md:61](../doc/requirements/DESIGN.md?plain=1#L61)
+Origin: [doc/requirements/DESIGN.md:73](../doc/requirements/DESIGN.md?plain=1#L73)
 
 
 *   ID
@@ -313,7 +319,7 @@ Covers:
 Covered By:
 *   Not Covered by: formats, code
 
-## DSG_ART_FILES: An artefact loads one or more Files
+## DSG_ART_FILES: Artefact loads one or more Files
 
 Origin: [doc/requirements/DESIGN.md:43](../doc/requirements/DESIGN.md?plain=1#L43)
 
@@ -332,7 +338,7 @@ Covered By:
 
 ## DSG_ART_IGNORE_DERIVED: Ignore Derived Requirements
 
-Origin: [doc/requirements/DESIGN.md:73](../doc/requirements/DESIGN.md?plain=1#L73)
+Origin: [doc/requirements/DESIGN.md:85](../doc/requirements/DESIGN.md?plain=1#L85)
 
 
 Artefacts can be configured to ignore derived requirements
@@ -347,7 +353,7 @@ Covers:
 Covered By:
 *   Not Covered by: formats, code
 
-## DSG_ART_PARSE: Artefact Parsing
+## DSG_ART_PARSE: Artefact parses input lazily
 
 Origin: [doc/requirements/DESIGN.md:51](../doc/requirements/DESIGN.md?plain=1#L51)
 
@@ -358,17 +364,53 @@ The artefact stores the (untraced) requirements and all parsing errors
 
 
 Covers:
-*   requirements
-    *   [REQ_LATE_ERROR](#req_late_error-collect-errors-but-continue-processing "Collect Errors but continue processing")
+*   Does not cover: requirements
 *   architecture
     *   [ARCH_ARTEFACT](#arch_artefact-artefact "Artefact")
 
 Covered By:
+*   formats, code
+    *   [Artefact::new](#artefactnew)
+
+## DSG_ART_PARSE_COLLECT_ERRORS: Collect errors but keep parsing
+
+Origin: [doc/requirements/DESIGN.md:66](../doc/requirements/DESIGN.md?plain=1#L66)
+
+
+While parsing artefacts, all encountered errors are stored and parsing continues.
+
+
+
+Covers:
+*   requirements
+    *   [REQ_PARSER_ERROR](#req_parser_error-useful-parser-errors "Useful Parser Errors")
+    *   [REQ_LATE_ERROR](#req_late_error-collect-errors-but-continue-processing "Collect Errors but continue processing")
+*   Does not cover: architecture
+
+Covered By:
 *   Not Covered by: formats, code
+
+## DSG_ART_PARSE_DETECT_DUPLICATE: Detect duplicates
+
+Origin: [doc/requirements/DESIGN.md:59](../doc/requirements/DESIGN.md?plain=1#L59)
+
+
+While parsing, if there are two requirements the same identifier, log an error.
+
+
+
+Covers:
+*   requirements
+    *   [REQ_UNIQUE_ID_v2](#req_unique_id_v2-requirements-have-a-unique-identifier "Requirements have a unique Identifier")
+*   Does not cover: architecture
+
+Covered By:
+*   formats, code
+    *   [ArtefactParser::parse](#artefactparserparse)
 
 ## DSG_CLI: Offer a simple Command Line Interface
 
-Origin: [doc/requirements/DESIGN.md:146](../doc/requirements/DESIGN.md?plain=1#L146)
+Origin: [doc/requirements/DESIGN.md:160](../doc/requirements/DESIGN.md?plain=1#L160)
 
 
 The tool should be invoked via a simple CLI and set the exit code to indicate if a job was successful.
@@ -386,7 +428,7 @@ Covered By:
 
 ## DSG_CLI_RETURN_CODE: Set return Code to indicate success
 
-Origin: [doc/requirements/DESIGN.md:153](../doc/requirements/DESIGN.md?plain=1#L153)
+Origin: [doc/requirements/DESIGN.md:167](../doc/requirements/DESIGN.md?plain=1#L167)
 
 
 Set the process' return code to:
@@ -404,11 +446,12 @@ Covers:
 *   Does not cover: architecture
 
 Covered By:
-*   Not Covered by: formats, code
+*   formats, code
+    *   [main_rc](#main_rc)
 
 ## DSG_CONFIG_TOML: Use a Single TOML File as Configuration
 
-Origin: [doc/requirements/DESIGN.md:131](../doc/requirements/DESIGN.md?plain=1#L131)
+Origin: [doc/requirements/DESIGN.md:145](../doc/requirements/DESIGN.md?plain=1#L145)
 
 
 The configuration should be placed in one file `requirements.toml`.
@@ -428,7 +471,7 @@ Covered By:
 
 ## DSG_CTRL_CONFIG: Single Config File
 
-Origin: [doc/requirements/DESIGN.md:166](../doc/requirements/DESIGN.md?plain=1#L166)
+Origin: [doc/requirements/DESIGN.md:180](../doc/requirements/DESIGN.md?plain=1#L180)
 
 
 The Controller reads all information about the project structure from one single
@@ -447,7 +490,7 @@ Covered By:
 
 ## DSG_EXPORT_FORMAT_MARKDOWN: Export to Markdown
 
-Origin: [doc/requirements/DESIGN.md:124](../doc/requirements/DESIGN.md?plain=1#L124)
+Origin: [doc/requirements/DESIGN.md:138](../doc/requirements/DESIGN.md?plain=1#L138)
 
 
 Errors, Requirements, Status, Tracing Info can be exported as a useful
@@ -467,7 +510,7 @@ Covered By:
 
 ## DSG_GRAPH: Artefact Graph
 
-Origin: [doc/requirements/DESIGN.md:214](../doc/requirements/DESIGN.md?plain=1#L214)
+Origin: [doc/requirements/DESIGN.md:228](../doc/requirements/DESIGN.md?plain=1#L228)
 
 
 The Class `Graph` holds a graph of `Artefact` objects as
@@ -485,7 +528,7 @@ Covered By:
 
 ## DSG_GRAPH_FORKS: Trace Edge Groups
 
-Origin: [doc/requirements/DESIGN.md:222](../doc/requirements/DESIGN.md?plain=1#L222)
+Origin: [doc/requirements/DESIGN.md:236](../doc/requirements/DESIGN.md?plain=1#L236)
 
 
 The Graph of artefacts has the following properties:
@@ -513,7 +556,7 @@ Covered By:
 
 ## DSG_GRAPH_VAL_NO_LOOP: Validate that the Graph has no Loops
 
-Origin: [doc/requirements/DESIGN.md:242](../doc/requirements/DESIGN.md?plain=1#L242)
+Origin: [doc/requirements/DESIGN.md:256](../doc/requirements/DESIGN.md?plain=1#L256)
 
 
 After assembling of the graph, if a loop can be found in the graph of artefacts, an error is emitted.
@@ -531,7 +574,7 @@ Covered By:
 
 ## DSG_JOBS: Jobs control what operations to perform
 
-Origin: [doc/requirements/DESIGN.md:179](../doc/requirements/DESIGN.md?plain=1#L179)
+Origin: [doc/requirements/DESIGN.md:193](../doc/requirements/DESIGN.md?plain=1#L193)
 
 
 One or more Jobs can be configured. Each Job specifies an operation to perform, the format that results
@@ -549,7 +592,7 @@ Covered By:
 
 ## DSG_JOB_FILE: Specify File to Store Reports in
 
-Origin: [doc/requirements/DESIGN.md:204](../doc/requirements/DESIGN.md?plain=1#L204)
+Origin: [doc/requirements/DESIGN.md:218](../doc/requirements/DESIGN.md?plain=1#L218)
 
 
 For each job, user can choose the file, that results are stored in, treating `-` as the stdout channel.
@@ -565,7 +608,7 @@ Covered By:
 
 ## DSG_JOB_FORMAT: Specify Format of Reports
 
-Origin: [doc/requirements/DESIGN.md:197](../doc/requirements/DESIGN.md?plain=1#L197)
+Origin: [doc/requirements/DESIGN.md:211](../doc/requirements/DESIGN.md?plain=1#L211)
 
 
 For each job, user can choose the format that results are presented in
@@ -582,7 +625,7 @@ Covered By:
 
 ## DSG_JOB_PARSE: Parse all Artefacts
 
-Origin: [doc/requirements/DESIGN.md:184](../doc/requirements/DESIGN.md?plain=1#L184)
+Origin: [doc/requirements/DESIGN.md:198](../doc/requirements/DESIGN.md?plain=1#L198)
 
 
 Parse the Artefacts, see infos about (untraced) requirements and parsing
@@ -601,7 +644,7 @@ Covered By:
 
 ## DSG_JOB_RETURN_CODE: Return Code Indicates if Tracing is Correct
 
-Origin: [doc/requirements/DESIGN.md:208](../doc/requirements/DESIGN.md?plain=1#L208)
+Origin: [doc/requirements/DESIGN.md:222](../doc/requirements/DESIGN.md?plain=1#L222)
 
 
 For each job, user can choose, if the return code should be set or not,
@@ -620,7 +663,7 @@ Covered By:
 
 ## DSG_JOB_TRACE: Trace Requirements
 
-Origin: [doc/requirements/DESIGN.md:191](../doc/requirements/DESIGN.md?plain=1#L191)
+Origin: [doc/requirements/DESIGN.md:205](../doc/requirements/DESIGN.md?plain=1#L205)
 
 
 Trace Requirements and view info about traced requirements and errors
@@ -638,16 +681,18 @@ Covered By:
 
 ## DSG_JSON_EXPORT: JSON for Exporting Results
 
-Origin: [doc/requirements/DESIGN.md:116](../doc/requirements/DESIGN.md?plain=1#L116)
+Origin: [doc/requirements/DESIGN.md:129](../doc/requirements/DESIGN.md?plain=1#L129)
 
 
 Errors, Requirements, Status, Tracing Info can be exported as JSON
+The input files can be cached if tracing has not changed, checked into VCS or reviewed.
 
 
 
 Covers:
 *   requirements
     *   [REQ_MACHINE_READABLE](#req_machine_readable-machine-readable-output "Machine Readable Output")
+    *   [REQ_CACHE_FRIENDLY](#req_cache_friendly-work-well-with-build-systems-that-cache "Work well with build systems that cache")
 *   Does not cover: architecture
 
 Covered By:
@@ -656,16 +701,18 @@ Covered By:
 
 ## DSG_JSON_IMPORT: JSON for Importing Requirements
 
-Origin: [doc/requirements/DESIGN.md:108](../doc/requirements/DESIGN.md?plain=1#L108)
+Origin: [doc/requirements/DESIGN.md:120](../doc/requirements/DESIGN.md?plain=1#L120)
 
 
-Artefacts which can not be parsed by the tool are generated by other tools and imported via JSON
+Artefacts which can not be parsed by the tool are generated by other tools and imported via JSON.
+The input files can be cached if their inputs have not changed, checked into VCS or reviewed.
 
 
 
 Covers:
 *   requirements
     *   [REQ_EXTENSIBLE](#req_extensible-extensible-parsing "Extensible Parsing")
+    *   [REQ_CACHE_FRIENDLY](#req_cache_friendly-work-well-with-build-systems-that-cache "Work well with build systems that cache")
 *   Does not cover: architecture
 
 Covered By:
@@ -708,7 +755,7 @@ Covered By:
 
 ## DSG_TRACE: Walk the Graph and trace requirements
 
-Origin: [doc/requirements/DESIGN.md:254](../doc/requirements/DESIGN.md?plain=1#L254)
+Origin: [doc/requirements/DESIGN.md:268](../doc/requirements/DESIGN.md?plain=1#L268)
 
 
 Tracing is performed by inspecting all forks of the graph, recording
@@ -748,7 +795,7 @@ Covered By:
 
 ## DSG_TRACE_CHECK_TITLE: When tracing upwards or downwards match title
 
-Origin: [doc/requirements/DESIGN.md:340](../doc/requirements/DESIGN.md?plain=1#L340)
+Origin: [doc/requirements/DESIGN.md:354](../doc/requirements/DESIGN.md?plain=1#L354)
 
 
 When tracing Upwards or Downwards, emit an error if the title of the coverage does
@@ -760,7 +807,8 @@ Covers:
 *   requirements
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
     *   [REQ_VAL_TITLE](#req_val_title-check-matching-title "Check matching title")
-*   Does not cover: architecture
+*   architecture
+    *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
 
 Covered By:
 *   Not Covered by: formats, code
@@ -779,7 +827,7 @@ Example:
 
 ## DSG_TRACE_COVERS_EXIST: Cover Links must exist
 
-Origin: [doc/requirements/DESIGN.md:362](../doc/requirements/DESIGN.md?plain=1#L362)
+Origin: [doc/requirements/DESIGN.md:376](../doc/requirements/DESIGN.md?plain=1#L376)
 
 
 For each Requirement that is encountered, store all "covers" references
@@ -794,14 +842,16 @@ Covers:
 *   requirements
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
     *   [REQ_DOWN](#req_down-downward-coverage "Downward Coverage")
-*   Does not cover: architecture
+    *   [REQ_VAL_COVERAGE](#req_val_coverage-validate-coverage "Validate Coverage")
+*   architecture
+    *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
 
 Covered By:
 *   Not Covered by: formats, code
 
 ## DSG_TRACE_DEPENDS_EXIST: Depend Links must exist
 
-Origin: [doc/requirements/DESIGN.md:376](../doc/requirements/DESIGN.md?plain=1#L376)
+Origin: [doc/requirements/DESIGN.md:391](../doc/requirements/DESIGN.md?plain=1#L391)
 
 
 Add all "depends" references to a list of invalid references and remove
@@ -813,14 +863,16 @@ Covers:
 *   requirements
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
     *   [REQ_UP](#req_up-upward-coverage "Upward Coverage")
-*   Does not cover: architecture
+    *   [REQ_VAL_COVERAGE](#req_val_coverage-validate-coverage "Validate Coverage")
+*   architecture
+    *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
 
 Covered By:
 *   Not Covered by: formats, code
 
 ## DSG_TRACE_DERIVED: Record requirements that do not cover anything
 
-Origin: [doc/requirements/DESIGN.md:318](../doc/requirements/DESIGN.md?plain=1#L318)
+Origin: [doc/requirements/DESIGN.md:332](../doc/requirements/DESIGN.md?plain=1#L332)
 
 
 Requirement R is derived if there is no Requirement U so that R covers U.
@@ -830,14 +882,34 @@ Requirement R is derived if there is no Requirement U so that R covers U.
 Covers:
 *   requirements
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-*   Does not cover: architecture
+*   architecture
+    *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
 
 Covered By:
 *   Not Covered by: formats, code
 
+## DSG_TRACE_DETECT_DUPLICATE: Detect duplicate Requirements in different Artefacts
+
+Origin: [doc/requirements/DESIGN.md:403](../doc/requirements/DESIGN.md?plain=1#L403)
+
+
+While tracing, if there are two requirements the same identifier, log an error.
+
+
+
+
+Covers:
+*   requirements
+    *   [REQ_UNIQUE_ID_v2](#req_unique_id_v2-requirements-have-a-unique-identifier "Requirements have a unique Identifier")
+*   Does not cover: architecture
+
+Covered By:
+*   formats, code
+    *   [Tracing < 'graph >::add_req](#tracing--graph-add_req)
+
 ## DSG_TRACE_DOWNWARDS: Trace downwards using Depends attribute
 
-Origin: [doc/requirements/DESIGN.md:307](../doc/requirements/DESIGN.md?plain=1#L307)
+Origin: [doc/requirements/DESIGN.md:321](../doc/requirements/DESIGN.md?plain=1#L321)
 
 
 Requirement U covers Requirement D if D.id appears in U.Depends and
@@ -850,14 +922,15 @@ Covers:
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
     *   [REQ_DOWN](#req_down-downward-coverage "Downward Coverage")
     *   [REQ_MATCH_ID](#req_match_id-match-by-id "Match by ID")
-*   Does not cover: architecture
+*   architecture
+    *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
 
 Covered By:
 *   Not Covered by: formats, code
 
 ## DSG_TRACE_UNCOVERED: Record requirements that are not completely covered
 
-Origin: [doc/requirements/DESIGN.md:326](../doc/requirements/DESIGN.md?plain=1#L326)
+Origin: [doc/requirements/DESIGN.md:340](../doc/requirements/DESIGN.md?plain=1#L340)
 
 
 Record Requirement R as Uncovered along Fork F if there is no
@@ -872,14 +945,15 @@ a FMT requirement).
 Covers:
 *   requirements
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-*   Does not cover: architecture
+*   architecture
+    *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
 
 Covered By:
 *   Not Covered by: formats, code
 
 ## DSG_TRACE_UPWARDS: Trace upwards using Covers attribute
 
-Origin: [doc/requirements/DESIGN.md:296](../doc/requirements/DESIGN.md?plain=1#L296)
+Origin: [doc/requirements/DESIGN.md:310](../doc/requirements/DESIGN.md?plain=1#L310)
 
 
 Requirement U covers Requirement D if U.id appears in D.Covers and
@@ -892,14 +966,15 @@ Covers:
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
     *   [REQ_UP](#req_up-upward-coverage "Upward Coverage")
     *   [REQ_MATCH_ID](#req_match_id-match-by-id "Match by ID")
-*   Does not cover: architecture
+*   architecture
+    *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
 
 Covered By:
 *   Not Covered by: formats, code
 
 ## DSG_TRACE_VALIDATE_EDGE: Validate Edge is used at least once
 
-Origin: [doc/requirements/DESIGN.md:286](../doc/requirements/DESIGN.md?plain=1#L286)
+Origin: [doc/requirements/DESIGN.md:300](../doc/requirements/DESIGN.md?plain=1#L300)
 
 
 After tracing, if an edge can be found, along which no requirement is
@@ -910,7 +985,8 @@ covered, an error is emitted. This is likely a misconfiguration.
 
 Covers:
 *   Does not cover: requirements
-*   Does not cover: architecture
+*   architecture
+    *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
 
 Covered By:
 *   Not Covered by: formats, code
@@ -1318,7 +1394,9 @@ Covers:
     *   [README](#readme-requirement-tracing "Requirement Tracing")
 
 Covered By:
-*   Not Covered by: design, formats, architecture
+*   design, formats, architecture
+    *   [DSG_JSON_IMPORT](#dsg_json_import-json-for-importing-requirements "JSON for Importing Requirements")
+    *   [DSG_JSON_EXPORT](#dsg_json_export-json-for-exporting-results "JSON for Exporting Results")
 
 ## REQ_CONFIG: Simple Configuration in One File
 
@@ -1410,7 +1488,8 @@ Covers:
     *   [README](#readme-requirement-tracing "Requirement Tracing")
 
 Covered By:
-*   Not Covered by: design, formats, architecture
+*   design, formats, architecture
+    *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
 
 ## REQ_FORMATS: Well defined Formats
 
@@ -1486,7 +1565,8 @@ Covers:
 *   Does not cover: readme
 
 Covered By:
-*   Not Covered by: design, formats, architecture
+*   design, formats, architecture
+    *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
 
 ## REQ_LATE_ERROR: Collect Errors but continue processing
 
@@ -1504,7 +1584,7 @@ Covers:
 
 Covered By:
 *   design, formats, architecture
-    *   [DSG_ART_PARSE](#dsg_art_parse-artefact-parsing "Artefact Parsing")
+    *   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing")
 
 ## REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
 
@@ -1573,7 +1653,8 @@ Covers:
 *   Does not cover: readme
 
 Covered By:
-*   Not Covered by: design, formats, architecture
+*   design, formats, architecture
+    *   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing")
 
 ## REQ_TRACE: Determine which requirements cover which
 
@@ -1637,7 +1718,9 @@ Covers:
 *   Does not cover: readme
 
 Covered By:
-*   Not Covered by: design, formats, architecture
+*   design, formats, architecture
+    *   [DSG_ART_PARSE_DETECT_DUPLICATE](#dsg_art_parse_detect_duplicate-detect-duplicates "Detect duplicates")
+    *   [DSG_TRACE_DETECT_DUPLICATE](#dsg_trace_detect_duplicate-detect-duplicate-requirements-in-different-artefacts "Detect duplicate Requirements in different Artefacts")
 
 History:
 *   v2: Unicode
@@ -1677,7 +1760,9 @@ Covers:
 *   Does not cover: readme
 
 Covered By:
-*   Not Covered by: design, formats, architecture
+*   design, formats, architecture
+    *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist")
+    *   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist")
 
 ## REQ_VAL_TITLE: Check matching title
 
