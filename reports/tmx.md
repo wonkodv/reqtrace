@@ -241,7 +241,7 @@ Covered By:
 
 ## Controller::run
 
-Origin: [src/controller.rs:147:16](../src/controller.rs?plain=1#L147)
+Origin: [src/controller.rs:149:16](../src/controller.rs?plain=1#L149)
 
 Covers:
 *   design
@@ -286,7 +286,7 @@ Covers:
 
 ## parse
 
-Origin: [src/parsers/readme.rs:71:4](../src/parsers/readme.rs?plain=1#L71)
+Origin: [src/parsers/readme.rs:72:4](../src/parsers/readme.rs?plain=1#L72)
 
 Covers:
 *   Does not cover: design

@@ -44,7 +44,7 @@ repos:
     - id: tmx
       name: tmx
       description: build traceability matrix
-      entry: cargo run tmx export
+      entry: cargo run tmx
       language: system
       types: ["file"]
       stages: ["push", "manual"]

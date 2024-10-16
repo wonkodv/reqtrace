@@ -27,7 +27,8 @@ pub struct ReadmeParser {
 
 impl super::Parser for ReadmeParser {
     fn parse(&mut self) -> (Vec<Rc<Requirement>>, Vec<Error>) {
-        let file = fs::File::open(&self.path).map_err(|e| Error::Io((&self.path).into(), e));
+        let file =
+            fs::File::open(&self.path).map_err(|e| Error::Io((&self.path).into(), e.to_string()));
         match file {
             Err(err) => {
                 warn!("{}", err);

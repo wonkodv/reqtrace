@@ -49,7 +49,8 @@ impl MarkdownParser {
 }
 impl Parser for MarkdownParser {
     fn parse(&mut self) -> (Vec<Rc<Requirement>>, Vec<Error>) {
-        let file = fs::File::open(&self.path).map_err(|e| Error::Io((&self.path).into(), e));
+        let file =
+            fs::File::open(&self.path).map_err(|e| Error::Io((&self.path).into(), e.to_string()));
         match file {
             Err(err) => {
                 warn!("{}", err);
@@ -122,7 +123,9 @@ pub fn markdown_parse<R: io::BufRead>(
         context.line_number += 1;
         match reader.read_line(&mut line) {
             Err(e) => {
-                context.errors.push(Error::Io(context.path.to_owned(), e));
+                context
+                    .errors
+                    .push(Error::Io(context.path.to_owned(), e.to_string()));
                 break;
             }
             Ok(0) => {

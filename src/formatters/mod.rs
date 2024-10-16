@@ -7,6 +7,9 @@ use crate::{
 };
 
 use crate::errors::Error;
+use serde::Serialize;
+use serde::Serializer as _;
+use serde_json::Serializer as _;
 
 mod gnuerr;
 mod markdown;
@@ -30,31 +33,29 @@ where
     }
 }
 
-pub fn requirements<'r, W, R>(requirements: R, format: &Format, writer: &mut W) -> io::Result<()>
+pub fn requirements<'r, R, W>(reqs: R, format: &Format, writer: &mut W) -> io::Result<()>
 where
     W: io::Write,
     R: Iterator<Item = &'r Rc<Requirement>>,
 {
     match format {
-        Format::Tags => tags::requirements(requirements, writer),
-        Format::Markdown => markdown::requirements(requirements, writer),
-        Format::Json => {
-            serialize::requirements(requirements, &mut serde_json::Serializer::pretty(writer))?;
-            Ok(())
-        }
+        Format::Tags => tags::requirements(reqs, writer),
+        Format::Markdown => markdown::requirements(reqs, writer),
+        Format::Json => serde_json::to_writer_pretty(writer, &serialize::Requirements::new(reqs))
+            .map_err(io::Error::other),
         _ => todo!(),
     }
 }
 
-pub fn errors<'r, W, R>(errors: R, format: &Format, writer: &mut W) -> io::Result<()>
+pub fn errors<'e, E, W>(errors: E, format: &Format, writer: &mut W) -> io::Result<()>
 where
     W: io::Write,
-    R: Iterator<Item = &'r Error>,
+    E: Iterator<Item = &'e Error>,
 {
     match format {
         Format::GnuError => gnuerr::errors(errors, writer),
-
-        // TODO      Format::Json => serialize::errors(errors, format, writer),
+        Format::Json => serde_json::to_writer_pretty(writer, &serialize::Errors::new(errors))
+            .map_err(io::Error::other),
         _ => todo!(),
     }
 }
@@ -72,8 +73,8 @@ where
         Format::Markdown => markdown::tracing(tracing, graph, writer),
         Format::GnuError => gnuerr::tracing(tracing, graph, writer),
         Format::Json => {
-            serialize::tracing(tracing, graph, &mut serde_json::Serializer::pretty(writer))?;
-            Ok(())
+            serde_json::to_writer_pretty(writer, &serialize::Trace::new(tracing, graph))
+                .map_err(io::Error::other)
         }
         _ => todo!(),
     }

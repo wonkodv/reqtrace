@@ -100,9 +100,6 @@ where
                     cover
                 )?;
             }
-            Generic(err) => {
-                writeln!(w, "Error: {} ", err)?;
-            }
         }
     }
 

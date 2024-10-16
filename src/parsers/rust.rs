@@ -41,7 +41,7 @@ impl super::Parser for RustParser {
         let mut requirements = Vec::new();
         let mut errors = Vec::new();
         for path in &self.paths {
-            let file = fs::File::open(path).map_err(|e| Error::Io(path.into(), e));
+            let file = fs::File::open(path).map_err(|e| Error::io(path, e));
             match file {
                 Err(err) => {
                     warn!("{}", err);
@@ -69,7 +69,7 @@ pub fn parse(
     let mut source = String::new();
     match reader.read_to_string(&mut source) {
         Err(e) => {
-            errors.push(errors::Error::Io(path.into(), e));
+            errors.push(errors::Error::io(path, e));
         }
         Ok(_bytes) => match parse_file(&source) {
             Err(e) => {

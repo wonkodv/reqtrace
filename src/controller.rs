@@ -6,7 +6,7 @@ use crate::{
     trace::Tracing,
 };
 use serde::{Deserialize, Serialize};
-use std::{collections::BTreeMap, fs, io, path::PathBuf, time::Instant};
+use std::{collections::BTreeMap, fs, io, path::PathBuf, rc::Rc, time::Instant};
 
 use crate::errors::{Error, Result};
 use Error::*;
@@ -132,10 +132,12 @@ impl Controller {
             log::info!("writing {job_name} to stdout");
         } else {
             if let Some(p) = &job.file.parent() {
-                std::fs::create_dir_all(p).map_err(|e| Error::Io(p.to_path_buf(), e))?;
+                std::fs::create_dir_all(p)
+                    .map_err(|e| Error::Io(p.to_path_buf(), e.to_string()))?;
             }
 
-            let file = fs::File::create(&job.file).map_err(|e| Error::Io(job.file.clone(), e))?;
+            let file = fs::File::create(&job.file)
+                .map_err(|e| Error::Io(job.file.clone(), e.to_string()))?;
             out = Box::new(file);
             log::info!("writing {} to {}", &job_name, job.file.display());
         }
@@ -163,7 +165,7 @@ impl Controller {
             Query::ValidateGraph => todo!(),
         };
 
-        write_res.map_err(|e| Io(job.file.clone(), e))?;
+        write_res.map_err(|e| Io(job.file.clone(), e.to_string()))?;
 
         if success {
             log::info!("Job {} successful", job_name);

@@ -1,5 +1,5 @@
 version_provider = "git"
-default_jobs = ["tmx", "export"]
+default_jobs = ["check"]
 
 
 [artefact.readme]
@@ -59,7 +59,7 @@ file = "reports/tmx.md"
 set_return_code = false
 
 [job.export]
-query = "Parse"
+query = "Trace"
 format = "Json"
 file = "reports/tmx.json"
 set_return_code = false
