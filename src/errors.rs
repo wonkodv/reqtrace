@@ -1,8 +1,10 @@
 use std::{io, path::PathBuf, rc::Rc};
 
+use serde::ser::{Serialize, SerializeTuple, Serializer};
+
 use crate::common::{Location, Requirement};
 
-#[derive(thiserror::Error, Debug)]
+#[derive(thiserror::Error, Debug, PartialEq, PartialOrd, serde::Serialize, serde::Deserialize)]
 pub enum Error {
     #[error("Invalid Format {0}: {1}")]
     Format(Location, String),
@@ -14,7 +16,7 @@ pub enum Error {
     DuplicateAttribute(Location, String, String),
 
     #[error("IO Error: {1} in {0}")]
-    Io(PathBuf, io::Error),
+    Io(PathBuf, String),
 
     #[error("Only one Path expected for {0}, got: {1:?}")]
     ArtefactTypeOnlyAllowsOnePath(String, Vec<String>),
@@ -61,9 +63,20 @@ pub enum Error {
 
     #[error("Unknown Job {0}")]
     UnknownJob(String),
-
-    #[error("{0}")]
-    Generic(Box<dyn std::error::Error>),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
+
+fn serialize_io<S>(
+    path: &PathBuf,
+    err: &io::Error,
+    serializer: S,
+) -> std::result::Result<S::Ok, S::Error>
+where
+    S: serde::Serializer,
+{
+    let mut tup = serializer.serialize_tuple(2)?;
+    tup.serialize_element(path)?;
+    tup.serialize_element(&err.to_string())?;
+    tup.end()
+}

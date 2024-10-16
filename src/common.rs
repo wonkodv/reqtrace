@@ -1,6 +1,7 @@
 use core::fmt;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::collections::BTreeMap;
 use std::path::PathBuf;
 use std::rc::Rc;
@@ -24,6 +25,33 @@ pub enum LocationInFile {
     String(String),
 }
 
+impl PartialOrd for LocationInFile {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match self {
+            LocationInFile::Line(line) => match other {
+                LocationInFile::Line(other_line) => Some(line.cmp(other_line)),
+                LocationInFile::LineAndColumn(other_line, other_column) => {
+                    Some((line, &0usize).cmp(&(other_line, other_column)))
+                }
+                LocationInFile::String(_) => None,
+            },
+            LocationInFile::LineAndColumn(line, column) => match other {
+                LocationInFile::Line(other_line) => {
+                    Some((line, column).cmp(&(other_line, &0usize)))
+                }
+                LocationInFile::LineAndColumn(other_line, other_column) => {
+                    Some((line, column).cmp(&(other_line, other_column)))
+                }
+                LocationInFile::String(_) => None,
+            },
+            LocationInFile::String(loc) => match other {
+                LocationInFile::Line(_) | LocationInFile::LineAndColumn(_, _) => None,
+                LocationInFile::String(other_loc) => Some(loc.cmp(other_loc)),
+            },
+        }
+    }
+}
+
 impl fmt::Display for LocationInFile {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
@@ -34,7 +62,7 @@ impl fmt::Display for LocationInFile {
     }
 }
 
-#[derive(Debug, Default, PartialEq, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 pub struct Location {
     pub file: PathBuf,
     pub location_in_file: Option<LocationInFile>,
@@ -128,6 +156,12 @@ pub struct Requirement {
 impl fmt::Display for Requirement {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(&self.id)
+    }
+}
+
+impl PartialOrd for Requirement {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.id.partial_cmp(&other.id)
     }
 }
 

@@ -109,6 +109,7 @@ where
     W: io::Write,
     R: Iterator<Item = &'r Rc<Requirement>>,
 {
+    reqs.collect::<Vec<_>>().sort_by(|r, o| r.id.cmp(&o.id));
     for req in reqs {
         requirement(req, w)?
     }
@@ -344,9 +345,6 @@ where
                 location_link(location.as_ref().unwrap_or(&req.location)),
             )
         }
-        Generic(err) => {
-            writeln!(w, "*    {} ", err)
-        }
     }
 }
 
@@ -372,7 +370,7 @@ where
         if errors.peek().is_some() {
             writeln!(w)?;
             writeln!(w)?;
-            writeln!(w, "# Artefact Errors")?;
+            writeln!(w, "# Input Errors")?;
             writeln!(w)?;
 
             for e in errors {
