@@ -23,7 +23,7 @@
 *   DSG_TRACE_VALIDATE_EDGE covers unknown Requirement ARCH_TRACING_GRAPH
     [doc/requirements/DESIGN.md:294](../doc/requirements/DESIGN.md?plain=1#L294)
 *   main_rc covers unknown Requirement DSG_RETURN_CODE
-    [src/main.rs:132:4](../src/main.rs?plain=1#L132)
+    [src/main.rs:121:4](../src/main.rs?plain=1#L121)
 
 
 # Uncovered Requirements
@@ -269,7 +269,7 @@ Covers:
 
 ## get_config
 
-Origin: [src/main.rs:92:4](../src/main.rs?plain=1#L92)
+Origin: [src/main.rs:90:4](../src/main.rs?plain=1#L90)
 
 Covers:
 *   design
@@ -278,7 +278,7 @@ Covers:
 
 ## main_rc
 
-Origin: [src/main.rs:132:4](../src/main.rs?plain=1#L132)
+Origin: [src/main.rs:121:4](../src/main.rs?plain=1#L121)
 
 Covers:
 *   Does not cover: design
@@ -295,7 +295,7 @@ Covers:
 
 ## run_cli_jobs
 
-Origin: [src/main.rs:104:8](../src/main.rs?plain=1#L104)
+Origin: [src/main.rs:102:8](../src/main.rs?plain=1#L102)
 
 Covers:
 *   design
