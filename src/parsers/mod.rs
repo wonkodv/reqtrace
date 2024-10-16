@@ -38,7 +38,13 @@ pub struct ArtefactData {
 }
 
 pub trait Parser: std::fmt::Debug {
+    /// Parse an Artefact
+    ///
+    /// Returns:
+    /// - Vector of all found Requirements
+    /// - Vector of all encountered Errors
     fn parse(&mut self) -> (Vec<Rc<Requirement>>, Vec<Error>);
+    requirement_covered!(DSG_ART_PARSE_COLLECT_ERRORS);
 }
 
 #[derive(Debug)]
@@ -105,7 +111,7 @@ impl ArtefactParser {
             if let Some(old_idx) = old {
                 let old_idx: usize = old_idx.into();
 
-                /* Covers:  REQ_UNIQUE_ID: Requirements have a unique Identifier */
+                requirement_covered!(DSG_ART_PARSE_DETECT_DUPLICATE);
                 let err = Error::DuplicateRequirement(
                     Rc::clone(&data.requirements[old_idx]),
                     Rc::clone(req),

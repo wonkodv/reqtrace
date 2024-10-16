@@ -118,7 +118,7 @@ where
     for req in tracing.uncovered() {
         let req = req.requirement;
         if let Some(title) = &req.title {
-            writeln!(w, "{}: {}:{}", req.location, req.id, title)?;
+            writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
         } else {
             writeln!(w, "{}: {}", req.location, req.id)?;
         }
@@ -128,9 +128,9 @@ where
     for req in tracing.derived() {
         let req = req.requirement;
         if let Some(title) = &req.title {
-            writeln!(w, "{}: {}:{}", req.location, req.id, title)?;
+            writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
         } else {
-            writeln!(w, "{}:{}", req.location, req.id)?;
+            writeln!(w, "{}: {}", req.location, req.id)?;
         }
     }
 

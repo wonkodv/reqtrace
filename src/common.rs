@@ -152,6 +152,8 @@ pub struct Requirement {
     pub tags: Vec<String>,
     pub attributes: BTreeMap<String, String>,
 }
+requirement_covered!(DSG_REQ_FIELDS, ""); //TODO: turn this macro into an attribute that can be
+                                          //applied to any item
 
 impl fmt::Display for Requirement {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -256,7 +258,9 @@ pub struct Artefact {
 
 impl Artefact {
     pub fn new(id: String, parser: ArtefactParser, ignore_derived_requirements: bool) -> Self {
+        requirement_covered!(DSG_ART_PARSE, "Artefact parses input lazily");
         let data = util::lazy::Lazy::new(ArtefactParser::parse, parser);
+
         Self {
             id,
             data,

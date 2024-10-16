@@ -22,9 +22,14 @@ Information will be looked up or computed and then emitted.
 ### ARCH_CLI: Command Line Interface
 
 All functionality of the tool is exposed in a simple command line interface.
+The CLI is shipped as a statically linked binary.
+Other Tools can interface with the CLI to provide caching, lazy parsing of complicated input formats
+and generation of complicated output formats
 
 Covers:
 *  REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
+*  REQ_INSTALL: Easy to install
+*  REQ_FAST
 
 ## ARCH_CONTROLLER: Controller
 
@@ -72,3 +77,5 @@ selectable formats
 
 Covers:
 *   REQ_TRACE
+
+

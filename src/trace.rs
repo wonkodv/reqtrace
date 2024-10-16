@@ -246,6 +246,7 @@ impl<'graph> Tracing<'graph> {
                         DuplicateRequirement(Rc::clone(already_there.requirement), Rc::clone(req));
                     log::trace!("{}", err);
                     self.errors.push(err);
+                    requirement_covered!(DSG_TRACE_DETECT_DUPLICATE);
                 }
                 assert_eq!(already_there.node, node);
 

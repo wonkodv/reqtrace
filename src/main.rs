@@ -118,7 +118,7 @@ fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
 fn main_rc() -> i32 {
     let r = try_main();
 
-    requirement_covered!(DSG_RETURN_CODE);
+    requirement_covered!(DSG_CLI_RETURN_CODE);
 
     match r {
         Err(e) => {
