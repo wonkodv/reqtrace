@@ -55,7 +55,7 @@ The artefact stores the (untraced) requirements and all parsing errors
 
 Covers:
 *   ARCH_ARTEFACT
-*   REQ_LATE_ERRORS
+*   REQ_LATE_ERROR
 
 
 ### DSG_ART_CONFIG: Artefact Configuration Fields
@@ -126,7 +126,7 @@ Depends: FMT_JSON
 Errors, Requirements, Status, Tracing Info can be exported as a useful
 standalone Markdown File
 
-Covers: REQ_VCS, REQ_HUMAN_READABLE
+Covers: REQ_HUMAN_READABLE
 
 ### DSG_CONFIG_TOML: Use a Single TOML File as Configuration
 
@@ -138,6 +138,9 @@ Covers:
 *   REQ_CONFIG: Simple Configuration in One File
 
 ## Command Line Interface
+
+All functionality is provided by a central controller, which can be
+interfaced from the command line.
 
 
 ### DSG_CLI: Offer a simple Command Line Interface
@@ -160,6 +163,19 @@ Covers:
 *   UC_CHECK: Check for correct Tracing
 
 
+### DSG_CTRL_CONFIG: Single Config File
+
+The Controller reads all information about the project structure from one single
+file.
+
+Covers:
+*   REQ_CONFIG: Simple Configuration in One File
+*   ARCH_CONTROLLER
+
+## Jobs
+
+Jobs specify the tasks that the controller shall perform
+
 ### DSG_JOBS: Jobs control what operations to perform
 
 One or more Jobs can be configured. Each Job specifies an operation to perform, the format that results
@@ -167,49 +183,43 @@ should be presented in and the file to store results in.
 
 ### DSG_JOB_PARSE: Parse all Artefacts
 
-Parse the Artefacts
-
-Covers: UC_PARSE
-
-### DSG_JOB_PARSE_SOME: Parse a set of Artefacts
-
-Parse one or more Artefacts to make finding errors easier.
+Parse the Artefacts, see infos about (untraced) requirements and parsing
+errors
 
 Covers: UC_PARSE
 
 ### DSG_JOB_TRACE: Trace Requirements
 
-Trace Requirements
+Trace Requirements and view info about traced requirements and errors
 
-Covers: UC_TRACE
+Covers: UC_TMX
 
 ### DSG_JOB_FORMAT: Specify Format of Reports
 
-Specify the Format that results are presented in
+For each job, user can choose the format that results are presented in
 
 Covers:
 *   REQ_FORMATS: Well defined Formats
 
 ### DSG_JOB_FILE: Specify File to Store Reports in
 
-Specify the file that results are stored in, treating `-` as the stdout channel.
+For each job, user can choose the file, that results are stored in, treating `-` as the stdout channel.
 
 #### DSG_JOB_RETURN_CODE: Return Code Indicates if Tracing is Correct
 
-It can be specified for each job, if the return code should be set or not,
+For each job, user can choose, if the return code should be set or not,
 allowing for example, to update the tmx without indicating an error if the tracing is not
 perfect yet.
 
-## DSG_TRACING_GRPAH: Tracing Graph
+## DSG_GRAPH: Artefact Graph
 
 The Class `Graph` holds a graph of `Artefact` objects as
 given by the Configuration.
-It computes which `Requirement`s are covered.
 
 Covers:
-*   ARCH_TRACING_GRAPH
+*   ARCH_GRAPH
 
-### DSG_TG_FORK: Trace Edge Groups
+### DSG_GRAPH_FORKS: Trace Edge Groups
 
 The Graph of artefacts has the following properties:
 
@@ -227,19 +237,58 @@ Each Design also has to be covered by a unit test, so unit tests are
 below a separate fork below `DESIGN.md`
 
 Covers:
-*   ARCH_TRACING_GRAPH
+*   ARCH_GRAPH
 
-### DSG_TG_VAL_NO_LOOP: Validate that the Graph has no Loops
+### DSG_GRAPH_VAL_NO_LOOP: Validate that the Graph has no Loops
 
 After assembling of the graph, if a loop can be found in the graph of artefacts, an error is emitted.
 This prevents further tracing.
 
 Covers:
-*   ARCH_TRACING_GRAPH
-### DSG_TG_VALIDATE_EDGE: Validate Edge is used at least once
+*   ARCH_GRAPH
+
+## Tracing
+
+The Tracing component walks the graph and computes coverage information
+
+### DSG_TRACE: Walk the Graph and trace requirements
+
+Tracing is performed by inspecting all forks of the graph, recording
+tracing information as it is encountered.
+After all forks are processed, a final validation pass turns problems
+encountered on the way into errors.
+
+When inspecting a Fork, perform the following steps:
+
+1. If the requirement was no added to the internal list of traced
+    requirements:
+    1. Add all requirements of lower artefacts to the internal
+        TracedRequirements if the requirement was not seen before.
+    2. Add the requirement's `derived` and `covers` references to lists of
+        invalid references
+    3. if the requirement was new in (1), add the requirement to the list of
+        derived requirements
+2.  for all upper requirements:
+    1.  find lower requirements that match upper's `depends`
+    2.  for all lower artefacts, find lower requirements that cover upper
+    3. for all coverages found:
+        1.  remove them from the list of invalid references
+        2.  remove lower from the list of derived requirements
+        3.  add lower to `upper.lower[tine]` and vice versa
+        4. if covered with title, add an error if the title is not matched
+        correctly
+    5.  if no coverage was found, add `(upper, fork)` to the list of uncovered
+        requirements
+
+Covers:
+*   ARCH_TRACE
+
+### DSG_TRACE_VALIDATE_EDGE: Validate Edge is used at least once
 
 After tracing, if an edge can be found, along which no requirement is
 covered, an error is emitted. This is likely a misconfiguration.
+
+TODO: rewrite to be single pass
 
 Covers:
 *   ARCH_TRACING_GRAPH
@@ -274,8 +323,6 @@ Covers:
 *   REQ_TRACE
 *   ARCH_TRACING_GRAPH
 
-
-
 #### DSG_TRACE_UNCOVERED: Record requirements that are not completely covered
 
 Record Requirement R as Uncovered along Fork F if there is no
@@ -290,7 +337,7 @@ Covers:
 *   REQ_TRACE
 *   ARCH_TRACING_GRAPH
 
-#### DSG_TRACE_TRACE_TITLE: When tracing upwards or downwards match title
+#### DSG_TRACE_CHECK_TITLE: When tracing upwards or downwards match title
 
 When tracing Upwards or Downwards, emit an error if the title of the coverage does
 not match the title of the covered requirement
@@ -312,24 +359,27 @@ Covers:
 *   REQ_VAL_TITLE: Check matching title
 *   ARCH_TRACING_GRAPH
 
+#### DSG_TRACE_COVERS_EXIST: Cover Links must exist
 
-#### DSG_TRACE_DEPENDS_EXIST: Depend Links must exist
+For each Requirement that is encountered, store all "covers" references
+in a list of invalid references.
+When the Requirement is successfully covered against a requirement matching
+that reference, it is removed from the list of invalid references.
 
-For every Link L in  U.Depends of a Requirement U,
-there must exist a Requirement D with with D.Id == L.id and 
-D.Artefact traces against U.Artefact
+This approach is necessary to walk the graph only once, see DSG_TRACING
 
 Covers:
 *   REQ_TRACE
 *   REQ_DOWN
 *   ARCH_TRACING_GRAPH
 
-#### DSG_TRACE_COVERS_EXIST: Cover Links must exist
+#### DSG_TRACE_DEPENDS_EXIST: Depend Links must exist
 
-For every Link L in  D.Depends of a Requirement D,
-there must exist a Requirement U with with U.Id == L.id and 
-D.Artefact traces against U.Artefact
+Add all "depends" references to a list of invalid references and remove
+when traced. See DSG_TRACE_COVERS_EXIST.
 
+Covers:
 *   REQ_TRACE
-*   REQ_DOWN
+*   REQ_UP
 *   ARCH_TRACING_GRAPH
+

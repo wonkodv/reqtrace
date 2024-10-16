@@ -363,6 +363,7 @@ impl<'graph> Tracing<'graph> {
 
     fn validate_downwards(&mut self) {
         for cov in self.invalid_covers_links.take().unwrap() {
+            // Covers: DSG_TRACE_COVERS_EXIST
             let req = self
                 .requirement_by_id(&cov.lower)
                 .expect("requirement with wrong link exists")

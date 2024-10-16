@@ -24,7 +24,6 @@ Information will be looked up or computed and then emitted.
 All functionality of the tool is exposed in a simple command line interface.
 
 Covers:
-*  REQ_USER_FRIENDLY: Simple to use Interface
 *  REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
 
 ## ARCH_CONTROLLER: Controller
@@ -34,56 +33,7 @@ needed to answer the query. It then obtains the queried information, stores it
 to the requested location in the requested format
 
 
-### ARCH_CTRL_CONFIG: Single Config File
-
-The Controller reads all information about the project structure from one single
-file.
-
-Covers:
-*   REQ_CONFIG: Simple Configuration in One File
-
-
-### ARCH_CTRL_ASM_LAZY: Assemble Graph as Needed
-
-The Controller assembles those parts of the tracing graph, that are needed to
-answer a query an not more.
-
-Covers:
-*   REQ_QUERIES: Configurable Information Granularity
-*   REQ_FAST: Fast
-
-### ARCH_CTRL_QUERY: Gather Information
-
-The Controller gathers Information from the tracing graph or other components as
-requested by a query.
-
-Covers:
-*   REQ_QUERIES: Configurable Information Granularity
-
-### ARCH_CTRL_FORMAT: Output Format can be Chosen
-
-The Controller passes the gathered information to the configured / requested
-Formatter.
-
-Covers:
-*   REQ_CONFIGURABLE_OUTPUT: The Output Format is Configurable
-
-
-## ARCH_TRACING_GRAPH: Tracing Graph
-
-The Tracing Graph organizes Artefacts into a directed graph without loops.
-Each Node in the Graph represents a single Artefact. An Edge from Artefact `A`
-to Artefact `B` expresses, that one or more Requirements in `B` cover one or
-more requirements in `A`.
-
-Edges belong to a group. Each requirement in an Artefact must be covered at
-least once for each group of edges that lead out of it.
-
-
-
 ## ARCH_ARTEFACT: Artefact
-
-Artefacts are the Nodes in the Tracing Graph.
 
 An artefact represents Requirements from a file, or several related files.
 Artefacts parse files with Parsers and store requirements
@@ -92,12 +42,33 @@ Artefacts parse files with Parsers and store requirements
 
 A Parser processes an input file and emits Requirements
 
+Covers:
+*   REQ_TRACE
 
-## Formatter
+## ARCH_GRAPH: Graph
 
-Formatter is the component that formats data in the requested output format.
+The Graph organizes Artefacts into a directed graph without loops.
+Each Node in the Graph represents a single Artefact. An Edge from Artefact `A`
+to Artefact `B` expresses, that one or more Requirements in `B` cover one or
+more requirements in `A`.
+
+Edges belong to a group. Each requirement in an Artefact must be covered at
+least once for each group of edges that lead out of it.
+Covers:
+*   REQ_TRACE
+
+## ARCH_TRACE: Tracer
+
+The tracer walks the graph and calculates tracing information
+
+Covers:
+*   REQ_TRACE
+*   UC_TMX
 
 ### ARCH_FORMATTER: Format output in requested Format
 
-Given Data and a requested format, the formatter formats the given data in the
-given format.
+The formatter stores all available kinds of information in different
+selectable formats
+
+Covers:
+*   REQ_TRACE

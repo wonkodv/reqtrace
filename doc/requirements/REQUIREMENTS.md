@@ -141,7 +141,8 @@ Show results quickly, especially if only a small query is given.
 ## REQ_CACHE_FRIENDLY: Work well with build systems that cache
 
 Report all files which are consumed, so that build systems like make or
-ninja can know when an input has changed an rerun the tool.
+ninja can know when an input has changed an Given Data and a requested format, the formatter formats the given data in the
+given format.rerun the tool.
 
 # Usecases
 

@@ -10,6 +10,10 @@ parser = "readme"
 paths = ["doc/requirements/REQUIREMENTS.md", ]
 parser = "markdown"
 
+[artefact.architecture]
+paths   = ["doc/requirements/ARCHITECTURE.md", ]
+parser  = "markdown"
+
 [artefact.design]
 paths   = ["doc/requirements/DESIGN.md", ]
 parser  = "markdown"
@@ -28,7 +32,11 @@ lower = ["requirements", ]
 
 [[trace]]
 upper = "requirements"
-lower = ["design", "formats", ]
+lower = ["design", "formats", "architecture" ]
+
+[[trace]]
+upper = "architecture"
+lower = ["design", ]
 
 [[trace]]
 upper="design"
