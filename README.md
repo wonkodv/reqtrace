@@ -14,7 +14,6 @@ or lacks this:
     tools and imported via well defined formats like JSON.
     *   =>  REQ_EXTENSIBLE
     *   =>  REQ_FORMATS
-    *   =>  REQ_FORMATS
 *   Produce only simple files. Implement reports in in a few human friendly formats (like markdown) for easy
     inspection and machine friendly formats (like JSON) for further analysis and generation of more sophisticated
     reports.
@@ -26,7 +25,7 @@ or lacks this:
     is done.
     *   =>  REQ_FAST
     *   =>  REQ_CACHE_FRIENDLY
-*   Use a Requirement Title if the ID has little meaning => REQ_VAL_TITLE
+*   Use and validate a Requirement Title if the Requirement Id has little meaning => REQ_VAL_TITLE
 *   Work well with Open Source Packages, integrate nicely with the ecosystem of
     Continous Delivery Pipeline on public Source Code Hosters like github
     *   =>  REQ_CONFIG: Simple Configuration in One File
@@ -35,7 +34,6 @@ or lacks this:
     recover and continue where possible and show a result along with all
     encountered errors.
     *   => REQ_LATE_ERROR
-
 
 State of this Project
 =====================

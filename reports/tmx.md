@@ -91,18 +91,6 @@
 *   [FMT_MD_DESC_HEADINGS](#fmt_md_desc_headings-heading-level-in-description-is-adjusted "Heading Level in Description is adjusted")
 *   [FMT_MD_OPT_PREFIX](#fmt_md_opt_prefix-list-of-prefixes "List of Prefixes")
 *   [FMT_MD_START](#fmt_md_start-requirement-start "Requirement Start")
-*   [README](#readme-requirement-tracing "Requirement Tracing")
-*   [REQ_DELEGATION](#req_delegation-coverage-delegation "Coverage Delegation")
-*   [REQ_IDENTIFIEABLE](#req_identifieable-show-versions-of-input-artefacts-in-output "Show versions of input artefacts in output")
-*   [REQ_INSTALL](#req_install-easy-to-install "Easy to install")
-*   [REQ_MATCH_ID](#req_match_id-match-by-id "Match by ID")
-*   [REQ_PARSER_ERROR](#req_parser_error-useful-parser-errors "Useful Parser Errors")
-*   [REQ_UNICODE_SAFE](#req_unicode_safe-sane-handling-of-unicode "Sane Handling of unicode")
-*   [REQ_UNIQUE_ID_v2](#req_unique_id_v2-requirements-have-a-unique-identifier "Requirements have a unique Identifier")
-*   [REQ_VAL_COVERAGE](#req_val_coverage-validate-coverage "Validate Coverage")
-*   [UC_CHECK](#uc_check-check-for-correct-tracing "Check for correct Tracing")
-*   [UC_PARSE](#uc_parse-parse-artefacts "Parse Artefacts")
-*   [UC_TMX](#uc_tmx-create-traceability-matrix "Create Traceability Matrix")
 *   [main_rc](#main_rc)
 
 
@@ -1304,7 +1292,6 @@ Covered By:
     *   [REQ_DOWN](#req_down-downward-coverage "Downward Coverage")
     *   [REQ_EXTENSIBLE](#req_extensible-extensible-parsing "Extensible Parsing")
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-    *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
     *   [REQ_HUMAN_READABLE](#req_human_readable-human-readable-output "Human Readable Output")
     *   [REQ_MACHINE_READABLE](#req_machine_readable-machine-readable-output "Machine Readable Output")
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
@@ -1437,7 +1424,6 @@ defined.
 
 Covers:
 *   readme
-    *   [README](#readme-requirement-tracing "Requirement Tracing")
     *   [README](#readme-requirement-tracing "Requirement Tracing")
     *   [README](#readme-requirement-tracing "Requirement Tracing")
 

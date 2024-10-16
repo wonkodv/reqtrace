@@ -5,10 +5,12 @@ default_jobs = ["check"]
 [artefact.readme]
 paths = ["README.md", ]
 parser = "readme"
+ignore_derived_requirements = true
 
 [artefact.requirements]
 paths = ["doc/requirements/REQUIREMENTS.md", ]
 parser = "markdown"
+ignore_derived_requirements = true
 
 [artefact.architecture]
 paths   = ["doc/requirements/ARCHITECTURE.md", ]
