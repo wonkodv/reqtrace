@@ -17,8 +17,6 @@
         deps = with pkgs; [
           cargo
           git
-        ];
-        devDeps = with pkgs; [
           cargo-expand
           clippy
           rustc
@@ -28,8 +26,78 @@
         ];
       in
       {
-        devShells.default = pkgs.mkShell { buildInputs = deps ++ devDeps; };
-        formatter = pkgs.nixpkgs-fmt;
+
+        packages.default = pkgs.mkDerivation {
+          pname = "reqtrace";
+          version = "0.1.0";
+          src = ./.;
+
+          buildInputs = [ ];
+        };
+
+        devShells.default = pkgs.mkShell { buildInputs = deps; };
+
+        checks = {
+          test =
+            pkgs.runCommand "test"
+              {
+                nativeBuildInputs = [ pkgs.cargo ];
+                src = self;
+              }
+              ''
+                cargo test
+              '';
+        };
+
+        #       checks = {
+        #         lint =
+        #           pkgs.runCommand "lint"
+        #             {
+        #               nativeBuildInputs = [
+        #                 pkgs.cargo
+        #                 pkgs.clippy
+        #               ];
+        #               src = ./.;
+        #             }
+        #             ''
+        #               cargo clippy
+        #               mkdir $out
+        #             '';
+        #
+        ##         test =
+        #           pkgs.runCommand "test"
+        #             {
+        #               nativeBuildInputs = [ pkgs.cargo ];
+        #               src = ./.;
+        #             }
+        #             ''
+        #               cargo test
+        #             '';
+        #
+        #         tmx = pkgs.runCommand "test"
+        #             {
+        #               nativeBuildInputs = [ pkgs.cargo ];
+        #               src = ./.;
+        #             }
+        #             ''
+        #               cargo run tmx
+        #             '';
+        #
+        #         format =
+        #           pkgs.runCommand "format"
+        #             {
+        #               nativeBuildInputs = [
+        #                 pkgs.nixfmt-rfc-style
+        #                 pkgs.cargo
+        #                 pkgs.rustfmt
+        #               ];
+        #               src = ./.;
+        #             }
+        #             ''
+        #               nixfmt *.nix
+        #               cargo fmt
+        #             '';
+        #       };
       }
     );
 }
