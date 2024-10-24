@@ -9,10 +9,11 @@ use regex::Regex;
 use super::super::common::{
     Location, Reference, Requirement, ATTR_COVERS, ATTR_DEPENDS, ATTR_DESCRIPTION,
 };
-use super::warn;
-use super::{fs, ArtefactConfig, Parser, PathBuf};
+use super::PathBuf;
+use super::{fs, warn, Parser};
 
 use crate::errors::Error;
+use crate::models::ArtefactConfig;
 
 lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();

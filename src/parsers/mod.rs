@@ -10,6 +10,7 @@ use serde::Serialize;
 
 use crate::common::Requirement;
 use crate::errors::Error;
+use crate::models::ArtefactConfig;
 
 use self::markdown::MarkdownParser;
 use self::readme::ReadmeParser;
@@ -18,15 +19,6 @@ use self::rust::RustParser;
 mod markdown;
 mod readme;
 mod rust;
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct ArtefactConfig {
-    pub paths: Vec<String>,
-    pub parser: String,
-    pub parser_options: Option<BTreeMap<String, String>>,
-    pub version_provider: Option<String>,
-    pub ignore_derived_requirements: Option<bool>,
-}
 
 #[derive(Debug, Default)]
 pub struct ArtefactData {

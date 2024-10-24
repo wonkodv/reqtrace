@@ -8,6 +8,7 @@ use std::{
 use crate::{
     common::{Location, Reference, Requirement},
     errors::{self, Error},
+    models::ArtefactConfig,
     util::glob_paths,
 };
 
@@ -20,8 +21,6 @@ use syn::{
 };
 
 use quote::ToTokens;
-
-use super::ArtefactConfig;
 
 #[derive(Debug)]
 pub struct RustParser {

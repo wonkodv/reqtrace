@@ -12,8 +12,7 @@ use crate::common::Location;
 use crate::common::Reference;
 use crate::common::Requirement;
 use crate::errors::Error;
-
-use super::ArtefactConfig;
+use crate::models::ArtefactConfig;
 
 lazy_static! {
     static ref REF_LINK_LINE: Regex =

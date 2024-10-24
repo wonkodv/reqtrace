@@ -1,10 +1,7 @@
 use std::{io, rc::Rc};
 
-use crate::{
-    common::{Format, Requirement},
-    graph::Graph,
-    trace::Tracing,
-};
+use crate::models::Format;
+use crate::{common::Requirement, graph::Graph, trace::Tracing};
 
 use crate::errors::Error;
 use serde::Serialize;

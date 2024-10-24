@@ -2,15 +2,19 @@
 
 The Tool consists of the following Components
 
-*   Formatters:     Format Information
-*   Parsers:        Extract Requirements from Files in various Ways
-*   Artefacts:      Manage Input Files, depends on Parser / Cache
-*   Tracing Graph:  Manage Artefacts compute Tracing
-*   Controller:     Read Config, Build Graph, query Information, pass it to
-                    formatter
-*   CLI:            Frontend to the Controller
+*   **CLI** thin wrapper around Controller, making its functions available on commandline
+*   **Controller** Orchestrates the other components
+*   **Parser** Takes external files and turns them into Artefacts, exist in various formats
+*   **Tracer** Walks the graph of artefacts, collecting information about which requirements cover which
+*   **Formatter** Takes requirements, errors and tracing
 
 
+Data Models
+*   Config      User Configuration
+*   Requirement
+*   Artefact    Description of input files and list of parsed requirements
+*   Graph       Holds a graph of artefacts
+*   Tracing     Information about which requirement covers which
 
 
 ## CLI
@@ -33,22 +37,22 @@ Covers:
 
 ## ARCH_CONTROLLER: Controller
 
-The Controller Reads the Configuration file, and builds the tracing graph as
-needed to answer the query. It then obtains the queried information, stores it
-to the requested location in the requested format
+The controller orchestrates the other components into a pipeline
 
+*   Read Config
+*   Pass Files to Parsers to obtain Requirements
+*   Put Requirements into Artefacts
+*   Assemble Artefacts into Graph
+*   Give Graph to Tracer, which computes Tracing Information
+*   Give Artefacts, the Graph, Tracing and any errors to Formatter which puts them into files
 
 ## ARCH_ARTEFACT: Artefact
 
-An artefact represents Requirements from a file, or several related files.
-Artefacts parse files with Parsers and store requirements
+An Artefact is a list of requirements, parsed from one or more files by a parser
 
 ## ARCH_PARSER: Parser
 
 A Parser processes an input file and emits Requirements
-
-Covers:
-*   REQ_TRACE
 
 ## ARCH_GRAPH: Graph
 
@@ -70,10 +74,13 @@ Covers:
 *   REQ_TRACE
 *   UC_TMX
 
+## ARCH_TRACING: Tracing Information
+
+A Tracing holds a Graph of Artefacts and all the Information about which requirements cover which, along which edges of the graph.
+
 ### ARCH_FORMATTER: Format output in requested Format
 
-The formatter stores all available kinds of information in different
-selectable formats
+The formatter takes Artefacts, the Graph, the Tracing or a list of Errors and turns them into machine or human readable form.
 
 Covers:
 *   REQ_TRACE

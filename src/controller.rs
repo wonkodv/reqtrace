@@ -1,8 +1,9 @@
 use crate::{
-    common::{Artefact, Format},
+    common::Artefact,
     formatters,
     graph::Graph,
-    parsers::{self, ArtefactConfig},
+    models::{Config, Job, Query},
+    parsers,
     trace::Tracing,
 };
 use serde::{Deserialize, Serialize};
@@ -10,41 +11,6 @@ use std::{collections::BTreeMap, fs, io, path::PathBuf, rc::Rc, time::Instant};
 
 use crate::errors::{Error, Result};
 use Error::{Io, UnknownJob};
-
-#[derive(Serialize, Deserialize, Debug)]
-struct TraceConfig {
-    upper: String,
-    lower: Vec<String>,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Config {
-    artefact: BTreeMap<String, ArtefactConfig>,
-    trace: Vec<TraceConfig>,
-    job: Option<BTreeMap<String, Job>>,
-    version_provider: Option<String>,
-    default_jobs: Option<Vec<String>>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum Query {
-    /// Validate the Graph without parsing Artefacts
-    ValidateGraph,
-
-    /// Parse all Artefacts
-    Parse,
-
-    /// Trace all Edges in Graph
-    Trace,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Job {
-    pub query: Query,
-    pub format: Format,
-    pub file: PathBuf,
-    pub set_return_code: Option<bool>,
-}
 
 #[derive(Debug)]
 pub struct Controller {

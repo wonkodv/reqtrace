@@ -21,11 +21,14 @@ mod controller;
 mod errors;
 mod formatters;
 mod graph;
+mod models;
 mod parsers;
 mod trace;
 mod util;
 
 use clap::Parser;
+
+use self::models::Config;
 
 /// A `StructOpt` example
 #[derive(Parser, Debug)]
@@ -67,9 +70,9 @@ fn logging_setup(opt: &Arguments) {
     builder.init();
 }
 
-fn get_config(opt: &Arguments) -> Result<controller::Config, Box<dyn std::error::Error>> {
+fn get_config(opt: &Arguments) -> Result<Config, Box<dyn std::error::Error>> {
     log::info!("using config file {}", opt.config_file.display());
-    let config: controller::Config = toml::from_slice(
+    let config: Config = toml::from_slice(
         fs::read(&opt.config_file)
             .map_err(|e| format!("{}: {}", &opt.config_file.display(), e))?
             .as_slice(),

@@ -311,13 +311,3 @@ impl Artefact {
         })
     }
 }
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum Format {
-    GnuError,
-    Json,
-    Markdown,
-    Tags,
-    TemplateFile(PathBuf),
-    TemplateString(String),
-}
