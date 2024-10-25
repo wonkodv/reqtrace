@@ -1,9 +1,7 @@
-use super::super::common::Requirement;
 use std::rc::Rc;
 
-use crate::errors::Error;
-use crate::graph::Graph;
-use crate::trace::Tracing;
+use crate::models::Error;
+use crate::models::Requirement;
 
 use serde::ser::SerializeSeq;
 use serde::ser::SerializeStruct;
@@ -54,41 +52,8 @@ impl Errors {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Artefact {
-    /// identifier / name of the artefact
-    id: String,
-    /// input files
-    files: Vec<String>,
-    /// Parsed Requirements
-    requirements: Vec<Rc<Requirement>>,
-    /// Parser Errors
-    errors: Vec<Error>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Fork {
-    /// id of upper Requirement
-    upper: String,
-    /// ids of lower requirement
-    lower: Vec<String>,
-    /// Requirement IDs, (upper, lower)
-    covered: Vec<(String, String)>,
-    /// uncovered Requirement IDs
-    uncovered: Vec<(String, String)>,
-}
-
-#[derive(Serialize, Deserialize)]
 pub struct Trace {
     /// File Format version
     version: u32,
-    artefacts: Vec<Artefact>,
-    coverages: Vec<Fork>,
-    errors: Vec<Error>,
-    derived: Vec<Requirement>,
-}
-
-impl Trace {
-    pub fn new(tracing: &Tracing<'_>, graph: &Graph) -> Self {
-        todo!("Extract Coverage Data from tracing and graph")
-    }
+    trace: TraceData,
 }

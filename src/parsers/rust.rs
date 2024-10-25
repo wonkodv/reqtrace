@@ -1,4 +1,5 @@
 use std::{
+    collections::BTreeMap,
     fs,
     io::{self},
     path::{Path, PathBuf},
@@ -6,14 +7,14 @@ use std::{
 };
 
 use crate::{
-    common::{Location, Reference, Requirement},
-    errors::{self, Error},
     models::ArtefactConfig,
-    util::glob_paths,
+    models::{self, Error},
+    models::{Location, Reference, Requirement},
 };
 
 use log::warn;
 use proc_macro2::Span;
+use syn::spanned::Spanned;
 use syn::{
     parse_file,
     visit::{self, Visit},
@@ -22,70 +23,31 @@ use syn::{
 
 use quote::ToTokens;
 
-#[derive(Debug)]
-pub struct RustParser {
-    paths: Vec<PathBuf>,
-}
-
-impl RustParser {
-    pub fn from_config(config: ArtefactConfig) -> Result<Self, Error> {
-        assert!(config.parser == "rust");
-        let paths = glob_paths(&config.paths)?;
-        Ok(Self { paths })
-    }
-}
-
-impl super::Parser for RustParser {
-    fn parse(&mut self) -> (Vec<Rc<Requirement>>, Vec<Error>) {
-        let mut requirements = Vec::new();
-        let mut errors = Vec::new();
-        for path in &self.paths {
-            let file = fs::File::open(path).map_err(|e| Error::io(path, &e));
-            match file {
-                Err(err) => {
-                    warn!("{}", err);
-                    return (vec![], vec![err]);
-                }
-                Ok(file) => {
-                    let mut r = io::BufReader::new(file);
-                    let (r, e) = parse(&mut r, path);
-                    requirements.extend(r);
-                    errors.extend(e);
-                }
-            }
-        }
-        (requirements, errors)
-    }
-}
-
-pub fn parse(
-    reader: &mut impl io::BufRead,
-    path: &Path,
-) -> (Vec<Rc<Requirement>>, Vec<errors::Error>) {
+pub fn parse(reader: &mut impl io::BufRead, path: &Path) -> (Vec<Rc<Requirement>>, Vec<Error>) {
     let requirements = Vec::new();
     let mut errors = Vec::new();
 
     let mut source = String::new();
     match reader.read_to_string(&mut source) {
         Err(e) => {
-            errors.push(errors::Error::io(path, &e));
+            errors.push(Error::io(path, &e));
         }
         Ok(_bytes) => match parse_file(&source) {
             Err(e) => {
                 let pos = e.span().start();
-                errors.push(errors::Error::Format(
+                errors.push(Error::Format(
                     Location::new_with_line_and_column(path.into(), pos.line, pos.column),
                     e.to_string(),
                 ));
             }
             Ok(file) => {
-                //    println!("{file:#?}");
                 let mut p = Parser {
                     source,
                     requirements,
                     errors,
                     path,
                     scope: Vec::new(),
+                    locations: Vec::new(),
                 };
                 p.visit_file(&file);
                 return (p.requirements, p.errors);
@@ -98,8 +60,9 @@ pub fn parse(
 
 struct Parser<'a> {
     requirements: Vec<Rc<Requirement>>,
-    errors: Vec<errors::Error>,
+    errors: Vec<Error>,
     scope: Vec<String>,
+    locations: Vec<Location>,
     source: String,
     path: &'a Path,
 }
@@ -117,54 +80,80 @@ impl Parser<'_> {
         }
 
         let tokens: Vec<_> = node.mac.tokens.clone().into_iter().collect();
+        let macro_location = location_from_span(self.path, &seg[0].ident.span());
 
         if let Some((referenced_id, title)) = match tokens.len() {
             0 => {
-                self.errors.push(errors::Error::Format(
-                    location_from_span(self.path, &seg[0].ident.span()),
+                // requirement_covered!()
+                self.errors.push(Error::Format(
+                    macro_location.clone(),
                     "requirement_covered!() has no arguments".to_owned(),
                 ));
                 None
             }
             1 => {
+                // requirement_covered!(IDENT)
                 if let proc_macro2::TokenTree::Ident(id) = &tokens[0] {
                     Some((id.to_string(), None))
                 } else {
-                    self.errors.push(errors::Error::Format(
-                        location_from_span(self.path, &tokens[0].span()),
-                        "requirement_covered!() single argument is not an identifier".to_owned(),
-                    ));
-                    None
+                    let mut id = tokens[0].to_string();
+                    if id.starts_with('"') && id.ends_with('"') {
+                        // requirement_covered!("REQU_ID")
+                        id = id.replace('"', ""); // TODO: better string parsing?
+                        Some((id.to_string(), None))
+                    } else {
+                        self.errors.push(Error::Format(
+                            location_from_span(self.path, &tokens[0].span()),
+                            "requirement_covered!() single argument is not an identifier"
+                                .to_owned(),
+                        ));
+                        None
+                    }
                 }
             }
 
             3 => {
-                // TODO: match Ident and String Literal
-                let id = tokens[0].to_string(); // an identifier
-                let mut title = tokens[2].to_string(); // a literal String
-                if title.starts_with('"') && title.ends_with('"') {
-                    title = title.replace('"', ""); // TODO: better parsing?
+                // requirement_covered!(IDENT,"string_literal")
+                if let proc_macro2::TokenTree::Ident(id) = &tokens[0] {
+                    let mut title = tokens[2].to_string(); // a literal String
+                    if title.starts_with('"') && title.ends_with('"') {
+                        title = title.replace('"', ""); // TODO: better string parsing?
+                        Some((id.to_string(), Some(title)))
+                    } else {
+                        // requirement_covered!(IDENT,17)
+                        self.errors.push(Error::Format(
+                            location_from_span(self.path, &tokens[2].span()),
+                            "requirement_covered!() 2nd argument is not String".to_owned(),
+                        ));
+                        None
+                    }
                 } else {
-                    todo!("an error");
+                    // requirement_covered!(17, ...)
+                    self.errors.push(Error::Format(
+                        location_from_span(self.path, &tokens[0].span()),
+                        "requirement_covered!() 1st argument is not an identifier".to_owned(),
+                    ));
+                    None
                 }
-                Some((id, Some(title)))
             }
             _ => {
-                self.errors.push(errors::Error::Format(
-                    location_from_span(self.path, &seg[0].ident.span()),
-                    format!("requirement_covered!() called more than 2 argument/token {tokens:?}"),
+                self.errors.push(Error::Format(
+                    macro_location.clone(),
+                    format!(
+                        "requirement_covered!() called with more than 2 argument/token {tokens:?}"
+                    ),
                 ));
                 None
             }
         } {
             let reference = Reference {
-                id: referenced_id,
+                id: referenced_id.into(),
                 title,
-                location: None,
+                location: macro_location,
             };
 
             // TODO: add info from path of source file to make symbols unique
-            let id = self.scope.join("::");
+            let id = self.scope.join("::").into();
 
             match self.requirements.last_mut() {
                 Some(last) if last.id == id => {
@@ -173,10 +162,13 @@ impl Parser<'_> {
                 _ => {
                     let covers = vec![reference];
                     let req = Requirement {
-                        id,
-                        location: location_from_span(self.path, &seg[0].ident.span()),
+                        id: id.into(),
+                        location: self.locations.last().unwrap().clone(),
                         covers,
-                        ..Requirement::default()
+                        depends: vec![],
+                        tags: vec![],
+                        attributes: BTreeMap::new(),
+                        title: None,
                     };
                     let req = Rc::new(req);
                     self.requirements.push(req);
@@ -196,20 +188,26 @@ impl<'ast> Visit<'ast> for Parser<'ast> {
 
     fn visit_item_fn(&mut self, node: &'ast ItemFn) {
         self.scope.push(node.sig.ident.to_string());
+        self.locations
+            .push(location_from_span(self.path, &node.sig.ident.span()));
         visit::visit_item_fn(self, node);
+        self.locations.pop().unwrap();
         self.scope.pop().unwrap();
     }
 
     fn visit_impl_item_method(&mut self, node: &'ast syn::ImplItemMethod) {
         self.scope.push(node.sig.ident.to_string());
+        self.locations
+            .push(location_from_span(self.path, &node.sig.ident.span()));
         visit::visit_impl_item_method(self, node);
+        self.locations.pop().unwrap();
         self.scope.pop().unwrap();
     }
 
     fn visit_item_impl(&mut self, node: &'ast syn::ItemImpl) {
         let type_ = node.self_ty.to_token_stream().to_string();
         let symbol;
-        if let Some((bang, trait_, _for_tok)) = &node.trait_ {
+        if let Some((bang, trait_, for_tok)) = &node.trait_ {
             let trait_ = trait_.to_token_stream().to_string();
 
             if bang.is_some() {
@@ -221,25 +219,37 @@ impl<'ast> Visit<'ast> for Parser<'ast> {
             symbol = type_;
         }
         self.scope.push(symbol);
+        self.locations
+            .push(location_from_span(self.path, &node.self_ty.span()));
         visit::visit_item_impl(self, node);
+        self.locations.pop().unwrap();
         self.scope.pop().unwrap();
     }
 
     fn visit_item_trait(&mut self, node: &'ast syn::ItemTrait) {
         self.scope.push(node.ident.to_string());
+        self.locations
+            .push(location_from_span(self.path, &node.ident.span()));
         visit::visit_item_trait(self, node);
+        self.locations.pop().unwrap();
         self.scope.pop().unwrap();
     }
 
     fn visit_trait_item_method(&mut self, node: &'ast syn::TraitItemMethod) {
         self.scope.push(node.sig.ident.to_string());
+        self.locations
+            .push(location_from_span(self.path, &node.sig.ident.span()));
         visit::visit_trait_item_method(self, node);
+        self.locations.pop().unwrap();
         self.scope.pop().unwrap();
     }
 
     fn visit_item_mod(&mut self, node: &'ast syn::ItemMod) {
         self.scope.push(node.ident.to_string());
+        self.locations
+            .push(location_from_span(self.path, &node.ident.span()));
         visit::visit_item_mod(self, node);
+        self.locations.pop().unwrap();
         self.scope.pop().unwrap();
     }
 }
@@ -253,7 +263,7 @@ fn location_from_span(path: &Path, span: &Span) -> Location {
 mod test {
     use std::{io::BufReader, path::PathBuf};
 
-    use crate::common::RequirementBuilder;
+    use crate::util::RequirementBuilder;
 
     use super::*;
 
@@ -286,10 +296,10 @@ mod test {
         assert_eq!(
             *reqs[0],
             RequirementBuilder::new("module_name::(Struct as Trait)::foo")
-                .location("src/filename.rs:5:24")
+                .location("src/filename.rs:4:23")
                 .unwrap()
-                .covers("REQ_ID", None, None)
-                .unwrap() // TODO:"src/filename.rs:5:24")?
+                .covers("REQ_ID", None, "src/filename.rs:5:24")
+                .unwrap()
                 .build()
         );
     }
@@ -299,7 +309,12 @@ mod test {
             mod module_name {
                 impl Trait for Struct {
                     fn foo() {
-                        requirement_covered!(REQ_ID, "Title String");
+
+
+
+
+
+                                requirement_covered!(REQ_ID, "Title String");
                     }
                 }
             }
@@ -315,10 +330,10 @@ mod test {
         assert_eq!(
             *reqs[0],
             RequirementBuilder::new("module_name::(Struct as Trait)::foo")
-                .location("src/filename.rs:5:24")
+                .location("src/filename.rs:4:23")
                 .unwrap()
-                .covers("REQ_ID", Some("Title String"), None)
-                .unwrap() // TODO:"src/filename.rs:5:24")?
+                .covers("REQ_ID", Some("Title String"), "src/filename.rs:10:32")
+                .unwrap()
                 .build()
         );
     }

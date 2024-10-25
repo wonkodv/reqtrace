@@ -307,7 +307,7 @@ TODO: rewrite to be single pass
 Covers:
 *   ARCH_TRACE
 
-#### DSG_TRACE_UPWARDS: Trace upwards using Covers attribute
+#### DSG_TRACE_UPWARDS: Trace upwards using `covers` attribute
 
 Requirement U covers Requirement D if U.id appears in D.Covers and
 D.Artefact directly traces against U.Artefact
@@ -318,7 +318,7 @@ Covers:
 *   REQ_UP
 *   ARCH_TRACE
 
-#### DSG_TRACE_DOWNWARDS: Trace downwards using Depends attribute
+#### DSG_TRACE_DOWNWARDS: Trace downwards using `depends` attribute
 
 Requirement U covers Requirement D if D.id appears in U.Depends and
 D.Artefact directly traces against U.Artefact

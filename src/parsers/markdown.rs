@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use std::io;
 use std::path::Path;
 use std::rc::Rc;
@@ -6,14 +7,10 @@ use lazy_static::lazy_static;
 use regex::Captures;
 use regex::Regex;
 
-use super::super::common::{
-    Location, Reference, Requirement, ATTR_COVERS, ATTR_DEPENDS, ATTR_DESCRIPTION,
-};
-use super::PathBuf;
-use super::{fs, warn, Parser};
+use crate::models::{Location, Reference, Requirement};
 
-use crate::errors::Error;
 use crate::models::ArtefactConfig;
+use crate::models::Error;
 
 lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();
@@ -25,48 +22,9 @@ lazy_static! {
     static ref BAD_HEADLINE_UNDERLINE: Regex = Regex::new(r"^(====*)|(----*)").unwrap(); // TODO: use
 }
 
-#[derive(Debug)]
-pub struct MarkdownParser {
-    path: PathBuf,
-}
-
-impl MarkdownParser {
-    pub fn from_config(mut config: ArtefactConfig) -> Result<Self, Error> {
-        assert!(config.parser == "markdown");
-
-        if config.paths.len() != 1 {
-            return Err(Error::ArtefactTypeOnlyAllowsOnePath(
-                config.parser,
-                config.paths,
-            ));
-        }
-        if config.parser_options.is_some() {
-            return Err(Error::Config(
-                "readme parser does not support options".into(),
-            ));
-        }
-
-        let path = config.paths.remove(0).into();
-
-        Ok(Self { path })
-    }
-}
-impl Parser for MarkdownParser {
-    fn parse(&mut self) -> (Vec<Rc<Requirement>>, Vec<Error>) {
-        let file =
-            fs::File::open(&self.path).map_err(|e| Error::Io((&self.path).into(), e.to_string()));
-        match file {
-            Err(err) => {
-                warn!("{}", err);
-                (vec![], vec![err])
-            }
-            Ok(file) => {
-                let mut r = io::BufReader::new(file);
-                parse(&mut r, &self.path)
-            }
-        }
-    }
-}
+pub const ATTR_COVERS: &str = "Covers";
+pub const ATTR_DEPENDS: &str = "Depends";
+pub const ATTR_DESCRIPTION: &str = "Description";
 
 #[derive(Debug)]
 struct Context<'a> {
@@ -236,9 +194,9 @@ fn parse_state_line(state: State, line: &&str, context: &mut Context<'_>) -> Sta
         }
         State::CollectRefLink(attr, mut vec) => {
             if let Some(ref_link) = REF_LINK_LINE.captures(line) {
-                let id = ref_link[1].to_owned();
+                let id = ref_link[1].into();
                 let title = ref_link.get(2).map(|m| m.as_str().to_owned());
-                let location = Some(context.location());
+                let location = context.location();
 
                 vec.push(Reference {
                     id,
@@ -361,14 +319,17 @@ fn maybe_commit_req(context: &mut Context<'_>) {
 fn add_req(context: &mut Context<'_>, req_line: &Captures<'_>) -> State {
     maybe_commit_req(context);
     context.level = req_line[1].len();
-    let id = req_line[2].to_owned();
+    let id = req_line[2].into();
     let title = Some(req_line[3].trim().to_owned());
     let location = context.location();
     let r = Requirement {
         id,
         title,
         location,
-        ..Requirement::default()
+        covers: vec![],
+        depends: vec![],
+        tags: vec![],
+        attributes: BTreeMap::new(),
     };
     context.req_under_construction = Some(Box::new(r));
 
@@ -391,7 +352,13 @@ fn start_attribute(context: &mut Context<'_>, attr_line: &Captures<'_>) -> State
                 context.errors.push(Error::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
-                    context.req_under_construction.as_ref().unwrap().id.clone(),
+                    context
+                        .req_under_construction
+                        .as_ref()
+                        .unwrap()
+                        .id
+                        .clone()
+                        .into(),
                 ));
             }
             parse_link_attr(context, attr, first_line)
@@ -436,10 +403,10 @@ fn parse_link_attr(context: &mut Context<'_>, attr: &str, short_list: &str) -> S
     let short_list = short_list.trim();
     for id in short_list.split(',') {
         let id = id.trim().to_owned();
-        let location = Some(context.location());
+        let location = context.location();
         if !id.is_empty() {
             vec.push(Reference {
-                id,
+                id: id.into(),
                 title: None,
                 location,
             });
@@ -534,17 +501,17 @@ Depends:
 
         let req = &reqs[0];
 
-        assert_eq!(req.id, "REQ");
+        assert_eq!(req.id, "REQ".into());
         assert_eq!(req.title, Some("Title Title".to_owned()));
         assert_eq!(req.covers.len(), 4);
-        assert_eq!(req.covers[0].id, "COV");
-        assert_eq!(req.covers[1].id, "Cov");
-        assert_eq!(req.covers[2].id, "COV3");
+        assert_eq!(req.covers[0].id, "COV".into());
+        assert_eq!(req.covers[1].id, "Cov".into());
+        assert_eq!(req.covers[2].id, "COV3".into());
         assert_eq!(req.covers[2].title, Some("Title 3".into()));
-        assert_eq!(req.covers[3].id, "COV4");
+        assert_eq!(req.covers[3].id, "COV4".into());
         assert_eq!(req.depends.len(), 2);
-        assert_eq!(req.depends[0].id, "DEP");
-        assert_eq!(req.depends[1].id, "DEP_WT");
+        assert_eq!(req.depends[0].id, "DEP".into());
+        assert_eq!(req.depends[1].id, "DEP_WT".into());
         assert_eq!(req.depends[1].title, Some("T".into()));
     }
 
@@ -565,7 +532,7 @@ Covers:
 
         let req = &reqs[0];
 
-        assert_eq!(req.id, "REQ");
+        assert_eq!(req.id, "REQ".into());
         assert_eq!(req.covers, vec![]);
     }
 }

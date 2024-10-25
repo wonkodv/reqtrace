@@ -1,356 +1,265 @@
+use std::collections::btree_map;
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use super::common::{Artefact, Location, Reference, Requirement};
-use crate::errors::Error;
-use crate::graph::{Fork, Graph, NodeIdx, Tine};
+use crate::models::*;
 use Error::{
     CoveredWithWrongTitle, CoversUnknownRequirement, DependOnUnknownRequirement,
     DependWithWrongTitle, DuplicateRequirement,
 };
 
-use std::collections::hash_map::Entry::Occupied;
-use std::collections::hash_map::Entry::Vacant;
-
-#[derive(Debug, Copy, Clone)]
-pub struct Coverage<'reqs> {
-    pub upper_requirement: &'reqs Rc<Requirement>,
-    pub lower_requirement: &'reqs Rc<Requirement>,
-    pub kind: CoverageKind<'reqs>,
-    pub location: Option<&'reqs Location>,
-    tine: Tine,
+pub fn trace(graph: &Graph) -> TracedGraph {
+    Tracer::new(graph).data()
 }
 
 #[derive(Debug)]
-pub struct TracedRequirement<'reqs> {
-    pub requirement: &'reqs Rc<Requirement>,
-    pub upper: BTreeMap<Fork, Vec<Coverage<'reqs>>>,
-    pub lower: BTreeMap<Fork, Vec<Coverage<'reqs>>>,
-    node: NodeIdx,
+struct TracedArtefact {
+    artefact: Rc<Artefact>,
+
+    requirements_by_id: BTreeMap<RequirementId, Rc<Requirement>>,
+
+    requirements_that_cover: BTreeMap<RequirementId, Vec<(Rc<Requirement>, Reference)>>,
+
+    derived: BTreeSet<RequirementId>,
 }
 
-impl<'graph> TracedRequirement<'graph> {
-    pub fn artefact(&self, graph: &'graph Graph) -> &'graph Artefact {
-        self.node.artefact(graph)
-    }
-}
-
-type TracedRequirementIdx = usize;
-
-#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
-struct Link {
-    lower: String,
-    upper: String,
-}
-
-/// Tracing info beeing build.
+/// Tracer walks a graph and builds TracingData
 ///
 /// When adding a Fork (all tines at once) add all lower Reqs to
 /// `derived`, add all  reqs to `requirements`. for all upper, find a lower that covers or is
 /// depent on. if not found, add to uncovered
 #[derive(Debug)]
-pub struct Tracing<'graph> {
-    requirements: Vec<TracedRequirement<'graph>>,
-    requirements_by_id: HashMap<&'graph str, TracedRequirementIdx>,
-    uncovered: BTreeSet<(TracedRequirementIdx, Fork)>,
-    derived: BTreeSet<TracedRequirementIdx>,
-    invalid_covers_links: Option<BTreeSet<Link>>,
-    invalid_depends_links: Option<BTreeSet<Link>>,
+struct Tracer {
+    /// Artefacts indexed by their name
+    traced_artefacts: BTreeMap<ArtefactId, TracedArtefact>,
+
+    /// Relations
+    relations: Vec<TracedRelation>,
+
+    /// Errors while Tracing
     errors: Vec<Error>,
+
+    /// Map all requirement IDs to the Requirement and Artefact they come from
+    req_by_id: BTreeMap<RequirementId, (ArtefactId, Rc<Requirement>)>,
+
+    /// List of all depends-links that were not covered yet. later turned into errors
+    invalid_depends_links: BTreeSet<(RequirementId, RequirementId)>,
+    /// List of all covers-links that were not covered yet. later turned into errors
+    invalid_covers_links: BTreeSet<(RequirementId, RequirementId)>,
 }
 
-impl<'graph> Tracing<'graph> {
-    pub fn from_graph(graph: &'graph Graph) -> Self {
-        let mut trace = Tracing {
-            requirements: Vec::new(),
-            requirements_by_id: HashMap::new(),
-            uncovered: BTreeSet::new(),
-            derived: BTreeSet::new(),
-            invalid_covers_links: Some(BTreeSet::new()),
-            invalid_depends_links: Some(BTreeSet::new()),
+impl Tracer {
+    fn new(graph: &Graph) -> Self {
+        let mut tracer = Tracer {
+            traced_artefacts: BTreeMap::new(),
+            relations: Vec::new(),
             errors: Vec::new(),
+            req_by_id: BTreeMap::new(),
+            invalid_depends_links: BTreeSet::new(),
+            invalid_covers_links: BTreeSet::new(),
         };
 
-        for fork in graph.iter_forks() {
-            trace.add_fork(fork, graph);
+        for a in graph.artefacts.values() {
+            tracer.add_artefact(a);
+        }
+        for rel in &graph.relations {
+            tracer.trace_relation(rel);
         }
 
-        trace.validate();
+        tracer.validate();
+        tracer
+    }
+    fn data(self) -> TracedGraph {
+        let Self {
+            traced_artefacts: artefacts,
+            relations,
+            errors,
+            ..
+        } = self;
 
-        trace
+        let (artefacts, derived) = artefacts
+            .into_iter()
+            .map(|(id, ta)| {
+                (
+                    (id.clone(), ta.artefact),
+                    (id, ta.derived.into_iter().collect()),
+                )
+            })
+            .unzip();
+
+        TracedGraph {
+            artefacts,
+            relations,
+            derived,
+            errors,
+        }
     }
 
-    pub fn errors(&self) -> &[Error] {
-        self.errors.as_slice()
-    }
+    fn add_artefact(&mut self, artefact: &Rc<Artefact>) {
+        let mut derived = BTreeSet::new();
 
-    pub fn uncovered<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'graph>> {
-        self.uncovered
-            .iter()
-            .map(move |idx| &self.requirements[idx.0]) // TODO: yield info about the Fork along
-                                                       // which it wasn't traced
-    }
+        let mut requirements_by_id = BTreeMap::new();
+        let mut requirements_that_cover = BTreeMap::new();
 
-    pub fn derived<'s>(&'s self) -> impl Iterator<Item = &'s TracedRequirement<'graph>> {
-        self.derived.iter().map(move |idx| &self.requirements[*idx])
-    }
+        for req in artefact.requirements.iter() {
+            match self.req_by_id.entry(req.id.clone()) {
+                btree_map::Entry::Occupied(e) => {
+                    let (_old_art, old_req) = e.get();
+                    let err = DuplicateRequirement(Rc::clone(old_req), Rc::clone(req));
+                    self.errors.push(err);
+                    requirement_covered!(DSG_TRACE_DETECT_DUPLICATE);
+                }
+                btree_map::Entry::Vacant(e) => {
+                    e.insert((artefact.id.clone(), Rc::clone(req)));
+                    // mark the new requirement's covers and depends links as invalid;
+                    // later, in add_coverage each covered connection is removed.
+                    for cov in &req.covers {
+                        requirement_covered!(DSG_TRACE_COVERS_EXIST);
+                        self.invalid_covers_links
+                            .insert((cov.id.clone(), req.id.clone()));
+                    }
+                    for dep in &req.depends {
+                        requirement_covered!(DSG_TRACE_COVERS_EXIST);
+                        self.invalid_depends_links
+                            .insert((req.id.clone(), dep.id.clone()));
+                    }
 
-    pub fn requirements(&self) -> &[TracedRequirement<'graph>] {
-        self.requirements.as_slice()
-    }
-
-    pub fn requirement_by_id<'s>(&'s self, id: &str) -> Option<&'s TracedRequirement<'graph>> {
-        self.requirements.get(*self.requirements_by_id.get(id)?)
-    }
-}
-
-/// Computing Tracing Data
-impl<'graph> Tracing<'graph> {
-    /// Compute Tracing for one upper and some lower artefacts
-    fn add_fork(&mut self, fork: Fork, graph: &'graph Graph) {
-        let upper_artefact = &fork.from(graph).artefact(graph);
-
-        log::trace!(
-            "Trace {} against {}",
-            upper_artefact.id,
-            fork.tines(graph)
-                .map(|t| t.to(graph).artefact(graph).id.clone())
-                .collect::<Vec<_>>()
-                .join(", ")
-        );
-
-        for tine in fork.tines(graph) {
-            let lower_artefact = &tine.to(graph).artefact(graph);
-
-            for r in lower_artefact.get_requirements() {
-                self.add_lower_req(r, tine, graph, lower_artefact.ignore_derived_requirements);
+                    if !artefact.ignore_derived_requirements {
+                        derived.insert(req.id.clone());
+                    }
+                    requirements_by_id.insert(req.id.clone(), Rc::clone(req));
+                    for cov in &req.covers {
+                        match requirements_that_cover.entry(cov.id.clone()) {
+                            std::collections::btree_map::Entry::Vacant(e) => {
+                                e.insert(vec![(Rc::clone(req), cov.clone())]);
+                            }
+                            std::collections::btree_map::Entry::Occupied(mut e) => {
+                                e.get_mut().push((Rc::clone(req), cov.clone()))
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        for upper_requirement in upper_artefact.get_requirements() {
-            let upper_requirement_idx = self.add_upper_req(
-                upper_requirement,
-                fork,
-                graph,
-                upper_artefact.ignore_derived_requirements,
-            );
+        let ta = TracedArtefact {
+            artefact: Rc::clone(artefact),
+            requirements_by_id,
+            requirements_that_cover,
+            derived,
+        };
+
+        self.traced_artefacts.insert(ta.artefact.id.clone(), ta);
+    }
+
+    /// Compute Tracing for one upper and some lower artefacts
+    fn trace_relation(&mut self, relation: &Relation) {
+        log::trace!("Trace {:?}", relation);
+
+        let mut any_req_coverd = false;
+        let mut covered: Vec<Coverage> = Vec::new();
+        let mut uncovered: Vec<RequirementId> = Vec::new();
+
+        let upper_artefact = Rc::clone(&self.traced_artefacts[&relation.upper].artefact);
+
+        for upper_requirement in &upper_artefact.requirements {
             let mut is_covered = false;
             for depends in &upper_requirement.depends {
-                // Covers: DSG_TRACE_DOWNWARDS: Trace downwards using Depends attribute
-                for tine in fork.tines(graph) {
-                    let lower_artefact = &tine.to(graph).artefact(graph);
+                requirement_covered!(
+                    DSG_TRACE_DOWNWARDS,
+                    "Trace downwards using `depends` attribute"
+                );
+                for lower in &relation.lower {
+                    let lower_artefact = self
+                        .traced_artefacts
+                        .get_mut(lower)
+                        .expect("artefacts of relations exist");
 
                     if let Some(lower_requirement) =
-                        lower_artefact.get_requirement_with_id(&depends.id)
+                        lower_artefact.requirements_by_id.get(&depends.id)
                     {
                         is_covered = true;
-                        let kind = if let Some(title) = depends.title.as_ref() {
-                            CoverageKind::DependsWithTitle(title)
-                        } else {
-                            CoverageKind::Depends
-                        };
-                        let cov = Coverage {
-                            upper_requirement,
-                            lower_requirement,
-                            tine,
-                            kind,
-                            location: depends.location.as_ref(),
-                        };
-
-                        self.add_coverage(cov);
+                        if let Some(title) = depends.title.as_ref() {
+                            if Some(title) != lower_requirement.title.as_ref() {
+                                self.errors.push(DependWithWrongTitle {
+                                    upper: Rc::clone(upper_requirement),
+                                    lower: Rc::clone(lower_requirement),
+                                    wrong_title: title.into(),
+                                    location: depends.location.clone(),
+                                });
+                            }
+                        }
+                        lower_artefact.derived.remove(&lower_requirement.id);
+                        covered.push(Coverage {
+                            upper: upper_requirement.id.clone(),
+                            lower: lower_requirement.id.clone(),
+                            location: depends.location.clone(),
+                            direction: CoverageDirection::Downwards,
+                        });
+                        self.invalid_depends_links
+                            .remove(&(upper_requirement.id.clone(), lower_requirement.id.clone()));
                     }
                 }
             }
 
-            for tine in fork.tines(graph) {
-                let lower_artefact = &tine.to(graph).artefact(graph);
+            for lower in &relation.lower {
+                let lower_artefact = self
+                    .traced_artefacts
+                    .get_mut(lower)
+                    .expect("artefacts of relations exist");
 
-                for (lower_requirement, reference) in
-                    lower_artefact.get_requirements_that_cover(&upper_requirement.id)
+                if let Some(lower) = lower_artefact
+                    .requirements_that_cover
+                    .get(&upper_requirement.id)
                 {
-                    is_covered = true;
-                    let kind = if let Some(title) = reference.title.as_ref() {
-                        CoverageKind::CoveredWithTitle(title)
-                    } else {
-                        CoverageKind::Covered
-                    };
-                    let cov = Coverage {
-                        upper_requirement,
-                        lower_requirement,
-                        tine,
-                        kind,
-                        location: reference.location.as_ref(),
-                    };
+                    for (lower_requirement, covers) in lower {
+                        requirement_covered!(
+                            DSG_TRACE_UPWARDS,
+                            "Trace upwards using Covers attribute"
+                        );
 
-                    self.add_coverage(cov);
+                        is_covered = true;
+
+                        if let Some(title) = covers.title.as_ref() {
+                            if Some(title) != upper_requirement.title.as_ref() {
+                                self.errors.push(CoveredWithWrongTitle {
+                                    upper: Rc::clone(upper_requirement),
+                                    lower: Rc::clone(lower_requirement),
+                                    wrong_title: title.into(),
+                                    location: covers.location.clone(),
+                                });
+                            }
+                        }
+                        lower_artefact.derived.remove(&lower_requirement.id);
+                        covered.push(Coverage {
+                            upper: upper_requirement.id.clone(),
+                            lower: lower_requirement.id.clone(),
+                            location: covers.location.clone(),
+                            direction: CoverageDirection::Upwards,
+                        });
+                        self.invalid_depends_links
+                            .remove(&(upper_requirement.id.clone(), lower_requirement.id.clone()));
+                    }
                 }
             }
             if !is_covered {
-                self.uncovered.insert((upper_requirement_idx, fork));
+                uncovered.push(upper_requirement.id.clone());
             }
-        }
-    }
-
-    /// Add req as a Lower Requirement.
-    ///
-    /// Add req to derived unless `ignore_derived_requirement`
-    /// record the tine in the `TracedRequirement` of req.
-    fn add_lower_req(
-        &mut self,
-        req: &'graph Rc<Requirement>,
-        tine: Tine,
-        graph: &Graph,
-        ignore_derived_requirement: bool,
-    ) {
-        let idx = self.add_req(req, tine.to(graph), ignore_derived_requirement);
-        self.requirements[idx].upper.insert(tine.fork, vec![]);
-    }
-
-    /// Add req as a Upper Requirement.
-    ///
-    /// record the tine in the `TracedRequirement` of req.
-    fn add_upper_req(
-        &mut self,
-        req: &'graph Rc<Requirement>,
-        fork: Fork,
-        graph: &Graph,
-        ignore_derived_requirement: bool,
-    ) -> TracedRequirementIdx {
-        let idx = self.add_req(req, fork.from(graph), ignore_derived_requirement);
-
-        self.requirements[idx].lower.insert(fork, vec![]);
-
-        idx
-    }
-
-    /// Ensure Requirement is in `requirements`.
-    ///
-    /// If not seen before, add all req.covers and req.depends to the invalid lists
-    ///
-    /// Returns
-    ///     -   idx:    the index of req
-    fn add_req(
-        &mut self,
-        req: &'graph Rc<Requirement>,
-        node: NodeIdx,
-        ignore_derived_requirement: bool,
-    ) -> TracedRequirementIdx {
-        match self.requirements_by_id.entry(&req.id) {
-            Occupied(e) => {
-                let already_there_idx = *e.get();
-                let already_there = &&mut self.requirements[already_there_idx];
-                if req != already_there.requirement {
-                    let err =
-                        DuplicateRequirement(Rc::clone(already_there.requirement), Rc::clone(req));
-                    log::trace!("{}", err);
-                    self.errors.push(err);
-                    requirement_covered!(DSG_TRACE_DETECT_DUPLICATE);
-                }
-                assert_eq!(already_there.node, node);
-
-                already_there_idx
-            }
-            Vacant(e) => {
-                // mark all `covers` and `depends` as invalid
-                // later, in add_coverage each covered connection is removed.
-                for cov in &req.covers {
-                    // Covers: DSG_TRACE_COVERS_EXIST
-                    self.invalid_covers_links.as_mut().unwrap().insert(Link {
-                        lower: req.id.clone(),
-                        upper: cov.id.clone(),
-                    });
-                }
-                for dep in &req.depends {
-                    // Covers: DSG_TRACE_COVERS_EXIST
-                    self.invalid_depends_links.as_mut().unwrap().insert(Link {
-                        lower: dep.id.clone(),
-                        upper: req.id.clone(),
-                    });
-                }
-
-                let t = TracedRequirement {
-                    requirement: req,
-                    upper: BTreeMap::default(),
-                    lower: BTreeMap::default(),
-                    node,
-                };
-
-                let idx = self.requirements.len();
-                self.requirements.push(t);
-                e.insert(idx);
-                if !ignore_derived_requirement {
-                    self.derived.insert(idx);
-                }
-
-                idx
-            }
-        }
-    }
-
-    /// Record coverage info for upper and lower requirement.
-    /// remove lower from `derived`
-    /// check that coverage with title used correct title
-    fn add_coverage(&mut self, cov: Coverage<'graph>) {
-        let lower_idx = self.requirements_by_id[cov.lower_requirement.id.as_str()];
-        self.derived.remove(&lower_idx);
-
-        self.requirements[lower_idx]
-            .upper
-            .get_mut(&cov.tine.fork)
-            .unwrap()
-            .push(cov);
-
-        let upper_idx = self.requirements_by_id[cov.upper_requirement.id.as_str()];
-        self.requirements[upper_idx]
-            .lower
-            .get_mut(&cov.tine.fork)
-            .unwrap()
-            .push(cov);
-
-        match cov.kind {
-            CoverageKind::Covered | CoverageKind::CoveredWithTitle(_) => {
-                self.invalid_covers_links.as_mut().unwrap().remove(&Link {
-                    lower: cov.lower_requirement.id.clone(),
-                    upper: cov.upper_requirement.id.clone(),
-                });
-            }
-            CoverageKind::Depends | CoverageKind::DependsWithTitle(_) => {
-                self.invalid_depends_links.as_mut().unwrap().remove(&Link {
-                    lower: cov.lower_requirement.id.clone(),
-                    upper: cov.upper_requirement.id.clone(),
-                });
-            }
+            any_req_coverd = any_req_coverd || is_covered;
         }
 
-        match cov.kind {
-            CoverageKind::CoveredWithTitle(title) => {
-                if Some(title) != cov.upper_requirement.title.as_deref() {
-                    let err = CoveredWithWrongTitle {
-                        upper: Rc::clone(cov.upper_requirement),
-                        lower: Rc::clone(cov.lower_requirement),
-                        wrong_title: title.into(),
-                        location: cov.location.cloned(),
-                    };
-                    log::trace!("{}", err);
-                    self.errors.push(err);
-                }
-            }
-            CoverageKind::DependsWithTitle(title) => {
-                if Some(title) != cov.lower_requirement.title.as_deref() {
-                    let err = DependWithWrongTitle {
-                        upper: Rc::clone(cov.upper_requirement),
-                        lower: Rc::clone(cov.lower_requirement),
-                        wrong_title: title.into(),
-                        location: cov.location.cloned(),
-                    };
-                    log::trace!("{}", err);
-                    self.errors.push(err);
-                }
-            }
-            _ => {}
+        if !any_req_coverd {
+            self.errors.push(Error::UnusedRelation(relation.clone()));
         }
+
+        self.relations.push(TracedRelation {
+            upper: relation.upper.clone(),
+            lower: relation.lower.clone(),
+            covered,
+            uncovered,
+        });
     }
 
     fn validate(&mut self) {
@@ -358,69 +267,51 @@ impl<'graph> Tracing<'graph> {
         self.validate_downwards();
     }
 
-    fn validate_downwards(&mut self) {
-        for cov in self.invalid_covers_links.take().unwrap() {
-            // Covers: DSG_TRACE_COVERS_EXIST
-            let req = self
-                .requirement_by_id(&cov.lower)
-                .expect("requirement with wrong link exists")
-                .requirement;
-            let req = Rc::clone(req);
+    fn validate_upwards(&mut self) {
+        for cov in &self.invalid_covers_links {
+            requirement_covered!(DSG_TRACE_DEPENDS_EXIST);
+            let (upper_id, lower_id) = cov;
+
+            let (art_id, req) = &self.req_by_id[&lower_id];
+
             let reference: &Reference = req
                 .covers
                 .iter()
-                .find(|r: &&Reference| r.id == cov.upper)
+                .find(|r| &r.id == upper_id)
                 .expect("invalid link exists");
             let location = reference.location.clone();
 
-            // Covers: DSG_TRACE_COVERS_EXIST
-            let err = Error::CoversUnknownRequirement(req, cov.upper, location);
+            let err = Error::CoversUnknownRequirement(Rc::clone(req), upper_id.clone(), location);
             log::trace!("{}", err);
             self.errors.push(err);
         }
     }
 
-    fn validate_upwards(&mut self) {
-        for dep in self.invalid_depends_links.take().unwrap() {
-            // Covers: DSG_TRACE_DEPENDS_EXIST
-            let req = self
-                .requirement_by_id(&dep.upper)
-                .expect("requirement with wrong link exists")
-                .requirement;
-            let req = Rc::clone(req);
-            let reference = req
-                .depends
-                .iter()
-                .find(|r: &&Reference| r.id == dep.lower)
-                .expect("invalid link exists");
-            let location = reference.location.clone();
+    fn validate_downwards(&mut self) {
+        for dep in &self.invalid_depends_links {
+            requirement_covered!(DSG_TRACE_DEPENDS_EXIST);
+            let (upper_id, lower_id) = dep;
 
-            let err = Error::DependOnUnknownRequirement(
-                Rc::clone(self.requirement_by_id(&dep.upper).unwrap().requirement),
-                dep.lower,
-                location,
-            );
+            let (art_id, req) = &self.req_by_id[&upper_id];
+
+            let reference = req.depends.iter().find(|r| &r.id == lower_id);
+
+            if reference.is_none() {
+                panic!("");
+            }
+
+            let location = reference.unwrap().location.clone();
+
+            let err = Error::DependOnUnknownRequirement(Rc::clone(req), lower_id.clone(), location);
             log::trace!("{}", err);
             self.errors.push(err);
         }
     }
-}
-#[derive(Debug, Copy, Clone)]
-pub enum CoverageKind<'a> {
-    Covered,
-    CoveredWithTitle(&'a str),
-    Depends,
-    DependsWithTitle(&'a str),
-}
-
-/// Derived Requirement in Node
-#[derive(Debug, PartialEq)]
-pub struct DerivedRequirement<'a> {
-    pub req: &'a Rc<Requirement>,
-    node: NodeIdx,
 }
 
 #[cfg(test)]
-mod tests {
-    // TODO: tests
+mod test {
+    use super::*;
+    #[test]
+    fn test() {}
 }

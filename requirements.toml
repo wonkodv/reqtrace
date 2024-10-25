@@ -1,72 +1,76 @@
-version_provider = "git"
 default_jobs = ["check"]
 
-
-[artefact.readme]
+[[artefacts]]
+id = "readme"
 paths = ["README.md", ]
-parser = "readme"
+parser = "Readme"
 ignore_derived_requirements = true
 
-[artefact.requirements]
+[[artefacts]]
+id = "requirements"
 paths = ["doc/requirements/REQUIREMENTS.md", ]
-parser = "markdown"
+parser = "Markdown"
 ignore_derived_requirements = true
 
-[artefact.architecture]
+[[artefacts]]
+id = "architecture"
 paths   = ["doc/requirements/ARCHITECTURE.md", ]
-parser  = "markdown"
+parser  = "Markdown"
 
-[artefact.design]
+[[artefacts]]
+id = "design"
 paths   = ["doc/requirements/DESIGN.md", ]
-parser  = "markdown"
+parser  = "Markdown"
 
-[artefact.formats]
+[[artefacts]]
+id = "formats"
 paths =  ["doc/requirements/FORMATS.md", ]
-parser = "markdown"
+parser = "Markdown"
 
-[artefact.code]
+[[artefacts]]
+id = "code"
 paths = ["src/**/*.rs"]
-parser = "rust"
+parser = "Rust"
 
-[[trace]]
+[[relations]]
 upper = "readme"
 lower = ["requirements", ]
 
-[[trace]]
+[[relations]]
 upper = "requirements"
 lower = ["design", "formats", "architecture" ]
 
-[[trace]]
+[[relations]]
 upper = "architecture"
 lower = ["design", ]
 
-[[trace]]
+[[relations]]
 upper="design"
 lower= ["formats", "code", ]
 
-[[trace]]
+[[relations]]
 upper="formats"
 lower= ["code", ]
 
-[job.tags]
+[jobs.tags]
 query = "Parse"
 format = "Tags"
 file = ".tags"
 set_return_code = false
 
-[job.tmx]
+[jobs.tmx]
 query = "Trace"
 format = "Markdown"
 file = "reports/tmx.md"
 set_return_code = false
 
-[job.export]
+[jobs.export]
 query = "Trace"
 format = "Json"
 file = "reports/tmx.json"
 set_return_code = false
 
-[job.check]
+[jobs.check]
 query = "Trace"
 format = "GnuError"
 file = "-"

@@ -1,10 +1,10 @@
-use super::super::common::{LocationInFile, Requirement};
 use std::{io, rc::Rc};
 
-pub fn requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
+use crate::models::{Graph, LocationInFile, Requirement};
+
+pub fn requirements<W>(graph: &Graph, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
-    R: Iterator<Item = &'r Rc<Requirement>>,
 {
     w.write_all(
         b"!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
@@ -15,7 +15,11 @@ where
     )?;
 
     let mut lines: Vec<String> = Vec::new();
-    for req in reqs {
+    for req in graph
+        .artefacts
+        .values()
+        .flat_map(|art| art.requirements.iter())
+    {
         match req.location.location_in_file {
             Some(LocationInFile::Line(line) | LocationInFile::LineAndColumn(line, _)) => {
                 lines.push(format!(

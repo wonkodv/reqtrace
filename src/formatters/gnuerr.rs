@@ -1,6 +1,6 @@
 use std::io;
 
-use crate::{errors::Error, graph::Graph, trace::Tracing};
+use crate::models::{Error, TracedGraph};
 
 pub fn errors<'r, W, R>(errors: R, w: &mut W) -> io::Result<()>
 where
@@ -28,14 +28,11 @@ where
             Error::Io(path, err) => {
                 writeln!(w, "{}: IO Error: {}", path.display(), err,)?;
             }
-            Error::ArtefactTypeOnlyAllowsOnePath(_, _)
-            | Error::UnknownArtefactType(_)
-            | Error::Config(_)
+            Error::UnusedRelation(_)
+            | Error::ArtefactConfig(_)
             | Error::DuplicateArtefact(_)
             | Error::UnknownArtefact(_)
-            | Error::EmptyGraph
-            | Error::UnknownJob(_)
-            | Error::UnknownFork(_, _) => {
+            | Error::EmptyGraph => {
                 writeln!(w, "Error in config file: {err:?}")?;
             }
 
@@ -53,7 +50,7 @@ where
                         "    actual  : {}\n",
                         "{}: note: Defined here"
                     ),
-                    location.as_ref().unwrap_or(&lower.location),
+                    location,
                     upper.id,
                     upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                     wrong_title,
@@ -74,7 +71,7 @@ where
                         "     actual : {}\n",
                         "{}: note: Defined here",
                     ),
-                    location.as_ref().unwrap_or(&upper.location),
+                    location,
                     lower.id,
                     lower.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                     wrong_title,
@@ -85,18 +82,14 @@ where
                 writeln!(
                     w,
                     "{}: {} Depends on unknown requirement {}",
-                    location.as_ref().unwrap_or(&req.location),
-                    req.id,
-                    depend
+                    location, req.id, depend
                 )?;
             }
             Error::CoversUnknownRequirement(req, cover, location) => {
                 writeln!(
                     w,
                     "{}: {} Covers unknown requirement {}",
-                    location.as_ref().unwrap_or(&req.location),
-                    req.id,
-                    cover
+                    location, req.id, cover
                 )?;
             }
         }
@@ -105,34 +98,43 @@ where
     Ok(())
 }
 
-pub fn tracing<W>(tracing: &Tracing<'_>, graph: &Graph, w: &mut W) -> io::Result<()>
+pub fn tracing<W>(traced_graph: &TracedGraph, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
 {
     writeln!(w, "Parsing Errors")?;
-    errors(graph.get_parsing_errors(), w)?;
+    errors(
+        traced_graph
+            .artefacts
+            .values()
+            .flat_map(|a| a.errors.iter()),
+        w,
+    )?;
     writeln!(w, "Tracing Errors")?;
-    errors(tracing.errors().iter(), w)?;
+    errors(traced_graph.errors.iter(), w)?;
 
-    writeln!(w, "Uncovered Requirement")?;
-    for req in tracing.uncovered() {
-        let req = req.requirement;
-        if let Some(title) = &req.title {
-            writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
-        } else {
-            writeln!(w, "{}: {}", req.location, req.id)?;
-        }
-    }
-
-    writeln!(w, "Derived Requirement")?;
-    for req in tracing.derived() {
-        let req = req.requirement;
-        if let Some(title) = &req.title {
-            writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
-        } else {
-            writeln!(w, "{}: {}", req.location, req.id)?;
-        }
-    }
+    // TODO   writeln!(w, "Uncovered Requirement")?;
+    // TODO
+    // TODO   for rel in &traced_graph.relations {
+    // TODO       for req in rel.uncovered {
+    // TODO           let req = traced_graph.artefacts[&rel.upper].[req];
+    // TODO           if let Some(title) = &req.title {
+    // TODO               writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
+    // TODO           } else {
+    // TODO               writeln!(w, "{}: {}", req.location, req.id)?;
+    // TODO           }
+    // TODO       }
+    // TODO   }
+    // TODO
+    // TODO   writeln!(w, "Derived Requirement")?;
+    // TODO   for req in tracing.derived() {
+    // TODO       let req = req.requirement;
+    // TODO       if let Some(title) = &req.title {
+    // TODO           writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
+    // TODO       } else {
+    // TODO           writeln!(w, "{}: {}", req.location, req.id)?;
+    // TODO       }
+    // TODO   }
 
     Ok(())
 }

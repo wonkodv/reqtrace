@@ -1,15 +1,12 @@
 #![allow(clippy::too_many_lines)]
 
-use super::super::common::{Location, LocationInFile, Requirement};
+use crate::models::{Location, LocationInFile, Requirement};
 use std::{collections::HashSet, io, rc::Rc};
 
-use crate::graph::Graph;
-use crate::{errors::Error, trace::Tracing};
+use crate::{models::Error, };
 
 use lazy_static::lazy_static;
 use regex::Regex;
-
-use crate::trace::TracedRequirement;
 
 lazy_static! {
     static ref REPLACE_WITH_DASH: Regex = Regex::new(r"[ ]").unwrap(); // TODO: is this defined somewhere?
@@ -105,15 +102,14 @@ where
     Ok(())
 }
 
-pub fn requirements<'r, W, R>(reqs: R, w: &mut W) -> io::Result<()>
+pub fn requirements<W>(reqs: Vec<Rc<Requirement>>, w: &mut W) -> io::Result<()>
 where
     W: io::Write,
-    R: Iterator<Item = &'r Rc<Requirement>>,
 {
-    let mut reqs = reqs.collect::<Vec<_>>();
+    let mut reqs = reqs;
     reqs.sort_by(|r, o| r.id.cmp(&o.id));
     for req in reqs {
-        requirement(req, w)?;
+        requirement(&req, w)?;
     }
     Ok(())
 }
@@ -239,11 +235,13 @@ where
         Error::Io(path, err) => {
             writeln!(w, "*   IO Error: {}\n   {}", err, path.display())
         }
-        Error::UnknownArtefactType(t) => {
-            writeln!(w, "*   Unknown Artefact Type: {t}")
-        }
-        Error::Config(s) => {
-            writeln!(w, "*   Config  Error: {s:?}")
+        Error::ArtefactConfig(path, err) => {
+            writeln!(
+                w,
+                "*   Artefact Config Error: {}\n    {}",
+                err,
+                path.display()
+            )
         }
         Error::DuplicateArtefact(a) => {
             writeln!(w, "*   Duplicate Artefact: {a}")
@@ -322,12 +320,6 @@ where
             Ok(())
         }
 
-        Error::ArtefactTypeOnlyAllowsOnePath(_, _) | Error::EmptyGraph => {
-            writeln!(w, "{error:?}")
-        }
-        Error::UnknownJob(j) => {
-            writeln!(w, "unknown job {j:?}")
-        }
         Error::DependOnUnknownRequirement(req, depend, location) => {
             writeln!(
                 w,

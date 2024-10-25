@@ -16,19 +16,19 @@ macro_rules! requirement_covered {
     ($id:ident,$title:literal) => {};
 }
 
-mod common;
 mod controller;
 mod errors;
 mod formatters;
-mod graph;
 mod models;
-mod parsers;
 mod trace;
+// TODO: mod aggregator;
+mod parsers;
 mod util;
 
 use clap::Parser;
 
 use self::models::Config;
+use self::models::Error;
 
 /// A `StructOpt` example
 #[derive(Parser, Debug)]
@@ -107,14 +107,14 @@ fn run_cli_jobs(
     };
     requirement_covered!(DSG_CLI);
 
-    res.map_err(|e: errors::Error| Box::new(e).into())
+    res.map_err(|e| Box::new(e).into())
 }
 
 fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
     let opt: Arguments = Arguments::parse();
     logging_setup(&opt);
     let config = get_config(&opt)?;
-    let controller = controller::Controller::new(config)?;
+    let controller = controller::Controller::new(config);
     run_cli_jobs(&controller, &opt)
 }
 
@@ -126,7 +126,7 @@ fn main_rc() -> i32 {
     match r {
         Err(e) => {
             log::error!("{}", e);
-            eprintln!("Fatal Error: {e}");
+            eprintln!("{e}");
             2
         }
         Ok(true) => 0,
