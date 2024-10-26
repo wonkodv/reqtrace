@@ -9,7 +9,11 @@ use lazy_static::lazy_static;
 use log::warn;
 use regex::Regex;
 
-use crate::models::{ArtefactConfig, Error, Location, Reference, Requirement};
+use crate::models::ArtefactConfig;
+use crate::models::Error;
+use crate::models::Location;
+use crate::models::Reference;
+use crate::models::Requirement;
 
 lazy_static! {
     static ref REF_LINK_LINE: Regex =

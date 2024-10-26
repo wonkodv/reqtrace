@@ -1,27 +1,25 @@
-use std::{
-    collections::BTreeMap,
-    fs,
-    io::{self},
-    path::{Path, PathBuf},
-    rc::Rc,
-};
-
-use crate::{
-    models::ArtefactConfig,
-    models::{self, Error},
-    models::{Location, Reference, Requirement},
-};
+use std::collections::BTreeMap;
+use std::fs;
+use std::io::{self};
+use std::path::Path;
+use std::path::PathBuf;
+use std::rc::Rc;
 
 use log::warn;
 use proc_macro2::Span;
-use syn::spanned::Spanned;
-use syn::{
-    parse_file,
-    visit::{self, Visit},
-    ItemFn,
-};
-
 use quote::ToTokens;
+use syn::parse_file;
+use syn::spanned::Spanned;
+use syn::visit::Visit;
+use syn::visit::{self};
+use syn::ItemFn;
+
+use crate::models::ArtefactConfig;
+use crate::models::Error;
+use crate::models::Location;
+use crate::models::Reference;
+use crate::models::Requirement;
+use crate::models::{self};
 
 pub fn parse(reader: &mut impl io::BufRead, path: &Path) -> (Vec<Rc<Requirement>>, Vec<Error>) {
     let requirements = Vec::new();
@@ -261,13 +259,13 @@ fn location_from_span(path: &Path, span: &Span) -> Location {
 
 #[cfg(test)]
 mod test {
-    use std::{io::BufReader, path::PathBuf};
-
-    use crate::util::RequirementBuilder;
-
-    use super::*;
+    use std::io::BufReader;
+    use std::path::PathBuf;
 
     use pretty_assertions::assert_eq;
+
+    use super::*;
+    use crate::util::RequirementBuilder;
 
     macro_rules! assert_equal_repr {
         ($expected:expr, $actual:expr) => {

@@ -4,11 +4,13 @@ use std::collections::BTreeSet;
 use std::collections::HashMap;
 use std::rc::Rc;
 
+use Error::CoveredWithWrongTitle;
+use Error::CoversUnknownRequirement;
+use Error::DependOnUnknownRequirement;
+use Error::DependWithWrongTitle;
+use Error::DuplicateRequirement;
+
 use crate::models::*;
-use Error::{
-    CoveredWithWrongTitle, CoversUnknownRequirement, DependOnUnknownRequirement,
-    DependWithWrongTitle, DuplicateRequirement,
-};
 
 pub fn trace(graph: &Graph) -> TracedGraph {
     Tracer::new(graph).data()
@@ -91,7 +93,7 @@ impl Tracer {
 
         TracedGraph {
             artefacts,
-            relations,
+            traced_relations: relations,
             derived,
             errors,
         }
@@ -103,7 +105,7 @@ impl Tracer {
         let mut requirements_by_id = BTreeMap::new();
         let mut requirements_that_cover = BTreeMap::new();
 
-        for req in artefact.requirements.iter() {
+        for req in artefact.requirements.values() {
             match self.req_by_id.entry(req.id.clone()) {
                 btree_map::Entry::Occupied(e) => {
                     let (_old_art, old_req) = e.get();
@@ -164,7 +166,7 @@ impl Tracer {
 
         let upper_artefact = Rc::clone(&self.traced_artefacts[&relation.upper].artefact);
 
-        for upper_requirement in &upper_artefact.requirements {
+        for upper_requirement in upper_artefact.requirements.values() {
             let mut is_covered = false;
             for depends in &upper_requirement.depends {
                 requirement_covered!(
@@ -255,8 +257,7 @@ impl Tracer {
         }
 
         self.relations.push(TracedRelation {
-            upper: relation.upper.clone(),
-            lower: relation.lower.clone(),
+            relation: relation.clone(),
             covered,
             uncovered,
         });

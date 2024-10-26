@@ -1,4 +1,4 @@
-default_jobs = ["check"]
+default_jobs = ["check", "tmx"]
 
 [[artefacts]]
 id = "readme"
@@ -23,11 +23,6 @@ paths   = ["doc/requirements/DESIGN.md", ]
 parser  = "Markdown"
 
 [[artefacts]]
-id = "formats"
-paths =  ["doc/requirements/FORMATS.md", ]
-parser = "Markdown"
-
-[[artefacts]]
 id = "code"
 paths = ["src/**/*.rs"]
 parser = "Rust"
@@ -38,7 +33,7 @@ lower = ["requirements", ]
 
 [[relations]]
 upper = "requirements"
-lower = ["design", "formats", "architecture" ]
+lower = ["design", "architecture" ]
 
 [[relations]]
 upper = "architecture"
@@ -46,11 +41,7 @@ lower = ["design", ]
 
 [[relations]]
 upper="design"
-lower= ["formats", "code", ]
-
-[[relations]]
-upper="formats"
-lower= ["code", ]
+lower= ["code" ]
 
 [jobs.tags]
 query = "Parse"

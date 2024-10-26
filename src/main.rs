@@ -13,20 +13,22 @@ use std::path::PathBuf;
 macro_rules! requirement_covered {
     ($id:ident) => {};
     ($id:ident,$title:literal) => {};
-    ($id:ident,$title:literal) => {};
+    ($id:literal,$title:literal) => {};
+    ($id:ident:$title:literal) => {};
+    ($id:literal:$title:literal) => {};
 }
 
+mod aggregator;
 mod controller;
-mod errors;
 mod formatters;
 mod models;
-mod trace;
-// TODO: mod aggregator;
 mod parsers;
+mod trace;
 mod util;
 
 use clap::Parser;
 
+use self::controller::JobSuccess;
 use self::models::Config;
 use self::models::Error;
 
@@ -98,7 +100,7 @@ fn get_config(opt: &Arguments) -> Result<Config, Box<dyn std::error::Error>> {
 fn run_cli_jobs(
     controller: &controller::Controller,
     opt: &Arguments,
-) -> Result<bool, Box<dyn std::error::Error>> {
+) -> Result<JobSuccess, Box<dyn std::error::Error>> {
     let res = if opt.jobs.is_empty() {
         controller.run_default_jobs()
     } else {
@@ -110,7 +112,7 @@ fn run_cli_jobs(
     res.map_err(|e| Box::new(e).into())
 }
 
-fn try_main() -> Result<bool, Box<dyn std::error::Error>> {
+fn try_main() -> Result<JobSuccess, Box<dyn std::error::Error>> {
     let opt: Arguments = Arguments::parse();
     logging_setup(&opt);
     let config = get_config(&opt)?;
@@ -129,8 +131,8 @@ fn main_rc() -> i32 {
             eprintln!("{e}");
             2
         }
-        Ok(true) => 0,
-        Ok(false) => 1,
+        Ok(JobSuccess::Success) => 0,
+        Ok(JobSuccess::ErrorsDetected) => 1,
     }
 }
 

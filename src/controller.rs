@@ -1,6 +1,13 @@
-use crate::{formatters, models::*, parsers};
-use serde::{Deserialize, Serialize};
-use std::{collections::BTreeMap, fs, io, path::PathBuf, rc::Rc, time::Instant};
+use std::collections::BTreeMap;
+use std::fs;
+use std::io;
+use std::path::PathBuf;
+use std::rc::Rc;
+use std::time::Instant;
+
+use crate::formatters;
+use crate::models::*;
+use crate::parsers;
 
 #[derive(
     thiserror::Error, Debug, Clone, PartialEq, PartialOrd, serde::Serialize, serde::Deserialize,
@@ -14,6 +21,15 @@ pub enum ControllerError {
 
     #[error("IO Error: {1} in {0}")]
     Io(PathBuf, String),
+}
+
+#[derive(Debug, Eq, PartialEq)]
+pub enum JobSuccess {
+    /// All jobs were successfull
+    Success,
+
+    /// Some errors where detected
+    ErrorsDetected,
 }
 
 fn glob_paths(paths: &Vec<String>) -> Result<Vec<PathBuf>, Error> {
@@ -108,13 +124,24 @@ fn parse_multiple_files(
 
 pub fn parse_from_config(
     config: &ArtefactConfig,
-) -> (Vec<PathBuf>, Vec<Rc<Requirement>>, Vec<Error>) {
+) -> (
+    Vec<PathBuf>,
+    BTreeMap<RequirementId, Rc<Requirement>>,
+    Vec<Error>,
+) {
     requirement_covered!(DSG_ART_PARSE_COLLECT_ERRORS);
 
-    match config.parser {
+    let (paths, requirements, errors) = match config.parser {
         ArtefactParser::Rust => parse_multiple_files(config),
         ArtefactParser::Markdown | ArtefactParser::Readme => parse_single_file(config),
-    }
+    };
+
+    let requirements = requirements
+        .into_iter()
+        .map(|req| (req.id.clone(), req))
+        .collect();
+
+    (paths, requirements, errors)
 }
 
 #[derive(Debug)]
@@ -166,7 +193,7 @@ impl Controller {
         self.jobs.get(job)
     }
 
-    pub fn run_default_jobs(&self) -> Result<bool, ControllerError> {
+    pub fn run_default_jobs(&self) -> Result<JobSuccess, ControllerError> {
         log::trace!("Running default jobs");
         if !self.default_jobs.is_empty() {
             self.run_jobs_by_name(&self.default_jobs)
@@ -175,7 +202,7 @@ impl Controller {
         }
     }
 
-    pub fn run_jobs_by_name(&self, job_names: &[String]) -> Result<bool, ControllerError> {
+    pub fn run_jobs_by_name(&self, job_names: &[String]) -> Result<JobSuccess, ControllerError> {
         let mut jobs = Vec::new();
         for j in job_names {
             if let Some(job) = self.find_job(j) {
@@ -187,27 +214,36 @@ impl Controller {
         self.run_jobs(&jobs, job_names)
     }
 
-    pub fn run_jobs(&self, jobs: &[&Job], job_names: &[String]) -> Result<bool, ControllerError> {
+    pub fn run_jobs(
+        &self,
+        jobs: &[&Job],
+        job_names: &[String],
+    ) -> Result<JobSuccess, ControllerError> {
         let start = Instant::now();
-        let mut success = true;
+        let mut success = JobSuccess::Success;
         for (job, job_name) in jobs.iter().zip(job_names.iter()) {
-            if !self.run(job, job_name)? && job.set_return_code.unwrap_or(true) {
-                requirement_covered!(DSG_JOB_RETURN_CODE);
-                success = false;
+            match self.run(job, job_name)? {
+                JobSuccess::Success => {}
+                JobSuccess::ErrorsDetected => {
+                    if job.set_return_code.unwrap_or(true) {
+                        requirement_covered!(DSG_JOB_RETURN_CODE);
+                        success = JobSuccess::ErrorsDetected;
+                    }
+                }
             }
         }
 
         log::info!(
-            "ran {} jobs in {}ms, result: {}",
+            "ran {} jobs in {}ms, result: {:?}",
             job_names.len(),
             start.elapsed().as_millis(),
-            (if success { "Success" } else { "Fail" })
+            success,
         );
 
         Ok(success)
     }
 
-    pub fn run(&self, job: &Job, job_name: &str) -> Result<bool, ControllerError> {
+    pub fn run(&self, job: &Job, job_name: &str) -> Result<JobSuccess, ControllerError> {
         log::trace!("Job {} {:?}", job_name, job);
         let stdout = io::stdout();
         let mut out: Box<dyn io::Write>;
@@ -227,7 +263,7 @@ impl Controller {
             log::info!("writing {} to {}", &job_name, job.file.display());
         }
 
-        let mut success = true;
+        let mut success = JobSuccess::Success;
 
         let write_res = match &job.query {
             Query::Trace => {
@@ -235,10 +271,10 @@ impl Controller {
 
                 let tg = &self.traced_graph;
                 if !tg.errors.is_empty() {
-                    success = false;
+                    success = JobSuccess::ErrorsDetected;
                 }
                 if tg.artefacts.values().any(|art| !art.errors.is_empty()) {
-                    success = false;
+                    success = JobSuccess::ErrorsDetected;
                 }
                 formatters::tracing(tg, &job.format, &mut out)
             }
@@ -250,7 +286,7 @@ impl Controller {
                     .values()
                     .any(|art| !art.errors.is_empty())
                 {
-                    success = false;
+                    success = JobSuccess::ErrorsDetected;
                 }
                 formatters::requirements(&self.graph, &job.format, &mut out)
             }
@@ -259,10 +295,13 @@ impl Controller {
 
         write_res.map_err(|e| ControllerError::Io(job.file.clone(), e.to_string()))?;
 
-        if success {
-            log::info!("Job {} successful", job_name);
-        } else {
-            log::warn!("Job {} detected Errors", job_name);
+        match success {
+            JobSuccess::Success => {
+                log::info!("Job {} successful", job_name);
+            }
+            JobSuccess::ErrorsDetected => {
+                log::warn!("Job {} detected Errors", job_name);
+            }
         }
 
         Ok(success)

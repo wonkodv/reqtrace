@@ -262,7 +262,7 @@ pub struct Artefact {
     pub id: ArtefactId,
     pub files: Vec<PathBuf>,
     pub ignore_derived_requirements: bool,
-    pub requirements: Vec<Rc<Requirement>>,
+    pub requirements: BTreeMap<RequirementId, Rc<Requirement>>,
     pub errors: Vec<Error>,
 }
 
@@ -340,7 +340,7 @@ where
     tup.end()
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Ord, Eq, Serialize, Deserialize)]
 pub struct Relation {
     /// id of the upper artefact
     pub upper: ArtefactId,
@@ -354,7 +354,7 @@ impl fmt::Display for Relation {
         let lower = self
             .lower
             .iter()
-            .map(|id| id.0.clone()) // what a beauty
+            .map(|id| id.0.clone()) // TODO: there has to be a better way
             .collect::<Vec<_>>()
             .join(", ");
         write!(f, "{} => [{}]", self.upper, lower,)
@@ -389,11 +389,8 @@ pub struct Coverage {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TracedRelation {
-    /// id of the upper artefact
-    pub upper: ArtefactId,
-
-    /// id of lower artefacts
-    pub lower: Vec<ArtefactId>,
+    #[serde(flatten)]
+    pub relation: Relation,
 
     /// Requirements covered by this relation
     /// `(upper.id, lower.id, location)`
@@ -404,13 +401,19 @@ pub struct TracedRelation {
     pub uncovered: Vec<RequirementId>,
 }
 
+impl fmt::Display for TracedRelation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.relation.fmt(f)
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TracedGraph {
     /// Artefacts indexed by their name
     pub artefacts: BTreeMap<ArtefactId, Rc<Artefact>>,
 
     /// Traced Relationships in the Graph
-    pub relations: Vec<TracedRelation>,
+    pub traced_relations: Vec<TracedRelation>,
 
     /// Derived requirements per artefact
     pub derived: BTreeMap<ArtefactId, Vec<RequirementId>>,

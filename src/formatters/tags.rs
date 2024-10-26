@@ -1,11 +1,11 @@
-use std::{io, rc::Rc};
+use std::io;
+use std::rc::Rc;
 
-use crate::models::{Graph, LocationInFile, Requirement};
+use crate::models::Graph;
+use crate::models::LocationInFile;
+use crate::models::Requirement;
 
-pub fn requirements<W>(graph: &Graph, w: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-{
+pub fn requirements(graph: &Graph, w: &mut impl io::Write) -> io::Result<()> {
     w.write_all(
         b"!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
 !_TAG_PROGRAM_NAME	reqtrace/
@@ -18,7 +18,7 @@ where
     for req in graph
         .artefacts
         .values()
-        .flat_map(|art| art.requirements.iter())
+        .flat_map(|art| art.requirements.values())
     {
         match req.location.location_in_file {
             Some(LocationInFile::Line(line) | LocationInFile::LineAndColumn(line, _)) => {

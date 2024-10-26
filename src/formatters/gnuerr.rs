@@ -1,6 +1,7 @@
 use std::io;
 
-use crate::models::{Error, TracedGraph};
+use crate::models::Error;
+use crate::models::TracedGraph;
 
 pub fn errors<'r, W, R>(errors: R, w: &mut W) -> io::Result<()>
 where
@@ -98,11 +99,8 @@ where
     Ok(())
 }
 
-pub fn tracing<W>(traced_graph: &TracedGraph, w: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-{
-    writeln!(w, "Parsing Errors")?;
+pub fn tracing(traced_graph: &TracedGraph, w: &mut impl io::Write) -> io::Result<()> {
+    writeln!(w, "# Parsing Errors")?;
     errors(
         traced_graph
             .artefacts
@@ -110,31 +108,37 @@ where
             .flat_map(|a| a.errors.iter()),
         w,
     )?;
-    writeln!(w, "Tracing Errors")?;
+    writeln!(w, "# Tracing Errors")?;
     errors(traced_graph.errors.iter(), w)?;
 
-    // TODO   writeln!(w, "Uncovered Requirement")?;
-    // TODO
-    // TODO   for rel in &traced_graph.relations {
-    // TODO       for req in rel.uncovered {
-    // TODO           let req = traced_graph.artefacts[&rel.upper].[req];
-    // TODO           if let Some(title) = &req.title {
-    // TODO               writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
-    // TODO           } else {
-    // TODO               writeln!(w, "{}: {}", req.location, req.id)?;
-    // TODO           }
-    // TODO       }
-    // TODO   }
-    // TODO
-    // TODO   writeln!(w, "Derived Requirement")?;
-    // TODO   for req in tracing.derived() {
-    // TODO       let req = req.requirement;
-    // TODO       if let Some(title) = &req.title {
-    // TODO           writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
-    // TODO       } else {
-    // TODO           writeln!(w, "{}: {}", req.location, req.id)?;
-    // TODO       }
-    // TODO   }
+    writeln!(w, "# Uncovered Requirement")?;
+
+    for rel in &traced_graph.traced_relations {
+        writeln!(w, "## {}", rel)?;
+
+        for req in &rel.uncovered {
+            let req = &traced_graph.artefacts[&rel.relation.upper].requirements[&req];
+            if let Some(title) = &req.title {
+                writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
+            } else {
+                writeln!(w, "{}: {}", req.location, req.id)?;
+            }
+        }
+    }
+
+    writeln!(w, "Derived Requirement")?;
+    for (art, derived) in &traced_graph.derived {
+        let artefact = &traced_graph.artefacts[art];
+        writeln!(w, "## {}", art)?;
+        for req_id in derived {
+            let req = &artefact.requirements[req_id];
+            if let Some(title) = &req.title {
+                writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
+            } else {
+                writeln!(w, "{}: {}", req.location, req.id)?;
+            }
+        }
+    }
 
     Ok(())
 }

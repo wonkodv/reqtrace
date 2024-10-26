@@ -1,12 +1,19 @@
 #![allow(clippy::too_many_lines)]
 
-use crate::models::{Location, LocationInFile, Requirement};
-use std::{collections::HashSet, io, rc::Rc};
-
-use crate::{models::Error, };
+use std::collections::HashSet;
+use std::io;
+use std::rc::Rc;
 
 use lazy_static::lazy_static;
 use regex::Regex;
+
+use crate::aggregator::AggregatedGraph;
+use crate::aggregator::RequirementTrace;
+use crate::models::Location;
+use crate::models::LocationInFile;
+use crate::models::Requirement;
+use crate::models::TracedGraph;
+use crate::models::*;
 
 lazy_static! {
     static ref REPLACE_WITH_DASH: Regex = Regex::new(r"[ ]").unwrap(); // TODO: is this defined somewhere?
@@ -14,7 +21,7 @@ lazy_static! {
 }
 
 /// requirement Id as markdown link
-fn requirement_link(req: &Rc<Requirement>) -> String {
+fn requirement_link(req: &Requirement) -> String {
     if let Some(title) = &req.title {
         let replaced = format!("{}-{}", req.id, title);
         let replaced = replaced.to_lowercase();
@@ -24,7 +31,7 @@ fn requirement_link(req: &Rc<Requirement>) -> String {
         format!("[{}](#{} \"{}\")", req.id, replaced, title)
     } else {
         let replaced = &req.id;
-        let replaced = replaced.to_lowercase();
+        let replaced = replaced.to_string().to_lowercase();
         let replaced = REPLACE_WITH_DASH.replace_all(&replaced, "-");
         let replaced = REMOVE.replace_all(&replaced, "");
 
@@ -52,10 +59,7 @@ fn location_link(loc: &Location) -> String {
     }
 }
 
-pub fn requirement<W>(req: &Requirement, w: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-{
+pub fn requirement(req: &Requirement, w: &mut impl io::Write) -> io::Result<()> {
     writeln!(
         w,
         "\n## {}: {}\n\nOrigin: {}",
@@ -102,108 +106,91 @@ where
     Ok(())
 }
 
-pub fn requirements<W>(reqs: Vec<Rc<Requirement>>, w: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-{
-    let mut reqs = reqs;
+pub fn requirements(graph: &Graph, w: &mut impl io::Write) -> io::Result<()> {
+    let mut reqs: Vec<&Rc<Requirement>> = graph
+        .artefacts
+        .values()
+        .flat_map(|art| art.requirements.values())
+        .collect();
+
     reqs.sort_by(|r, o| r.id.cmp(&o.id));
+
     for req in reqs {
         requirement(&req, w)?;
     }
     Ok(())
 }
 
-pub fn traced_requirements<'r, W, R>(reqs: R, graph: &Graph, w: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-    R: Iterator<Item = &'r TracedRequirement<'r>>,
-{
-    for req in reqs {
-        writeln!(
-            w,
-            "\n## {}{}\n\nOrigin: {}",
-            req.requirement.id,
-            req.requirement
-                .title
-                .as_ref()
-                .map(|t| format!(": {t}"))
-                .unwrap_or_default(),
-            location_link(&req.requirement.location)
-        )?;
+pub fn traced_requirement(req: &RequirementTrace<'_>, w: &mut impl io::Write) -> io::Result<()> {
+    writeln!(
+        w,
+        "\n## {}{}\n\nOrigin: {}",
+        req.requirement.id,
+        req.requirement
+            .title
+            .as_ref()
+            .map(|t| format!(": {t}"))
+            .unwrap_or_default(),
+        location_link(&req.requirement.location)
+    )?;
 
-        if let Some(description) = req.requirement.attributes.get("Description") {
-            writeln!(w, "\n\n{description}")?;
-        }
+    if let Some(description) = req.requirement.attributes.get("Description") {
+        writeln!(w, "\n\n{description}")?;
+    }
 
-        if !req.upper.is_empty() {
-            writeln!(w, "\nCovers:")?;
-            for (fork, coverage) in &req.upper {
-                if coverage.is_empty() {
-                    writeln!(
-                        w,
-                        "*   Does not cover: {}",
-                        fork.from(graph).artefact(graph).id
-                    )?;
-                } else {
-                    writeln!(w, "*   {}", fork.from(graph).artefact(graph).id)?;
-                    for cov in coverage {
-                        writeln!(w, "    *   {}", requirement_link(cov.upper_requirement))?;
-                    }
-                }
-            }
-        }
-
-        if !req.lower.is_empty() {
-            writeln!(w, "\nCovered By:")?;
-            for (fork, coverage) in &req.lower {
-                if coverage.is_empty() {
-                    write!(w, "*   Not Covered by: ",)?;
-                    let mut comma = false;
-                    for t in fork.tines(graph) {
-                        if comma {
-                            write!(w, ", ")?;
-                        }
-                        comma = true;
-                        write!(w, "{}", t.to(graph).artefact(graph).id)?;
-                    }
-                    writeln!(w)?;
-                } else {
-                    write!(w, "*   ")?;
-                    let mut comma = false;
-                    for t in fork.tines(graph) {
-                        if comma {
-                            write!(w, ", ")?;
-                        }
-                        comma = true;
-                        write!(w, "{}", t.to(graph).artefact(graph).id)?;
-                    }
-                    writeln!(w)?;
-
-                    for cov in coverage {
-                        writeln!(w, "    *   {}", requirement_link(cov.lower_requirement))?;
-                    }
-                }
-            }
-        }
-
-        for (k, v) in &req.requirement.attributes {
-            if k != "Description" {
-                let v = v.trim();
-                if !v.is_empty() {
-                    writeln!(w, "\n{k}:")?;
-                    writeln!(w, "{v}")?;
-                }
+    for (k, v) in &req.requirement.attributes {
+        if k != "Description" {
+            let v = v.trim();
+            if !v.is_empty() {
+                writeln!(w, "\n{k}:")?;
+                writeln!(w, "{v}")?;
             }
         }
     }
+
+    {
+        writeln!(w, "\nUpwards Tracing:")?;
+        let mut derived = true;
+        for (relation, coverages) in &req.covers {
+            writeln!(w, "*   {}", relation)?;
+            for (upper_requirement, reference_location) in coverages {
+                writeln!(w, "    *   {}", requirement_link(upper_requirement),)?;
+                writeln!(
+                    w,
+                    "        Reference: {}",
+                    location_link(reference_location),
+                )?;
+
+                derived = false;
+            }
+        }
+        if derived {
+            writeln!(w, "        *   Derived")?;
+        }
+    }
+
+    {
+        writeln!(w, "\nDownwards Tracing:")?;
+        for (relation, coverages) in &req.depends {
+            writeln!(w, "*   {}", relation)?;
+            if coverages.is_empty() {
+                writeln!(w, "    *    UNCOVERED")?;
+            }
+            for (upper_requirement, reference_location) in coverages {
+                writeln!(w, "    *   {}", requirement_link(upper_requirement),)?;
+                writeln!(
+                    w,
+                    "        Reference: {}",
+                    location_link(reference_location),
+                )?;
+            }
+        }
+    }
+
     Ok(())
 }
 
-pub fn err<W>(error: &Error, w: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-{
+pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
     match error {
         Error::Format(loc, err) => {
             writeln!(
@@ -218,8 +205,8 @@ where
                 w,
                 concat!(
                     "*   Duplicate Requirement: {}\n",
-                    "first seen in {}\n",
-                    "then again in {}"
+                    "    first seen in {}\n",
+                    "    then again in {}"
                 ),
                 r1.id,
                 location_link(&r2.location),
@@ -235,22 +222,14 @@ where
         Error::Io(path, err) => {
             writeln!(w, "*   IO Error: {}\n   {}", err, path.display())
         }
-        Error::ArtefactConfig(path, err) => {
-            writeln!(
-                w,
-                "*   Artefact Config Error: {}\n    {}",
-                err,
-                path.display()
-            )
+        Error::ArtefactConfig(err) => {
+            writeln!(w, "*   Artefact Config Error: {}", err,)
         }
         Error::DuplicateArtefact(a) => {
             writeln!(w, "*   Duplicate Artefact: {a}")
         }
         Error::UnknownArtefact(a) => {
             writeln!(w, "*    Unknown Artefact: {a}")
-        }
-        Error::UnknownFork(from, to) => {
-            writeln!(w, "*    Unknown Edge {from} -> {to}")
         }
         Error::CoveredWithWrongTitle {
             upper,
@@ -261,14 +240,14 @@ where
             writeln!(
                 w,
                 concat!(
-                    "*   Requirement covers with wrong title:\n",
-                    "*   Upper Requirement {}\n",
-                    "*\n",
+                    "*   Requirement covered with wrong title:\n",
+                    "    Upper Requirement {}",
                     "    {}\n",
-                    "*   Lower Requirement {}\n",
+                    "    Lower Requirement {}\n",
                     "    {}\n",
-                    "*   Title of Upper Requirement: {}\n",
-                    "*   Title used to cover it:     {}\n",
+                    "    Title of Upper Requirement: {}\n",
+                    "    Title used to cover it:     {}\n",
+                    "    at:                         {}",
                 ),
                 upper.id,
                 location_link(&upper.location),
@@ -276,15 +255,8 @@ where
                 location_link(&lower.location),
                 upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
-            )?;
-            if let Some(location) = location {
-                writeln!(
-                    w,
-                    "*   Referenced at:              {}",
-                    location_link(location)
-                )?;
-            };
-            Ok(())
+                location,
+            )
         }
         Error::DependWithWrongTitle {
             upper,
@@ -302,6 +274,7 @@ where
                     "    {}\n",
                     "*   Title of Lower Requirement: {}\n",
                     "*   Title used to cover it:     {}\n",
+                    "*   Referenced at:              {}\n",
                 ),
                 upper.id,
                 location_link(&upper.location),
@@ -309,15 +282,8 @@ where
                 location_link(&lower.location),
                 upper.title.as_ref().unwrap_or(&"<no title>".to_owned()),
                 wrong_title,
-            )?;
-            if let Some(location) = location {
-                writeln!(
-                    w,
-                    "*   Referenced at:              {}",
-                    location_link(location)
-                )?;
-            };
-            Ok(())
+                location,
+            )
         }
 
         Error::DependOnUnknownRequirement(req, depend, location) => {
@@ -326,7 +292,7 @@ where
                 "*   {} depends on unknown Requirement {}\n    {}",
                 req.id,
                 depend,
-                location_link(location.as_ref().unwrap_or(&req.location)),
+                location_link(location),
             )
         }
         Error::CoversUnknownRequirement(req, cover, location) => {
@@ -335,15 +301,24 @@ where
                 "*   {} covers unknown Requirement {}\n    {}",
                 req.id,
                 cover,
-                location_link(location.as_ref().unwrap_or(&req.location)),
+                location_link(location),
+            )
+        }
+        Error::EmptyGraph => {
+            writeln!(w, "Tracing Graph is empty")
+        }
+        Error::UnusedRelation(rel) => {
+            writeln!(
+                w,
+                "*   No requirement eas traced along the relation {}. (Configuration error?)",
+                rel
             )
         }
     }
 }
 
-pub fn errors<'r, W, R>(errors: R, w: &mut W) -> io::Result<()>
+pub fn errors<'r, W, R>(errors: R, w: &mut impl io::Write) -> io::Result<()>
 where
-    W: io::Write,
     R: Iterator<Item = &'r Error>,
 {
     writeln!(w, "# Errors")?;
@@ -354,26 +329,32 @@ where
     Ok(())
 }
 
-pub fn tracing<W>(tracing: &Tracing<'_>, graph: &Graph, w: &mut W) -> io::Result<()>
-where
-    W: io::Write,
-{
+pub fn tracing(aggregated_graph: &AggregatedGraph<'_>, w: &mut impl io::Write) -> io::Result<()> {
+    let traced_graph = aggregated_graph.traced_graph;
     {
-        let mut errors = graph.get_parsing_errors().peekable();
-        if errors.peek().is_some() {
-            writeln!(w)?;
-            writeln!(w)?;
-            writeln!(w, "# Input Errors")?;
-            writeln!(w)?;
+        let mut headline = false;
 
-            for e in errors {
+        for a in traced_graph.artefacts.values() {
+            if !a.errors.is_empty() {
+                if !headline {
+                    headline = true;
+                    writeln!(w)?;
+                    writeln!(w)?;
+                    writeln!(w, "# Input Errors")?;
+                    writeln!(w)?;
+                }
+                writeln!(w)?;
+                writeln!(w, "## {}", a.id)?;
+                writeln!(w)?;
+            }
+            for e in &a.errors {
                 err(e, w)?;
             }
         }
     }
 
     {
-        let errors = tracing.errors();
+        let errors = &traced_graph.errors;
         if !errors.is_empty() {
             writeln!(w)?;
             writeln!(w)?;
@@ -394,47 +375,74 @@ where
 
     {
         // Uncovered
-        let mut uncovered: Vec<_> = tracing.uncovered().collect();
-        uncovered.sort_unstable_by_key(|r| &r.requirement.id);
+        let mut headline = false;
 
-        if !uncovered.is_empty() {
-            writeln!(w)?;
-            writeln!(w)?;
-            writeln!(w, "# Uncovered Requirements")?;
-            writeln!(w)?;
+        for rel in &traced_graph.traced_relations {
+            if !rel.uncovered.is_empty() {
+                if !headline {
+                    headline = true;
+                    writeln!(w)?;
+                    writeln!(w)?;
+                    writeln!(w, "# Uncovered Requirements")?;
+                    writeln!(w)?;
+                }
+                writeln!(w)?;
+                writeln!(w, "## {}", rel)?;
+                writeln!(w)?;
 
-            for r in uncovered {
-                writeln!(w, "*   {}", requirement_link(r.requirement))?;
+                for req_id in &rel.uncovered {
+                    writeln!(
+                        w,
+                        "*   {}",
+                        requirement_link(aggregated_graph.requirements[&req_id].requirement)
+                    )?;
+                }
             }
         }
     }
 
     {
         // Derived
-        let mut derived: Vec<_> = tracing.derived().collect();
-        derived.sort_unstable_by_key(|r| &r.requirement.id);
 
-        if !derived.is_empty() {
-            writeln!(w)?;
-            writeln!(w)?;
-            writeln!(w, "# Derived Requirements")?;
-            writeln!(w)?;
+        let mut headline = false;
+        for (art, derived) in &traced_graph.derived {
+            if !derived.is_empty() {
+                if !headline {
+                    headline = true;
+                    writeln!(w)?;
+                    writeln!(w)?;
+                    writeln!(w, "# Derived Requirements")?;
+                    writeln!(w)?;
+                }
+                writeln!(w)?;
+                writeln!(w, "## {}", art)?;
+                writeln!(w)?;
 
-            for r in derived {
-                writeln!(w, "*   {}", requirement_link(r.requirement))?;
+                for r in derived {
+                    writeln!(
+                        w,
+                        "*   {}",
+                        requirement_link(aggregated_graph.requirements[r].requirement)
+                    )?;
+                }
             }
         }
     }
 
     {
-        // Covered
+        // All Requirements
         writeln!(w)?;
         writeln!(w)?;
         writeln!(w, "# Requirements")?;
         writeln!(w)?;
-        let mut covered: Vec<_> = tracing.requirements().iter().collect();
-        covered.sort_unstable_by_key(|req| (&req.artefact(graph).id, &req.requirement.id));
-        traced_requirements(covered.into_iter(), graph, w)?;
+
+        for artefact in traced_graph.artefacts.values() {
+            writeln!(w, "## {}", artefact.id)?;
+
+            for req_id in artefact.requirements.keys() {
+                traced_requirement(&aggregated_graph.requirements[req_id], w)?
+            }
+        }
     }
 
     Ok(())
