@@ -32,10 +32,10 @@
           version = "0.1.0";
           src = ./.;
 
-          buildInputs = [ ];
+          buildInputs = buildDeps;
         };
 
-        devShells.default = pkgs.mkShell { buildInputs = deps; };
+        devShells.default = pkgs.mkShell { buildInputs = deps ++ buildDeps; };
 
         checks = {
           test =
