@@ -69,16 +69,18 @@ impl<'g> AggregatedGraph<'g> {
         let mut requirements: BTreeMap<&'g RequirementId, RequirementTrace<'g>> = traced_graph
             .artefacts
             .values()
-            .flat_map(|a| a.requirements.iter())
-            .map(|(id, req)| {
-                (
-                    id,
-                    RequirementTrace {
-                        covers: BTreeMap::new(),
-                        depends: BTreeMap::new(),
-                        requirement: req,
-                    },
-                )
+            .flat_map(|a| {
+                a.requirements.iter().map(|(id, req)| {
+                    (
+                        id,
+                        RequirementTrace {
+                            covers: BTreeMap::new(),
+                            depends: BTreeMap::new(),
+                            requirement: req,
+                            artefact: a,
+                        },
+                    )
+                })
             })
             .collect();
 

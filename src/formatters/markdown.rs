@@ -143,13 +143,14 @@ pub fn requirements(graph: &Graph, w: &mut impl io::Write) -> io::Result<()> {
 pub fn traced_requirement(req: &RequirementTrace<'_>, w: &mut impl io::Write) -> io::Result<()> {
     writeln!(
         w,
-        "\n## {}{}\n\nOrigin: {}",
+        "\n## {}{}\n\nOrigin: {}, {}",
         req.requirement.id,
         req.requirement
             .title
             .as_ref()
             .map(|t| format!(": {t}"))
             .unwrap_or_default(),
+        req.artefact.id,
         location_link(&req.requirement.location)
     )?;
 
