@@ -23,6 +23,11 @@ paths   = ["doc/requirements/DESIGN.md", ]
 parser  = "Markdown"
 
 [[artefacts]]
+id = "formats"
+paths =  ["doc/requirements/FORMATS.md", ]
+parser = "Markdown"
+
+[[artefacts]]
 id = "code"
 paths = ["src/**/*.rs"]
 parser = "Rust"
@@ -33,7 +38,7 @@ lower = ["requirements", ]
 
 [[relations]]
 upper = "requirements"
-lower = ["design", "architecture" ]
+lower = ["design", "formats", "architecture" ]
 
 [[relations]]
 upper = "architecture"
@@ -41,7 +46,11 @@ lower = ["design", ]
 
 [[relations]]
 upper="design"
-lower= ["code" ]
+lower= ["formats", "code", ]
+
+[[relations]]
+upper="formats"
+lower= ["code", ]
 
 [jobs.tags]
 query = "Parse"
