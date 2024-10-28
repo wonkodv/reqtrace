@@ -1,0 +1,12 @@
+rule reqtrace
+  command = cargo run tags tmx
+
+build .tags reports/tmx.md reports/tmx.json: reqtrace doc/requirements/REQUIREMENTS.md doc/requirements/DESIGN.md doc/requirements/FORMATS.md doc/requirements/ARCHITECTURE.md
+
+rule github_markdown_render
+    command = cat $in | jq -Rs '{text : . }' | curl -X POST -H "Authorization: Bearer $$(cat ~/.github-markdown-render-token)" -H "X-GitHub-Api-Version: 2022-11-28" -d @- https://api.github.com/markdown > $out
+
+
+build reports/tmx.html: github_markdown_render reports/tmx.md
+
+default reports/tmx.html

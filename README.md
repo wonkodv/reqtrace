@@ -44,6 +44,15 @@ A lot of features are not yet implemented; take a look at the [Tracing Report](r
 
 Have a look at [`hitchhiker.md`](hitchhiker.md) for a guided tour through the code.
 
+
+Composability
+=============
+
+The goal of this project is a slim tool that "does one thing well".
+To extend the functionality, use a tool like `ninja` to invoke input processing, reqtrace and output processing on demand.
+See the [ninja file](build.ninja) of this project, which post-processes the generated tmx into an html file.
+
+
 Wording
 =======
 

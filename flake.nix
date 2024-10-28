@@ -25,6 +25,8 @@
           rustfmt
           rust-analyzer
           pre-commit
+          ninja
+          jq
         ];
       in
       {
