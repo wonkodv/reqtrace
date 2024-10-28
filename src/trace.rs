@@ -200,6 +200,8 @@ impl Tracer {
                             location: depends.location.clone(),
                             direction: CoverageDirection::Downwards,
                         });
+
+                        // TODO: avoid clones ?
                         self.invalid_depends_links
                             .remove(&(upper_requirement.id.clone(), lower_requirement.id.clone()));
                     }
@@ -241,7 +243,7 @@ impl Tracer {
                             location: covers.location.clone(),
                             direction: CoverageDirection::Upwards,
                         });
-                        self.invalid_depends_links
+                        self.invalid_covers_links // TODO: avoid clones
                             .remove(&(upper_requirement.id.clone(), lower_requirement.id.clone()));
                     }
                 }
