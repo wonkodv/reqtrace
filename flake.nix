@@ -14,12 +14,14 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        deps = with pkgs; [
+        buildDeps = with pkgs; [
           cargo
-          git
-          cargo-expand
-          clippy
           rustc
+        ];
+        deps = with pkgs; [
+          cargo-expand
+          gdb
+          clippy
           rustfmt
           rust-analyzer
           pre-commit
