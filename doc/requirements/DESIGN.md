@@ -163,6 +163,7 @@ The tool should be invoked via a simple CLI and set the exit code to indicate if
 
 Covers:
 *   REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
+*   ARCH_CLI: Command Line interface
 
 ### DSG_CLI_RETURN_CODE: Set return Code to indicate success
 
@@ -175,6 +176,7 @@ Set the process' return code to:
 Covers:
 *   REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
 *   UC_CHECK: Check for correct Tracing
+*   ARCH_CLI: Command Line interface
 
 
 ### DSG_CTRL_CONFIG: Single Config File

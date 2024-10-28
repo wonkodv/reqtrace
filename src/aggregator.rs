@@ -15,6 +15,9 @@ pub struct RequirementTrace<'g> {
     /// an empty list means self is not covered along that relation
     pub depends: BTreeMap<&'g Relation, Vec<(&'g Requirement, &'g Location)>>,
 
+    /// Artefact that this requirement originates from
+    pub artefact: &'g Artefact,
+
     /// The requirement that this bundle describes
     pub requirement: &'g Requirement,
 }

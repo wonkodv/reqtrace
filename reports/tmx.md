@@ -3,7 +3,21 @@
 # Tracing Errors
 
 *   Requirement covered with wrong title:
-    Upper Requirement DSG_TRACE_UPWARDS    [doc/requirements/DESIGN.md:310](../doc/requirements/DESIGN.md?plain=1#L310)
+    Upper Requirement ARCH_CLI    [doc/requirements/ARCHITECTURE.md:22](../doc/requirements/ARCHITECTURE.md?plain=1#L22)
+    Lower Requirement DSG_CLI
+    [doc/requirements/DESIGN.md:160](../doc/requirements/DESIGN.md?plain=1#L160)
+    Title of Upper Requirement: Command Line Interface
+    Title used to cover it:     Command Line interface
+    at:                         doc/requirements/DESIGN.md:166
+*   Requirement covered with wrong title:
+    Upper Requirement ARCH_CLI    [doc/requirements/ARCHITECTURE.md:22](../doc/requirements/ARCHITECTURE.md?plain=1#L22)
+    Lower Requirement DSG_CLI_RETURN_CODE
+    [doc/requirements/DESIGN.md:168](../doc/requirements/DESIGN.md?plain=1#L168)
+    Title of Upper Requirement: Command Line Interface
+    Title used to cover it:     Command Line interface
+    at:                         doc/requirements/DESIGN.md:179
+*   Requirement covered with wrong title:
+    Upper Requirement DSG_TRACE_UPWARDS    [doc/requirements/DESIGN.md:312](../doc/requirements/DESIGN.md?plain=1#L312)
     Lower Requirement Tracer::trace_relation
     [src/trace.rs:160:7](../src/trace.rs?plain=1#L160)
     Title of Upper Requirement: Trace upwards using `covers` attribute
@@ -15,32 +29,36 @@
     [doc/requirements/DESIGN.md:48](../doc/requirements/DESIGN.md?plain=1#L48)
 *   [DSG_ART_PARSE](#dsg_art_parse-artefact-parses-input-lazily "Artefact parses input lazily") covers unknown Requirement ARCH_ARTEFACT
     [doc/requirements/DESIGN.md:57](../doc/requirements/DESIGN.md?plain=1#L57)
+*   [DSG_CLI](#dsg_cli-offer-a-simple-command-line-interface "Offer a simple Command Line Interface") covers unknown Requirement ARCH_CLI
+    [doc/requirements/DESIGN.md:166](../doc/requirements/DESIGN.md?plain=1#L166)
+*   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success") covers unknown Requirement ARCH_CLI
+    [doc/requirements/DESIGN.md:179](../doc/requirements/DESIGN.md?plain=1#L179)
 *   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File") covers unknown Requirement ARCH_CONTROLLER
-    [doc/requirements/DESIGN.md:187](../doc/requirements/DESIGN.md?plain=1#L187)
+    [doc/requirements/DESIGN.md:189](../doc/requirements/DESIGN.md?plain=1#L189)
 *   [DSG_GRAPH](#dsg_graph-artefact-graph "Artefact Graph") covers unknown Requirement ARCH_GRAPH
-    [doc/requirements/DESIGN.md:234](../doc/requirements/DESIGN.md?plain=1#L234)
+    [doc/requirements/DESIGN.md:236](../doc/requirements/DESIGN.md?plain=1#L236)
 *   [DSG_GRAPH_FORKS](#dsg_graph_forks-trace-edge-groups "Trace Edge Groups") covers unknown Requirement ARCH_GRAPH
-    [doc/requirements/DESIGN.md:254](../doc/requirements/DESIGN.md?plain=1#L254)
+    [doc/requirements/DESIGN.md:256](../doc/requirements/DESIGN.md?plain=1#L256)
 *   [DSG_GRAPH_VAL_NO_LOOP](#dsg_graph_val_no_loop-validate-that-the-graph-has-no-loops "Validate that the Graph has no Loops") covers unknown Requirement ARCH_GRAPH
-    [doc/requirements/DESIGN.md:262](../doc/requirements/DESIGN.md?plain=1#L262)
+    [doc/requirements/DESIGN.md:264](../doc/requirements/DESIGN.md?plain=1#L264)
 *   [DSG_TRACE](#dsg_trace-walk-the-graph-and-trace-requirements "Walk the Graph and trace requirements") covers unknown Requirement ARCH_TRACE
-    [doc/requirements/DESIGN.md:298](../doc/requirements/DESIGN.md?plain=1#L298)
+    [doc/requirements/DESIGN.md:300](../doc/requirements/DESIGN.md?plain=1#L300)
 *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title") covers unknown Requirement ARCH_TRACE
-    [doc/requirements/DESIGN.md:374](../doc/requirements/DESIGN.md?plain=1#L374)
+    [doc/requirements/DESIGN.md:376](../doc/requirements/DESIGN.md?plain=1#L376)
 *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist") covers unknown Requirement ARCH_TRACE
-    [doc/requirements/DESIGN.md:388](../doc/requirements/DESIGN.md?plain=1#L388)
+    [doc/requirements/DESIGN.md:390](../doc/requirements/DESIGN.md?plain=1#L390)
 *   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist") covers unknown Requirement ARCH_TRACE
-    [doc/requirements/DESIGN.md:399](../doc/requirements/DESIGN.md?plain=1#L399)
+    [doc/requirements/DESIGN.md:401](../doc/requirements/DESIGN.md?plain=1#L401)
 *   [DSG_TRACE_DERIVED](#dsg_trace_derived-record-requirements-that-do-not-cover-anything "Record requirements that do not cover anything") covers unknown Requirement ARCH_TRACE
-    [doc/requirements/DESIGN.md:338](../doc/requirements/DESIGN.md?plain=1#L338)
+    [doc/requirements/DESIGN.md:340](../doc/requirements/DESIGN.md?plain=1#L340)
 *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute") covers unknown Requirement ARCH_TRACE
-    [doc/requirements/DESIGN.md:330](../doc/requirements/DESIGN.md?plain=1#L330)
+    [doc/requirements/DESIGN.md:332](../doc/requirements/DESIGN.md?plain=1#L332)
 *   [DSG_TRACE_UNCOVERED](#dsg_trace_uncovered-record-requirements-that-are-not-completely-covered "Record requirements that are not completely covered") covers unknown Requirement ARCH_TRACE
-    [doc/requirements/DESIGN.md:352](../doc/requirements/DESIGN.md?plain=1#L352)
+    [doc/requirements/DESIGN.md:354](../doc/requirements/DESIGN.md?plain=1#L354)
 *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute") covers unknown Requirement ARCH_TRACE
-    [doc/requirements/DESIGN.md:319](../doc/requirements/DESIGN.md?plain=1#L319)
+    [doc/requirements/DESIGN.md:321](../doc/requirements/DESIGN.md?plain=1#L321)
 *   [DSG_TRACE_VALIDATE_EDGE](#dsg_trace_validate_edge-validate-edge-is-used-at-least-once "Validate Edge is used at least once") covers unknown Requirement ARCH_TRACE
-    [doc/requirements/DESIGN.md:308](../doc/requirements/DESIGN.md?plain=1#L308)
+    [doc/requirements/DESIGN.md:310](../doc/requirements/DESIGN.md?plain=1#L310)
 *   [parse_from_config](#parse_from_config) covers unknown Requirement DSG_ART_PARSE_COLLECT_ERRORS
     [src/controller.rs:132:4](../src/controller.rs?plain=1#L132)
 *   [run_cli_jobs](#run_cli_jobs) covers unknown Requirement DSG_CLI
@@ -84,21 +102,21 @@
 *   [DSG_CONFIG_TOML](#dsg_config_toml-use-a-single-toml-file-as-configuration "Use a Single TOML File as Configuration") covers unknown Requirement REQ_CONFIG
     [doc/requirements/DESIGN.md:152](../doc/requirements/DESIGN.md?plain=1#L152)
 *   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File") covers unknown Requirement REQ_CONFIG
-    [doc/requirements/DESIGN.md:186](../doc/requirements/DESIGN.md?plain=1#L186)
+    [doc/requirements/DESIGN.md:188](../doc/requirements/DESIGN.md?plain=1#L188)
 *   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields") covers unknown Requirement REQ_DELEGATION
     [doc/requirements/DESIGN.md:34](../doc/requirements/DESIGN.md?plain=1#L34)
 *   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields") covers unknown Requirement REQ_DOWN
     [doc/requirements/DESIGN.md:33](../doc/requirements/DESIGN.md?plain=1#L33)
 *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist") covers unknown Requirement REQ_DOWN
-    [doc/requirements/DESIGN.md:387](../doc/requirements/DESIGN.md?plain=1#L387)
+    [doc/requirements/DESIGN.md:389](../doc/requirements/DESIGN.md?plain=1#L389)
 *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute") covers unknown Requirement REQ_DOWN
-    [doc/requirements/DESIGN.md:329](../doc/requirements/DESIGN.md?plain=1#L329)
+    [doc/requirements/DESIGN.md:331](../doc/requirements/DESIGN.md?plain=1#L331)
 *   [DSG_JSON_IMPORT](#dsg_json_import-json-for-importing-requirements "JSON for Importing Requirements") covers unknown Requirement REQ_EXTENSIBLE
     [doc/requirements/DESIGN.md:125](../doc/requirements/DESIGN.md?plain=1#L125)
 *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface") covers unknown Requirement REQ_FAST
-    [doc/requirements/ARCHITECTURE.md:36](../doc/requirements/ARCHITECTURE.md?plain=1#L36)
+    [doc/requirements/ARCHITECTURE.md:32](../doc/requirements/ARCHITECTURE.md?plain=1#L32)
 *   [DSG_JOB_FORMAT](#dsg_job_format-specify-format-of-reports "Specify Format of Reports") covers unknown Requirement REQ_FORMATS
-    [doc/requirements/DESIGN.md:216](../doc/requirements/DESIGN.md?plain=1#L216)
+    [doc/requirements/DESIGN.md:218](../doc/requirements/DESIGN.md?plain=1#L218)
 *   [FMT_ID_v2](#fmt_id_v2-requirement-identifier "Requirement Identifier") covers unknown Requirement REQ_FORMATS
     [doc/requirements/FORMATS.md:39](../doc/requirements/FORMATS.md?plain=1#L39)
 *   [FMT_JSON_REQUIREMENT](#fmt_json_requirement-json-requirements-format "JSON Requirements Format") covers unknown Requirement REQ_FORMATS
@@ -112,41 +130,41 @@
 *   [DSG_EXPORT_FORMAT_MARKDOWN](#dsg_export_format_markdown-export-to-markdown "Export to Markdown") covers unknown Requirement REQ_HUMAN_READABLE
     [doc/requirements/DESIGN.md:143](../doc/requirements/DESIGN.md?plain=1#L143)
 *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface") covers unknown Requirement REQ_INSTALL
-    [doc/requirements/ARCHITECTURE.md:35](../doc/requirements/ARCHITECTURE.md?plain=1#L35)
+    [doc/requirements/ARCHITECTURE.md:31](../doc/requirements/ARCHITECTURE.md?plain=1#L31)
 *   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing") covers unknown Requirement REQ_LATE_ERROR
     [doc/requirements/DESIGN.md:70](../doc/requirements/DESIGN.md?plain=1#L70)
 *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface") covers unknown Requirement REQ_MACHINE_FRIENDLY
-    [doc/requirements/ARCHITECTURE.md:34](../doc/requirements/ARCHITECTURE.md?plain=1#L34)
+    [doc/requirements/ARCHITECTURE.md:30](../doc/requirements/ARCHITECTURE.md?plain=1#L30)
 *   [DSG_CLI](#dsg_cli-offer-a-simple-command-line-interface "Offer a simple Command Line Interface") covers unknown Requirement REQ_MACHINE_FRIENDLY
     [doc/requirements/DESIGN.md:165](../doc/requirements/DESIGN.md?plain=1#L165)
 *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success") covers unknown Requirement REQ_MACHINE_FRIENDLY
-    [doc/requirements/DESIGN.md:176](../doc/requirements/DESIGN.md?plain=1#L176)
+    [doc/requirements/DESIGN.md:177](../doc/requirements/DESIGN.md?plain=1#L177)
 *   [DSG_JSON_EXPORT](#dsg_json_export-json-for-exporting-results "JSON for Exporting Results") covers unknown Requirement REQ_MACHINE_READABLE
     [doc/requirements/DESIGN.md:134](../doc/requirements/DESIGN.md?plain=1#L134)
 *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute") covers unknown Requirement REQ_MATCH_ID
-    [doc/requirements/DESIGN.md:328](../doc/requirements/DESIGN.md?plain=1#L328)
+    [doc/requirements/DESIGN.md:330](../doc/requirements/DESIGN.md?plain=1#L330)
 *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute") covers unknown Requirement REQ_MATCH_ID
-    [doc/requirements/DESIGN.md:317](../doc/requirements/DESIGN.md?plain=1#L317)
+    [doc/requirements/DESIGN.md:319](../doc/requirements/DESIGN.md?plain=1#L319)
 *   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing") covers unknown Requirement REQ_PARSER_ERROR
     [doc/requirements/DESIGN.md:71](../doc/requirements/DESIGN.md?plain=1#L71)
 *   [ARCH_FORMATTER](#arch_formatter-format-output-in-requested-format "Format output in requested Format") covers unknown Requirement REQ_TRACE
-    [doc/requirements/ARCHITECTURE.md:86](../doc/requirements/ARCHITECTURE.md?plain=1#L86)
+    [doc/requirements/ARCHITECTURE.md:62](../doc/requirements/ARCHITECTURE.md?plain=1#L62)
 *   [ARCH_TRACE](#arch_trace-tracer "Tracer") covers unknown Requirement REQ_TRACE
-    [doc/requirements/ARCHITECTURE.md:74](../doc/requirements/ARCHITECTURE.md?plain=1#L74)
+    [doc/requirements/ARCHITECTURE.md:54](../doc/requirements/ARCHITECTURE.md?plain=1#L54)
 *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title") covers unknown Requirement REQ_TRACE
-    [doc/requirements/DESIGN.md:372](../doc/requirements/DESIGN.md?plain=1#L372)
+    [doc/requirements/DESIGN.md:374](../doc/requirements/DESIGN.md?plain=1#L374)
 *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist") covers unknown Requirement REQ_TRACE
-    [doc/requirements/DESIGN.md:386](../doc/requirements/DESIGN.md?plain=1#L386)
+    [doc/requirements/DESIGN.md:388](../doc/requirements/DESIGN.md?plain=1#L388)
 *   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist") covers unknown Requirement REQ_TRACE
-    [doc/requirements/DESIGN.md:397](../doc/requirements/DESIGN.md?plain=1#L397)
+    [doc/requirements/DESIGN.md:399](../doc/requirements/DESIGN.md?plain=1#L399)
 *   [DSG_TRACE_DERIVED](#dsg_trace_derived-record-requirements-that-do-not-cover-anything "Record requirements that do not cover anything") covers unknown Requirement REQ_TRACE
-    [doc/requirements/DESIGN.md:337](../doc/requirements/DESIGN.md?plain=1#L337)
+    [doc/requirements/DESIGN.md:339](../doc/requirements/DESIGN.md?plain=1#L339)
 *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute") covers unknown Requirement REQ_TRACE
-    [doc/requirements/DESIGN.md:327](../doc/requirements/DESIGN.md?plain=1#L327)
+    [doc/requirements/DESIGN.md:329](../doc/requirements/DESIGN.md?plain=1#L329)
 *   [DSG_TRACE_UNCOVERED](#dsg_trace_uncovered-record-requirements-that-are-not-completely-covered "Record requirements that are not completely covered") covers unknown Requirement REQ_TRACE
-    [doc/requirements/DESIGN.md:351](../doc/requirements/DESIGN.md?plain=1#L351)
+    [doc/requirements/DESIGN.md:353](../doc/requirements/DESIGN.md?plain=1#L353)
 *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute") covers unknown Requirement REQ_TRACE
-    [doc/requirements/DESIGN.md:316](../doc/requirements/DESIGN.md?plain=1#L316)
+    [doc/requirements/DESIGN.md:318](../doc/requirements/DESIGN.md?plain=1#L318)
 *   [FMT_FILE_ENCODINGS](#fmt_file_encodings-handle-file-encodings "Handle File Encodings") covers unknown Requirement REQ_UNICODE_SAFE
     [doc/requirements/FORMATS.md:54](../doc/requirements/FORMATS.md?plain=1#L54)
 *   [FMT_UNICODE_NORMALIZE](#fmt_unicode_normalize-normalize-unicode-during-read "Normalize Unicode during read") covers unknown Requirement REQ_UNICODE_SAFE
@@ -154,27 +172,27 @@
 *   [DSG_ART_PARSE_DETECT_DUPLICATE](#dsg_art_parse_detect_duplicate-detect-duplicates "Detect duplicates") covers unknown Requirement REQ_UNIQUE_ID_v2
     [doc/requirements/DESIGN.md:64](../doc/requirements/DESIGN.md?plain=1#L64)
 *   [DSG_TRACE_DETECT_DUPLICATE](#dsg_trace_detect_duplicate-detect-duplicate-requirements-in-different-artefacts "Detect duplicate Requirements in different Artefacts") covers unknown Requirement REQ_UNIQUE_ID_v2
-    [doc/requirements/DESIGN.md:410](../doc/requirements/DESIGN.md?plain=1#L410)
+    [doc/requirements/DESIGN.md:412](../doc/requirements/DESIGN.md?plain=1#L412)
 *   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields") covers unknown Requirement REQ_UP
     [doc/requirements/DESIGN.md:32](../doc/requirements/DESIGN.md?plain=1#L32)
 *   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist") covers unknown Requirement REQ_UP
-    [doc/requirements/DESIGN.md:398](../doc/requirements/DESIGN.md?plain=1#L398)
-*   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute") covers unknown Requirement REQ_UP
-    [doc/requirements/DESIGN.md:318](../doc/requirements/DESIGN.md?plain=1#L318)
-*   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist") covers unknown Requirement REQ_VAL_COVERAGE
-    [doc/requirements/DESIGN.md:389](../doc/requirements/DESIGN.md?plain=1#L389)
-*   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist") covers unknown Requirement REQ_VAL_COVERAGE
     [doc/requirements/DESIGN.md:400](../doc/requirements/DESIGN.md?plain=1#L400)
+*   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute") covers unknown Requirement REQ_UP
+    [doc/requirements/DESIGN.md:320](../doc/requirements/DESIGN.md?plain=1#L320)
+*   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist") covers unknown Requirement REQ_VAL_COVERAGE
+    [doc/requirements/DESIGN.md:391](../doc/requirements/DESIGN.md?plain=1#L391)
+*   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist") covers unknown Requirement REQ_VAL_COVERAGE
+    [doc/requirements/DESIGN.md:402](../doc/requirements/DESIGN.md?plain=1#L402)
 *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title") covers unknown Requirement REQ_VAL_TITLE
-    [doc/requirements/DESIGN.md:373](../doc/requirements/DESIGN.md?plain=1#L373)
+    [doc/requirements/DESIGN.md:375](../doc/requirements/DESIGN.md?plain=1#L375)
 *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success") covers unknown Requirement UC_CHECK
-    [doc/requirements/DESIGN.md:177](../doc/requirements/DESIGN.md?plain=1#L177)
+    [doc/requirements/DESIGN.md:178](../doc/requirements/DESIGN.md?plain=1#L178)
 *   [DSG_JOB_PARSE](#dsg_job_parse-parse-all-artefacts "Parse all Artefacts") covers unknown Requirement UC_PARSE
-    [doc/requirements/DESIGN.md:203](../doc/requirements/DESIGN.md?plain=1#L203)
+    [doc/requirements/DESIGN.md:205](../doc/requirements/DESIGN.md?plain=1#L205)
 *   [ARCH_TRACE](#arch_trace-tracer "Tracer") covers unknown Requirement UC_TMX
-    [doc/requirements/ARCHITECTURE.md:75](../doc/requirements/ARCHITECTURE.md?plain=1#L75)
+    [doc/requirements/ARCHITECTURE.md:55](../doc/requirements/ARCHITECTURE.md?plain=1#L55)
 *   [DSG_JOB_TRACE](#dsg_job_trace-trace-requirements "Trace Requirements") covers unknown Requirement UC_TMX
-    [doc/requirements/DESIGN.md:209](../doc/requirements/DESIGN.md?plain=1#L209)
+    [doc/requirements/DESIGN.md:211](../doc/requirements/DESIGN.md?plain=1#L211)
 
 
 # Uncovered Requirements
@@ -186,10 +204,10 @@
 
 ## architecture => [design]
 
-*   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
 *   [ARCH_FORMATTER](#arch_formatter-format-output-in-requested-format "Format output in requested Format")
 *   [ARCH_PARSER](#arch_parser-parser "Parser")
-*   [ARCH_TRACING](#arch_tracing-tracing-information "Tracing Information")
+*   [ARCH_REQUIREMENT](#arch_requirement-requirement "Requirement")
+*   [ARCH_TRACED_GRAPH](#arch_traced_graph-tracing-information-of-grpah "Tracing Information of Grpah")
 
 ## design => [formats, code]
 
@@ -238,7 +256,8 @@
 *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
 *   [ARCH_GRAPH](#arch_graph-graph "Graph")
 *   [ARCH_PARSER](#arch_parser-parser "Parser")
-*   [ARCH_TRACING](#arch_tracing-tracing-information "Tracing Information")
+*   [ARCH_REQUIREMENT](#arch_requirement-requirement "Requirement")
+*   [ARCH_TRACED_GRAPH](#arch_traced_graph-tracing-information-of-grpah "Tracing Information of Grpah")
 
 ## design
 
@@ -263,10 +282,11 @@
 
 ## ARCH_ARTEFACT: Artefact
 
-Origin: [doc/requirements/ARCHITECTURE.md:49](../doc/requirements/ARCHITECTURE.md?plain=1#L49)
+Origin: [doc/requirements/ARCHITECTURE.md:83](../doc/requirements/ARCHITECTURE.md?plain=1#L83)
 
 
 An Artefact is a list of requirements, parsed from one or more files by a parser
+
 
 
 
@@ -285,7 +305,7 @@ Downwards Tracing:
 
 ## ARCH_CLI: Command Line Interface
 
-Origin: [doc/requirements/ARCHITECTURE.md:26](../doc/requirements/ARCHITECTURE.md?plain=1#L26)
+Origin: [doc/requirements/ARCHITECTURE.md:22](../doc/requirements/ARCHITECTURE.md?plain=1#L22)
 
 
 All functionality of the tool is exposed in a simple command line interface.
@@ -298,19 +318,22 @@ and generation of complicated output formats
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_FAST](#req_fast-fast "Fast")
-        Reference: [doc/requirements/ARCHITECTURE.md:36](../doc/requirements/ARCHITECTURE.md?plain=1#L36)
+        Reference: [doc/requirements/ARCHITECTURE.md:32](../doc/requirements/ARCHITECTURE.md?plain=1#L32)
     *   [REQ_INSTALL](#req_install-easy-to-install "Easy to install")
-        Reference: [doc/requirements/ARCHITECTURE.md:35](../doc/requirements/ARCHITECTURE.md?plain=1#L35)
+        Reference: [doc/requirements/ARCHITECTURE.md:31](../doc/requirements/ARCHITECTURE.md?plain=1#L31)
     *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
-        Reference: [doc/requirements/ARCHITECTURE.md:34](../doc/requirements/ARCHITECTURE.md?plain=1#L34)
+        Reference: [doc/requirements/ARCHITECTURE.md:30](../doc/requirements/ARCHITECTURE.md?plain=1#L30)
 
 Downwards Tracing:
 *   architecture => [design]
-    *    UNCOVERED
+    *   [DSG_CLI](#dsg_cli-offer-a-simple-command-line-interface "Offer a simple Command Line Interface")
+        Reference: [doc/requirements/DESIGN.md:166](../doc/requirements/DESIGN.md?plain=1#L166)
+    *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
+        Reference: [doc/requirements/DESIGN.md:179](../doc/requirements/DESIGN.md?plain=1#L179)
 
 ## ARCH_CONTROLLER: Controller
 
-Origin: [doc/requirements/ARCHITECTURE.md:38](../doc/requirements/ARCHITECTURE.md?plain=1#L38)
+Origin: [doc/requirements/ARCHITECTURE.md:34](../doc/requirements/ARCHITECTURE.md?plain=1#L34)
 
 
 The controller orchestrates the other components into a pipeline
@@ -330,11 +353,11 @@ Upwards Tracing:
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File")
-        Reference: [doc/requirements/DESIGN.md:187](../doc/requirements/DESIGN.md?plain=1#L187)
+        Reference: [doc/requirements/DESIGN.md:189](../doc/requirements/DESIGN.md?plain=1#L189)
 
 ## ARCH_FORMATTER: Format output in requested Format
 
-Origin: [doc/requirements/ARCHITECTURE.md:81](../doc/requirements/ARCHITECTURE.md?plain=1#L81)
+Origin: [doc/requirements/ARCHITECTURE.md:57](../doc/requirements/ARCHITECTURE.md?plain=1#L57)
 
 
 The formatter takes Artefacts, the Graph, the Tracing or a list of Errors and turns them into machine or human readable form.
@@ -344,7 +367,7 @@ The formatter takes Artefacts, the Graph, the Tracing or a list of Errors and tu
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/ARCHITECTURE.md:86](../doc/requirements/ARCHITECTURE.md?plain=1#L86)
+        Reference: [doc/requirements/ARCHITECTURE.md:62](../doc/requirements/ARCHITECTURE.md?plain=1#L62)
 
 Downwards Tracing:
 *   architecture => [design]
@@ -352,7 +375,7 @@ Downwards Tracing:
 
 ## ARCH_GRAPH: Graph
 
-Origin: [doc/requirements/ARCHITECTURE.md:57](../doc/requirements/ARCHITECTURE.md?plain=1#L57)
+Origin: [doc/requirements/ARCHITECTURE.md:88](../doc/requirements/ARCHITECTURE.md?plain=1#L88)
 
 
 The Graph organizes Artefacts into a directed graph without loops.
@@ -373,15 +396,15 @@ Upwards Tracing:
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_GRAPH](#dsg_graph-artefact-graph "Artefact Graph")
-        Reference: [doc/requirements/DESIGN.md:234](../doc/requirements/DESIGN.md?plain=1#L234)
+        Reference: [doc/requirements/DESIGN.md:236](../doc/requirements/DESIGN.md?plain=1#L236)
     *   [DSG_GRAPH_FORKS](#dsg_graph_forks-trace-edge-groups "Trace Edge Groups")
-        Reference: [doc/requirements/DESIGN.md:254](../doc/requirements/DESIGN.md?plain=1#L254)
+        Reference: [doc/requirements/DESIGN.md:256](../doc/requirements/DESIGN.md?plain=1#L256)
     *   [DSG_GRAPH_VAL_NO_LOOP](#dsg_graph_val_no_loop-validate-that-the-graph-has-no-loops "Validate that the Graph has no Loops")
-        Reference: [doc/requirements/DESIGN.md:262](../doc/requirements/DESIGN.md?plain=1#L262)
+        Reference: [doc/requirements/DESIGN.md:264](../doc/requirements/DESIGN.md?plain=1#L264)
 
 ## ARCH_PARSER: Parser
 
-Origin: [doc/requirements/ARCHITECTURE.md:53](../doc/requirements/ARCHITECTURE.md?plain=1#L53)
+Origin: [doc/requirements/ARCHITECTURE.md:45](../doc/requirements/ARCHITECTURE.md?plain=1#L45)
 
 
 A Parser processes an input file and emits Requirements
@@ -396,9 +419,30 @@ Downwards Tracing:
 *   architecture => [design]
     *    UNCOVERED
 
+## ARCH_REQUIREMENT: Requirement
+
+Origin: [doc/requirements/ARCHITECTURE.md:74](../doc/requirements/ARCHITECTURE.md?plain=1#L74)
+
+
+A Requirement is the basic unit of information that this tool operates on.
+A Requirement object stores one typical software requirement (for example
+"DSG_CLI_RETURN_CODE")
+
+(for example: `main_rc`  which covers DSG_CLI_RETURN_CODE)
+
+
+
+Upwards Tracing:
+*   requirements => [design, formats, architecture]
+    *   Derived
+
+Downwards Tracing:
+*   architecture => [design]
+    *    UNCOVERED
+
 ## ARCH_TRACE: Tracer
 
-Origin: [doc/requirements/ARCHITECTURE.md:69](../doc/requirements/ARCHITECTURE.md?plain=1#L69)
+Origin: [doc/requirements/ARCHITECTURE.md:49](../doc/requirements/ARCHITECTURE.md?plain=1#L49)
 
 
 The tracer walks the graph and calculates tracing information
@@ -408,38 +452,39 @@ The tracer walks the graph and calculates tracing information
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/ARCHITECTURE.md:74](../doc/requirements/ARCHITECTURE.md?plain=1#L74)
+        Reference: [doc/requirements/ARCHITECTURE.md:54](../doc/requirements/ARCHITECTURE.md?plain=1#L54)
     *   [UC_TMX](#uc_tmx-create-traceability-matrix "Create Traceability Matrix")
-        Reference: [doc/requirements/ARCHITECTURE.md:75](../doc/requirements/ARCHITECTURE.md?plain=1#L75)
+        Reference: [doc/requirements/ARCHITECTURE.md:55](../doc/requirements/ARCHITECTURE.md?plain=1#L55)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_TRACE](#dsg_trace-walk-the-graph-and-trace-requirements "Walk the Graph and trace requirements")
-        Reference: [doc/requirements/DESIGN.md:298](../doc/requirements/DESIGN.md?plain=1#L298)
+        Reference: [doc/requirements/DESIGN.md:300](../doc/requirements/DESIGN.md?plain=1#L300)
     *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title")
-        Reference: [doc/requirements/DESIGN.md:374](../doc/requirements/DESIGN.md?plain=1#L374)
+        Reference: [doc/requirements/DESIGN.md:376](../doc/requirements/DESIGN.md?plain=1#L376)
     *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist")
-        Reference: [doc/requirements/DESIGN.md:388](../doc/requirements/DESIGN.md?plain=1#L388)
+        Reference: [doc/requirements/DESIGN.md:390](../doc/requirements/DESIGN.md?plain=1#L390)
     *   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist")
-        Reference: [doc/requirements/DESIGN.md:399](../doc/requirements/DESIGN.md?plain=1#L399)
+        Reference: [doc/requirements/DESIGN.md:401](../doc/requirements/DESIGN.md?plain=1#L401)
     *   [DSG_TRACE_DERIVED](#dsg_trace_derived-record-requirements-that-do-not-cover-anything "Record requirements that do not cover anything")
-        Reference: [doc/requirements/DESIGN.md:338](../doc/requirements/DESIGN.md?plain=1#L338)
+        Reference: [doc/requirements/DESIGN.md:340](../doc/requirements/DESIGN.md?plain=1#L340)
     *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute")
-        Reference: [doc/requirements/DESIGN.md:330](../doc/requirements/DESIGN.md?plain=1#L330)
+        Reference: [doc/requirements/DESIGN.md:332](../doc/requirements/DESIGN.md?plain=1#L332)
     *   [DSG_TRACE_UNCOVERED](#dsg_trace_uncovered-record-requirements-that-are-not-completely-covered "Record requirements that are not completely covered")
-        Reference: [doc/requirements/DESIGN.md:352](../doc/requirements/DESIGN.md?plain=1#L352)
+        Reference: [doc/requirements/DESIGN.md:354](../doc/requirements/DESIGN.md?plain=1#L354)
     *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute")
-        Reference: [doc/requirements/DESIGN.md:319](../doc/requirements/DESIGN.md?plain=1#L319)
+        Reference: [doc/requirements/DESIGN.md:321](../doc/requirements/DESIGN.md?plain=1#L321)
     *   [DSG_TRACE_VALIDATE_EDGE](#dsg_trace_validate_edge-validate-edge-is-used-at-least-once "Validate Edge is used at least once")
-        Reference: [doc/requirements/DESIGN.md:308](../doc/requirements/DESIGN.md?plain=1#L308)
+        Reference: [doc/requirements/DESIGN.md:310](../doc/requirements/DESIGN.md?plain=1#L310)
 
-## ARCH_TRACING: Tracing Information
+## ARCH_TRACED_GRAPH: Tracing Information of Grpah
 
-Origin: [doc/requirements/ARCHITECTURE.md:77](../doc/requirements/ARCHITECTURE.md?plain=1#L77)
+Origin: [doc/requirements/ARCHITECTURE.md:100](../doc/requirements/ARCHITECTURE.md?plain=1#L100)
 
 
+The Traced Graph holds all the information of the graph, along with tracing information
+in a 
 A Tracing holds a Graph of Artefacts and all the Information about which requirements cover which, along which edges of the graph.
-
 
 
 Upwards Tracing:
@@ -740,6 +785,8 @@ The tool should be invoked via a simple CLI and set the exit code to indicate if
 
 Upwards Tracing:
 *   architecture => [design]
+    *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
+        Reference: [doc/requirements/DESIGN.md:166](../doc/requirements/DESIGN.md?plain=1#L166)
 *   requirements => [design, formats, architecture]
     *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
         Reference: [doc/requirements/DESIGN.md:165](../doc/requirements/DESIGN.md?plain=1#L165)
@@ -751,7 +798,7 @@ Downwards Tracing:
 
 ## DSG_CLI_RETURN_CODE: Set return Code to indicate success
 
-Origin: [doc/requirements/DESIGN.md:167](../doc/requirements/DESIGN.md?plain=1#L167)
+Origin: [doc/requirements/DESIGN.md:168](../doc/requirements/DESIGN.md?plain=1#L168)
 
 
 Set the process' return code to:
@@ -764,11 +811,13 @@ Set the process' return code to:
 
 Upwards Tracing:
 *   architecture => [design]
+    *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
+        Reference: [doc/requirements/DESIGN.md:179](../doc/requirements/DESIGN.md?plain=1#L179)
 *   requirements => [design, formats, architecture]
     *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
-        Reference: [doc/requirements/DESIGN.md:176](../doc/requirements/DESIGN.md?plain=1#L176)
-    *   [UC_CHECK](#uc_check-check-for-correct-tracing "Check for correct Tracing")
         Reference: [doc/requirements/DESIGN.md:177](../doc/requirements/DESIGN.md?plain=1#L177)
+    *   [UC_CHECK](#uc_check-check-for-correct-tracing "Check for correct Tracing")
+        Reference: [doc/requirements/DESIGN.md:178](../doc/requirements/DESIGN.md?plain=1#L178)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -799,7 +848,7 @@ Downwards Tracing:
 
 ## DSG_CTRL_CONFIG: Single Config File
 
-Origin: [doc/requirements/DESIGN.md:180](../doc/requirements/DESIGN.md?plain=1#L180)
+Origin: [doc/requirements/DESIGN.md:182](../doc/requirements/DESIGN.md?plain=1#L182)
 
 
 The Controller reads all information about the project structure from one single
@@ -810,10 +859,10 @@ file.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/DESIGN.md:187](../doc/requirements/DESIGN.md?plain=1#L187)
+        Reference: [doc/requirements/DESIGN.md:189](../doc/requirements/DESIGN.md?plain=1#L189)
 *   requirements => [design, formats, architecture]
     *   [REQ_CONFIG](#req_config-simple-configuration-in-one-file "Simple Configuration in One File")
-        Reference: [doc/requirements/DESIGN.md:186](../doc/requirements/DESIGN.md?plain=1#L186)
+        Reference: [doc/requirements/DESIGN.md:188](../doc/requirements/DESIGN.md?plain=1#L188)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -844,7 +893,7 @@ Downwards Tracing:
 
 ## DSG_GRAPH: Artefact Graph
 
-Origin: [doc/requirements/DESIGN.md:228](../doc/requirements/DESIGN.md?plain=1#L228)
+Origin: [doc/requirements/DESIGN.md:230](../doc/requirements/DESIGN.md?plain=1#L230)
 
 
 The Class `Graph` holds a graph of `Artefact` objects as
@@ -855,7 +904,7 @@ given by the Configuration.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_GRAPH](#arch_graph-graph "Graph")
-        Reference: [doc/requirements/DESIGN.md:234](../doc/requirements/DESIGN.md?plain=1#L234)
+        Reference: [doc/requirements/DESIGN.md:236](../doc/requirements/DESIGN.md?plain=1#L236)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -864,7 +913,7 @@ Downwards Tracing:
 
 ## DSG_GRAPH_FORKS: Trace Edge Groups
 
-Origin: [doc/requirements/DESIGN.md:236](../doc/requirements/DESIGN.md?plain=1#L236)
+Origin: [doc/requirements/DESIGN.md:238](../doc/requirements/DESIGN.md?plain=1#L238)
 
 
 The Graph of artefacts has the following properties:
@@ -885,7 +934,7 @@ below a separate fork below `DESIGN.md`
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_GRAPH](#arch_graph-graph "Graph")
-        Reference: [doc/requirements/DESIGN.md:254](../doc/requirements/DESIGN.md?plain=1#L254)
+        Reference: [doc/requirements/DESIGN.md:256](../doc/requirements/DESIGN.md?plain=1#L256)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -894,7 +943,7 @@ Downwards Tracing:
 
 ## DSG_GRAPH_VAL_NO_LOOP: Validate that the Graph has no Loops
 
-Origin: [doc/requirements/DESIGN.md:256](../doc/requirements/DESIGN.md?plain=1#L256)
+Origin: [doc/requirements/DESIGN.md:258](../doc/requirements/DESIGN.md?plain=1#L258)
 
 
 After assembling of the graph, if a loop can be found in the graph of artefacts, an error is emitted.
@@ -905,7 +954,7 @@ This prevents further tracing.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_GRAPH](#arch_graph-graph "Graph")
-        Reference: [doc/requirements/DESIGN.md:262](../doc/requirements/DESIGN.md?plain=1#L262)
+        Reference: [doc/requirements/DESIGN.md:264](../doc/requirements/DESIGN.md?plain=1#L264)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -914,7 +963,7 @@ Downwards Tracing:
 
 ## DSG_JOBS: Jobs control what operations to perform
 
-Origin: [doc/requirements/DESIGN.md:193](../doc/requirements/DESIGN.md?plain=1#L193)
+Origin: [doc/requirements/DESIGN.md:195](../doc/requirements/DESIGN.md?plain=1#L195)
 
 
 One or more Jobs can be configured. Each Job specifies an operation to perform, the format that results
@@ -934,7 +983,7 @@ Downwards Tracing:
 
 ## DSG_JOB_FILE: Specify File to Store Reports in
 
-Origin: [doc/requirements/DESIGN.md:218](../doc/requirements/DESIGN.md?plain=1#L218)
+Origin: [doc/requirements/DESIGN.md:220](../doc/requirements/DESIGN.md?plain=1#L220)
 
 
 For each job, user can choose the file, that results are stored in, treating `-` as the stdout channel.
@@ -952,7 +1001,7 @@ Downwards Tracing:
 
 ## DSG_JOB_FORMAT: Specify Format of Reports
 
-Origin: [doc/requirements/DESIGN.md:211](../doc/requirements/DESIGN.md?plain=1#L211)
+Origin: [doc/requirements/DESIGN.md:213](../doc/requirements/DESIGN.md?plain=1#L213)
 
 
 For each job, user can choose the format that results are presented in
@@ -963,7 +1012,7 @@ Upwards Tracing:
 *   architecture => [design]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/DESIGN.md:216](../doc/requirements/DESIGN.md?plain=1#L216)
+        Reference: [doc/requirements/DESIGN.md:218](../doc/requirements/DESIGN.md?plain=1#L218)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -971,7 +1020,7 @@ Downwards Tracing:
 
 ## DSG_JOB_PARSE: Parse all Artefacts
 
-Origin: [doc/requirements/DESIGN.md:198](../doc/requirements/DESIGN.md?plain=1#L198)
+Origin: [doc/requirements/DESIGN.md:200](../doc/requirements/DESIGN.md?plain=1#L200)
 
 
 Parse the Artefacts, see infos about (untraced) requirements and parsing
@@ -983,7 +1032,7 @@ Upwards Tracing:
 *   architecture => [design]
 *   requirements => [design, formats, architecture]
     *   [UC_PARSE](#uc_parse-parse-artefacts "Parse Artefacts")
-        Reference: [doc/requirements/DESIGN.md:203](../doc/requirements/DESIGN.md?plain=1#L203)
+        Reference: [doc/requirements/DESIGN.md:205](../doc/requirements/DESIGN.md?plain=1#L205)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -992,7 +1041,7 @@ Downwards Tracing:
 
 ## DSG_JOB_RETURN_CODE: Return Code Indicates if Tracing is Correct
 
-Origin: [doc/requirements/DESIGN.md:222](../doc/requirements/DESIGN.md?plain=1#L222)
+Origin: [doc/requirements/DESIGN.md:224](../doc/requirements/DESIGN.md?plain=1#L224)
 
 
 For each job, user can choose, if the return code should be set or not,
@@ -1013,7 +1062,7 @@ Downwards Tracing:
 
 ## DSG_JOB_TRACE: Trace Requirements
 
-Origin: [doc/requirements/DESIGN.md:205](../doc/requirements/DESIGN.md?plain=1#L205)
+Origin: [doc/requirements/DESIGN.md:207](../doc/requirements/DESIGN.md?plain=1#L207)
 
 
 Trace Requirements and view info about traced requirements and errors
@@ -1024,7 +1073,7 @@ Upwards Tracing:
 *   architecture => [design]
 *   requirements => [design, formats, architecture]
     *   [UC_TMX](#uc_tmx-create-traceability-matrix "Create Traceability Matrix")
-        Reference: [doc/requirements/DESIGN.md:209](../doc/requirements/DESIGN.md?plain=1#L209)
+        Reference: [doc/requirements/DESIGN.md:211](../doc/requirements/DESIGN.md?plain=1#L211)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1117,7 +1166,7 @@ Downwards Tracing:
 
 ## DSG_TRACE: Walk the Graph and trace requirements
 
-Origin: [doc/requirements/DESIGN.md:268](../doc/requirements/DESIGN.md?plain=1#L268)
+Origin: [doc/requirements/DESIGN.md:270](../doc/requirements/DESIGN.md?plain=1#L270)
 
 
 Tracing is performed by inspecting all forks of the graph, recording
@@ -1150,7 +1199,7 @@ encountered on the way into errors.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:298](../doc/requirements/DESIGN.md?plain=1#L298)
+        Reference: [doc/requirements/DESIGN.md:300](../doc/requirements/DESIGN.md?plain=1#L300)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -1159,7 +1208,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_CHECK_TITLE: When tracing upwards or downwards match title
 
-Origin: [doc/requirements/DESIGN.md:354](../doc/requirements/DESIGN.md?plain=1#L354)
+Origin: [doc/requirements/DESIGN.md:356](../doc/requirements/DESIGN.md?plain=1#L356)
 
 
 When tracing Upwards or Downwards, emit an error if the title of the coverage does
@@ -1182,12 +1231,12 @@ Example:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:374](../doc/requirements/DESIGN.md?plain=1#L374)
+        Reference: [doc/requirements/DESIGN.md:376](../doc/requirements/DESIGN.md?plain=1#L376)
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:372](../doc/requirements/DESIGN.md?plain=1#L372)
+        Reference: [doc/requirements/DESIGN.md:374](../doc/requirements/DESIGN.md?plain=1#L374)
     *   [REQ_VAL_TITLE](#req_val_title-check-matching-title "Check matching title")
-        Reference: [doc/requirements/DESIGN.md:373](../doc/requirements/DESIGN.md?plain=1#L373)
+        Reference: [doc/requirements/DESIGN.md:375](../doc/requirements/DESIGN.md?plain=1#L375)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1195,7 +1244,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_COVERS_EXIST: Cover Links must exist
 
-Origin: [doc/requirements/DESIGN.md:376](../doc/requirements/DESIGN.md?plain=1#L376)
+Origin: [doc/requirements/DESIGN.md:378](../doc/requirements/DESIGN.md?plain=1#L378)
 
 
 For each Requirement that is encountered, store all "covers" references
@@ -1209,14 +1258,14 @@ that reference, it is removed from the list of invalid references.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:388](../doc/requirements/DESIGN.md?plain=1#L388)
+        Reference: [doc/requirements/DESIGN.md:390](../doc/requirements/DESIGN.md?plain=1#L390)
 *   requirements => [design, formats, architecture]
     *   [REQ_DOWN](#req_down-downward-coverage "Downward Coverage")
-        Reference: [doc/requirements/DESIGN.md:387](../doc/requirements/DESIGN.md?plain=1#L387)
-    *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:386](../doc/requirements/DESIGN.md?plain=1#L386)
-    *   [REQ_VAL_COVERAGE](#req_val_coverage-validate-coverage "Validate Coverage")
         Reference: [doc/requirements/DESIGN.md:389](../doc/requirements/DESIGN.md?plain=1#L389)
+    *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
+        Reference: [doc/requirements/DESIGN.md:388](../doc/requirements/DESIGN.md?plain=1#L388)
+    *   [REQ_VAL_COVERAGE](#req_val_coverage-validate-coverage "Validate Coverage")
+        Reference: [doc/requirements/DESIGN.md:391](../doc/requirements/DESIGN.md?plain=1#L391)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1227,7 +1276,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_DEPENDS_EXIST: Depend Links must exist
 
-Origin: [doc/requirements/DESIGN.md:391](../doc/requirements/DESIGN.md?plain=1#L391)
+Origin: [doc/requirements/DESIGN.md:393](../doc/requirements/DESIGN.md?plain=1#L393)
 
 
 Add all "depends" references to a list of invalid references and remove
@@ -1238,14 +1287,14 @@ when traced. See DSG_TRACE_COVERS_EXIST.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:399](../doc/requirements/DESIGN.md?plain=1#L399)
+        Reference: [doc/requirements/DESIGN.md:401](../doc/requirements/DESIGN.md?plain=1#L401)
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:397](../doc/requirements/DESIGN.md?plain=1#L397)
+        Reference: [doc/requirements/DESIGN.md:399](../doc/requirements/DESIGN.md?plain=1#L399)
     *   [REQ_UP](#req_up-upward-coverage "Upward Coverage")
-        Reference: [doc/requirements/DESIGN.md:398](../doc/requirements/DESIGN.md?plain=1#L398)
-    *   [REQ_VAL_COVERAGE](#req_val_coverage-validate-coverage "Validate Coverage")
         Reference: [doc/requirements/DESIGN.md:400](../doc/requirements/DESIGN.md?plain=1#L400)
+    *   [REQ_VAL_COVERAGE](#req_val_coverage-validate-coverage "Validate Coverage")
+        Reference: [doc/requirements/DESIGN.md:402](../doc/requirements/DESIGN.md?plain=1#L402)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1256,7 +1305,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_DERIVED: Record requirements that do not cover anything
 
-Origin: [doc/requirements/DESIGN.md:332](../doc/requirements/DESIGN.md?plain=1#L332)
+Origin: [doc/requirements/DESIGN.md:334](../doc/requirements/DESIGN.md?plain=1#L334)
 
 
 Requirement R is derived if there is no Requirement U so that R covers U.
@@ -1266,10 +1315,10 @@ Requirement R is derived if there is no Requirement U so that R covers U.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:338](../doc/requirements/DESIGN.md?plain=1#L338)
+        Reference: [doc/requirements/DESIGN.md:340](../doc/requirements/DESIGN.md?plain=1#L340)
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:337](../doc/requirements/DESIGN.md?plain=1#L337)
+        Reference: [doc/requirements/DESIGN.md:339](../doc/requirements/DESIGN.md?plain=1#L339)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1277,7 +1326,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_DETECT_DUPLICATE: Detect duplicate Requirements in different Artefacts
 
-Origin: [doc/requirements/DESIGN.md:403](../doc/requirements/DESIGN.md?plain=1#L403)
+Origin: [doc/requirements/DESIGN.md:405](../doc/requirements/DESIGN.md?plain=1#L405)
 
 
 While tracing, if there are two requirements the same identifier, log an error.
@@ -1289,7 +1338,7 @@ Upwards Tracing:
 *   architecture => [design]
 *   requirements => [design, formats, architecture]
     *   [REQ_UNIQUE_ID_v2](#req_unique_id_v2-requirements-have-a-unique-identifier "Requirements have a unique Identifier")
-        Reference: [doc/requirements/DESIGN.md:410](../doc/requirements/DESIGN.md?plain=1#L410)
+        Reference: [doc/requirements/DESIGN.md:412](../doc/requirements/DESIGN.md?plain=1#L412)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1298,7 +1347,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_DOWNWARDS: Trace downwards using `depends` attribute
 
-Origin: [doc/requirements/DESIGN.md:321](../doc/requirements/DESIGN.md?plain=1#L321)
+Origin: [doc/requirements/DESIGN.md:323](../doc/requirements/DESIGN.md?plain=1#L323)
 
 
 Requirement U covers Requirement D if D.id appears in U.Depends and
@@ -1309,14 +1358,14 @@ D.Artefact directly traces against U.Artefact
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:330](../doc/requirements/DESIGN.md?plain=1#L330)
+        Reference: [doc/requirements/DESIGN.md:332](../doc/requirements/DESIGN.md?plain=1#L332)
 *   requirements => [design, formats, architecture]
     *   [REQ_DOWN](#req_down-downward-coverage "Downward Coverage")
-        Reference: [doc/requirements/DESIGN.md:329](../doc/requirements/DESIGN.md?plain=1#L329)
+        Reference: [doc/requirements/DESIGN.md:331](../doc/requirements/DESIGN.md?plain=1#L331)
     *   [REQ_MATCH_ID](#req_match_id-match-by-id "Match by ID")
-        Reference: [doc/requirements/DESIGN.md:328](../doc/requirements/DESIGN.md?plain=1#L328)
+        Reference: [doc/requirements/DESIGN.md:330](../doc/requirements/DESIGN.md?plain=1#L330)
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:327](../doc/requirements/DESIGN.md?plain=1#L327)
+        Reference: [doc/requirements/DESIGN.md:329](../doc/requirements/DESIGN.md?plain=1#L329)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1325,7 +1374,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_UNCOVERED: Record requirements that are not completely covered
 
-Origin: [doc/requirements/DESIGN.md:340](../doc/requirements/DESIGN.md?plain=1#L340)
+Origin: [doc/requirements/DESIGN.md:342](../doc/requirements/DESIGN.md?plain=1#L342)
 
 
 Record Requirement R as Uncovered along Fork F if there is no
@@ -1340,10 +1389,10 @@ a FMT requirement).
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:352](../doc/requirements/DESIGN.md?plain=1#L352)
+        Reference: [doc/requirements/DESIGN.md:354](../doc/requirements/DESIGN.md?plain=1#L354)
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:351](../doc/requirements/DESIGN.md?plain=1#L351)
+        Reference: [doc/requirements/DESIGN.md:353](../doc/requirements/DESIGN.md?plain=1#L353)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1351,7 +1400,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_UPWARDS: Trace upwards using `covers` attribute
 
-Origin: [doc/requirements/DESIGN.md:310](../doc/requirements/DESIGN.md?plain=1#L310)
+Origin: [doc/requirements/DESIGN.md:312](../doc/requirements/DESIGN.md?plain=1#L312)
 
 
 Requirement U covers Requirement D if U.id appears in D.Covers and
@@ -1362,14 +1411,14 @@ D.Artefact directly traces against U.Artefact
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:319](../doc/requirements/DESIGN.md?plain=1#L319)
+        Reference: [doc/requirements/DESIGN.md:321](../doc/requirements/DESIGN.md?plain=1#L321)
 *   requirements => [design, formats, architecture]
     *   [REQ_MATCH_ID](#req_match_id-match-by-id "Match by ID")
-        Reference: [doc/requirements/DESIGN.md:317](../doc/requirements/DESIGN.md?plain=1#L317)
+        Reference: [doc/requirements/DESIGN.md:319](../doc/requirements/DESIGN.md?plain=1#L319)
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:316](../doc/requirements/DESIGN.md?plain=1#L316)
-    *   [REQ_UP](#req_up-upward-coverage "Upward Coverage")
         Reference: [doc/requirements/DESIGN.md:318](../doc/requirements/DESIGN.md?plain=1#L318)
+    *   [REQ_UP](#req_up-upward-coverage "Upward Coverage")
+        Reference: [doc/requirements/DESIGN.md:320](../doc/requirements/DESIGN.md?plain=1#L320)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1378,7 +1427,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_VALIDATE_EDGE: Validate Edge is used at least once
 
-Origin: [doc/requirements/DESIGN.md:300](../doc/requirements/DESIGN.md?plain=1#L300)
+Origin: [doc/requirements/DESIGN.md:302](../doc/requirements/DESIGN.md?plain=1#L302)
 
 
 After tracing, if an edge can be found, along which no requirement is
@@ -1390,7 +1439,7 @@ covered, an error is emitted. This is likely a misconfiguration.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:308](../doc/requirements/DESIGN.md?plain=1#L308)
+        Reference: [doc/requirements/DESIGN.md:310](../doc/requirements/DESIGN.md?plain=1#L310)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -1880,7 +1929,7 @@ Downwards Tracing:
     *   [DSG_CONFIG_TOML](#dsg_config_toml-use-a-single-toml-file-as-configuration "Use a Single TOML File as Configuration")
         Reference: [doc/requirements/DESIGN.md:152](../doc/requirements/DESIGN.md?plain=1#L152)
     *   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File")
-        Reference: [doc/requirements/DESIGN.md:186](../doc/requirements/DESIGN.md?plain=1#L186)
+        Reference: [doc/requirements/DESIGN.md:188](../doc/requirements/DESIGN.md?plain=1#L188)
 
 ## REQ_DELEGATION: Coverage Delegation
 
@@ -1923,9 +1972,9 @@ Downwards Tracing:
     *   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields")
         Reference: [doc/requirements/DESIGN.md:33](../doc/requirements/DESIGN.md?plain=1#L33)
     *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist")
-        Reference: [doc/requirements/DESIGN.md:387](../doc/requirements/DESIGN.md?plain=1#L387)
+        Reference: [doc/requirements/DESIGN.md:389](../doc/requirements/DESIGN.md?plain=1#L389)
     *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute")
-        Reference: [doc/requirements/DESIGN.md:329](../doc/requirements/DESIGN.md?plain=1#L329)
+        Reference: [doc/requirements/DESIGN.md:331](../doc/requirements/DESIGN.md?plain=1#L331)
 
 ## REQ_EXTENSIBLE: Extensible Parsing
 
@@ -1964,7 +2013,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/ARCHITECTURE.md:36](../doc/requirements/ARCHITECTURE.md?plain=1#L36)
+        Reference: [doc/requirements/ARCHITECTURE.md:32](../doc/requirements/ARCHITECTURE.md?plain=1#L32)
 
 ## REQ_FORMATS: Well defined Formats
 
@@ -1986,7 +2035,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_JOB_FORMAT](#dsg_job_format-specify-format-of-reports "Specify Format of Reports")
-        Reference: [doc/requirements/DESIGN.md:216](../doc/requirements/DESIGN.md?plain=1#L216)
+        Reference: [doc/requirements/DESIGN.md:218](../doc/requirements/DESIGN.md?plain=1#L218)
     *   [FMT_ID_v2](#fmt_id_v2-requirement-identifier "Requirement Identifier")
         Reference: [doc/requirements/FORMATS.md:39](../doc/requirements/FORMATS.md?plain=1#L39)
     *   [FMT_JSON_REQUIREMENT](#fmt_json_requirement-json-requirements-format "JSON Requirements Format")
@@ -2055,7 +2104,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/ARCHITECTURE.md:35](../doc/requirements/ARCHITECTURE.md?plain=1#L35)
+        Reference: [doc/requirements/ARCHITECTURE.md:31](../doc/requirements/ARCHITECTURE.md?plain=1#L31)
 
 ## REQ_LATE_ERROR: Collect Errors but continue processing
 
@@ -2096,9 +2145,9 @@ Downwards Tracing:
     *   [DSG_CLI](#dsg_cli-offer-a-simple-command-line-interface "Offer a simple Command Line Interface")
         Reference: [doc/requirements/DESIGN.md:165](../doc/requirements/DESIGN.md?plain=1#L165)
     *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
-        Reference: [doc/requirements/DESIGN.md:176](../doc/requirements/DESIGN.md?plain=1#L176)
+        Reference: [doc/requirements/DESIGN.md:177](../doc/requirements/DESIGN.md?plain=1#L177)
     *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/ARCHITECTURE.md:34](../doc/requirements/ARCHITECTURE.md?plain=1#L34)
+        Reference: [doc/requirements/ARCHITECTURE.md:30](../doc/requirements/ARCHITECTURE.md?plain=1#L30)
 
 ## REQ_MACHINE_READABLE: Machine Readable Output
 
@@ -2135,9 +2184,9 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute")
-        Reference: [doc/requirements/DESIGN.md:328](../doc/requirements/DESIGN.md?plain=1#L328)
+        Reference: [doc/requirements/DESIGN.md:330](../doc/requirements/DESIGN.md?plain=1#L330)
     *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute")
-        Reference: [doc/requirements/DESIGN.md:317](../doc/requirements/DESIGN.md?plain=1#L317)
+        Reference: [doc/requirements/DESIGN.md:319](../doc/requirements/DESIGN.md?plain=1#L319)
 
 ## REQ_PARSER_ERROR: Useful Parser Errors
 
@@ -2176,23 +2225,23 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title")
-        Reference: [doc/requirements/DESIGN.md:372](../doc/requirements/DESIGN.md?plain=1#L372)
+        Reference: [doc/requirements/DESIGN.md:374](../doc/requirements/DESIGN.md?plain=1#L374)
     *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist")
-        Reference: [doc/requirements/DESIGN.md:386](../doc/requirements/DESIGN.md?plain=1#L386)
+        Reference: [doc/requirements/DESIGN.md:388](../doc/requirements/DESIGN.md?plain=1#L388)
     *   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist")
-        Reference: [doc/requirements/DESIGN.md:397](../doc/requirements/DESIGN.md?plain=1#L397)
+        Reference: [doc/requirements/DESIGN.md:399](../doc/requirements/DESIGN.md?plain=1#L399)
     *   [DSG_TRACE_DERIVED](#dsg_trace_derived-record-requirements-that-do-not-cover-anything "Record requirements that do not cover anything")
-        Reference: [doc/requirements/DESIGN.md:337](../doc/requirements/DESIGN.md?plain=1#L337)
+        Reference: [doc/requirements/DESIGN.md:339](../doc/requirements/DESIGN.md?plain=1#L339)
     *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute")
-        Reference: [doc/requirements/DESIGN.md:327](../doc/requirements/DESIGN.md?plain=1#L327)
+        Reference: [doc/requirements/DESIGN.md:329](../doc/requirements/DESIGN.md?plain=1#L329)
     *   [DSG_TRACE_UNCOVERED](#dsg_trace_uncovered-record-requirements-that-are-not-completely-covered "Record requirements that are not completely covered")
-        Reference: [doc/requirements/DESIGN.md:351](../doc/requirements/DESIGN.md?plain=1#L351)
+        Reference: [doc/requirements/DESIGN.md:353](../doc/requirements/DESIGN.md?plain=1#L353)
     *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute")
-        Reference: [doc/requirements/DESIGN.md:316](../doc/requirements/DESIGN.md?plain=1#L316)
+        Reference: [doc/requirements/DESIGN.md:318](../doc/requirements/DESIGN.md?plain=1#L318)
     *   [ARCH_FORMATTER](#arch_formatter-format-output-in-requested-format "Format output in requested Format")
-        Reference: [doc/requirements/ARCHITECTURE.md:86](../doc/requirements/ARCHITECTURE.md?plain=1#L86)
+        Reference: [doc/requirements/ARCHITECTURE.md:62](../doc/requirements/ARCHITECTURE.md?plain=1#L62)
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/ARCHITECTURE.md:74](../doc/requirements/ARCHITECTURE.md?plain=1#L74)
+        Reference: [doc/requirements/ARCHITECTURE.md:54](../doc/requirements/ARCHITECTURE.md?plain=1#L54)
 
 ## REQ_UNICODE_SAFE: Sane Handling of unicode
 
@@ -2240,7 +2289,7 @@ Downwards Tracing:
     *   [DSG_ART_PARSE_DETECT_DUPLICATE](#dsg_art_parse_detect_duplicate-detect-duplicates "Detect duplicates")
         Reference: [doc/requirements/DESIGN.md:64](../doc/requirements/DESIGN.md?plain=1#L64)
     *   [DSG_TRACE_DETECT_DUPLICATE](#dsg_trace_detect_duplicate-detect-duplicate-requirements-in-different-artefacts "Detect duplicate Requirements in different Artefacts")
-        Reference: [doc/requirements/DESIGN.md:410](../doc/requirements/DESIGN.md?plain=1#L410)
+        Reference: [doc/requirements/DESIGN.md:412](../doc/requirements/DESIGN.md?plain=1#L412)
 
 ## REQ_UP: Upward Coverage
 
@@ -2262,9 +2311,9 @@ Downwards Tracing:
     *   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields")
         Reference: [doc/requirements/DESIGN.md:32](../doc/requirements/DESIGN.md?plain=1#L32)
     *   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist")
-        Reference: [doc/requirements/DESIGN.md:398](../doc/requirements/DESIGN.md?plain=1#L398)
+        Reference: [doc/requirements/DESIGN.md:400](../doc/requirements/DESIGN.md?plain=1#L400)
     *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute")
-        Reference: [doc/requirements/DESIGN.md:318](../doc/requirements/DESIGN.md?plain=1#L318)
+        Reference: [doc/requirements/DESIGN.md:320](../doc/requirements/DESIGN.md?plain=1#L320)
 
 ## REQ_VAL_COVERAGE: Validate Coverage
 
@@ -2284,9 +2333,9 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist")
-        Reference: [doc/requirements/DESIGN.md:389](../doc/requirements/DESIGN.md?plain=1#L389)
+        Reference: [doc/requirements/DESIGN.md:391](../doc/requirements/DESIGN.md?plain=1#L391)
     *   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist")
-        Reference: [doc/requirements/DESIGN.md:400](../doc/requirements/DESIGN.md?plain=1#L400)
+        Reference: [doc/requirements/DESIGN.md:402](../doc/requirements/DESIGN.md?plain=1#L402)
 
 ## REQ_VAL_TITLE: Check matching title
 
@@ -2331,7 +2380,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title")
-        Reference: [doc/requirements/DESIGN.md:373](../doc/requirements/DESIGN.md?plain=1#L373)
+        Reference: [doc/requirements/DESIGN.md:375](../doc/requirements/DESIGN.md?plain=1#L375)
 
 ## UC_CHECK: Check for correct Tracing
 
@@ -2349,7 +2398,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
-        Reference: [doc/requirements/DESIGN.md:177](../doc/requirements/DESIGN.md?plain=1#L177)
+        Reference: [doc/requirements/DESIGN.md:178](../doc/requirements/DESIGN.md?plain=1#L178)
 
 ## UC_PARSE: Parse Artefacts
 
@@ -2370,7 +2419,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_JOB_PARSE](#dsg_job_parse-parse-all-artefacts "Parse all Artefacts")
-        Reference: [doc/requirements/DESIGN.md:203](../doc/requirements/DESIGN.md?plain=1#L203)
+        Reference: [doc/requirements/DESIGN.md:205](../doc/requirements/DESIGN.md?plain=1#L205)
 
 ## UC_TMX: Create Traceability Matrix
 
@@ -2393,6 +2442,6 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_JOB_TRACE](#dsg_job_trace-trace-requirements "Trace Requirements")
-        Reference: [doc/requirements/DESIGN.md:209](../doc/requirements/DESIGN.md?plain=1#L209)
+        Reference: [doc/requirements/DESIGN.md:211](../doc/requirements/DESIGN.md?plain=1#L211)
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/ARCHITECTURE.md:75](../doc/requirements/ARCHITECTURE.md?plain=1#L75)
+        Reference: [doc/requirements/ARCHITECTURE.md:55](../doc/requirements/ARCHITECTURE.md?plain=1#L55)

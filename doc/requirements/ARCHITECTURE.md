@@ -17,11 +17,7 @@ Data Models
 *   Tracing     Information about which requirement covers which
 
 
-## CLI
-
-
-Command Line Interface is the entry point to obtain tracing information. The
-Information will be looked up or computed and then emitted.
+## Active Components
 
 ### ARCH_CLI: Command Line Interface
 
@@ -35,7 +31,7 @@ Covers:
 *  REQ_INSTALL: Easy to install
 *  REQ_FAST
 
-## ARCH_CONTROLLER: Controller
+### ARCH_CONTROLLER: Controller
 
 The controller orchestrates the other components into a pipeline
 
@@ -46,27 +42,17 @@ The controller orchestrates the other components into a pipeline
 *   Give Graph to Tracer, which computes Tracing Information
 *   Give Artefacts, the Graph, Tracing and any errors to Formatter which puts them into files
 
-## ARCH_ARTEFACT: Artefact
+### ARCH_PARSER: Parser
 
-An Artefact is a list of requirements, parsed from one or more files by a parser
+A Parser processes an input file and emits Requirements.
+There are Parsers for several File formats, dependant on the configuration for an
+input file.
 
-## ARCH_PARSER: Parser
-
-A Parser processes an input file and emits Requirements
-
-## ARCH_GRAPH: Graph
-
-The Graph organizes Artefacts into a directed graph without loops.
-Each Node in the Graph represents a single Artefact. An Edge from Artefact `A`
-to Artefact `B` expresses, that one or more Requirements in `B` cover one or
-more requirements in `A`.
-
-Edges belong to a group. Each requirement in an Artefact must be covered at
-least once for each group of edges that lead out of it.
 Covers:
-*   REQ_TRACE
+*   REQ_EXTENSIBLE: Extensible Parsing
+*   UC_PARSE: Parse Artefacts
 
-## ARCH_TRACE: Tracer
+### ARCH_TRACE: Tracer
 
 The tracer walks the graph and calculates tracing information
 
@@ -74,15 +60,67 @@ Covers:
 *   REQ_TRACE
 *   UC_TMX
 
-## ARCH_TRACING: Tracing Information
-
-A Tracing holds a Graph of Artefacts and all the Information about which requirements cover which, along which edges of the graph.
-
 ### ARCH_FORMATTER: Format output in requested Format
 
 The formatter takes Artefacts, the Graph, the Tracing or a list of Errors and turns them into machine or human readable form.
 
 Covers:
+*   UC_TMX
+*   REQ_HUMAN_READABLE
+*   REQ_MACHINE_READABLE
+
+## Data Models
+
+*   Requirement
+*   Artefact    Description of input files and list of parsed requirements
+*   Graph       Holds a graph of artefacts
+*   Tracing     Information about which requirement covers which
+*
+### ARCH_REQUIREMENT: Requirement
+
+A Requirement is the basic unit of information that this tool operates on.
+A Requirement object stores one typical software requirement (for example
+"DSG_CLI_RETURN_CODE")
+
+A requirement also stores information about purely covering information
+(for example: `main_rc`  which covers DSG_CLI_RETURN_CODE)
+
+### ARCH_ARTEFACT: Artefact
+
+An Artefact is a list of requirements, parsed from one or more files by a parser
+
+
+### ARCH_GRAPH: Graph
+
+The Graph organizes Artefacts into a directed graph:
+
+Each Node in the Graph represents:
+*   either a single Artefact,
+*   or a Relation.
+
+An Edge must:
+*   point from an Artefact to a Relation or,
+*   from a Relation to an artefact.
+
+Artefacts can have any number of edges in or out.
+
+Relations can have one incoming edge, and one or more out going edges.
+
+For any subgraph, with
+*   an Edge from Artefact U to Relation R
+*   one or more Edges from Relation R to Artefacts D1, D2, ...
+All requirements of U must be covered by at least one requirement one of the
+artefacts D1, D2,  ....
+
+
+Covers:
 *   REQ_TRACE
 
+## ARCH_TRACED_GRAPH: Tracing Information of Grpah
 
+The Traced Graph holds all the information of the Graph, plus:
+*   For each Relatiuon:
+    *   Which Requirements are Covered by which
+    *   Which Requirements are not covered along this relation
+*   For each Artefact
+    *   Which requirements are derived (do not cover another Requiremnt)

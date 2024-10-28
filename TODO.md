@@ -5,6 +5,9 @@ add option to artefact that requirements form this art must be matched with titl
 Remove Delegation Requirements
 
 Add Unittests for all DSGs
+ 
+use "the third person singular present simple" verb forms in all requirements "CLI sets the process return value"
+Talk about this in the readme
 
 Add DSGs and IMPL
 *   validate, that all artefacts are referenced by at least one relation
