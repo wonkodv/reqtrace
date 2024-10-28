@@ -39,6 +39,25 @@ fn requirement_link(req: &Requirement) -> String {
     }
 }
 
+/// requirement Id as markdown link  plus req title
+fn requirement_link_with_title(req: &Requirement) -> String {
+    if let Some(title) = &req.title {
+        let replaced = format!("{}-{}", req.id, title);
+        let replaced = replaced.to_lowercase();
+        let replaced = REPLACE_WITH_DASH.replace_all(&replaced, "-");
+        let replaced = REMOVE.replace_all(&replaced, "");
+
+        format!("[{}](#{}): {}", req.id, replaced, title)
+    } else {
+        let replaced = &req.id;
+        let replaced = replaced.to_string().to_lowercase();
+        let replaced = REPLACE_WITH_DASH.replace_all(&replaced, "-");
+        let replaced = REMOVE.replace_all(&replaced, "");
+
+        format!("[{}](#{})", req.id, replaced)
+    }
+}
+
 /// requirement Id as markdown link
 /// TODO: currently works only on GITHUB and only if generated file lands in root/*/
 fn location_link(loc: &Location) -> String {
@@ -165,7 +184,7 @@ pub fn traced_requirement(req: &RequirementTrace<'_>, w: &mut impl io::Write) ->
             }
         }
         if derived {
-            writeln!(w, "        *   Derived")?;
+            writeln!(w, "    *   Derived")?;
         }
     }
 
@@ -216,7 +235,10 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
         Error::DuplicateAttribute(loc, attr, req) => {
             writeln!(
                 w,
-                "*   Duplicate Attribute: {attr} when parsing {req}\n    {loc}"
+                "*   Duplicate Attribute: {} when parsing {}\n    {}",
+                attr,
+                req,
+                location_link(loc),
             )
         }
         Error::Io(path, err) => {
@@ -268,13 +290,13 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
                 w,
                 concat!(
                     "*   Requirement depended on with wrong title:\n",
-                    "*   Upper Requirement {}\n",
+                    "    Upper Requirement {}\n",
                     "    {}\n",
-                    "*   Lower Requirement {}\n",
+                    "    Lower Requirement {}\n",
                     "    {}\n",
-                    "*   Title of Lower Requirement: {}\n",
-                    "*   Title used to cover it:     {}\n",
-                    "*   Referenced at:              {}\n",
+                    "    Title of Lower Requirement: {}\n",
+                    "    Title used to cover it:     {}\n",
+                    "    Referenced at:              {}\n",
                 ),
                 upper.id,
                 location_link(&upper.location),
@@ -290,7 +312,7 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
             writeln!(
                 w,
                 "*   {} depends on unknown Requirement {}\n    {}",
-                req.id,
+                requirement_link(req),
                 depend,
                 location_link(location),
             )
@@ -299,7 +321,7 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
             writeln!(
                 w,
                 "*   {} covers unknown Requirement {}\n    {}",
-                req.id,
+                requirement_link(req),
                 cover,
                 location_link(location),
             )
@@ -310,7 +332,7 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
         Error::UnusedRelation(rel) => {
             writeln!(
                 w,
-                "*   No requirement eas traced along the relation {}. (Configuration error?)",
+                "*   No requirement was traced along the relation {}. (Configuration error?)",
                 rel
             )
         }
