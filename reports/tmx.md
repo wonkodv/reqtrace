@@ -9,171 +9,171 @@
     Title of Upper Requirement: Trace upwards using `covers` attribute
     Title used to cover it:     Trace upwards using Covers attribute
     at:                         src/trace.rs:220:24
-*   DSG_ART_CONFIG covers unknown Requirement ARCH_ARTEFACT
+*   [DSG_ART_CONFIG](#dsg_art_config-artefact-configuration-fields "Artefact Configuration Fields") covers unknown Requirement ARCH_ARTEFACT
     [doc/requirements/DESIGN.md:83](../doc/requirements/DESIGN.md?plain=1#L83)
-*   DSG_ART_FILES covers unknown Requirement ARCH_ARTEFACT
+*   [DSG_ART_FILES](#dsg_art_files-artefact-loads-one-or-more-files "Artefact loads one or more Files") covers unknown Requirement ARCH_ARTEFACT
     [doc/requirements/DESIGN.md:48](../doc/requirements/DESIGN.md?plain=1#L48)
-*   DSG_ART_PARSE covers unknown Requirement ARCH_ARTEFACT
+*   [DSG_ART_PARSE](#dsg_art_parse-artefact-parses-input-lazily "Artefact parses input lazily") covers unknown Requirement ARCH_ARTEFACT
     [doc/requirements/DESIGN.md:57](../doc/requirements/DESIGN.md?plain=1#L57)
-*   DSG_CTRL_CONFIG covers unknown Requirement ARCH_CONTROLLER
+*   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File") covers unknown Requirement ARCH_CONTROLLER
     [doc/requirements/DESIGN.md:187](../doc/requirements/DESIGN.md?plain=1#L187)
-*   DSG_GRAPH covers unknown Requirement ARCH_GRAPH
+*   [DSG_GRAPH](#dsg_graph-artefact-graph "Artefact Graph") covers unknown Requirement ARCH_GRAPH
     [doc/requirements/DESIGN.md:234](../doc/requirements/DESIGN.md?plain=1#L234)
-*   DSG_GRAPH_FORKS covers unknown Requirement ARCH_GRAPH
+*   [DSG_GRAPH_FORKS](#dsg_graph_forks-trace-edge-groups "Trace Edge Groups") covers unknown Requirement ARCH_GRAPH
     [doc/requirements/DESIGN.md:254](../doc/requirements/DESIGN.md?plain=1#L254)
-*   DSG_GRAPH_VAL_NO_LOOP covers unknown Requirement ARCH_GRAPH
+*   [DSG_GRAPH_VAL_NO_LOOP](#dsg_graph_val_no_loop-validate-that-the-graph-has-no-loops "Validate that the Graph has no Loops") covers unknown Requirement ARCH_GRAPH
     [doc/requirements/DESIGN.md:262](../doc/requirements/DESIGN.md?plain=1#L262)
-*   DSG_TRACE covers unknown Requirement ARCH_TRACE
+*   [DSG_TRACE](#dsg_trace-walk-the-graph-and-trace-requirements "Walk the Graph and trace requirements") covers unknown Requirement ARCH_TRACE
     [doc/requirements/DESIGN.md:298](../doc/requirements/DESIGN.md?plain=1#L298)
-*   DSG_TRACE_CHECK_TITLE covers unknown Requirement ARCH_TRACE
+*   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title") covers unknown Requirement ARCH_TRACE
     [doc/requirements/DESIGN.md:374](../doc/requirements/DESIGN.md?plain=1#L374)
-*   DSG_TRACE_COVERS_EXIST covers unknown Requirement ARCH_TRACE
+*   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist") covers unknown Requirement ARCH_TRACE
     [doc/requirements/DESIGN.md:388](../doc/requirements/DESIGN.md?plain=1#L388)
-*   DSG_TRACE_DEPENDS_EXIST covers unknown Requirement ARCH_TRACE
+*   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist") covers unknown Requirement ARCH_TRACE
     [doc/requirements/DESIGN.md:399](../doc/requirements/DESIGN.md?plain=1#L399)
-*   DSG_TRACE_DERIVED covers unknown Requirement ARCH_TRACE
+*   [DSG_TRACE_DERIVED](#dsg_trace_derived-record-requirements-that-do-not-cover-anything "Record requirements that do not cover anything") covers unknown Requirement ARCH_TRACE
     [doc/requirements/DESIGN.md:338](../doc/requirements/DESIGN.md?plain=1#L338)
-*   DSG_TRACE_DOWNWARDS covers unknown Requirement ARCH_TRACE
+*   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute") covers unknown Requirement ARCH_TRACE
     [doc/requirements/DESIGN.md:330](../doc/requirements/DESIGN.md?plain=1#L330)
-*   DSG_TRACE_UNCOVERED covers unknown Requirement ARCH_TRACE
+*   [DSG_TRACE_UNCOVERED](#dsg_trace_uncovered-record-requirements-that-are-not-completely-covered "Record requirements that are not completely covered") covers unknown Requirement ARCH_TRACE
     [doc/requirements/DESIGN.md:352](../doc/requirements/DESIGN.md?plain=1#L352)
-*   DSG_TRACE_UPWARDS covers unknown Requirement ARCH_TRACE
+*   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute") covers unknown Requirement ARCH_TRACE
     [doc/requirements/DESIGN.md:319](../doc/requirements/DESIGN.md?plain=1#L319)
-*   DSG_TRACE_VALIDATE_EDGE covers unknown Requirement ARCH_TRACE
+*   [DSG_TRACE_VALIDATE_EDGE](#dsg_trace_validate_edge-validate-edge-is-used-at-least-once "Validate Edge is used at least once") covers unknown Requirement ARCH_TRACE
     [doc/requirements/DESIGN.md:308](../doc/requirements/DESIGN.md?plain=1#L308)
-*   parse_from_config covers unknown Requirement DSG_ART_PARSE_COLLECT_ERRORS
+*   [parse_from_config](#parse_from_config) covers unknown Requirement DSG_ART_PARSE_COLLECT_ERRORS
     [src/controller.rs:132:4](../src/controller.rs?plain=1#L132)
-*   run_cli_jobs covers unknown Requirement DSG_CLI
+*   [run_cli_jobs](#run_cli_jobs) covers unknown Requirement DSG_CLI
     [src/main.rs:110:4](../src/main.rs?plain=1#L110)
-*   main_rc covers unknown Requirement DSG_CLI_RETURN_CODE
+*   [main_rc](#main_rc) covers unknown Requirement DSG_CLI_RETURN_CODE
     [src/main.rs:126:4](../src/main.rs?plain=1#L126)
-*   get_config covers unknown Requirement DSG_CONFIG_TOML
+*   [get_config](#get_config) covers unknown Requirement DSG_CONFIG_TOML
     [src/main.rs:95:4](../src/main.rs?plain=1#L95)
-*   FMT_EXP_MD_ERROR covers unknown Requirement DSG_EXPORT_FORMAT_MARKDOWN
+*   [FMT_EXP_MD_ERROR](#fmt_exp_md_error-markdown-export-format-for-errors "Markdown Export Format for Errors") covers unknown Requirement DSG_EXPORT_FORMAT_MARKDOWN
     [doc/requirements/FORMATS.md:303](../doc/requirements/FORMATS.md?plain=1#L303)
-*   FMT_EXP_MD_REQ covers unknown Requirement DSG_EXPORT_FORMAT_MARKDOWN
+*   [FMT_EXP_MD_REQ](#fmt_exp_md_req-markdown-export-format-for-requirements "Markdown Export Format for Requirements") covers unknown Requirement DSG_EXPORT_FORMAT_MARKDOWN
     [doc/requirements/FORMATS.md:318](../doc/requirements/FORMATS.md?plain=1#L318)
-*   run_cli_jobs covers unknown Requirement DSG_JOBS
+*   [run_cli_jobs](#run_cli_jobs) covers unknown Requirement DSG_JOBS
     [src/main.rs:107:8](../src/main.rs?plain=1#L107)
-*   Controller::run covers unknown Requirement DSG_JOB_PARSE
+*   [Controller::run](#controllerrun) covers unknown Requirement DSG_JOB_PARSE
     [src/controller.rs:282:16](../src/controller.rs?plain=1#L282)
-*   Controller::run_jobs covers unknown Requirement DSG_JOB_RETURN_CODE
+*   [Controller::run_jobs](#controllerrun_jobs) covers unknown Requirement DSG_JOB_RETURN_CODE
     [src/controller.rs:229:24](../src/controller.rs?plain=1#L229)
-*   Controller::run covers unknown Requirement DSG_JOB_TRACE
+*   [Controller::run](#controllerrun) covers unknown Requirement DSG_JOB_TRACE
     [src/controller.rs:270:16](../src/controller.rs?plain=1#L270)
-*   Tracer::add_artefact covers unknown Requirement DSG_TRACE_COVERS_EXIST
+*   [Tracer::add_artefact](#traceradd_artefact) covers unknown Requirement DSG_TRACE_COVERS_EXIST
     [src/trace.rs:121:24](../src/trace.rs?plain=1#L121)
-*   Tracer::validate_downwards covers unknown Requirement DSG_TRACE_DEPENDS_EXIST
+*   [Tracer::validate_downwards](#tracervalidate_downwards) covers unknown Requirement DSG_TRACE_DEPENDS_EXIST
     [src/trace.rs:293:12](../src/trace.rs?plain=1#L293)
-*   Tracer::validate_upwards covers unknown Requirement DSG_TRACE_DEPENDS_EXIST
+*   [Tracer::validate_upwards](#tracervalidate_upwards) covers unknown Requirement DSG_TRACE_DEPENDS_EXIST
     [src/trace.rs:273:12](../src/trace.rs?plain=1#L273)
-*   Tracer::add_artefact covers unknown Requirement DSG_TRACE_DETECT_DUPLICATE
+*   [Tracer::add_artefact](#traceradd_artefact) covers unknown Requirement DSG_TRACE_DETECT_DUPLICATE
     [src/trace.rs:114:20](../src/trace.rs?plain=1#L114)
-*   Tracer::trace_relation covers unknown Requirement DSG_TRACE_DOWNWARDS
+*   [Tracer::trace_relation](#tracertrace_relation) covers unknown Requirement DSG_TRACE_DOWNWARDS
     [src/trace.rs:172:16](../src/trace.rs?plain=1#L172)
-*   Tracer::trace_relation covers unknown Requirement DSG_TRACE_UPWARDS
+*   [Tracer::trace_relation](#tracertrace_relation) covers unknown Requirement DSG_TRACE_UPWARDS
     [src/trace.rs:220:24](../src/trace.rs?plain=1#L220)
-*   parse covers unknown Requirement FMT_README
+*   [parse](#parse) covers unknown Requirement FMT_README
     [src/parsers/readme.rs:28:4](../src/parsers/readme.rs?plain=1#L28)
-*   Parser < '_ >::parse_macro covers unknown Requirement FMT_RUST_COV
+*   [Parser < '_ >::parse_macro](#parser--_-parse_macro) covers unknown Requirement FMT_RUST_COV
     [src/parsers/rust.rs:70:8](../src/parsers/rust.rs?plain=1#L70)
-*   DSG_JSON_EXPORT covers unknown Requirement REQ_CACHE_FRIENDLY
+*   [DSG_JSON_EXPORT](#dsg_json_export-json-for-exporting-results "JSON for Exporting Results") covers unknown Requirement REQ_CACHE_FRIENDLY
     [doc/requirements/DESIGN.md:134](../doc/requirements/DESIGN.md?plain=1#L134)
-*   DSG_JSON_IMPORT covers unknown Requirement REQ_CACHE_FRIENDLY
+*   [DSG_JSON_IMPORT](#dsg_json_import-json-for-importing-requirements "JSON for Importing Requirements") covers unknown Requirement REQ_CACHE_FRIENDLY
     [doc/requirements/DESIGN.md:125](../doc/requirements/DESIGN.md?plain=1#L125)
-*   DSG_CONFIG_TOML covers unknown Requirement REQ_CONFIG
+*   [DSG_CONFIG_TOML](#dsg_config_toml-use-a-single-toml-file-as-configuration "Use a Single TOML File as Configuration") covers unknown Requirement REQ_CONFIG
     [doc/requirements/DESIGN.md:152](../doc/requirements/DESIGN.md?plain=1#L152)
-*   DSG_CTRL_CONFIG covers unknown Requirement REQ_CONFIG
+*   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File") covers unknown Requirement REQ_CONFIG
     [doc/requirements/DESIGN.md:186](../doc/requirements/DESIGN.md?plain=1#L186)
-*   DSG_REQ_FIELDS covers unknown Requirement REQ_DELEGATION
+*   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields") covers unknown Requirement REQ_DELEGATION
     [doc/requirements/DESIGN.md:34](../doc/requirements/DESIGN.md?plain=1#L34)
-*   DSG_REQ_FIELDS covers unknown Requirement REQ_DOWN
+*   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields") covers unknown Requirement REQ_DOWN
     [doc/requirements/DESIGN.md:33](../doc/requirements/DESIGN.md?plain=1#L33)
-*   DSG_TRACE_COVERS_EXIST covers unknown Requirement REQ_DOWN
+*   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist") covers unknown Requirement REQ_DOWN
     [doc/requirements/DESIGN.md:387](../doc/requirements/DESIGN.md?plain=1#L387)
-*   DSG_TRACE_DOWNWARDS covers unknown Requirement REQ_DOWN
+*   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute") covers unknown Requirement REQ_DOWN
     [doc/requirements/DESIGN.md:329](../doc/requirements/DESIGN.md?plain=1#L329)
-*   DSG_JSON_IMPORT covers unknown Requirement REQ_EXTENSIBLE
+*   [DSG_JSON_IMPORT](#dsg_json_import-json-for-importing-requirements "JSON for Importing Requirements") covers unknown Requirement REQ_EXTENSIBLE
     [doc/requirements/DESIGN.md:125](../doc/requirements/DESIGN.md?plain=1#L125)
-*   ARCH_CLI covers unknown Requirement REQ_FAST
+*   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface") covers unknown Requirement REQ_FAST
     [doc/requirements/ARCHITECTURE.md:36](../doc/requirements/ARCHITECTURE.md?plain=1#L36)
-*   DSG_JOB_FORMAT covers unknown Requirement REQ_FORMATS
+*   [DSG_JOB_FORMAT](#dsg_job_format-specify-format-of-reports "Specify Format of Reports") covers unknown Requirement REQ_FORMATS
     [doc/requirements/DESIGN.md:216](../doc/requirements/DESIGN.md?plain=1#L216)
-*   FMT_ID_v2 covers unknown Requirement REQ_FORMATS
+*   [FMT_ID_v2](#fmt_id_v2-requirement-identifier "Requirement Identifier") covers unknown Requirement REQ_FORMATS
     [doc/requirements/FORMATS.md:39](../doc/requirements/FORMATS.md?plain=1#L39)
-*   FMT_JSON_REQUIREMENT covers unknown Requirement REQ_FORMATS
+*   [FMT_JSON_REQUIREMENT](#fmt_json_requirement-json-requirements-format "JSON Requirements Format") covers unknown Requirement REQ_FORMATS
     [doc/requirements/FORMATS.md:220](../doc/requirements/FORMATS.md?plain=1#L220)
-*   FMT_MARKDOWN_REQUIREMENT covers unknown Requirement REQ_FORMATS
+*   [FMT_MARKDOWN_REQUIREMENT](#fmt_markdown_requirement-markdown-file-format "Markdown File Format") covers unknown Requirement REQ_FORMATS
     [doc/requirements/FORMATS.md:89](../doc/requirements/FORMATS.md?plain=1#L89)
-*   FMT_README covers unknown Requirement REQ_FORMATS
+*   [FMT_README](#fmt_readme-single-requirement-per-file "Single Requirement Per File") covers unknown Requirement REQ_FORMATS
     [doc/requirements/FORMATS.md:204](../doc/requirements/FORMATS.md?plain=1#L204)
-*   FMT_RUST_COV covers unknown Requirement REQ_FORMATS
+*   [FMT_RUST_COV](#fmt_rust_cov-rust-coverage-marks "Rust Coverage Marks") covers unknown Requirement REQ_FORMATS
     [doc/requirements/FORMATS.md:227](../doc/requirements/FORMATS.md?plain=1#L227)
-*   DSG_EXPORT_FORMAT_MARKDOWN covers unknown Requirement REQ_HUMAN_READABLE
+*   [DSG_EXPORT_FORMAT_MARKDOWN](#dsg_export_format_markdown-export-to-markdown "Export to Markdown") covers unknown Requirement REQ_HUMAN_READABLE
     [doc/requirements/DESIGN.md:143](../doc/requirements/DESIGN.md?plain=1#L143)
-*   ARCH_CLI covers unknown Requirement REQ_INSTALL
+*   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface") covers unknown Requirement REQ_INSTALL
     [doc/requirements/ARCHITECTURE.md:35](../doc/requirements/ARCHITECTURE.md?plain=1#L35)
-*   DSG_ART_PARSE_COLLECT_ERRORS covers unknown Requirement REQ_LATE_ERROR
+*   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing") covers unknown Requirement REQ_LATE_ERROR
     [doc/requirements/DESIGN.md:70](../doc/requirements/DESIGN.md?plain=1#L70)
-*   ARCH_CLI covers unknown Requirement REQ_MACHINE_FRIENDLY
+*   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface") covers unknown Requirement REQ_MACHINE_FRIENDLY
     [doc/requirements/ARCHITECTURE.md:34](../doc/requirements/ARCHITECTURE.md?plain=1#L34)
-*   DSG_CLI covers unknown Requirement REQ_MACHINE_FRIENDLY
+*   [DSG_CLI](#dsg_cli-offer-a-simple-command-line-interface "Offer a simple Command Line Interface") covers unknown Requirement REQ_MACHINE_FRIENDLY
     [doc/requirements/DESIGN.md:165](../doc/requirements/DESIGN.md?plain=1#L165)
-*   DSG_CLI_RETURN_CODE covers unknown Requirement REQ_MACHINE_FRIENDLY
+*   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success") covers unknown Requirement REQ_MACHINE_FRIENDLY
     [doc/requirements/DESIGN.md:176](../doc/requirements/DESIGN.md?plain=1#L176)
-*   DSG_JSON_EXPORT covers unknown Requirement REQ_MACHINE_READABLE
+*   [DSG_JSON_EXPORT](#dsg_json_export-json-for-exporting-results "JSON for Exporting Results") covers unknown Requirement REQ_MACHINE_READABLE
     [doc/requirements/DESIGN.md:134](../doc/requirements/DESIGN.md?plain=1#L134)
-*   DSG_TRACE_DOWNWARDS covers unknown Requirement REQ_MATCH_ID
+*   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute") covers unknown Requirement REQ_MATCH_ID
     [doc/requirements/DESIGN.md:328](../doc/requirements/DESIGN.md?plain=1#L328)
-*   DSG_TRACE_UPWARDS covers unknown Requirement REQ_MATCH_ID
+*   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute") covers unknown Requirement REQ_MATCH_ID
     [doc/requirements/DESIGN.md:317](../doc/requirements/DESIGN.md?plain=1#L317)
-*   DSG_ART_PARSE_COLLECT_ERRORS covers unknown Requirement REQ_PARSER_ERROR
+*   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing") covers unknown Requirement REQ_PARSER_ERROR
     [doc/requirements/DESIGN.md:71](../doc/requirements/DESIGN.md?plain=1#L71)
-*   ARCH_FORMATTER covers unknown Requirement REQ_TRACE
+*   [ARCH_FORMATTER](#arch_formatter-format-output-in-requested-format "Format output in requested Format") covers unknown Requirement REQ_TRACE
     [doc/requirements/ARCHITECTURE.md:86](../doc/requirements/ARCHITECTURE.md?plain=1#L86)
-*   ARCH_TRACE covers unknown Requirement REQ_TRACE
+*   [ARCH_TRACE](#arch_trace-tracer "Tracer") covers unknown Requirement REQ_TRACE
     [doc/requirements/ARCHITECTURE.md:74](../doc/requirements/ARCHITECTURE.md?plain=1#L74)
-*   DSG_TRACE_CHECK_TITLE covers unknown Requirement REQ_TRACE
+*   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title") covers unknown Requirement REQ_TRACE
     [doc/requirements/DESIGN.md:372](../doc/requirements/DESIGN.md?plain=1#L372)
-*   DSG_TRACE_COVERS_EXIST covers unknown Requirement REQ_TRACE
+*   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist") covers unknown Requirement REQ_TRACE
     [doc/requirements/DESIGN.md:386](../doc/requirements/DESIGN.md?plain=1#L386)
-*   DSG_TRACE_DEPENDS_EXIST covers unknown Requirement REQ_TRACE
+*   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist") covers unknown Requirement REQ_TRACE
     [doc/requirements/DESIGN.md:397](../doc/requirements/DESIGN.md?plain=1#L397)
-*   DSG_TRACE_DERIVED covers unknown Requirement REQ_TRACE
+*   [DSG_TRACE_DERIVED](#dsg_trace_derived-record-requirements-that-do-not-cover-anything "Record requirements that do not cover anything") covers unknown Requirement REQ_TRACE
     [doc/requirements/DESIGN.md:337](../doc/requirements/DESIGN.md?plain=1#L337)
-*   DSG_TRACE_DOWNWARDS covers unknown Requirement REQ_TRACE
+*   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute") covers unknown Requirement REQ_TRACE
     [doc/requirements/DESIGN.md:327](../doc/requirements/DESIGN.md?plain=1#L327)
-*   DSG_TRACE_UNCOVERED covers unknown Requirement REQ_TRACE
+*   [DSG_TRACE_UNCOVERED](#dsg_trace_uncovered-record-requirements-that-are-not-completely-covered "Record requirements that are not completely covered") covers unknown Requirement REQ_TRACE
     [doc/requirements/DESIGN.md:351](../doc/requirements/DESIGN.md?plain=1#L351)
-*   DSG_TRACE_UPWARDS covers unknown Requirement REQ_TRACE
+*   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute") covers unknown Requirement REQ_TRACE
     [doc/requirements/DESIGN.md:316](../doc/requirements/DESIGN.md?plain=1#L316)
-*   FMT_FILE_ENCODINGS covers unknown Requirement REQ_UNICODE_SAFE
+*   [FMT_FILE_ENCODINGS](#fmt_file_encodings-handle-file-encodings "Handle File Encodings") covers unknown Requirement REQ_UNICODE_SAFE
     [doc/requirements/FORMATS.md:54](../doc/requirements/FORMATS.md?plain=1#L54)
-*   FMT_UNICODE_NORMALIZE covers unknown Requirement REQ_UNICODE_SAFE
+*   [FMT_UNICODE_NORMALIZE](#fmt_unicode_normalize-normalize-unicode-during-read "Normalize Unicode during read") covers unknown Requirement REQ_UNICODE_SAFE
     [doc/requirements/FORMATS.md:66](../doc/requirements/FORMATS.md?plain=1#L66)
-*   DSG_ART_PARSE_DETECT_DUPLICATE covers unknown Requirement REQ_UNIQUE_ID_v2
+*   [DSG_ART_PARSE_DETECT_DUPLICATE](#dsg_art_parse_detect_duplicate-detect-duplicates "Detect duplicates") covers unknown Requirement REQ_UNIQUE_ID_v2
     [doc/requirements/DESIGN.md:64](../doc/requirements/DESIGN.md?plain=1#L64)
-*   DSG_TRACE_DETECT_DUPLICATE covers unknown Requirement REQ_UNIQUE_ID_v2
+*   [DSG_TRACE_DETECT_DUPLICATE](#dsg_trace_detect_duplicate-detect-duplicate-requirements-in-different-artefacts "Detect duplicate Requirements in different Artefacts") covers unknown Requirement REQ_UNIQUE_ID_v2
     [doc/requirements/DESIGN.md:410](../doc/requirements/DESIGN.md?plain=1#L410)
-*   DSG_REQ_FIELDS covers unknown Requirement REQ_UP
+*   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields") covers unknown Requirement REQ_UP
     [doc/requirements/DESIGN.md:32](../doc/requirements/DESIGN.md?plain=1#L32)
-*   DSG_TRACE_DEPENDS_EXIST covers unknown Requirement REQ_UP
+*   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist") covers unknown Requirement REQ_UP
     [doc/requirements/DESIGN.md:398](../doc/requirements/DESIGN.md?plain=1#L398)
-*   DSG_TRACE_UPWARDS covers unknown Requirement REQ_UP
+*   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute") covers unknown Requirement REQ_UP
     [doc/requirements/DESIGN.md:318](../doc/requirements/DESIGN.md?plain=1#L318)
-*   DSG_TRACE_COVERS_EXIST covers unknown Requirement REQ_VAL_COVERAGE
+*   [DSG_TRACE_COVERS_EXIST](#dsg_trace_covers_exist-cover-links-must-exist "Cover Links must exist") covers unknown Requirement REQ_VAL_COVERAGE
     [doc/requirements/DESIGN.md:389](../doc/requirements/DESIGN.md?plain=1#L389)
-*   DSG_TRACE_DEPENDS_EXIST covers unknown Requirement REQ_VAL_COVERAGE
+*   [DSG_TRACE_DEPENDS_EXIST](#dsg_trace_depends_exist-depend-links-must-exist "Depend Links must exist") covers unknown Requirement REQ_VAL_COVERAGE
     [doc/requirements/DESIGN.md:400](../doc/requirements/DESIGN.md?plain=1#L400)
-*   DSG_TRACE_CHECK_TITLE covers unknown Requirement REQ_VAL_TITLE
+*   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title") covers unknown Requirement REQ_VAL_TITLE
     [doc/requirements/DESIGN.md:373](../doc/requirements/DESIGN.md?plain=1#L373)
-*   DSG_CLI_RETURN_CODE covers unknown Requirement UC_CHECK
+*   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success") covers unknown Requirement UC_CHECK
     [doc/requirements/DESIGN.md:177](../doc/requirements/DESIGN.md?plain=1#L177)
-*   DSG_JOB_PARSE covers unknown Requirement UC_PARSE
+*   [DSG_JOB_PARSE](#dsg_job_parse-parse-all-artefacts "Parse all Artefacts") covers unknown Requirement UC_PARSE
     [doc/requirements/DESIGN.md:203](../doc/requirements/DESIGN.md?plain=1#L203)
-*   ARCH_TRACE covers unknown Requirement UC_TMX
+*   [ARCH_TRACE](#arch_trace-tracer "Tracer") covers unknown Requirement UC_TMX
     [doc/requirements/ARCHITECTURE.md:75](../doc/requirements/ARCHITECTURE.md?plain=1#L75)
-*   DSG_JOB_TRACE covers unknown Requirement UC_TMX
+*   [DSG_JOB_TRACE](#dsg_job_trace-trace-requirements "Trace Requirements") covers unknown Requirement UC_TMX
     [doc/requirements/DESIGN.md:209](../doc/requirements/DESIGN.md?plain=1#L209)
 
 
@@ -272,7 +272,7 @@ An Artefact is a list of requirements, parsed from one or more files by a parser
 
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   architecture => [design]
@@ -325,7 +325,7 @@ The controller orchestrates the other components into a pipeline
 
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   architecture => [design]
@@ -368,7 +368,7 @@ Covers:
 
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   architecture => [design]
@@ -390,7 +390,7 @@ A Parser processes an input file and emits Requirements
 
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   architecture => [design]
@@ -444,7 +444,7 @@ A Tracing holds a Graph of Artefacts and all the Information about which require
 
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   architecture => [design]
@@ -662,7 +662,7 @@ Artefacts can be configured to ignore derived requirements
 Upwards Tracing:
 *   architecture => [design]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -925,7 +925,7 @@ should be presented in and the file to store results in.
 Upwards Tracing:
 *   architecture => [design]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -944,7 +944,7 @@ For each job, user can choose the file, that results are stored in, treating `-`
 Upwards Tracing:
 *   architecture => [design]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1004,7 +1004,7 @@ perfect yet.
 Upwards Tracing:
 *   architecture => [design]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1412,7 +1412,7 @@ Type D for where it is depended on.
 Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   formats => [code]
@@ -1625,7 +1625,7 @@ or
 Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   formats => [code]
@@ -1650,7 +1650,7 @@ the requirement.
 Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   formats => [code]
@@ -1670,7 +1670,7 @@ removing as many leading `#` as the requirement had
 Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   formats => [code]
@@ -1695,7 +1695,7 @@ performed and all matching lines lead to a requirement.
 Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   formats => [code]
@@ -1714,7 +1714,7 @@ TITLE`.
 Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   formats => [code]
@@ -1803,7 +1803,7 @@ Downwards Tracing:
 Origin: [README.md](../README.md)
 
 Upwards Tracing:
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   readme => [requirements]
@@ -1896,7 +1896,7 @@ requirement.
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2032,7 +2032,7 @@ For example by its:
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2050,7 +2050,7 @@ libraries, files, etc.
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2130,7 +2130,7 @@ A Requirements covers another by its ID.
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2151,7 +2151,7 @@ line number of the artefact.
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2208,7 +2208,7 @@ as different bytes.
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2233,7 +2233,7 @@ History:
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2279,7 +2279,7 @@ relevant artefacts.
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2344,7 +2344,7 @@ for use in CI/CD Pipelines.
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2365,7 +2365,7 @@ Parameters:
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
@@ -2388,7 +2388,7 @@ Parameters:
 
 Upwards Tracing:
 *   readme => [requirements]
-        *   Derived
+    *   Derived
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
