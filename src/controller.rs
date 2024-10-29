@@ -288,6 +288,16 @@ impl Controller {
                 if tg.artefacts.values().any(|art| !art.errors.is_empty()) {
                     success = JobSuccess::ErrorsDetected;
                 }
+                if tg
+                    .traced_relations
+                    .iter()
+                    .any(|rel| !rel.uncovered.is_empty())
+                {
+                    success = JobSuccess::ErrorsDetected;
+                }
+                if !tg.derived.is_empty() {
+                    success = JobSuccess::ErrorsDetected;
+                }
                 requirement_covered!(DSG_CTRL_FORMAT);
                 formatters::tracing(tg, &job.format, &mut out)
             }
