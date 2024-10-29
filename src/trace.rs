@@ -108,22 +108,22 @@ impl Tracer {
         for req in artefact.requirements.values() {
             match self.req_by_id.entry(req.id.clone()) {
                 btree_map::Entry::Occupied(e) => {
+                    requirement_covered!(DSG_TRACE_DETECT_DUPLICATE);
                     let (_old_art, old_req) = e.get();
                     let err = DuplicateRequirement(Rc::clone(old_req), Rc::clone(req));
                     self.errors.push(err);
-                    requirement_covered!(DSG_TRACE_DETECT_DUPLICATE);
                 }
                 btree_map::Entry::Vacant(e) => {
                     e.insert((artefact.id.clone(), Rc::clone(req)));
                     // mark the new requirement's covers and depends links as invalid;
                     // later, in add_coverage each covered connection is removed.
                     for cov in &req.covers {
-                        requirement_covered!(DSG_TRACE_COVERS_EXIST);
+                        requirement_covered!(DSG_TRACE_REFERENCE_EXIST);
                         self.invalid_covers_links
                             .insert((cov.id.clone(), req.id.clone()));
                     }
                     for dep in &req.depends {
-                        requirement_covered!(DSG_TRACE_COVERS_EXIST);
+                        requirement_covered!(DSG_TRACE_REFERENCE_EXIST);
                         self.invalid_depends_links
                             .insert((req.id.clone(), dep.id.clone()));
                     }
@@ -204,6 +204,7 @@ impl Tracer {
                         // TODO: avoid clones ?
                         self.invalid_depends_links
                             .remove(&(upper_requirement.id.clone(), lower_requirement.id.clone()));
+                        requirement_covered!(DSG_TRACE_REFERENCE_EXIST);
                     }
                 }
             }
@@ -221,7 +222,7 @@ impl Tracer {
                     for (lower_requirement, covers) in lower {
                         requirement_covered!(
                             DSG_TRACE_UPWARDS,
-                            "Trace upwards using Covers attribute"
+                            "Trace upwards using `covers` attribute"
                         );
 
                         is_covered = true;
@@ -245,6 +246,7 @@ impl Tracer {
                         });
                         self.invalid_covers_links // TODO: avoid clones
                             .remove(&(upper_requirement.id.clone(), lower_requirement.id.clone()));
+                        requirement_covered!(DSG_TRACE_REFERENCE_EXIST);
                     }
                 }
             }
@@ -272,7 +274,7 @@ impl Tracer {
 
     fn validate_upwards(&mut self) {
         for cov in &self.invalid_covers_links {
-            requirement_covered!(DSG_TRACE_DEPENDS_EXIST);
+            requirement_covered!(DSG_TRACE_REFERENCE_EXIST);
             let (upper_id, lower_id) = cov;
 
             let (art_id, req) = &self.req_by_id[&lower_id];
@@ -292,7 +294,7 @@ impl Tracer {
 
     fn validate_downwards(&mut self) {
         for dep in &self.invalid_depends_links {
-            requirement_covered!(DSG_TRACE_DEPENDS_EXIST);
+            requirement_covered!(DSG_TRACE_REFERENCE_EXIST);
             let (upper_id, lower_id) = dep;
 
             let (art_id, req) = &self.req_by_id[&upper_id];

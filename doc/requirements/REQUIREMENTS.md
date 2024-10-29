@@ -66,17 +66,8 @@ Coverage attribute.
 
 ## REQ_DOWN: Downward Coverage
 
-
 A Requirement is covered by a lower one by including the id of the lower one in
 its Dependencies attribute.
-
-## REQ_DELEGATION: Coverage Delegation
-
-A Requirement delegates to another requirement in the same artefact by including
-the id of the lower one in its Dependencies attribute.
-
-It does not need to be covered itself through upward coverage of a lower
-requirement.
 
 ## REQ_PARSER_ERROR: Useful Parser Errors
 

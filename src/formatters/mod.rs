@@ -18,6 +18,7 @@ mod tags;
 // mod serialize;
 
 // pub fn graph(graph: &Graph, format: &Format, writer: &mut impl io::Write) -> io::Result<()> {
+//    requirement_covered!(DSG_FORMATTER);
 //     match format {
 //     //    Format::Markdown => markdown::graph(graph, writer),
 //         // Format::Json => serialize::graph(graph, format, writer),
@@ -26,6 +27,7 @@ mod tags;
 // }
 
 pub fn requirements(graph: &Graph, format: &Format, writer: &mut impl io::Write) -> io::Result<()> {
+    requirement_covered!(DSG_FORMATTER);
     match format {
         Format::Tags => tags::requirements(graph, writer),
         Format::Markdown => markdown::requirements(graph, writer),
@@ -39,6 +41,7 @@ pub fn requirements(graph: &Graph, format: &Format, writer: &mut impl io::Write)
 // where
 //     W: io::Write,
 // {
+//      requirement_covered!(DSG_FORMATTER);
 //     match format {
 //         Format::Markdown => markdown::errors(graph, writer),
 //         Format::GnuError => gnuerr::errors(errors, writer),
@@ -53,6 +56,7 @@ pub fn tracing(
     format: &Format,
     writer: &mut impl io::Write,
 ) -> io::Result<()> {
+    requirement_covered!(DSG_FORMATTER);
     match format {
         Format::GnuError => gnuerr::tracing(traced_graph, writer),
         Format::Markdown => {

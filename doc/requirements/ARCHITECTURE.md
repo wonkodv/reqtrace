@@ -62,7 +62,8 @@ Covers:
 
 ### ARCH_FORMATTER: Format output in requested Format
 
-The formatter takes Artefacts, the Graph, the Tracing or a list of Errors and turns them into machine or human readable form.
+The formatter takes Artefacts, the Graph, the Tracing or a list of Errors and
+turns them into machine or human readable form.
 
 Covers:
 *   UC_TMX
@@ -88,7 +89,6 @@ A requirement also stores information about purely covering information
 ### ARCH_ARTEFACT: Artefact
 
 An Artefact is a list of requirements, parsed from one or more files by a parser
-
 
 ### ARCH_GRAPH: Graph
 
@@ -118,9 +118,8 @@ Covers:
 
 ## ARCH_TRACED_GRAPH: Tracing Information of Grpah
 
-The Traced Graph holds all the information of the Graph, plus:
-*   For each Relatiuon:
-    *   Which Requirements are Covered by which
-    *   Which Requirements are not covered along this relation
-*   For each Artefact
-    *   Which requirements are derived (do not cover another Requiremnt)
+The Traced Graph holds all the information of the Graph, along with Tracing
+Information.
+
+Covers:
+*   REQ_TRACE

@@ -118,11 +118,7 @@ pub fn tracing(traced_graph: &TracedGraph, w: &mut impl io::Write) -> io::Result
 
         for req in &rel.uncovered {
             let req = &traced_graph.artefacts[&rel.relation.upper].requirements[&req];
-            if let Some(title) = &req.title {
-                writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
-            } else {
-                writeln!(w, "{}: {}", req.location, req.id)?;
-            }
+            writeln!(w, "{}: {} Uncovered", req.location, req.id)?;
         }
     }
 
@@ -132,11 +128,7 @@ pub fn tracing(traced_graph: &TracedGraph, w: &mut impl io::Write) -> io::Result
         writeln!(w, "## {}", art)?;
         for req_id in derived {
             let req = &artefact.requirements[req_id];
-            if let Some(title) = &req.title {
-                writeln!(w, "{}: {}: {}", req.location, req.id, title)?;
-            } else {
-                writeln!(w, "{}: {}", req.location, req.id)?;
-            }
+            writeln!(w, "{}: {} Derived", req.location, req.id)?;
         }
     }
 

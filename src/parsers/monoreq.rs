@@ -25,7 +25,7 @@ pub fn parse<R: io::BufRead>(reader: R, path: &Path) -> (Vec<Rc<Requirement>>, V
     let mut title = None;
     let mut depends = Vec::<Reference>::new();
 
-    requirement_covered!(FMT_README, "Single Requirement Per File");
+    requirement_covered!(FMT_IMPORT_MONO_REQ, "Single Requirement Per File");
 
     for (no, line) in reader.lines().enumerate() {
         match line {
@@ -55,7 +55,7 @@ pub fn parse<R: io::BufRead>(reader: R, path: &Path) -> (Vec<Rc<Requirement>>, V
             stem.to_string_lossy().to_string().into()
         } else {
             errors.push(Error::ArtefactConfig(format!(
-                "file for 'readme' parser `{} has no stem",
+                "file for 'MonoReq' parser `{} has no stem",
                 path.display(),
             )));
 

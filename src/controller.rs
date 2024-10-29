@@ -1,3 +1,4 @@
+use std::collections::btree_map;
 use std::collections::BTreeMap;
 use std::fs;
 use std::io;
@@ -60,6 +61,7 @@ fn parse_single_file(config: &ArtefactConfig) -> (Vec<PathBuf>, Vec<Rc<Requireme
     }
     let path = PathBuf::from(config.paths[0].to_owned());
 
+    requirement_covered!(DSG_ART_FILES);
     match fs::File::open(&path) {
         Err(err) => (
             vec![path.clone()],
@@ -71,7 +73,7 @@ fn parse_single_file(config: &ArtefactConfig) -> (Vec<PathBuf>, Vec<Rc<Requireme
 
             let (reqs, errs) = match &config.parser {
                 ArtefactParser::Markdown => parsers::markdown::parse(&mut r, &path),
-                ArtefactParser::Readme => parsers::readme::parse(&mut r, &path),
+                ArtefactParser::MonoRequirement => parsers::monoreq::parse(&mut r, &path),
                 _ => panic!("unexpected {:?}", config.parser),
             };
             (vec![path], reqs, errs)
@@ -103,6 +105,7 @@ fn parse_multiple_files(
             let mut requirements = Vec::new();
             let mut errors = Vec::new();
             for path in &paths {
+                requirement_covered!(DSG_ART_FILES);
                 match fs::File::open(&path) {
                     Err(err) => errors.push(Error::Io(path.into(), err.to_string())),
                     Ok(file) => {
@@ -131,15 +134,24 @@ pub fn parse_from_config(
 ) {
     requirement_covered!(DSG_ART_PARSE_COLLECT_ERRORS);
 
-    let (paths, requirements, errors) = match config.parser {
+    let (paths, requirement_vec, mut errors) = match config.parser {
         ArtefactParser::Rust => parse_multiple_files(config),
-        ArtefactParser::Markdown | ArtefactParser::Readme => parse_single_file(config),
+        ArtefactParser::Markdown | ArtefactParser::MonoRequirement => parse_single_file(config),
     };
 
-    let requirements = requirements
-        .into_iter()
-        .map(|req| (req.id.clone(), req))
-        .collect();
+    let mut requirements = BTreeMap::new();
+    for req in requirement_vec {
+        match requirements.entry(req.id.clone()) {
+            btree_map::Entry::Occupied(e) => {
+                requirement_covered!(DSG_CTRL_DETECT_DUPLICATE_REQS);
+                let err = Error::DuplicateRequirement(Rc::clone(e.get()), req);
+                errors.push(err);
+            }
+            btree_map::Entry::Vacant(e) => {
+                e.insert(req);
+            }
+        }
+    }
 
     (paths, requirements, errors)
 }
@@ -226,7 +238,7 @@ impl Controller {
                 JobSuccess::Success => {}
                 JobSuccess::ErrorsDetected => {
                     if job.set_return_code.unwrap_or(true) {
-                        requirement_covered!(DSG_JOB_RETURN_CODE);
+                        requirement_covered!(DSG_CTRL_RETURN_CODE);
                         success = JobSuccess::ErrorsDetected;
                     }
                 }
@@ -267,19 +279,21 @@ impl Controller {
 
         let write_res = match &job.query {
             Query::Trace => {
-                requirement_covered!(DSG_JOB_TRACE);
-
+                requirement_covered!(DSG_CTRL_TRACE);
                 let tg = &self.traced_graph;
+                // TODO: only create traced_graph lazily
                 if !tg.errors.is_empty() {
                     success = JobSuccess::ErrorsDetected;
                 }
                 if tg.artefacts.values().any(|art| !art.errors.is_empty()) {
                     success = JobSuccess::ErrorsDetected;
                 }
+                requirement_covered!(DSG_CTRL_FORMAT);
                 formatters::tracing(tg, &job.format, &mut out)
             }
             Query::Parse => {
-                requirement_covered!(DSG_JOB_PARSE);
+                requirement_covered!(DSG_CTRL_PARSE);
+                requirement_covered!(DSG_CTRL_GRAPH);
                 if self
                     .graph
                     .artefacts
@@ -288,9 +302,9 @@ impl Controller {
                 {
                     success = JobSuccess::ErrorsDetected;
                 }
+                requirement_covered!(DSG_CTRL_FORMAT);
                 formatters::requirements(&self.graph, &job.format, &mut out)
             }
-            Query::ValidateGraph => todo!(),
         };
 
         write_res.map_err(|e| ControllerError::Io(job.file.clone(), e.to_string()))?;
@@ -303,6 +317,7 @@ impl Controller {
                 log::warn!("Job {} detected Errors", job_name);
             }
         }
+        requirement_covered!(DSG_CTRL_RETURN_CODE);
 
         Ok(success)
     }

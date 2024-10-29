@@ -32,6 +32,8 @@ use self::controller::JobSuccess;
 use self::models::Config;
 use self::models::Error;
 
+static CONFIG_VERSION: u32 = 0; // currently unstable
+
 /// A `StructOpt` example
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -73,6 +75,7 @@ fn logging_setup(opt: &Arguments) {
 }
 
 fn get_config(opt: &Arguments) -> Result<Config, Box<dyn std::error::Error>> {
+    requirement_covered!(DSG_CTRL_CONFIG);
     log::info!("using config file {}", opt.config_file.display());
     let config: Config = toml::from_slice(
         fs::read(&opt.config_file)
@@ -92,7 +95,18 @@ fn get_config(opt: &Arguments) -> Result<Config, Box<dyn std::error::Error>> {
             format!("{}:  TOML Error {}", &opt.config_file.display(), e)
         }
     })?;
-    requirement_covered!(DSG_CONFIG_TOML, "Use a Single TOML File as Configuration");
+    requirement_covered!(FMT_CONFIG_TOML, "Use a Single TOML File as Configuration");
+
+    if let Some(version) = config.version {
+        if version > CONFIG_VERSION {
+            return Err(format!(
+                "{} has unknown version {}",
+                opt.config_file.display(),
+                version
+            )
+            .into());
+        }
+    }
 
     Ok(config)
 }

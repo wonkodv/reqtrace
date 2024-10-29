@@ -3,7 +3,7 @@ default_jobs = ["check", "tmx", "tags"]
 [[artefacts]]
 id = "readme"
 paths = ["README.md", ]
-parser = "Readme"
+parser = "MonoRequirement"
 ignore_derived_requirements = true
 
 [[artefacts]]

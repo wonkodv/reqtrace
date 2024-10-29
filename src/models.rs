@@ -57,7 +57,7 @@ impl fmt::Display for RequirementId {
 pub enum ArtefactParser {
     Markdown,
     Rust,
-    Readme,
+    MonoRequirement,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -70,6 +70,7 @@ pub struct ArtefactConfig {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
+    pub version: Option<u32>,
     pub artefacts: Vec<ArtefactConfig>,
     pub relations: Vec<Relation>,
     pub jobs: Option<BTreeMap<String, Job>>,
@@ -78,9 +79,6 @@ pub struct Config {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Query {
-    /// Validate the Graph without parsing Artefacts
-    ValidateGraph,
-
     /// Parse all Artefacts
     Parse,
 

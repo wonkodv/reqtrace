@@ -13,6 +13,7 @@ Add DSGs and IMPL
 *   validate, that all artefacts are referenced by at least one relation
 *   validate all artefacts have at least one requirement
 *   validate all relations point to artefacts that exist
+*   Markdown Aretefacts can be multiple MD Files
 
 Add UseCAse:
 *   Augment Input
