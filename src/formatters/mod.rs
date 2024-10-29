@@ -14,8 +14,8 @@ use crate::models::TracedGraph;
 
 mod gnuerr;
 mod markdown;
+mod serialize;
 mod tags;
-// mod serialize;
 
 // pub fn graph(graph: &Graph, format: &Format, writer: &mut impl io::Write) -> io::Result<()> {
 //    requirement_covered!(DSG_FORMATTER);
@@ -63,10 +63,8 @@ pub fn tracing(
             let aggregated_graph = AggregatedGraph::new(traced_graph);
             markdown::tracing(&aggregated_graph, writer)
         }
-        //    Format::Json => {
-        //        serde_json::to_writer_pretty(writer, &serialize::Trace::new(tracing, graph))
-        //            .map_err(io::Error::other)
-        //    }
+        Format::Json => serde_json::to_writer_pretty(writer, &serialize::Trace::new(traced_graph))
+            .map_err(io::Error::other),
         _ => todo!(),
     }
 }
