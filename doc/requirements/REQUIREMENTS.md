@@ -7,6 +7,11 @@ Things this tool should do in no particular order
 Compute tracing for each Requirement, whether it is covered, uncovered, covers
 another requirement or is derived.
 
+## REQ_ARTEFACT: Artefacts contain Requirements
+
+Group a set of related files as an Artefact, which contains a list of
+requirements. Artefacts are traced against other Artefacts.
+
 ## REQ_UNIQUE_ID_v2: Requirements have a unique Identifier
 
 Each requirement must be identifiable by a short, unique string.

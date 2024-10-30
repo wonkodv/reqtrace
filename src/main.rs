@@ -55,7 +55,7 @@ fn logging_setup(opt: &Arguments) {
 }
 
 fn get_config(opt: &Arguments) -> Result<Config, Box<dyn std::error::Error>> {
-    requirement_covered!(DSG_CTRL_CONFIG: "");
+    requirement_covered!(DSG_CTRL_CONFIG: "Single Config File");
     log::info!("using config file {}", opt.config_file.display());
     let config: Config = toml::from_slice(
         fs::read(&opt.config_file)
@@ -98,10 +98,10 @@ fn run_cli_jobs(
     let res = if opt.jobs.is_empty() {
         controller.run_default_jobs()
     } else {
-        requirement_covered!(DSG_JOBS: "");
+        requirement_covered!(DSG_JOBS: "Jobs encode requested behavior");
         controller.run_jobs_by_name(&opt.jobs)
     };
-    requirement_covered!(DSG_CLI: "");
+    requirement_covered!(DSG_CLI: "Command Line Interface");
 
     res.map_err(|e| Box::new(e).into())
 }
@@ -117,7 +117,7 @@ fn try_main() -> Result<JobSuccess, Box<dyn std::error::Error>> {
 fn main_rc() -> i32 {
     let r = try_main();
 
-    requirement_covered!(DSG_CLI_RETURN_CODE: "");
+    requirement_covered!(DSG_CLI_RETURN_CODE: "Set return Code to indicate success");
 
     match r {
         Err(e) => {

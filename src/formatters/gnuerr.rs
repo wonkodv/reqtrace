@@ -46,9 +46,7 @@ where
                 writeln!(
                     w,
                     concat!(
-                        "{}: {} covered with wrong title \n",
-                        "    expected: {}\n",
-                        "    actual  : {}\n",
+                        "{}: {} covered with wrong title. Expected {:?}, actual {:?}\n",
                         "{}: note: Defined here"
                     ),
                     location,
@@ -67,9 +65,7 @@ where
                 writeln!(
                     w,
                     concat!(
-                        "{}: {} depend with wrong title:\n",
-                        "    expected: {}\n",
-                        "     actual : {}\n",
+                        "{}: {} depended with wrong title. Expected {:?}, actual {:?}\n",
                         "{}: note: Defined here",
                     ),
                     location,

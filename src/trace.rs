@@ -127,6 +127,7 @@ impl Tracer {
                     }
 
                     if !artefact.ignore_derived_requirements {
+                        requirement_covered!(DSG_TRACE_DERIVED);
                         derived.insert(req.id.clone());
                     }
                     requirements_by_id.insert(req.id.clone(), Rc::clone(req));
@@ -191,6 +192,8 @@ impl Tracer {
                                 });
                             }
                         }
+
+                        requirement_covered!(DSG_TRACE_DERIVED);
                         lower_artefact.derived.remove(&lower_requirement.id);
                         covered.push(Coverage {
                             upper: upper_requirement.id.clone(),
@@ -235,6 +238,7 @@ impl Tracer {
                                 });
                             }
                         }
+                        requirement_covered!(DSG_TRACE_DERIVED);
                         lower_artefact.derived.remove(&lower_requirement.id);
                         covered.push(Coverage {
                             upper: upper_requirement.id.clone(),
@@ -249,6 +253,7 @@ impl Tracer {
                 }
             }
             if !is_covered {
+                requirement_covered!(DSG_TRACE_UNCOVERED);
                 uncovered.push(upper_requirement.id.clone());
             }
             any_req_coverd = any_req_coverd || is_covered;

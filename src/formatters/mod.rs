@@ -1,9 +1,8 @@
-use std::io;
-
 use crate::aggregator::AggregatedGraph;
 use crate::models::Format;
 use crate::models::Graph;
 use crate::models::TracedGraph;
+use std::io;
 
 mod gnuerr;
 mod markdown;

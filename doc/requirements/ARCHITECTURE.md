@@ -42,6 +42,11 @@ The controller orchestrates the other components into a pipeline
 *   Give Graph to Tracer, which computes Tracing Information
 *   Give Artefacts, the Graph, Tracing and any errors to Formatter which puts them into files
 
+Covers:
+*   UC_PARSE
+*   UC_TMX
+*   UC_CHECK
+
 ### ARCH_PARSER: Parser
 
 A Parser processes an input file and emits Requirements.
@@ -86,9 +91,15 @@ A Requirement object stores one typical software requirement (for example
 A requirement also stores information about purely covering information
 (for example: `main_rc`  which covers DSG_CLI_RETURN_CODE)
 
+Covers:
+*   REQ_TRACE
+
 ### ARCH_ARTEFACT: Artefact
 
 An Artefact is a list of requirements, parsed from one or more files by a parser
+
+Covers:
+*   REQ_ARTEFACT
 
 ### ARCH_GRAPH: Graph
 
@@ -115,6 +126,7 @@ artefacts D1, D2,  ....
 
 Covers:
 *   REQ_TRACE
+*   REQ_ARTEFACT
 
 ## ARCH_TRACED_GRAPH: Tracing Information of Grpah
 

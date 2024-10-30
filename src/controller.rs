@@ -262,7 +262,7 @@ impl Controller {
 
         if job.file.as_os_str() == "-" {
             out = Box::new(stdout.lock());
-            log::info!("writing {job_name} to stdout");
+            log::info!("writing {job_name:?} to stdout");
         } else {
             if let Some(p) = &job.file.parent() {
                 std::fs::create_dir_all(p)
