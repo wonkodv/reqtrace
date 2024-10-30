@@ -2,11 +2,8 @@ use std::rc::Rc;
 
 use crate::models;
 
-use serde::ser::SerializeSeq;
-use serde::ser::SerializeStruct;
 use serde::Deserialize;
 use serde::Serialize;
-use serde::Serializer;
 
 const VERSION: u32 = 0; // Version 0 is unstable, don't rely on it
 

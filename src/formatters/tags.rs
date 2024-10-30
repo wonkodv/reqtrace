@@ -1,9 +1,7 @@
 use std::io;
-use std::rc::Rc;
 
 use crate::models::Graph;
 use crate::models::LocationInFile;
-use crate::models::Requirement;
 
 pub fn requirements(graph: &Graph, w: &mut impl io::Write) -> io::Result<()> {
     w.write_all(

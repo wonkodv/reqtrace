@@ -1,15 +1,8 @@
 use std::io;
-use std::rc::Rc;
-
-use serde::Serialize;
-use serde::Serializer as _;
-use serde_json::Serializer as _;
 
 use crate::aggregator::AggregatedGraph;
-use crate::models::Error;
 use crate::models::Format;
 use crate::models::Graph;
-use crate::models::Requirement;
 use crate::models::TracedGraph;
 
 mod gnuerr;

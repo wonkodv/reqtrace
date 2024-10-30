@@ -1,11 +1,8 @@
 use std::collections::BTreeMap;
-use std::fs;
 use std::io::{self};
 use std::path::Path;
-use std::path::PathBuf;
 use std::rc::Rc;
 
-use log::warn;
 use proc_macro2::Span;
 use quote::ToTokens;
 use syn::parse_file;
@@ -14,12 +11,10 @@ use syn::visit::Visit;
 use syn::visit::{self};
 use syn::ItemFn;
 
-use crate::models::ArtefactConfig;
 use crate::models::Error;
 use crate::models::Location;
 use crate::models::Reference;
 use crate::models::Requirement;
-use crate::models::{self};
 
 pub fn parse(reader: &mut impl io::BufRead, path: &Path) -> (Vec<Rc<Requirement>>, Vec<Error>) {
     let requirements = Vec::new();
@@ -40,7 +35,6 @@ pub fn parse(reader: &mut impl io::BufRead, path: &Path) -> (Vec<Rc<Requirement>
             }
             Ok(file) => {
                 let mut p = Parser {
-                    source,
                     requirements,
                     errors,
                     path,
@@ -61,7 +55,6 @@ struct Parser<'a> {
     errors: Vec<Error>,
     scope: Vec<String>,
     locations: Vec<Location>,
-    source: String,
     path: &'a Path,
 }
 
@@ -205,7 +198,7 @@ impl<'ast> Visit<'ast> for Parser<'ast> {
     fn visit_item_impl(&mut self, node: &'ast syn::ItemImpl) {
         let type_ = node.self_ty.to_token_stream().to_string();
         let symbol;
-        if let Some((bang, trait_, for_tok)) = &node.trait_ {
+        if let Some((bang, trait_, _for_tok)) = &node.trait_ {
             let trait_ = trait_.to_token_stream().to_string();
 
             if bang.is_some() {

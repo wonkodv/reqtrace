@@ -12,7 +12,6 @@ use crate::aggregator::RequirementTrace;
 use crate::models::Location;
 use crate::models::LocationInFile;
 use crate::models::Requirement;
-use crate::models::TracedGraph;
 use crate::models::*;
 
 lazy_static! {
@@ -29,25 +28,6 @@ fn requirement_link(req: &Requirement) -> String {
         let replaced = REMOVE.replace_all(&replaced, "");
 
         format!("[{}](#{} \"{}\")", req.id, replaced, title)
-    } else {
-        let replaced = &req.id;
-        let replaced = replaced.to_string().to_lowercase();
-        let replaced = REPLACE_WITH_DASH.replace_all(&replaced, "-");
-        let replaced = REMOVE.replace_all(&replaced, "");
-
-        format!("[{}](#{})", req.id, replaced)
-    }
-}
-
-/// requirement Id as markdown link  plus req title
-fn requirement_link_with_title(req: &Requirement) -> String {
-    if let Some(title) = &req.title {
-        let replaced = format!("{}-{}", req.id, title);
-        let replaced = replaced.to_lowercase();
-        let replaced = REPLACE_WITH_DASH.replace_all(&replaced, "-");
-        let replaced = REMOVE.replace_all(&replaced, "");
-
-        format!("[{}](#{}): {}", req.id, replaced, title)
     } else {
         let replaced = &req.id;
         let replaced = replaced.to_string().to_lowercase();

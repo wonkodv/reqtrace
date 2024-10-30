@@ -39,9 +39,9 @@ where
 
             Error::CoveredWithWrongTitle {
                 upper,
-                lower,
                 wrong_title,
                 location,
+                ..
             } => {
                 writeln!(
                     w,
@@ -59,10 +59,10 @@ where
                 )?;
             }
             Error::DependWithWrongTitle {
-                upper,
                 lower,
                 wrong_title,
                 location,
+                ..
             } => {
                 writeln!(
                     w,

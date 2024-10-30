@@ -1,15 +1,11 @@
 use std::collections::BTreeMap;
-use std::fs;
 use std::io;
 use std::path::Path;
-use std::path::PathBuf;
 use std::rc::Rc;
 
 use lazy_static::lazy_static;
-use log::warn;
 use regex::Regex;
 
-use crate::models::ArtefactConfig;
 use crate::models::Error;
 use crate::models::Location;
 use crate::models::Reference;
@@ -79,6 +75,8 @@ pub fn parse<R: io::BufRead>(reader: R, path: &Path) -> (Vec<Rc<Requirement>>, V
 
 #[cfg(test)]
 mod tests {
+    use std::path::PathBuf;
+
     use super::*;
 
     #[test]

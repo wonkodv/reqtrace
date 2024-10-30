@@ -1,12 +1,9 @@
 use std::collections::btree_map;
 use std::collections::BTreeMap;
 use std::collections::BTreeSet;
-use std::collections::HashMap;
 use std::rc::Rc;
 
 use Error::CoveredWithWrongTitle;
-use Error::CoversUnknownRequirement;
-use Error::DependOnUnknownRequirement;
 use Error::DependWithWrongTitle;
 use Error::DuplicateRequirement;
 
@@ -48,6 +45,7 @@ struct Tracer {
 
     /// List of all depends-links that were not covered yet. later turned into errors
     invalid_depends_links: BTreeSet<(RequirementId, RequirementId)>,
+
     /// List of all covers-links that were not covered yet. later turned into errors
     invalid_covers_links: BTreeSet<(RequirementId, RequirementId)>,
 }
@@ -277,7 +275,7 @@ impl Tracer {
             requirement_covered!(DSG_TRACE_REFERENCE_EXIST);
             let (upper_id, lower_id) = cov;
 
-            let (art_id, req) = &self.req_by_id[&lower_id];
+            let (_art_id, req) = &self.req_by_id[lower_id];
 
             let reference: &Reference = req
                 .covers
@@ -297,7 +295,7 @@ impl Tracer {
             requirement_covered!(DSG_TRACE_REFERENCE_EXIST);
             let (upper_id, lower_id) = dep;
 
-            let (art_id, req) = &self.req_by_id[&upper_id];
+            let (_art_id, req) = &self.req_by_id[upper_id];
 
             let reference = req.depends.iter().find(|r| &r.id == lower_id);
 

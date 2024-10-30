@@ -7,7 +7,6 @@ use lazy_static::lazy_static;
 use regex::Captures;
 use regex::Regex;
 
-use crate::models::ArtefactConfig;
 use crate::models::Error;
 use crate::models::Location;
 use crate::models::Reference;

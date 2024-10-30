@@ -43,6 +43,8 @@ pretty_assertions = "1.4.0"
 
 [lints.rust]
 unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+rust_2018_idioms = "warn"
 
 [lints.clippy]
 unusual_byte_groupings = "allow"

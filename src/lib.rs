@@ -1,14 +1,7 @@
 //! Requirement Tracing Lib
 
-#![cfg_attr(
-    not(debug_assertions),
-    warn(missing_debug_implementations, rust_2018_idioms, missing_docs)
-)]
-#![cfg_attr(
-    debug_assertions,
-    allow(dead_code, unused_imports, unused_variables, unreachable_code)
-)]
-
+#![cfg_attr(not(debug_assertions), warn(missing_docs))]
+#![cfg_attr(debug_assertions, allow(dead_code))]
 
 macro_rules! requirement_covered {
     ($id:ident) => {};
