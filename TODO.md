@@ -1,4 +1,19 @@
 
+Turn crate into a lib
+
+New Tool to check, that requirement IDs change whenever the requirement changes
+*   Design:
+    *   Tool runs on CI and pre-push
+    *   Tool obtains "blessed" list of previously reviewed state (git restore --source=release .requirement-history.json)
+    *   Tool computes hash for each Requirement
+    *   If ReqId not found in old list, append it
+    *   If ReqId is found in old list, hashes must match. Error otherwise
+    *   CI will have to obtain "blessed" list, not the one from current 
+*   Flags requirements where the content was modified
+*   tolerant over minor changes in case, punctuation, (spelling?)
+*   Review Process to flag req as unimportant
+
+
 
 add option to artefact that requirements form this art must be matched with title,
 
