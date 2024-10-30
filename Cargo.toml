@@ -41,9 +41,8 @@ quote = "1.0"
 pretty_assertions = "1.4.0"
 
 
-
 [lints.rust]
-unsafe_code = "warn" # 😢 TODO: forbid once we have LazyCell
+unsafe_code = "forbid"
 
 [lints.clippy]
 unusual_byte_groupings = "allow"
