@@ -267,7 +267,7 @@ mod test {
     }
 
     #[test]
-    fn test_id_only() {
+    fn cover_link_with_id_has_title_and_filename_and_covers_id() {
         let s = "
             mod module_name {
                 impl Trait for Struct {
@@ -295,7 +295,7 @@ mod test {
         );
     }
     #[test]
-    fn test_id_with_title() {
+    fn cover_link_with_id_and_title_has_title_and_filename_and_covers_id_and_covers_title() {
         let s = r#"
             mod module_name {
                 impl Trait for Struct {

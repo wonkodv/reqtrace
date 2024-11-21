@@ -16,7 +16,7 @@ lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();
     static ref REQUIREMENT_LINE: Regex =
         Regex::new(r"^(#+)\s*(\p{XID_Start}\p{XID_Continue}+):\s*(.+?)\s*$").unwrap();
-    static ref ATTRIBUTE_LINE: Regex = Regex::new(r"^([A-Z][a-z]+):\s(.*)\s*$").unwrap();
+    static ref ATTRIBUTE_LINE: Regex = Regex::new(r"^([A-Z][a-z]+):\s+(.*)\s*$").unwrap();
     static ref REF_LINK_LINE: Regex =
         Regex::new(r"^*\s+(\p{XID_Start}\p{XID_Continue}+)(?::\s*(.+?))?\s*$").unwrap();
     static ref BAD_HEADLINE_UNDERLINE: Regex = Regex::new(r"^(====*)|(----*)").unwrap(); // TODO: use
@@ -419,63 +419,80 @@ fn parse_link_attr(context: &mut Context<'_>, attr: &str, short_list: &str) -> S
 mod tests {
     use super::*;
 
-    #[test]
-    fn test_req_regex_matches() {
-        let cap = REQUIREMENT_LINE
-            .captures("## REQ_VCS: Allow Version Control\n")
-            .unwrap();
-        assert_eq!(&cap[1], "##");
-        assert_eq!(&cap[2], "REQ_VCS");
-        assert_eq!(&cap[3], "Allow Version Control");
+    mod requirement_regex {
+        use super::*;
+        #[test]
+        fn match_id_colon_title() {
+            let cap = REQUIREMENT_LINE
+                .captures("## REQ_VCS: Allow Version Control\n")
+                .unwrap();
+            assert_eq!(&cap[1], "##");
+            assert_eq!(&cap[2], "REQ_VCS");
+            assert_eq!(&cap[3], "Allow Version Control");
+        }
+
+        #[test]
+        fn match_uinicode_id_colon_title() {
+            let cap = REQUIREMENT_LINE
+                .captures("## ÄÅÉËÞÜÚÍÓÖÁÐFGHÏ: Allow Unicode IDs\n")
+                .unwrap();
+            assert_eq!(&cap[1], "##");
+            assert_eq!(&cap[2], "ÄÅÉËÞÜÚÍÓÖÁÐFGHÏ");
+        }
+
+        #[test]
+        fn id_with_dash_does_not_match() {
+            let cap = REQUIREMENT_LINE.captures("## REQ-ID: No Dash\n");
+            assert!(cap.is_none());
+        }
+
+        #[test]
+        fn id_with_pouind_does_not_match() {
+            let cap = REQUIREMENT_LINE.captures("## REQ#ID: No Dash\n");
+            assert!(cap.is_none());
+        }
+
+        #[test]
+        fn id_with_emoji_does_not_match() {
+            let cap = REQUIREMENT_LINE.captures("## REQ🍔: No Burgers in requirement ids\n");
+            assert!(cap.is_none());
+        }
+    }
+
+    mod attribute_regex {
+        use super::*;
+        #[test]
+        fn match_attribute_with_value() {
+            let cap = ATTRIBUTE_LINE.captures("Covers: COV, Cov\n").unwrap();
+            assert_eq!(&cap[1], "Covers");
+            assert_eq!(&cap[2], "COV, Cov");
+        }
+        #[test]
+        fn match_attribute_without_value() {
+            let cap = ATTRIBUTE_LINE.captures("Covers: \n").unwrap();
+            assert_eq!(&cap[1], "Covers");
+            assert_eq!(&cap[2], "");
+        }
+    }
+    mod reference_regex {
+        use super::*;
+        #[test]
+        fn matches_reference_with_id_and_title() {
+            let cap = REF_LINK_LINE.captures("*   REQ: Title of req \n").unwrap();
+            assert_eq!(&cap[1], "REQ");
+            assert_eq!(&cap[2], "Title of req");
+        }
+
+        #[test]
+        fn matches_reference_with_id() {
+            let cap = REF_LINK_LINE.captures("*   REQ \n").unwrap();
+            assert_eq!(&cap[1], "REQ");
+            assert_eq!(cap.get(2), None);
+        }
     }
 
     #[test]
-    fn test_req_regex_unicode() {
-        let cap = REQUIREMENT_LINE
-            .captures("## ÄÅÉËÞÜÚÍÓÖÁÐFGHÏ: Allow Unicode IDs\n")
-            .unwrap();
-        assert_eq!(&cap[1], "##");
-        assert_eq!(&cap[2], "ÄÅÉËÞÜÚÍÓÖÁÐFGHÏ");
-    }
-
-    #[test]
-    fn test_req_regex_no_match_dash() {
-        let cap = REQUIREMENT_LINE.captures("## REQ-ID: No Dash\n");
-        assert!(cap.is_none());
-    }
-
-    #[test]
-    fn test_req_regex_no_match_pound() {
-        let cap = REQUIREMENT_LINE.captures("## REQ#ID: No Dash\n");
-        assert!(cap.is_none());
-    }
-
-    #[test]
-    fn test_req_regex_no_match_symbols() {
-        let cap = REQUIREMENT_LINE.captures("## REQ🍔: No Burgers in requirement ids\n");
-        assert!(cap.is_none());
-    }
-
-    #[test]
-    fn test_attr_regex_matches() {
-        let cap = ATTRIBUTE_LINE.captures("Covers: COV, Cov\n").unwrap();
-        assert_eq!(&cap[1], "Covers");
-        assert_eq!(&cap[2], "COV, Cov");
-    }
-
-    #[test]
-    fn test_reflink_regex_matches() {
-        let cap = REF_LINK_LINE.captures("*   REQ: Title of req \n").unwrap();
-        assert_eq!(&cap[1], "REQ");
-        assert_eq!(&cap[2], "Title of req");
-
-        let cap = REF_LINK_LINE.captures("*   REQ \n").unwrap();
-        assert_eq!(&cap[1], "REQ");
-        assert_eq!(cap.get(2), None);
-    }
-
-    #[test]
-    fn test_markdown_parser() {
+    fn document_with_1_requirement() {
         let s = r"
 ## REQ: Title Title
 
@@ -515,24 +532,27 @@ Depends:
         assert_eq!(req.depends[1].title, Some("T".into()));
     }
 
-    /// Regression test. A buggy version parsed the rest of the line into 1 Requirement with empty ID
-    #[test]
-    fn test_markdown_parser_no_reflinks() {
-        let s = r"
+    mod regression {
+        use super::*;
+        /// A buggy version parsed the rest of the line into 1 Requirement with empty ID
+        #[test]
+        fn requirement_with_cover_attribute_and_no_reflinks() {
+            let s = r"
 ## REQ: Title Title
 Covers:
         ";
 
-        let p = Path::new("Test.md");
-        let (reqs, errs) = parse(&mut s.as_bytes(), p);
+            let p = Path::new("Test.md");
+            let (reqs, errs) = parse(&mut s.as_bytes(), p);
 
-        assert!(errs.is_empty());
+            assert!(errs.is_empty());
 
-        assert_eq!(reqs.len(), 1);
+            assert_eq!(reqs.len(), 1);
 
-        let req = &reqs[0];
+            let req = &reqs[0];
 
-        assert_eq!(req.id, "REQ".into());
-        assert_eq!(req.covers, vec![]);
+            assert_eq!(req.id, "REQ".into());
+            assert_eq!(req.covers, vec![]);
+        }
     }
 }

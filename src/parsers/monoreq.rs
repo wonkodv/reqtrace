@@ -75,27 +75,29 @@ pub fn parse<R: io::BufRead>(reader: R, path: &Path) -> (Vec<Rc<Requirement>>, V
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use std::path::PathBuf;
 
-    use super::*;
+    mod regex {
+        use super::*;
 
-    #[test]
-    fn test_req_regex_matches_no_title() {
-        let cap = REF_LINK_LINE.captures("Some text => REQ_ID").unwrap();
-        assert_eq!(&cap[1], "REQ_ID");
-        assert_eq!(cap.get(2), None);
+        #[test]
+        fn matches_arrow_id() {
+            let cap = REF_LINK_LINE.captures("Some text => REQ_ID").unwrap();
+            assert_eq!(&cap[1], "REQ_ID");
+            assert_eq!(cap.get(2), None);
+        }
+        #[test]
+        fn matches_arrow_id_colon_title() {
+            let cap = REF_LINK_LINE
+                .captures("Some text => REQ_ID:     Req Title        ")
+                .unwrap();
+            assert_eq!(&cap[1], "REQ_ID");
+            assert_eq!(&cap[2], "Req Title");
+        }
     }
     #[test]
-    fn test_req_regex_matches_title() {
-        let cap = REF_LINK_LINE
-            .captures("Some text => REQ_ID:     Req Title        ")
-            .unwrap();
-        assert_eq!(&cap[1], "REQ_ID");
-        assert_eq!(&cap[2], "Req Title");
-    }
-
-    #[test]
-    fn test_readme() {
+    fn small_cocument_with_both_depend_styles_yields_req_with_id_and_title_and_two_depend_links() {
         let text = "First Line
             second line
             some text => REQ_1

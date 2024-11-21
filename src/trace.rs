@@ -316,10 +316,3 @@ impl Tracer {
         }
     }
 }
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    #[test]
-    fn test() {}
-}

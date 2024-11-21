@@ -424,27 +424,75 @@ pub struct TracedGraph {
 #[cfg(test)]
 mod test {
     use super::*;
-    #[test]
-    fn test_location_from_string_file() {
-        assert_eq!(Location::from_str(""), Err("Invalid Location".to_owned()));
-        assert_eq!(
-            Location::from_str("path/to/file.txt"),
-            Ok(Location::new_with_no_pos(PathBuf::from("path/to/file.txt")))
-        );
-        assert_eq!(
-            Location::from_str("path/to/file.txt:42"),
-            Ok(Location::new_with_line_no(
-                PathBuf::from("path/to/file.txt"),
-                42
-            ))
-        );
-        assert_eq!(
-            Location::from_str("path/to/file.txt:42:67"),
-            Ok(Location::new_with_line_and_column(
-                PathBuf::from("path/to/file.txt"),
-                42,
-                67
-            ))
-        );
+
+    mod location_from_string {
+        use super::*;
+
+        #[test]
+        fn empty_returns_an_error() {
+            assert_eq!(Location::from_str(""), Err("Invalid Location".to_owned()));
+        }
+
+        #[test]
+        fn file_only_gives_no_pos() {
+            assert_eq!(
+                Location::from_str("path/to/file.txt"),
+                Ok(Location::new_with_no_pos(PathBuf::from("path/to/file.txt")))
+            );
+        }
+        #[test]
+        fn file_and_line_give_line_pos() {
+            assert_eq!(
+                Location::from_str("path/to/file.txt:42"),
+                Ok(Location::new_with_line_no(
+                    PathBuf::from("path/to/file.txt"),
+                    42
+                ))
+            );
+        }
+        #[test]
+        fn file_line_col_give_line_and_column_pos() {
+            assert_eq!(
+                Location::from_str("path/to/file.txt:42:67"),
+                Ok(Location::new_with_line_and_column(
+                    PathBuf::from("path/to/file.txt"),
+                    42,
+                    67
+                ))
+            );
+        }
+        #[test]
+        fn rightmost_number_fields_count() {
+            assert_eq!(
+                Location::from_str("path/to/file.txt:42:67:111"),
+                Ok(Location::new_with_line_and_column(
+                    PathBuf::from("path/to/file.txt:42"),
+                    67,
+                    111
+                ))
+            );
+        }
+        #[test]
+        fn filename_can_have_whitespace() {
+            assert_eq!(
+                Location::from_str("path/to/f ile.txt:42:67"),
+                Ok(Location::new_with_line_and_column(
+                    PathBuf::from("path/to/f ile.txt"),
+                    42,
+                    67
+                ))
+            );
+        }
+        #[test]
+        fn windows_drive_letter_filenames_work() {
+            assert_eq!(
+                Location::from_str(r"C:\path\to\file.txt:42:67"),
+                Ok(Location::new_with_line_and_column(
+                    PathBuf::from(r"C:\path\to\file.txt"),
+                    42,
+                    67
+                ))
+            );
+        }
     }
 }

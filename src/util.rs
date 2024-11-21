@@ -1,5 +1,5 @@
 #[cfg(test)]
-mod test {
+mod testutils {
 
     use std::collections::BTreeMap;
 
@@ -7,6 +7,7 @@ mod test {
     use crate::models::Reference;
     use crate::models::Requirement;
 
+    #[derive(Debug)]
     pub struct RequirementBuilder {
         req: Requirement,
     }
@@ -89,4 +90,4 @@ mod test {
     }
 }
 #[cfg(test)]
-pub use test::*;
+pub use testutils::*;
