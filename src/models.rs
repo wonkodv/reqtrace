@@ -1,3 +1,5 @@
+//! Simple Datastructures without much logic
+
 use core::fmt;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
@@ -9,8 +11,6 @@ use regex::Regex;
 use serde::ser::SerializeTuple as _;
 use serde::Deserialize;
 use serde::Serialize;
-
-///! Simple Datastructures without much logic
 
 #[derive(Serialize, Deserialize, Clone, Debug, Ord, PartialOrd, Eq, PartialEq)]
 pub struct ArtefactId(String);
@@ -185,7 +185,7 @@ impl Location {
         }
     }
 
-    pub fn from_str(location: &str) -> Result<Self, String> {
+    pub fn parse(location: &str) -> Result<Self, String> {
         let caps = LOCATION_RE.captures(location).ok_or("Invalid Location")?;
         let file = PathBuf::from(&caps["file"]);
 
@@ -430,20 +430,20 @@ mod test {
 
         #[test]
         fn empty_returns_an_error() {
-            assert_eq!(Location::from_str(""), Err("Invalid Location".to_owned()));
+            assert_eq!(Location::parse(""), Err("Invalid Location".to_owned()));
         }
 
         #[test]
         fn file_only_gives_no_pos() {
             assert_eq!(
-                Location::from_str("path/to/file.txt"),
+                Location::parse("path/to/file.txt"),
                 Ok(Location::new_with_no_pos(PathBuf::from("path/to/file.txt")))
             );
         }
         #[test]
         fn file_and_line_give_line_pos() {
             assert_eq!(
-                Location::from_str("path/to/file.txt:42"),
+                Location::parse("path/to/file.txt:42"),
                 Ok(Location::new_with_line_no(
                     PathBuf::from("path/to/file.txt"),
                     42
@@ -453,7 +453,7 @@ mod test {
         #[test]
         fn file_line_col_give_line_and_column_pos() {
             assert_eq!(
-                Location::from_str("path/to/file.txt:42:67"),
+                Location::parse("path/to/file.txt:42:67"),
                 Ok(Location::new_with_line_and_column(
                     PathBuf::from("path/to/file.txt"),
                     42,
@@ -464,7 +464,7 @@ mod test {
         #[test]
         fn rightmost_number_fields_count() {
             assert_eq!(
-                Location::from_str("path/to/file.txt:42:67:111"),
+                Location::parse("path/to/file.txt:42:67:111"),
                 Ok(Location::new_with_line_and_column(
                     PathBuf::from("path/to/file.txt:42"),
                     67,
@@ -475,7 +475,7 @@ mod test {
         #[test]
         fn filename_can_have_whitespace() {
             assert_eq!(
-                Location::from_str("path/to/f ile.txt:42:67"),
+                Location::parse("path/to/f ile.txt:42:67"),
                 Ok(Location::new_with_line_and_column(
                     PathBuf::from("path/to/f ile.txt"),
                     42,
@@ -486,7 +486,7 @@ mod test {
         #[test]
         fn windows_drive_letter_filenames_work() {
             assert_eq!(
-                Location::from_str(r"C:\path\to\file.txt:42:67"),
+                Location::parse(r"C:\path\to\file.txt:42:67"),
                 Ok(Location::new_with_line_and_column(
                     PathBuf::from(r"C:\path\to\file.txt"),
                     42,

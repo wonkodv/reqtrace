@@ -91,7 +91,7 @@ impl Parser<'_> {
                     if id.starts_with('"') && id.ends_with('"') {
                         // requirement_covered!("REQU_ID")
                         id = id.replace('"', ""); // TODO: better string parsing?
-                        Some((id.to_string(), None))
+                        Some((id, None))
                     } else {
                         self.errors.push(Error::Format(
                             location_from_span(self.path, &tokens[0].span()),
@@ -153,7 +153,7 @@ impl Parser<'_> {
                 _ => {
                     let covers = vec![reference];
                     let req = Requirement {
-                        id: id.into(),
+                        id,
                         location: self.locations.last().unwrap().clone(),
                         covers,
                         depends: vec![],

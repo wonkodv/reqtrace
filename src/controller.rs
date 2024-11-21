@@ -66,7 +66,7 @@ fn parse_single_file(config: &ArtefactConfig) -> (Vec<PathBuf>, Vec<Rc<Requireme
         Err(err) => (
             vec![path.clone()],
             vec![],
-            vec![Error::Io(path.into(), err.to_string())],
+            vec![Error::Io(path, err.to_string())],
         ),
         Ok(file) => {
             let mut r = io::BufReader::new(file);
@@ -116,13 +116,13 @@ fn parse_multiple_files(
             let mut errors = Vec::new();
             for path in &paths {
                 requirement_covered!(DSG_ART_FILES);
-                match fs::File::open(&path) {
+                match fs::File::open(path) {
                     Err(err) => errors.push(Error::Io(path.into(), err.to_string())),
                     Ok(file) => {
                         let mut r = io::BufReader::new(file);
 
                         let (r, e) = match config.parser {
-                            ArtefactParser::Rust => parsers::rust::parse(&mut r, &path),
+                            ArtefactParser::Rust => parsers::rust::parse(&mut r, path),
                             _ => panic!("unexpected {:?}", config.parser),
                         };
                         requirements.extend(r);

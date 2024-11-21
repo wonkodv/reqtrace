@@ -115,7 +115,7 @@ pub fn requirements(graph: &Graph, w: &mut impl io::Write) -> io::Result<()> {
     reqs.sort_by(|r, o| r.id.cmp(&o.id));
 
     for req in reqs {
-        requirement(&req, w)?;
+        requirement(req, w)?;
     }
     Ok(())
 }
@@ -277,8 +277,8 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
                     "        *    ````{}````\n",
                     "    *  At: {}",
                 ),
-                requirement_link(&upper),
-                requirement_link(&lower),
+                requirement_link(upper),
+                requirement_link(lower),
                 lower.title.as_ref().unwrap_or(&"".to_owned()),
                 wrong_title,
                 location,
@@ -316,7 +316,7 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
     }
 }
 
-pub fn errors<'r, W, R>(errors: R, w: &mut impl io::Write) -> io::Result<()>
+pub fn errors<'r, R>(errors: R, w: &mut impl io::Write) -> io::Result<()>
 where
     R: Iterator<Item = &'r Error>,
 {

@@ -18,7 +18,7 @@ mod testutils {
                 req: Requirement {
                     id: id.into(),
                     title: None,
-                    location: Location::from_str("no Location").unwrap(),
+                    location: Location::parse("no Location").unwrap(),
                     covers: vec![],
                     depends: vec![],
                     tags: vec![],
@@ -33,7 +33,7 @@ mod testutils {
         }
 
         pub fn location(mut self, location: &str) -> Result<Self, String> {
-            let l = Location::from_str(location)?;
+            let l = Location::parse(location)?;
             self.req.location = l;
             Ok(self)
         }
@@ -46,7 +46,7 @@ mod testutils {
         ) -> Result<Self, String> {
             let id = id.into();
             let title = title.map(std::borrow::ToOwned::to_owned);
-            let location = Location::from_str(location)?;
+            let location = Location::parse(location)?;
 
             self.req.covers.push(Reference {
                 id,
@@ -64,7 +64,7 @@ mod testutils {
         ) -> Result<Self, String> {
             let id = id.into();
             let title = title.map(std::borrow::ToOwned::to_owned);
-            let location = Location::from_str(location)?;
+            let location = Location::parse(location)?;
 
             self.req.covers.push(Reference {
                 id,

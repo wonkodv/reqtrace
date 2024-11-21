@@ -1,6 +1,9 @@
 use std::collections::BTreeMap;
 
-use crate::models::*;
+use crate::models::{
+    Artefact, ArtefactId, Location, Relation, Requirement, RequirementId, TracedGraph,
+    TracedRelation,
+};
 
 /// Bundle with a requirement and its upper/lower relations and referenced requiremnts
 #[derive(Debug)]
@@ -35,7 +38,7 @@ pub struct ArtefactRelations<'g> {
     pub artefact: &'g Artefact,
 }
 
-/// Where TracedGraph contains only deduplicated information, this holds all the cross references
+/// Where `TracedGraph` contains only deduplicated information, this holds all the cross references
 /// to find all the info for an object directly
 #[derive(Debug)]
 pub struct AggregatedGraph<'g> {

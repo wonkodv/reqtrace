@@ -352,13 +352,7 @@ fn start_attribute(context: &mut Context<'_>, attr_line: &Captures<'_>) -> State
                 context.errors.push(Error::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
-                    context
-                        .req_under_construction
-                        .as_ref()
-                        .unwrap()
-                        .id
-                        .clone()
-                        .into(),
+                    context.req_under_construction.as_ref().unwrap().id.clone(),
                 ));
             }
             parse_link_attr(context, attr, first_line)

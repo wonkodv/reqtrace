@@ -113,7 +113,7 @@ pub fn tracing(traced_graph: &TracedGraph, w: &mut impl io::Write) -> io::Result
         writeln!(w, "## {}", rel)?;
 
         for req in &rel.uncovered {
-            let req = &traced_graph.artefacts[&rel.relation.upper].requirements[&req];
+            let req = &traced_graph.artefacts[&rel.relation.upper].requirements[req];
             writeln!(w, "{}: {} Uncovered", req.location, req.id)?;
         }
     }

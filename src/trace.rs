@@ -105,14 +105,14 @@ impl Tracer {
 
         for req in artefact.requirements.values() {
             match self.req_by_id.entry(req.id.clone()) {
-                btree_map::Entry::Occupied(e) => {
+                btree_map::Entry::Occupied(req_entry) => {
                     requirement_covered!(DSG_TRACE_DETECT_DUPLICATE);
-                    let (_old_art, old_req) = e.get();
+                    let (_old_art, old_req) = req_entry.get();
                     let err = DuplicateRequirement(Rc::clone(old_req), Rc::clone(req));
                     self.errors.push(err);
                 }
-                btree_map::Entry::Vacant(e) => {
-                    e.insert((artefact.id.clone(), Rc::clone(req)));
+                btree_map::Entry::Vacant(req_entry) => {
+                    req_entry.insert((artefact.id.clone(), Rc::clone(req)));
                     // mark the new requirement's covers and depends links as invalid;
                     // later, in add_coverage each covered connection is removed.
                     for cov in &req.covers {
@@ -133,11 +133,11 @@ impl Tracer {
                     requirements_by_id.insert(req.id.clone(), Rc::clone(req));
                     for cov in &req.covers {
                         match requirements_that_cover.entry(cov.id.clone()) {
-                            std::collections::btree_map::Entry::Vacant(e) => {
-                                e.insert(vec![(Rc::clone(req), cov.clone())]);
+                            std::collections::btree_map::Entry::Vacant(cov_entry) => {
+                                cov_entry.insert(vec![(Rc::clone(req), cov.clone())]);
                             }
-                            std::collections::btree_map::Entry::Occupied(mut e) => {
-                                e.get_mut().push((Rc::clone(req), cov.clone()))
+                            std::collections::btree_map::Entry::Occupied(mut cov_entry) => {
+                                cov_entry.get_mut().push((Rc::clone(req), cov.clone()))
                             }
                         }
                     }
@@ -210,10 +210,10 @@ impl Tracer {
                 }
             }
 
-            for lower in &relation.lower {
+            for lower_id in &relation.lower {
                 let lower_artefact = self
                     .traced_artefacts
-                    .get_mut(lower)
+                    .get_mut(lower_id)
                     .expect("artefacts of relations exist");
 
                 if let Some(lower) = lower_artefact

@@ -44,7 +44,7 @@ pretty_assertions = "1.4.0"
 [lints.rust]
 unsafe_code = "forbid"
 missing_debug_implementations = "warn"
-rust_2018_idioms = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
 
 [lints.clippy]
 unusual_byte_groupings = "allow"
@@ -55,13 +55,13 @@ cargo = { level = "warn", priority = -1 }
 multiple_crate_versions = "allow" # 😢
 
 
-pedantic = { level = "warn", priority = -1 }
-cast_possible_wrap = "allow"         # working with numbers is hard :/
-cast_possible_truncation = "allow"   # working with numbers is hard :/
-cast_precision_loss = "allow"        # working with numbers is hard :/
-cast_sign_loss = "allow"             # working with numbers is hard :/
-if_not_else = "allow"
-match_same_arms = "allow"
+#pedantic = { level = "warn", priority = -1 }
+#cast_possible_wrap = "allow"         # working with numbers is hard :/
+#cast_possible_truncation = "allow"   # working with numbers is hard :/
+#cast_precision_loss = "allow"        # working with numbers is hard :/
+#cast_sign_loss = "allow"             # working with numbers is hard :/
+#if_not_else = "allow"
+#match_same_arms = "allow"
 
 clone_on_ref_ptr = "warn"
 format_push_string = "warn"
