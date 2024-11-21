@@ -314,34 +314,34 @@ Downwards Tracing:
 
 ## Controller::run
 
-Origin: code, [src/controller.rs:258:11](../src/controller.rs?plain=1#L258)
+Origin: code, [src/controller.rs:270:11](../src/controller.rs?plain=1#L270)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_CTRL_FORMAT](#dsg_ctrl_format-format-job-output "Format Job Output")
-        Reference: [src/controller.rs:301:16](../src/controller.rs?plain=1#L301)
+        Reference: [src/controller.rs:313:16](../src/controller.rs?plain=1#L313)
     *   [DSG_CTRL_FORMAT](#dsg_ctrl_format-format-job-output "Format Job Output")
-        Reference: [src/controller.rs:315:16](../src/controller.rs?plain=1#L315)
+        Reference: [src/controller.rs:327:16](../src/controller.rs?plain=1#L327)
     *   [DSG_CTRL_GRAPH](#dsg_ctrl_graph-construct-graph "Construct Graph")
-        Reference: [src/controller.rs:306:16](../src/controller.rs?plain=1#L306)
+        Reference: [src/controller.rs:318:16](../src/controller.rs?plain=1#L318)
     *   [DSG_CTRL_PARSE](#dsg_ctrl_parse-parse-all-artefacts "Parse all Artefacts")
-        Reference: [src/controller.rs:305:16](../src/controller.rs?plain=1#L305)
+        Reference: [src/controller.rs:317:16](../src/controller.rs?plain=1#L317)
     *   [DSG_CTRL_RETURN_CODE](#dsg_ctrl_return_code-return-code-indicates-if-tracing-is-correct "Return Code Indicates if Tracing is Correct")
-        Reference: [src/controller.rs:330:8](../src/controller.rs?plain=1#L330)
+        Reference: [src/controller.rs:342:8](../src/controller.rs?plain=1#L342)
     *   [DSG_CTRL_TRACE](#dsg_ctrl_trace-trace-requirements "Trace Requirements")
-        Reference: [src/controller.rs:282:16](../src/controller.rs?plain=1#L282)
+        Reference: [src/controller.rs:294:16](../src/controller.rs?plain=1#L294)
 *   formats => [code]
 
 Downwards Tracing:
 
 ## Controller::run_jobs
 
-Origin: code, [src/controller.rs:229:11](../src/controller.rs?plain=1#L229)
+Origin: code, [src/controller.rs:241:11](../src/controller.rs?plain=1#L241)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_CTRL_RETURN_CODE](#dsg_ctrl_return_code-return-code-indicates-if-tracing-is-correct "Return Code Indicates if Tracing is Correct")
-        Reference: [src/controller.rs:241:24](../src/controller.rs?plain=1#L241)
+        Reference: [src/controller.rs:253:24](../src/controller.rs?plain=1#L253)
 *   formats => [code]
 
 Downwards Tracing:
@@ -464,26 +464,26 @@ Downwards Tracing:
 
 ## parse_from_config
 
-Origin: code, [src/controller.rs:128:7](../src/controller.rs?plain=1#L128)
+Origin: code, [src/controller.rs:138:7](../src/controller.rs?plain=1#L138)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing")
-        Reference: [src/controller.rs:135:4](../src/controller.rs?plain=1#L135)
+        Reference: [src/controller.rs:145:4](../src/controller.rs?plain=1#L145)
     *   [DSG_CTRL_DETECT_DUPLICATE_REQS](#dsg_ctrl_detect_duplicate_reqs-detect-duplicates "Detect duplicates")
-        Reference: [src/controller.rs:146:16](../src/controller.rs?plain=1#L146)
+        Reference: [src/controller.rs:158:16](../src/controller.rs?plain=1#L158)
 *   formats => [code]
 
 Downwards Tracing:
 
 ## parse_multiple_files
 
-Origin: code, [src/controller.rs:84:3](../src/controller.rs?plain=1#L84)
+Origin: code, [src/controller.rs:94:3](../src/controller.rs?plain=1#L94)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_ART_FILES](#dsg_art_files-artefact-loads-one-or-more-files "Artefact loads one or more Files")
-        Reference: [src/controller.rs:108:16](../src/controller.rs?plain=1#L108)
+        Reference: [src/controller.rs:118:16](../src/controller.rs?plain=1#L118)
 *   formats => [code]
 
 Downwards Tracing:
@@ -579,7 +579,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   design => [formats, code]
     *   [parse_multiple_files](#parse_multiple_files)
-        Reference: [src/controller.rs:108:16](../src/controller.rs?plain=1#L108)
+        Reference: [src/controller.rs:118:16](../src/controller.rs?plain=1#L118)
     *   [parse_single_file](#parse_single_file)
         Reference: [src/controller.rs:64:4](../src/controller.rs?plain=1#L64)
 
@@ -624,7 +624,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   design => [formats, code]
     *   [parse_from_config](#parse_from_config)
-        Reference: [src/controller.rs:135:4](../src/controller.rs?plain=1#L135)
+        Reference: [src/controller.rs:145:4](../src/controller.rs?plain=1#L145)
 
 ## DSG_CLI: Command Line Interface
 
@@ -722,7 +722,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   design => [formats, code]
     *   [parse_from_config](#parse_from_config)
-        Reference: [src/controller.rs:146:16](../src/controller.rs?plain=1#L146)
+        Reference: [src/controller.rs:158:16](../src/controller.rs?plain=1#L158)
 
 ## DSG_CTRL_FORMAT: Format Job Output
 
@@ -743,9 +743,9 @@ Upwards Tracing:
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:301:16](../src/controller.rs?plain=1#L301)
+        Reference: [src/controller.rs:313:16](../src/controller.rs?plain=1#L313)
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:315:16](../src/controller.rs?plain=1#L315)
+        Reference: [src/controller.rs:327:16](../src/controller.rs?plain=1#L327)
 
 ## DSG_CTRL_GRAPH: Construct Graph
 
@@ -767,7 +767,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:306:16](../src/controller.rs?plain=1#L306)
+        Reference: [src/controller.rs:318:16](../src/controller.rs?plain=1#L318)
 
 ## DSG_CTRL_PARSE: Parse all Artefacts
 
@@ -791,7 +791,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:305:16](../src/controller.rs?plain=1#L305)
+        Reference: [src/controller.rs:317:16](../src/controller.rs?plain=1#L317)
 
 ## DSG_CTRL_RETURN_CODE: Return Code Indicates if Tracing is Correct
 
@@ -812,9 +812,9 @@ Upwards Tracing:
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:330:8](../src/controller.rs?plain=1#L330)
+        Reference: [src/controller.rs:342:8](../src/controller.rs?plain=1#L342)
     *   [Controller::run_jobs](#controllerrun_jobs)
-        Reference: [src/controller.rs:241:24](../src/controller.rs?plain=1#L241)
+        Reference: [src/controller.rs:253:24](../src/controller.rs?plain=1#L253)
 
 ## DSG_CTRL_TRACE: Trace Requirements
 
@@ -839,7 +839,7 @@ Upwards Tracing:
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:282:16](../src/controller.rs?plain=1#L282)
+        Reference: [src/controller.rs:294:16](../src/controller.rs?plain=1#L294)
 
 ## DSG_FORMATTER: Formatter
 
