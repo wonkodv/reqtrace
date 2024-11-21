@@ -1,0 +1,22 @@
+relations=[]
+
+[[artefacts]]
+id = "misconfigured_artefact"
+paths = [ ]
+parser = "Json"
+
+
+[jobs.fails]
+# this job "succeeds" because it's return value is ignored"
+query="Parse"
+format="Markdown"
+file="-"
+
+
+[jobs.succeeds]
+# this job "succeeds" because it's return value is ignored"
+query="Parse"
+format="Markdown"
+file="-"
+set_return_code = false
+
