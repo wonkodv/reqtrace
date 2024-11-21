@@ -58,6 +58,7 @@ pub enum ArtefactParser {
     Markdown,
     Rust,
     MonoRequirement,
+    Json,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

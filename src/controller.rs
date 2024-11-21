@@ -74,6 +74,16 @@ fn parse_single_file(config: &ArtefactConfig) -> (Vec<PathBuf>, Vec<Rc<Requireme
             let (reqs, errs) = match &config.parser {
                 ArtefactParser::Markdown => parsers::markdown::parse(&mut r, &path),
                 ArtefactParser::MonoRequirement => parsers::monoreq::parse(&mut r, &path),
+                ArtefactParser::Json => match serde_json::from_reader(r) {
+                    Ok(reqs) => (reqs, vec![]),
+                    Err(err) => (
+                        vec![],
+                        vec![Error::Format(
+                            Location::new_with_no_pos(path.clone()),
+                            err.to_string(),
+                        )],
+                    ),
+                },
                 _ => panic!("unexpected {:?}", config.parser),
             };
             (vec![path], reqs, errs)
@@ -136,7 +146,9 @@ pub fn parse_from_config(
 
     let (paths, requirement_vec, mut errors) = match config.parser {
         ArtefactParser::Rust => parse_multiple_files(config),
-        ArtefactParser::Markdown | ArtefactParser::MonoRequirement => parse_single_file(config),
+        ArtefactParser::Json | ArtefactParser::Markdown | ArtefactParser::MonoRequirement => {
+            parse_single_file(config)
+        }
     };
 
     let mut requirements = BTreeMap::new();
