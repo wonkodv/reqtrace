@@ -27,6 +27,9 @@ struct Arguments {
     #[arg(short, long = "config", default_value = "requirements.toml")]
     config_file: PathBuf,
 
+    #[arg(short, long = "base", default_value = ".")]
+    base_dir: PathBuf,
+
     #[arg()]
     jobs: Vec<String>,
 }
@@ -110,7 +113,7 @@ fn try_main() -> Result<JobSuccess, Box<dyn std::error::Error>> {
     let opt: Arguments = Arguments::parse();
     logging_setup(&opt);
     let config = get_config(&opt)?;
-    let controller = Controller::new(config);
+    let controller = Controller::new(config, &opt.base_dir);
     run_cli_jobs(&controller, &opt)
 }
 

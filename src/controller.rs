@@ -2,6 +2,7 @@ use std::collections::btree_map;
 use std::collections::BTreeMap;
 use std::fs;
 use std::io;
+use std::path::Path;
 use std::path::PathBuf;
 use std::rc::Rc;
 use std::time::Instant;
@@ -33,11 +34,15 @@ pub enum JobSuccess {
     ErrorsDetected,
 }
 
-fn glob_paths(paths: &Vec<String>) -> Result<Vec<PathBuf>, Error> {
+fn glob_paths(paths: &Vec<String>, base_dir: &Path) -> Result<Vec<PathBuf>, Error> {
     let mut result = Vec::new();
 
     for path in paths {
-        let glob = glob::glob(path);
+        let glob = if Path::new(path).is_relative() {
+            glob::glob(&format!("{}/{}", base_dir.display(), path))
+        } else {
+            glob::glob(path)
+        };
         let glob = glob.map_err(|e| Error::Io(PathBuf::from(path), e.to_string()))?;
         for entry in glob {
             let entry = entry.map_err(|e| Error::Io(e.path().into(), e.to_string()))?;
@@ -48,7 +53,10 @@ fn glob_paths(paths: &Vec<String>) -> Result<Vec<PathBuf>, Error> {
     Ok(result)
 }
 
-fn parse_single_file(config: &ArtefactConfig) -> (Vec<PathBuf>, Vec<Rc<Requirement>>, Vec<Error>) {
+fn parse_single_file(
+    config: &ArtefactConfig,
+    base_dir: &Path,
+) -> (Vec<PathBuf>, Vec<Rc<Requirement>>, Vec<Error>) {
     if config.paths.len() != 1 {
         return (
             vec![],
@@ -59,7 +67,7 @@ fn parse_single_file(config: &ArtefactConfig) -> (Vec<PathBuf>, Vec<Rc<Requireme
             ))],
         );
     }
-    let path = PathBuf::from(config.paths[0].to_owned());
+    let path = base_dir.join(&config.paths[0]);
 
     requirement_covered!(DSG_ART_FILES);
     match fs::File::open(&path) {
@@ -93,6 +101,7 @@ fn parse_single_file(config: &ArtefactConfig) -> (Vec<PathBuf>, Vec<Rc<Requireme
 
 fn parse_multiple_files(
     config: &ArtefactConfig,
+    base_dir: &Path,
 ) -> (Vec<PathBuf>, Vec<Rc<Requirement>>, Vec<Error>) {
     if config.paths.is_empty() {
         return (
@@ -105,7 +114,7 @@ fn parse_multiple_files(
         );
     }
 
-    match glob_paths(&config.paths) {
+    match glob_paths(&config.paths, base_dir) {
         Err(err) => (
             config.paths.iter().map(PathBuf::from).collect(),
             vec![],
@@ -137,6 +146,7 @@ fn parse_multiple_files(
 
 pub fn parse_from_config(
     config: &ArtefactConfig,
+    base_dir: &Path,
 ) -> (
     Vec<PathBuf>,
     BTreeMap<RequirementId, Rc<Requirement>>,
@@ -145,9 +155,9 @@ pub fn parse_from_config(
     requirement_covered!(DSG_ART_PARSE_COLLECT_ERRORS);
 
     let (paths, requirement_vec, mut errors) = match config.parser {
-        ArtefactParser::Rust => parse_multiple_files(config),
+        ArtefactParser::Rust => parse_multiple_files(config, base_dir),
         ArtefactParser::Json | ArtefactParser::Markdown | ArtefactParser::MonoRequirement => {
-            parse_single_file(config)
+            parse_single_file(config, base_dir)
         }
     };
 
@@ -170,6 +180,7 @@ pub fn parse_from_config(
 
 #[derive(Debug)]
 pub struct Controller {
+    base_dir: PathBuf,
     graph: Graph,
     traced_graph: TracedGraph,
     jobs: BTreeMap<String, Job>,
@@ -177,12 +188,12 @@ pub struct Controller {
 }
 
 impl Controller {
-    pub fn new(config: Config) -> Self {
+    pub fn new(config: Config, base_dir: &Path) -> Self {
         let mut artefacts: BTreeMap<ArtefactId, Rc<Artefact>> = BTreeMap::new();
 
         for ac in config.artefacts {
             let ignore_derived_requirements = ac.ignore_derived_requirements.unwrap_or(false);
-            let (files, requirements, errors) = parse_from_config(&ac);
+            let (files, requirements, errors) = parse_from_config(&ac, &base_dir);
 
             let a = Artefact {
                 id: ac.id.clone(),
@@ -206,6 +217,7 @@ impl Controller {
         let traced_graph = crate::trace::trace(&graph);
 
         Self {
+            base_dir: base_dir.to_owned(),
             graph,
             traced_graph,
             jobs: config.jobs.unwrap_or_default(),
@@ -276,15 +288,20 @@ impl Controller {
             out = Box::new(stdout.lock());
             log::info!("writing {job_name:?} to stdout");
         } else {
-            if let Some(p) = &job.file.parent() {
+            let path = if job.file.is_absolute() {
+                &job.file
+            } else {
+                &self.base_dir.join(&job.file)
+            };
+            if let Some(p) = &path.parent() {
                 std::fs::create_dir_all(p)
                     .map_err(|e| ControllerError::Io(p.to_path_buf(), e.to_string()))?;
             }
 
-            let file = fs::File::create(&job.file)
-                .map_err(|e| ControllerError::Io(job.file.clone(), e.to_string()))?;
+            let file = fs::File::create(&path)
+                .map_err(|e| ControllerError::Io(path.clone(), e.to_string()))?;
             out = Box::new(file);
-            log::info!("writing {} to {}", &job_name, job.file.display());
+            log::info!("writing {} to {}", &job_name, path.display());
         }
 
         let mut success = JobSuccess::Success;

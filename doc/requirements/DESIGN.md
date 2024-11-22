@@ -109,7 +109,7 @@ Job.File.
 Covers:
 *   ARCH_CONTROLLER
 
-#### DSG_CTRL_RETURN_CODE: Return Code Indicates if Tracing is Correct
+#### DSG_CTRL_RETURN_CODE: Return Code Indicates if Job found Errors
 
 If Job.SetReturnCode, and running job.query produced any errors, indicate them to the CLI,
 so it can set an error return code.
