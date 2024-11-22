@@ -11,18 +11,23 @@ const VERSION: u32 = 0; // Version 0 is unstable, don't rely on it
 pub struct Requirements {
     version: u32,
     requirements: Vec<Rc<models::Requirement>>,
+    errors: Vec<models::Error>,
 }
 
 impl Requirements {
-    pub fn new<'r, R>(requirements: R) -> Self
+    pub fn new<'r, 'e, R, E>(requirements: R, errors: E) -> Self
     where
         R: Iterator<Item = &'r Rc<models::Requirement>>,
+        E: Iterator<Item = &'e models::Error>,
     {
         let mut requirements: Vec<_> = requirements.map(Rc::clone).collect();
         requirements.sort_by(|r, o| r.id.cmp(&o.id));
+        let mut errors: Vec<_> = errors.map(models::Error::clone).collect();
+        errors.sort_unstable_by_key(ToString::to_string);
         Self {
             version: VERSION,
             requirements,
+            errors,
         }
     }
 }

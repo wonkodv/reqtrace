@@ -23,8 +23,17 @@ pub fn requirements(graph: &Graph, format: &Format, writer: &mut impl io::Write)
     match format {
         Format::Tags => tags::requirements(graph, writer),
         Format::Markdown => markdown::requirements(graph, writer),
-        //       Format::Json     => serde_json::to_writer_pretty(writer, &serialize::Requirements::new(reqs))
-        //           .map_err(io::Error::other),
+        Format::Json => serde_json::to_writer_pretty(
+            writer,
+            &serialize::Requirements::new(
+                graph
+                    .artefacts
+                    .values()
+                    .flat_map(|a| a.requirements.values()),
+                graph.artefacts.values().flat_map(|a| a.errors.iter()),
+            ),
+        )
+        .map_err(io::Error::other),
         _ => todo!(),
     }
 }
