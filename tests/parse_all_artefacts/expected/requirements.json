@@ -1,0 +1,95 @@
+{
+  "version": 0,
+  "requirements": [
+    {
+      "id": "ARCH_ARTEFACT",
+      "title": "Artefact",
+      "location": {
+        "file": "doc/requirements/ARCHITECTURE.md",
+        "location_in_file": {
+          "Line": 69
+        }
+      },
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "ARCH_CLI",
+      "title": "Command Line Interface",
+      "location": {
+        "file": "doc/requirements/ARCHITECTURE.md",
+        "location_in_file": {
+          "Line": 22
+        }
+      },
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "REQ_CACHE_FRIENDLY",
+      "title": "Work well with build systems that cache",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 132
+        }
+      },
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "REQ_CONFIG",
+      "title": "Simple Configuration in One File",
+      "location": {
+        "file": "doc/requirements/REQUIREMENTS.md",
+        "location_in_file": {
+          "Line": 123
+        }
+      },
+      "covers": [],
+      "depends": [],
+      "tags": [],
+      "attributes": {}
+    },
+    {
+      "id": "readme",
+      "title": "Readme's Title",
+      "location": {
+        "file": "tests/parse_all_artefacts/readme.md",
+        "location_in_file": null
+      },
+      "covers": [],
+      "depends": [
+        {
+          "id": "REQ_FOO",
+          "title": null,
+          "location": {
+            "file": "tests/parse_all_artefacts/readme.md",
+            "location_in_file": {
+              "Line": 8
+            }
+          }
+        },
+        {
+          "id": "REQ_BAR",
+          "title": null,
+          "location": {
+            "file": "tests/parse_all_artefacts/readme.md",
+            "location_in_file": {
+              "Line": 9
+            }
+          }
+        }
+      ],
+      "tags": [],
+      "attributes": {}
+    }
+  ],
+  "errors": []
+}

@@ -4,7 +4,8 @@ mod utils;
 
 #[test]
 fn failing_job_sets_return_code() {
-    let ctrl = utils::controller_for_this_test(file!());
+    let env = utils::test_environment(file!());
+    let ctrl = env.controller();
 
     assert_eq!(
         ctrl.run_jobs_by_name(&["succeeds".to_owned()]),
@@ -26,4 +27,5 @@ fn failing_job_sets_return_code() {
         ctrl.run_jobs_by_name(&["fails".to_owned(), "succeeds".to_owned()]),
         Ok(JobSuccess::ErrorsDetected)
     );
+    println!("COVERED: DSG_CTRL_RETURN_CODE: Return Code Indicates if Job found Errors");
 }

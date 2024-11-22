@@ -1,0 +1,32 @@
+[
+  {
+    "id": "ARCH_ARTEFACT",
+    "title": "Artefact",
+    "location": {
+      "file": "doc/requirements/ARCHITECTURE.md",
+      "location_in_file": {
+        "Line": 69
+      }
+    },
+    "covers": [],
+    "depends": [],
+    "tags": [],
+    "attributes": {
+    }
+  },
+  {
+    "id": "ARCH_CLI",
+    "title": "Command Line Interface",
+    "location": {
+      "file": "doc/requirements/ARCHITECTURE.md",
+      "location_in_file": {
+        "Line": 22
+      }
+    },
+    "covers": [],
+    "depends": [],
+    "tags": [],
+    "attributes": {
+    }
+  }
+]

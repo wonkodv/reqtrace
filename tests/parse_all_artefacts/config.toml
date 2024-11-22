@@ -1,0 +1,22 @@
+relations=[]
+
+[[artefacts]]
+id = "a1"
+paths = [ "a1.json"]
+parser = "Json"
+
+[[artefacts]]
+id = "a2"
+paths = [ "a2.json" ]
+parser = "Json"
+
+[[artefacts]]
+id = "readme"
+paths = ["readme.md", ]
+parser = "MonoRequirement"
+
+[jobs.parse]
+# this job "succeeds" because it's return value is ignored"
+query="Parse"
+format="Json"
+file="out/requirements.json"

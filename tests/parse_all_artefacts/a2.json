@@ -1,0 +1,32 @@
+[
+  {
+    "id": "REQ_CACHE_FRIENDLY",
+    "title": "Work well with build systems that cache",
+    "location": {
+      "file": "doc/requirements/REQUIREMENTS.md",
+      "location_in_file": {
+        "Line": 132
+      }
+    },
+    "covers": [],
+    "depends": [],
+    "tags": [],
+    "attributes": {
+    }
+  },
+  {
+    "id": "REQ_CONFIG",
+    "title": "Simple Configuration in One File",
+    "location": {
+      "file": "doc/requirements/REQUIREMENTS.md",
+      "location_in_file": {
+        "Line": 123
+      }
+    },
+    "covers": [],
+    "depends": [],
+    "tags": [],
+    "attributes": {
+    }
+  }
+]
