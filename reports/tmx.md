@@ -53,7 +53,7 @@
 
 ## ARCH_ARTEFACT: Artefact
 
-Origin: architecture, [doc/requirements/ARCHITECTURE.md:97](../doc/requirements/ARCHITECTURE.md?plain=1#L97)
+Origin: architecture, [./doc/requirements/ARCHITECTURE.md:97](.././doc/requirements/ARCHITECTURE.md?plain=1#L97)
 
 
 An Artefact is a list of requirements, parsed from one or more files by a parser
@@ -63,22 +63,22 @@ An Artefact is a list of requirements, parsed from one or more files by a parser
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_ARTEFACT](#req_artefact-artefacts-contain-requirements "Artefacts contain Requirements")
-        Reference: [doc/requirements/ARCHITECTURE.md:102](../doc/requirements/ARCHITECTURE.md?plain=1#L102)
+        Reference: [./doc/requirements/ARCHITECTURE.md:102](.././doc/requirements/ARCHITECTURE.md?plain=1#L102)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_ART_FILES](#dsg_art_files-artefact-loads-one-or-more-files "Artefact loads one or more Files")
-        Reference: [doc/requirements/DESIGN.md:353](../doc/requirements/DESIGN.md?plain=1#L353)
+        Reference: [./doc/requirements/DESIGN.md:353](.././doc/requirements/DESIGN.md?plain=1#L353)
     *   [DSG_ART_IGNORE_DERIVED](#dsg_art_ignore_derived-ignore-derived-requirements "Ignore Derived Requirements")
-        Reference: [doc/requirements/DESIGN.md:369](../doc/requirements/DESIGN.md?plain=1#L369)
+        Reference: [./doc/requirements/DESIGN.md:369](.././doc/requirements/DESIGN.md?plain=1#L369)
     *   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing")
-        Reference: [doc/requirements/DESIGN.md:361](../doc/requirements/DESIGN.md?plain=1#L361)
+        Reference: [./doc/requirements/DESIGN.md:361](.././doc/requirements/DESIGN.md?plain=1#L361)
     *   [DSG_CTRL_DETECT_DUPLICATE_REQS](#dsg_ctrl_detect_duplicate_reqs-detect-duplicates "Detect duplicates")
-        Reference: [doc/requirements/DESIGN.md:82](../doc/requirements/DESIGN.md?plain=1#L82)
+        Reference: [./doc/requirements/DESIGN.md:82](.././doc/requirements/DESIGN.md?plain=1#L82)
 
 ## ARCH_CLI: Command Line Interface
 
-Origin: architecture, [doc/requirements/ARCHITECTURE.md:22](../doc/requirements/ARCHITECTURE.md?plain=1#L22)
+Origin: architecture, [./doc/requirements/ARCHITECTURE.md:22](.././doc/requirements/ARCHITECTURE.md?plain=1#L22)
 
 
 All functionality of the tool is exposed in a simple command line interface.
@@ -91,22 +91,22 @@ and generation of complicated output formats
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_FAST](#req_fast-fast "Fast")
-        Reference: [doc/requirements/ARCHITECTURE.md:32](../doc/requirements/ARCHITECTURE.md?plain=1#L32)
+        Reference: [./doc/requirements/ARCHITECTURE.md:32](.././doc/requirements/ARCHITECTURE.md?plain=1#L32)
     *   [REQ_INSTALL](#req_install-easy-to-install "Easy to install")
-        Reference: [doc/requirements/ARCHITECTURE.md:31](../doc/requirements/ARCHITECTURE.md?plain=1#L31)
+        Reference: [./doc/requirements/ARCHITECTURE.md:31](.././doc/requirements/ARCHITECTURE.md?plain=1#L31)
     *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
-        Reference: [doc/requirements/ARCHITECTURE.md:30](../doc/requirements/ARCHITECTURE.md?plain=1#L30)
+        Reference: [./doc/requirements/ARCHITECTURE.md:30](.././doc/requirements/ARCHITECTURE.md?plain=1#L30)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_CLI](#dsg_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/DESIGN.md:16](../doc/requirements/DESIGN.md?plain=1#L16)
+        Reference: [./doc/requirements/DESIGN.md:16](.././doc/requirements/DESIGN.md?plain=1#L16)
     *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
-        Reference: [doc/requirements/DESIGN.md:29](../doc/requirements/DESIGN.md?plain=1#L29)
+        Reference: [./doc/requirements/DESIGN.md:29](.././doc/requirements/DESIGN.md?plain=1#L29)
 
 ## ARCH_CONTROLLER: Controller
 
-Origin: architecture, [doc/requirements/ARCHITECTURE.md:34](../doc/requirements/ARCHITECTURE.md?plain=1#L34)
+Origin: architecture, [./doc/requirements/ARCHITECTURE.md:34](.././doc/requirements/ARCHITECTURE.md?plain=1#L34)
 
 
 The controller orchestrates the other components into a pipeline
@@ -122,32 +122,32 @@ The controller orchestrates the other components into a pipeline
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [UC_CHECK](#uc_check-check-for-correct-tracing "Check for correct Tracing")
-        Reference: [doc/requirements/ARCHITECTURE.md:48](../doc/requirements/ARCHITECTURE.md?plain=1#L48)
+        Reference: [./doc/requirements/ARCHITECTURE.md:48](.././doc/requirements/ARCHITECTURE.md?plain=1#L48)
     *   [UC_PARSE](#uc_parse-parse-artefacts "Parse Artefacts")
-        Reference: [doc/requirements/ARCHITECTURE.md:46](../doc/requirements/ARCHITECTURE.md?plain=1#L46)
+        Reference: [./doc/requirements/ARCHITECTURE.md:46](.././doc/requirements/ARCHITECTURE.md?plain=1#L46)
     *   [UC_TMX](#uc_tmx-create-traceability-matrix "Create Traceability Matrix")
-        Reference: [doc/requirements/ARCHITECTURE.md:47](../doc/requirements/ARCHITECTURE.md?plain=1#L47)
+        Reference: [./doc/requirements/ARCHITECTURE.md:47](.././doc/requirements/ARCHITECTURE.md?plain=1#L47)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File")
-        Reference: [doc/requirements/DESIGN.md:64](../doc/requirements/DESIGN.md?plain=1#L64)
+        Reference: [./doc/requirements/DESIGN.md:64](.././doc/requirements/DESIGN.md?plain=1#L64)
     *   [DSG_CTRL_FORMAT](#dsg_ctrl_format-format-job-output "Format Job Output")
-        Reference: [doc/requirements/DESIGN.md:110](../doc/requirements/DESIGN.md?plain=1#L110)
+        Reference: [./doc/requirements/DESIGN.md:110](.././doc/requirements/DESIGN.md?plain=1#L110)
     *   [DSG_CTRL_GRAPH](#dsg_ctrl_graph-construct-graph "Construct Graph")
-        Reference: [doc/requirements/DESIGN.md:92](../doc/requirements/DESIGN.md?plain=1#L92)
+        Reference: [./doc/requirements/DESIGN.md:92](.././doc/requirements/DESIGN.md?plain=1#L92)
     *   [DSG_CTRL_PARSE](#dsg_ctrl_parse-parse-all-artefacts "Parse all Artefacts")
-        Reference: [doc/requirements/DESIGN.md:73](../doc/requirements/DESIGN.md?plain=1#L73)
-    *   [DSG_CTRL_RETURN_CODE](#dsg_ctrl_return_code-return-code-indicates-if-tracing-is-correct "Return Code Indicates if Tracing is Correct")
-        Reference: [doc/requirements/DESIGN.md:118](../doc/requirements/DESIGN.md?plain=1#L118)
+        Reference: [./doc/requirements/DESIGN.md:73](.././doc/requirements/DESIGN.md?plain=1#L73)
+    *   [DSG_CTRL_RETURN_CODE](#dsg_ctrl_return_code-return-code-indicates-if-job-found-errors "Return Code Indicates if Job found Errors")
+        Reference: [./doc/requirements/DESIGN.md:118](.././doc/requirements/DESIGN.md?plain=1#L118)
     *   [DSG_CTRL_TRACE](#dsg_ctrl_trace-trace-requirements "Trace Requirements")
-        Reference: [doc/requirements/DESIGN.md:100](../doc/requirements/DESIGN.md?plain=1#L100)
+        Reference: [./doc/requirements/DESIGN.md:100](.././doc/requirements/DESIGN.md?plain=1#L100)
     *   [DSG_JOBS](#dsg_jobs-jobs-encode-requested-behavior "Jobs encode requested behavior")
-        Reference: [doc/requirements/DESIGN.md:50](../doc/requirements/DESIGN.md?plain=1#L50)
+        Reference: [./doc/requirements/DESIGN.md:50](.././doc/requirements/DESIGN.md?plain=1#L50)
 
 ## ARCH_FORMATTER: Format output in requested Format
 
-Origin: architecture, [doc/requirements/ARCHITECTURE.md:68](../doc/requirements/ARCHITECTURE.md?plain=1#L68)
+Origin: architecture, [./doc/requirements/ARCHITECTURE.md:68](.././doc/requirements/ARCHITECTURE.md?plain=1#L68)
 
 
 The formatter takes Artefacts, the Graph, the Tracing or a list of Errors and
@@ -158,20 +158,20 @@ turns them into machine or human readable form.
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_HUMAN_READABLE](#req_human_readable-human-readable-output "Human Readable Output")
-        Reference: [doc/requirements/ARCHITECTURE.md:75](../doc/requirements/ARCHITECTURE.md?plain=1#L75)
+        Reference: [./doc/requirements/ARCHITECTURE.md:75](.././doc/requirements/ARCHITECTURE.md?plain=1#L75)
     *   [REQ_MACHINE_READABLE](#req_machine_readable-machine-readable-output "Machine Readable Output")
-        Reference: [doc/requirements/ARCHITECTURE.md:76](../doc/requirements/ARCHITECTURE.md?plain=1#L76)
+        Reference: [./doc/requirements/ARCHITECTURE.md:76](.././doc/requirements/ARCHITECTURE.md?plain=1#L76)
     *   [UC_TMX](#uc_tmx-create-traceability-matrix "Create Traceability Matrix")
-        Reference: [doc/requirements/ARCHITECTURE.md:74](../doc/requirements/ARCHITECTURE.md?plain=1#L74)
+        Reference: [./doc/requirements/ARCHITECTURE.md:74](.././doc/requirements/ARCHITECTURE.md?plain=1#L74)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_FORMATTER](#dsg_formatter-formatter "Formatter")
-        Reference: [doc/requirements/DESIGN.md:300](../doc/requirements/DESIGN.md?plain=1#L300)
+        Reference: [./doc/requirements/DESIGN.md:300](.././doc/requirements/DESIGN.md?plain=1#L300)
 
 ## ARCH_GRAPH: Graph
 
-Origin: architecture, [doc/requirements/ARCHITECTURE.md:104](../doc/requirements/ARCHITECTURE.md?plain=1#L104)
+Origin: architecture, [./doc/requirements/ARCHITECTURE.md:104](.././doc/requirements/ARCHITECTURE.md?plain=1#L104)
 
 
 The Graph organizes Artefacts into a directed graph:
@@ -195,20 +195,20 @@ artefacts D1, D2,  ....
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_ARTEFACT](#req_artefact-artefacts-contain-requirements "Artefacts contain Requirements")
-        Reference: [doc/requirements/ARCHITECTURE.md:129](../doc/requirements/ARCHITECTURE.md?plain=1#L129)
+        Reference: [./doc/requirements/ARCHITECTURE.md:129](.././doc/requirements/ARCHITECTURE.md?plain=1#L129)
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/ARCHITECTURE.md:128](../doc/requirements/ARCHITECTURE.md?plain=1#L128)
+        Reference: [./doc/requirements/ARCHITECTURE.md:128](.././doc/requirements/ARCHITECTURE.md?plain=1#L128)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_GRAPH](#dsg_graph-artefact-graph "Artefact Graph")
-        Reference: [doc/requirements/DESIGN.md:377](../doc/requirements/DESIGN.md?plain=1#L377)
+        Reference: [./doc/requirements/DESIGN.md:377](.././doc/requirements/DESIGN.md?plain=1#L377)
     *   [DSG_GRAPH_RELATION](#dsg_graph_relation-artefact-relationships "Artefact Relationships")
-        Reference: [doc/requirements/DESIGN.md:386](../doc/requirements/DESIGN.md?plain=1#L386)
+        Reference: [./doc/requirements/DESIGN.md:386](.././doc/requirements/DESIGN.md?plain=1#L386)
 
 ## ARCH_PARSER: Parser
 
-Origin: architecture, [doc/requirements/ARCHITECTURE.md:50](../doc/requirements/ARCHITECTURE.md?plain=1#L50)
+Origin: architecture, [./doc/requirements/ARCHITECTURE.md:50](.././doc/requirements/ARCHITECTURE.md?plain=1#L50)
 
 
 A Parser processes an input file and emits Requirements.
@@ -220,18 +220,18 @@ input file.
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_EXTENSIBLE](#req_extensible-extensible-parsing "Extensible Parsing")
-        Reference: [doc/requirements/ARCHITECTURE.md:57](../doc/requirements/ARCHITECTURE.md?plain=1#L57)
+        Reference: [./doc/requirements/ARCHITECTURE.md:57](.././doc/requirements/ARCHITECTURE.md?plain=1#L57)
     *   [UC_PARSE](#uc_parse-parse-artefacts "Parse Artefacts")
-        Reference: [doc/requirements/ARCHITECTURE.md:58](../doc/requirements/ARCHITECTURE.md?plain=1#L58)
+        Reference: [./doc/requirements/ARCHITECTURE.md:58](.././doc/requirements/ARCHITECTURE.md?plain=1#L58)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_PARSER](#dsg_parser-parse-data "Parse Data")
-        Reference: [doc/requirements/DESIGN.md:130](../doc/requirements/DESIGN.md?plain=1#L130)
+        Reference: [./doc/requirements/DESIGN.md:130](.././doc/requirements/DESIGN.md?plain=1#L130)
 
 ## ARCH_REQUIREMENT: Requirement
 
-Origin: architecture, [doc/requirements/ARCHITECTURE.md:85](../doc/requirements/ARCHITECTURE.md?plain=1#L85)
+Origin: architecture, [./doc/requirements/ARCHITECTURE.md:85](.././doc/requirements/ARCHITECTURE.md?plain=1#L85)
 
 
 A Requirement is the basic unit of information that this tool operates on.
@@ -245,16 +245,16 @@ A Requirement object stores one typical software requirement (for example
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/ARCHITECTURE.md:95](../doc/requirements/ARCHITECTURE.md?plain=1#L95)
+        Reference: [./doc/requirements/ARCHITECTURE.md:95](.././doc/requirements/ARCHITECTURE.md?plain=1#L95)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields")
-        Reference: [doc/requirements/DESIGN.md:339](../doc/requirements/DESIGN.md?plain=1#L339)
+        Reference: [./doc/requirements/DESIGN.md:339](.././doc/requirements/DESIGN.md?plain=1#L339)
 
 ## ARCH_TRACE: Tracer
 
-Origin: architecture, [doc/requirements/ARCHITECTURE.md:60](../doc/requirements/ARCHITECTURE.md?plain=1#L60)
+Origin: architecture, [./doc/requirements/ARCHITECTURE.md:60](.././doc/requirements/ARCHITECTURE.md?plain=1#L60)
 
 
 The tracer walks the graph and calculates tracing information
@@ -264,36 +264,36 @@ The tracer walks the graph and calculates tracing information
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/ARCHITECTURE.md:65](../doc/requirements/ARCHITECTURE.md?plain=1#L65)
+        Reference: [./doc/requirements/ARCHITECTURE.md:65](.././doc/requirements/ARCHITECTURE.md?plain=1#L65)
     *   [UC_TMX](#uc_tmx-create-traceability-matrix "Create Traceability Matrix")
-        Reference: [doc/requirements/ARCHITECTURE.md:66](../doc/requirements/ARCHITECTURE.md?plain=1#L66)
+        Reference: [./doc/requirements/ARCHITECTURE.md:66](.././doc/requirements/ARCHITECTURE.md?plain=1#L66)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_TRACE](#dsg_trace-walk-the-graph-and-trace-requirements "Walk the Graph and trace requirements")
-        Reference: [doc/requirements/DESIGN.md:147](../doc/requirements/DESIGN.md?plain=1#L147)
+        Reference: [./doc/requirements/DESIGN.md:147](.././doc/requirements/DESIGN.md?plain=1#L147)
     *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title")
-        Reference: [doc/requirements/DESIGN.md:257](../doc/requirements/DESIGN.md?plain=1#L257)
+        Reference: [./doc/requirements/DESIGN.md:257](.././doc/requirements/DESIGN.md?plain=1#L257)
     *   [DSG_TRACE_COLLECT](#dsg_trace_collect-collect-requirements-from-artefact "Collect Requirements from Artefact")
-        Reference: [doc/requirements/DESIGN.md:157](../doc/requirements/DESIGN.md?plain=1#L157)
+        Reference: [./doc/requirements/DESIGN.md:157](.././doc/requirements/DESIGN.md?plain=1#L157)
     *   [DSG_TRACE_DERIVED](#dsg_trace_derived-record-requirements-that-do-not-cover-anything "Record requirements that do not cover anything")
-        Reference: [doc/requirements/DESIGN.md:218](../doc/requirements/DESIGN.md?plain=1#L218)
+        Reference: [./doc/requirements/DESIGN.md:218](.././doc/requirements/DESIGN.md?plain=1#L218)
     *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute")
-        Reference: [doc/requirements/DESIGN.md:207](../doc/requirements/DESIGN.md?plain=1#L207)
+        Reference: [./doc/requirements/DESIGN.md:207](.././doc/requirements/DESIGN.md?plain=1#L207)
     *   [DSG_TRACE_REFERENCE_EXIST](#dsg_trace_reference_exist-coverage-links-must-exist "Coverage Links must exist")
-        Reference: [doc/requirements/DESIGN.md:272](../doc/requirements/DESIGN.md?plain=1#L272)
+        Reference: [./doc/requirements/DESIGN.md:272](.././doc/requirements/DESIGN.md?plain=1#L272)
     *   [DSG_TRACE_RELATION](#dsg_trace_relation-trace-relation "Trace Relation")
-        Reference: [doc/requirements/DESIGN.md:186](../doc/requirements/DESIGN.md?plain=1#L186)
+        Reference: [./doc/requirements/DESIGN.md:186](.././doc/requirements/DESIGN.md?plain=1#L186)
     *   [DSG_TRACE_UNCOVERED](#dsg_trace_uncovered-record-requirements-that-are-not-completely-covered "Record requirements that are not completely covered")
-        Reference: [doc/requirements/DESIGN.md:234](../doc/requirements/DESIGN.md?plain=1#L234)
+        Reference: [./doc/requirements/DESIGN.md:234](.././doc/requirements/DESIGN.md?plain=1#L234)
     *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute")
-        Reference: [doc/requirements/DESIGN.md:197](../doc/requirements/DESIGN.md?plain=1#L197)
+        Reference: [./doc/requirements/DESIGN.md:197](.././doc/requirements/DESIGN.md?plain=1#L197)
     *   [DSG_TRACE_VALIDATE_EDGE](#dsg_trace_validate_edge-validate-edge-is-used-at-least-once "Validate Edge is used at least once")
-        Reference: [doc/requirements/DESIGN.md:283](../doc/requirements/DESIGN.md?plain=1#L283)
+        Reference: [./doc/requirements/DESIGN.md:283](.././doc/requirements/DESIGN.md?plain=1#L283)
 
 ## ARCH_TRACED_GRAPH: Tracing Information of Grpah
 
-Origin: architecture, [doc/requirements/ARCHITECTURE.md:131](../doc/requirements/ARCHITECTURE.md?plain=1#L131)
+Origin: architecture, [./doc/requirements/ARCHITECTURE.md:131](.././doc/requirements/ARCHITECTURE.md?plain=1#L131)
 
 
 The Traced Graph holds all the information of the Graph, along with Tracing
@@ -304,44 +304,44 @@ Information.
 Upwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/ARCHITECTURE.md:137](../doc/requirements/ARCHITECTURE.md?plain=1#L137)
+        Reference: [./doc/requirements/ARCHITECTURE.md:137](.././doc/requirements/ARCHITECTURE.md?plain=1#L137)
 
 Downwards Tracing:
 *   architecture => [design]
     *   [DSG_TRACED_GRAPH](#dsg_traced_graph-tracing-information-of-grpah "Tracing Information of Grpah")
-        Reference: [doc/requirements/DESIGN.md:403](../doc/requirements/DESIGN.md?plain=1#L403)
+        Reference: [./doc/requirements/DESIGN.md:403](.././doc/requirements/DESIGN.md?plain=1#L403)
 ## code
 
 ## Controller::run
 
-Origin: code, [src/controller.rs:270:11](../src/controller.rs?plain=1#L270)
+Origin: code, [src/controller.rs:282:11](../src/controller.rs?plain=1#L282)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_CTRL_FORMAT](#dsg_ctrl_format-format-job-output "Format Job Output")
-        Reference: [src/controller.rs:313:16](../src/controller.rs?plain=1#L313)
+        Reference: [src/controller.rs:330:16](../src/controller.rs?plain=1#L330)
     *   [DSG_CTRL_FORMAT](#dsg_ctrl_format-format-job-output "Format Job Output")
-        Reference: [src/controller.rs:327:16](../src/controller.rs?plain=1#L327)
+        Reference: [src/controller.rs:344:16](../src/controller.rs?plain=1#L344)
     *   [DSG_CTRL_GRAPH](#dsg_ctrl_graph-construct-graph "Construct Graph")
-        Reference: [src/controller.rs:318:16](../src/controller.rs?plain=1#L318)
+        Reference: [src/controller.rs:335:16](../src/controller.rs?plain=1#L335)
     *   [DSG_CTRL_PARSE](#dsg_ctrl_parse-parse-all-artefacts "Parse all Artefacts")
-        Reference: [src/controller.rs:317:16](../src/controller.rs?plain=1#L317)
-    *   [DSG_CTRL_RETURN_CODE](#dsg_ctrl_return_code-return-code-indicates-if-tracing-is-correct "Return Code Indicates if Tracing is Correct")
-        Reference: [src/controller.rs:342:8](../src/controller.rs?plain=1#L342)
+        Reference: [src/controller.rs:334:16](../src/controller.rs?plain=1#L334)
+    *   [DSG_CTRL_RETURN_CODE](#dsg_ctrl_return_code-return-code-indicates-if-job-found-errors "Return Code Indicates if Job found Errors")
+        Reference: [src/controller.rs:359:8](../src/controller.rs?plain=1#L359)
     *   [DSG_CTRL_TRACE](#dsg_ctrl_trace-trace-requirements "Trace Requirements")
-        Reference: [src/controller.rs:294:16](../src/controller.rs?plain=1#L294)
+        Reference: [src/controller.rs:311:16](../src/controller.rs?plain=1#L311)
 *   formats => [code]
 
 Downwards Tracing:
 
 ## Controller::run_jobs
 
-Origin: code, [src/controller.rs:241:11](../src/controller.rs?plain=1#L241)
+Origin: code, [src/controller.rs:253:11](../src/controller.rs?plain=1#L253)
 
 Upwards Tracing:
 *   design => [formats, code]
-    *   [DSG_CTRL_RETURN_CODE](#dsg_ctrl_return_code-return-code-indicates-if-tracing-is-correct "Return Code Indicates if Tracing is Correct")
-        Reference: [src/controller.rs:253:24](../src/controller.rs?plain=1#L253)
+    *   [DSG_CTRL_RETURN_CODE](#dsg_ctrl_return_code-return-code-indicates-if-job-found-errors "Return Code Indicates if Job found Errors")
+        Reference: [src/controller.rs:265:24](../src/controller.rs?plain=1#L265)
 *   formats => [code]
 
 Downwards Tracing:
@@ -426,26 +426,26 @@ Downwards Tracing:
 
 ## get_config
 
-Origin: code, [src/main.rs:57:3](../src/main.rs?plain=1#L57)
+Origin: code, [src/main.rs:60:3](../src/main.rs?plain=1#L60)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File")
-        Reference: [src/main.rs:58:4](../src/main.rs?plain=1#L58)
+        Reference: [src/main.rs:61:4](../src/main.rs?plain=1#L61)
 *   formats => [code]
     *   [FMT_CONFIG_TOML](#fmt_config_toml-use-a-single-toml-file-as-configuration "Use a Single TOML File as Configuration")
-        Reference: [src/main.rs:78:4](../src/main.rs?plain=1#L78)
+        Reference: [src/main.rs:81:4](../src/main.rs?plain=1#L81)
 
 Downwards Tracing:
 
 ## main_rc
 
-Origin: code, [src/main.rs:117:3](../src/main.rs?plain=1#L117)
+Origin: code, [src/main.rs:120:3](../src/main.rs?plain=1#L120)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
-        Reference: [src/main.rs:120:4](../src/main.rs?plain=1#L120)
+        Reference: [src/main.rs:123:4](../src/main.rs?plain=1#L123)
 *   formats => [code]
 
 Downwards Tracing:
@@ -464,38 +464,38 @@ Downwards Tracing:
 
 ## parse_from_config
 
-Origin: code, [src/controller.rs:138:7](../src/controller.rs?plain=1#L138)
+Origin: code, [src/controller.rs:147:7](../src/controller.rs?plain=1#L147)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing")
-        Reference: [src/controller.rs:145:4](../src/controller.rs?plain=1#L145)
+        Reference: [src/controller.rs:155:4](../src/controller.rs?plain=1#L155)
     *   [DSG_CTRL_DETECT_DUPLICATE_REQS](#dsg_ctrl_detect_duplicate_reqs-detect-duplicates "Detect duplicates")
-        Reference: [src/controller.rs:158:16](../src/controller.rs?plain=1#L158)
+        Reference: [src/controller.rs:168:16](../src/controller.rs?plain=1#L168)
 *   formats => [code]
 
 Downwards Tracing:
 
 ## parse_multiple_files
 
-Origin: code, [src/controller.rs:94:3](../src/controller.rs?plain=1#L94)
+Origin: code, [src/controller.rs:102:3](../src/controller.rs?plain=1#L102)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_ART_FILES](#dsg_art_files-artefact-loads-one-or-more-files "Artefact loads one or more Files")
-        Reference: [src/controller.rs:118:16](../src/controller.rs?plain=1#L118)
+        Reference: [src/controller.rs:127:16](../src/controller.rs?plain=1#L127)
 *   formats => [code]
 
 Downwards Tracing:
 
 ## parse_single_file
 
-Origin: code, [src/controller.rs:51:3](../src/controller.rs?plain=1#L51)
+Origin: code, [src/controller.rs:56:3](../src/controller.rs?plain=1#L56)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_ART_FILES](#dsg_art_files-artefact-loads-one-or-more-files "Artefact loads one or more Files")
-        Reference: [src/controller.rs:64:4](../src/controller.rs?plain=1#L64)
+        Reference: [src/controller.rs:72:4](../src/controller.rs?plain=1#L72)
 *   formats => [code]
 
 Downwards Tracing:
@@ -514,26 +514,26 @@ Downwards Tracing:
 
 ## run_cli_jobs
 
-Origin: code, [src/main.rs:94:3](../src/main.rs?plain=1#L94)
+Origin: code, [src/main.rs:97:3](../src/main.rs?plain=1#L97)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_CLI](#dsg_cli-command-line-interface "Command Line Interface")
-        Reference: [src/main.rs:104:4](../src/main.rs?plain=1#L104)
+        Reference: [src/main.rs:107:4](../src/main.rs?plain=1#L107)
     *   [DSG_JOBS](#dsg_jobs-jobs-encode-requested-behavior "Jobs encode requested behavior")
-        Reference: [src/main.rs:101:8](../src/main.rs?plain=1#L101)
+        Reference: [src/main.rs:104:8](../src/main.rs?plain=1#L104)
 *   formats => [code]
 
 Downwards Tracing:
 
 ## tracing
 
-Origin: code, [src/formatters/mod.rs:46:7](../src/formatters/mod.rs?plain=1#L46)
+Origin: code, [src/formatters/mod.rs:55:7](../src/formatters/mod.rs?plain=1#L55)
 
 Upwards Tracing:
 *   design => [formats, code]
     *   [DSG_FORMATTER](#dsg_formatter-formatter "Formatter")
-        Reference: [src/formatters/mod.rs:51:4](../src/formatters/mod.rs?plain=1#L51)
+        Reference: [src/formatters/mod.rs:60:4](../src/formatters/mod.rs?plain=1#L60)
 *   formats => [code]
 
 Downwards Tracing:
@@ -541,7 +541,7 @@ Downwards Tracing:
 
 ## DSG_AGGREGATOR: Cross Referenced Trace Graph
 
-Origin: design, [doc/requirements/DESIGN.md:302](../doc/requirements/DESIGN.md?plain=1#L302)
+Origin: design, [./doc/requirements/DESIGN.md:302](.././doc/requirements/DESIGN.md?plain=1#L302)
 
 
 The aggregator creates lookup tables, where all tracing information is indexed by either
@@ -563,7 +563,7 @@ Downwards Tracing:
 
 ## DSG_ART_FILES: Artefact loads one or more Files
 
-Origin: design, [doc/requirements/DESIGN.md:348](../doc/requirements/DESIGN.md?plain=1#L348)
+Origin: design, [./doc/requirements/DESIGN.md:348](.././doc/requirements/DESIGN.md?plain=1#L348)
 
 
 An Artefact represents one or more files of the same type.
@@ -573,19 +573,19 @@ An Artefact represents one or more files of the same type.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_ARTEFACT](#arch_artefact-artefact "Artefact")
-        Reference: [doc/requirements/DESIGN.md:353](../doc/requirements/DESIGN.md?plain=1#L353)
+        Reference: [./doc/requirements/DESIGN.md:353](.././doc/requirements/DESIGN.md?plain=1#L353)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [parse_multiple_files](#parse_multiple_files)
-        Reference: [src/controller.rs:118:16](../src/controller.rs?plain=1#L118)
+        Reference: [src/controller.rs:127:16](../src/controller.rs?plain=1#L127)
     *   [parse_single_file](#parse_single_file)
-        Reference: [src/controller.rs:64:4](../src/controller.rs?plain=1#L64)
+        Reference: [src/controller.rs:72:4](../src/controller.rs?plain=1#L72)
 
 ## DSG_ART_IGNORE_DERIVED: Ignore Derived Requirements
 
-Origin: design, [doc/requirements/DESIGN.md:364](../doc/requirements/DESIGN.md?plain=1#L364)
+Origin: design, [./doc/requirements/DESIGN.md:364](.././doc/requirements/DESIGN.md?plain=1#L364)
 
 
 Artefacts can be configured to ignore derived requirements
@@ -595,7 +595,7 @@ Artefacts can be configured to ignore derived requirements
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_ARTEFACT](#arch_artefact-artefact "Artefact")
-        Reference: [doc/requirements/DESIGN.md:369](../doc/requirements/DESIGN.md?plain=1#L369)
+        Reference: [./doc/requirements/DESIGN.md:369](.././doc/requirements/DESIGN.md?plain=1#L369)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -604,7 +604,7 @@ Downwards Tracing:
 
 ## DSG_ART_PARSE_COLLECT_ERRORS: Collect errors but keep parsing
 
-Origin: design, [doc/requirements/DESIGN.md:355](../doc/requirements/DESIGN.md?plain=1#L355)
+Origin: design, [./doc/requirements/DESIGN.md:355](.././doc/requirements/DESIGN.md?plain=1#L355)
 
 
 While parsing artefacts, all encountered errors are stored and parsing continues.
@@ -614,21 +614,21 @@ While parsing artefacts, all encountered errors are stored and parsing continues
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_ARTEFACT](#arch_artefact-artefact "Artefact")
-        Reference: [doc/requirements/DESIGN.md:361](../doc/requirements/DESIGN.md?plain=1#L361)
+        Reference: [./doc/requirements/DESIGN.md:361](.././doc/requirements/DESIGN.md?plain=1#L361)
 *   requirements => [design, formats, architecture]
     *   [REQ_LATE_ERROR](#req_late_error-collect-errors-but-continue-processing "Collect Errors but continue processing")
-        Reference: [doc/requirements/DESIGN.md:359](../doc/requirements/DESIGN.md?plain=1#L359)
+        Reference: [./doc/requirements/DESIGN.md:359](.././doc/requirements/DESIGN.md?plain=1#L359)
     *   [REQ_PARSER_ERROR](#req_parser_error-useful-parser-errors "Useful Parser Errors")
-        Reference: [doc/requirements/DESIGN.md:360](../doc/requirements/DESIGN.md?plain=1#L360)
+        Reference: [./doc/requirements/DESIGN.md:360](.././doc/requirements/DESIGN.md?plain=1#L360)
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [parse_from_config](#parse_from_config)
-        Reference: [src/controller.rs:145:4](../src/controller.rs?plain=1#L145)
+        Reference: [src/controller.rs:155:4](../src/controller.rs?plain=1#L155)
 
 ## DSG_CLI: Command Line Interface
 
-Origin: design, [doc/requirements/DESIGN.md:9](../doc/requirements/DESIGN.md?plain=1#L9)
+Origin: design, [./doc/requirements/DESIGN.md:9](.././doc/requirements/DESIGN.md?plain=1#L9)
 
 
 The tool should be invoked via a simple CLI and set the exit code to indicate if a job was
@@ -639,19 +639,19 @@ successful.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/DESIGN.md:16](../doc/requirements/DESIGN.md?plain=1#L16)
+        Reference: [./doc/requirements/DESIGN.md:16](.././doc/requirements/DESIGN.md?plain=1#L16)
 *   requirements => [design, formats, architecture]
     *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
-        Reference: [doc/requirements/DESIGN.md:15](../doc/requirements/DESIGN.md?plain=1#L15)
+        Reference: [./doc/requirements/DESIGN.md:15](.././doc/requirements/DESIGN.md?plain=1#L15)
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [run_cli_jobs](#run_cli_jobs)
-        Reference: [src/main.rs:104:4](../src/main.rs?plain=1#L104)
+        Reference: [src/main.rs:107:4](../src/main.rs?plain=1#L107)
 
 ## DSG_CLI_RETURN_CODE: Set return Code to indicate success
 
-Origin: design, [doc/requirements/DESIGN.md:18](../doc/requirements/DESIGN.md?plain=1#L18)
+Origin: design, [./doc/requirements/DESIGN.md:18](.././doc/requirements/DESIGN.md?plain=1#L18)
 
 
 Set the process' return code to:
@@ -665,21 +665,21 @@ Set the process' return code to:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/DESIGN.md:29](../doc/requirements/DESIGN.md?plain=1#L29)
+        Reference: [./doc/requirements/DESIGN.md:29](.././doc/requirements/DESIGN.md?plain=1#L29)
 *   requirements => [design, formats, architecture]
     *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
-        Reference: [doc/requirements/DESIGN.md:27](../doc/requirements/DESIGN.md?plain=1#L27)
+        Reference: [./doc/requirements/DESIGN.md:27](.././doc/requirements/DESIGN.md?plain=1#L27)
     *   [UC_CHECK](#uc_check-check-for-correct-tracing "Check for correct Tracing")
-        Reference: [doc/requirements/DESIGN.md:28](../doc/requirements/DESIGN.md?plain=1#L28)
+        Reference: [./doc/requirements/DESIGN.md:28](.././doc/requirements/DESIGN.md?plain=1#L28)
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [main_rc](#main_rc)
-        Reference: [src/main.rs:120:4](../src/main.rs?plain=1#L120)
+        Reference: [src/main.rs:123:4](../src/main.rs?plain=1#L123)
 
 ## DSG_CTRL_CONFIG: Single Config File
 
-Origin: design, [doc/requirements/DESIGN.md:54](../doc/requirements/DESIGN.md?plain=1#L54)
+Origin: design, [./doc/requirements/DESIGN.md:54](.././doc/requirements/DESIGN.md?plain=1#L54)
 
 
 The Controller the following information from a single config file:
@@ -692,19 +692,19 @@ The Controller the following information from a single config file:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/DESIGN.md:64](../doc/requirements/DESIGN.md?plain=1#L64)
+        Reference: [./doc/requirements/DESIGN.md:64](.././doc/requirements/DESIGN.md?plain=1#L64)
 *   requirements => [design, formats, architecture]
     *   [REQ_CONFIG](#req_config-simple-configuration-in-one-file "Simple Configuration in One File")
-        Reference: [doc/requirements/DESIGN.md:63](../doc/requirements/DESIGN.md?plain=1#L63)
+        Reference: [./doc/requirements/DESIGN.md:63](.././doc/requirements/DESIGN.md?plain=1#L63)
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [get_config](#get_config)
-        Reference: [src/main.rs:58:4](../src/main.rs?plain=1#L58)
+        Reference: [src/main.rs:61:4](../src/main.rs?plain=1#L61)
 
 ## DSG_CTRL_DETECT_DUPLICATE_REQS: Detect duplicates
 
-Origin: design, [doc/requirements/DESIGN.md:76](../doc/requirements/DESIGN.md?plain=1#L76)
+Origin: design, [./doc/requirements/DESIGN.md:76](.././doc/requirements/DESIGN.md?plain=1#L76)
 
 
 After Parsing, when assembling Requirements, detect duplicate requirements in the same Artefact
@@ -714,19 +714,19 @@ After Parsing, when assembling Requirements, detect duplicate requirements in th
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_ARTEFACT](#arch_artefact-artefact "Artefact")
-        Reference: [doc/requirements/DESIGN.md:82](../doc/requirements/DESIGN.md?plain=1#L82)
+        Reference: [./doc/requirements/DESIGN.md:82](.././doc/requirements/DESIGN.md?plain=1#L82)
 *   requirements => [design, formats, architecture]
     *   [REQ_UNIQUE_ID_v2](#req_unique_id_v2-requirements-have-a-unique-identifier "Requirements have a unique Identifier")
-        Reference: [doc/requirements/DESIGN.md:81](../doc/requirements/DESIGN.md?plain=1#L81)
+        Reference: [./doc/requirements/DESIGN.md:81](.././doc/requirements/DESIGN.md?plain=1#L81)
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [parse_from_config](#parse_from_config)
-        Reference: [src/controller.rs:158:16](../src/controller.rs?plain=1#L158)
+        Reference: [src/controller.rs:168:16](../src/controller.rs?plain=1#L168)
 
 ## DSG_CTRL_FORMAT: Format Job Output
 
-Origin: design, [doc/requirements/DESIGN.md:104](../doc/requirements/DESIGN.md?plain=1#L104)
+Origin: design, [./doc/requirements/DESIGN.md:104](.././doc/requirements/DESIGN.md?plain=1#L104)
 
 
 Pass the output of running Job.Query to the Formatter specified by Job.Format and Write to
@@ -737,19 +737,19 @@ Job.File.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/DESIGN.md:110](../doc/requirements/DESIGN.md?plain=1#L110)
+        Reference: [./doc/requirements/DESIGN.md:110](.././doc/requirements/DESIGN.md?plain=1#L110)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:313:16](../src/controller.rs?plain=1#L313)
+        Reference: [src/controller.rs:330:16](../src/controller.rs?plain=1#L330)
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:327:16](../src/controller.rs?plain=1#L327)
+        Reference: [src/controller.rs:344:16](../src/controller.rs?plain=1#L344)
 
 ## DSG_CTRL_GRAPH: Construct Graph
 
-Origin: design, [doc/requirements/DESIGN.md:85](../doc/requirements/DESIGN.md?plain=1#L85)
+Origin: design, [./doc/requirements/DESIGN.md:85](.././doc/requirements/DESIGN.md?plain=1#L85)
 
 
 If the Job.Query is Parse or Trace:
@@ -761,17 +761,17 @@ the relations between artefacts, and graph configuration errors.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/DESIGN.md:92](../doc/requirements/DESIGN.md?plain=1#L92)
+        Reference: [./doc/requirements/DESIGN.md:92](.././doc/requirements/DESIGN.md?plain=1#L92)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:318:16](../src/controller.rs?plain=1#L318)
+        Reference: [src/controller.rs:335:16](../src/controller.rs?plain=1#L335)
 
 ## DSG_CTRL_PARSE: Parse all Artefacts
 
-Origin: design, [doc/requirements/DESIGN.md:66](../doc/requirements/DESIGN.md?plain=1#L66)
+Origin: design, [./doc/requirements/DESIGN.md:66](.././doc/requirements/DESIGN.md?plain=1#L66)
 
 
 If the Job.Query is Parse or Trace:
@@ -783,19 +783,19 @@ Collect all requirement, any encountered errors and any inspected files in the A
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/DESIGN.md:73](../doc/requirements/DESIGN.md?plain=1#L73)
+        Reference: [./doc/requirements/DESIGN.md:73](.././doc/requirements/DESIGN.md?plain=1#L73)
 *   requirements => [design, formats, architecture]
     *   [UC_PARSE](#uc_parse-parse-artefacts "Parse Artefacts")
-        Reference: [doc/requirements/DESIGN.md:74](../doc/requirements/DESIGN.md?plain=1#L74)
+        Reference: [./doc/requirements/DESIGN.md:74](.././doc/requirements/DESIGN.md?plain=1#L74)
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:317:16](../src/controller.rs?plain=1#L317)
+        Reference: [src/controller.rs:334:16](../src/controller.rs?plain=1#L334)
 
-## DSG_CTRL_RETURN_CODE: Return Code Indicates if Tracing is Correct
+## DSG_CTRL_RETURN_CODE: Return Code Indicates if Job found Errors
 
-Origin: design, [doc/requirements/DESIGN.md:112](../doc/requirements/DESIGN.md?plain=1#L112)
+Origin: design, [./doc/requirements/DESIGN.md:112](.././doc/requirements/DESIGN.md?plain=1#L112)
 
 
 If Job.SetReturnCode, and running job.query produced any errors, indicate them to the CLI,
@@ -806,19 +806,19 @@ so it can set an error return code.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/DESIGN.md:118](../doc/requirements/DESIGN.md?plain=1#L118)
+        Reference: [./doc/requirements/DESIGN.md:118](.././doc/requirements/DESIGN.md?plain=1#L118)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:342:8](../src/controller.rs?plain=1#L342)
+        Reference: [src/controller.rs:359:8](../src/controller.rs?plain=1#L359)
     *   [Controller::run_jobs](#controllerrun_jobs)
-        Reference: [src/controller.rs:253:24](../src/controller.rs?plain=1#L253)
+        Reference: [src/controller.rs:265:24](../src/controller.rs?plain=1#L265)
 
 ## DSG_CTRL_TRACE: Trace Requirements
 
-Origin: design, [doc/requirements/DESIGN.md:94](../doc/requirements/DESIGN.md?plain=1#L94)
+Origin: design, [./doc/requirements/DESIGN.md:94](.././doc/requirements/DESIGN.md?plain=1#L94)
 
 
 If the Job.Query is Trace, pass the Graph to the Tracer to get a Traced Graph.
@@ -829,21 +829,21 @@ If the Job.Query is Trace, pass the Graph to the Tracer to get a Traced Graph.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/DESIGN.md:100](../doc/requirements/DESIGN.md?plain=1#L100)
+        Reference: [./doc/requirements/DESIGN.md:100](.././doc/requirements/DESIGN.md?plain=1#L100)
 *   requirements => [design, formats, architecture]
     *   [UC_CHECK](#uc_check-check-for-correct-tracing "Check for correct Tracing")
-        Reference: [doc/requirements/DESIGN.md:102](../doc/requirements/DESIGN.md?plain=1#L102)
+        Reference: [./doc/requirements/DESIGN.md:102](.././doc/requirements/DESIGN.md?plain=1#L102)
     *   [UC_TMX](#uc_tmx-create-traceability-matrix "Create Traceability Matrix")
-        Reference: [doc/requirements/DESIGN.md:101](../doc/requirements/DESIGN.md?plain=1#L101)
+        Reference: [./doc/requirements/DESIGN.md:101](.././doc/requirements/DESIGN.md?plain=1#L101)
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [Controller::run](#controllerrun)
-        Reference: [src/controller.rs:294:16](../src/controller.rs?plain=1#L294)
+        Reference: [src/controller.rs:311:16](../src/controller.rs?plain=1#L311)
 
 ## DSG_FORMATTER: Formatter
 
-Origin: design, [doc/requirements/DESIGN.md:289](../doc/requirements/DESIGN.md?plain=1#L289)
+Origin: design, [./doc/requirements/DESIGN.md:289](.././doc/requirements/DESIGN.md?plain=1#L289)
 
 
 The formatter is called with
@@ -858,7 +858,7 @@ Graph to the Aggregator, and the formats an aggregated Graph.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_FORMATTER](#arch_formatter-format-output-in-requested-format "Format output in requested Format")
-        Reference: [doc/requirements/DESIGN.md:300](../doc/requirements/DESIGN.md?plain=1#L300)
+        Reference: [./doc/requirements/DESIGN.md:300](.././doc/requirements/DESIGN.md?plain=1#L300)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -866,11 +866,11 @@ Downwards Tracing:
     *   [requirements](#requirements)
         Reference: [src/formatters/mod.rs:22:4](../src/formatters/mod.rs?plain=1#L22)
     *   [tracing](#tracing)
-        Reference: [src/formatters/mod.rs:51:4](../src/formatters/mod.rs?plain=1#L51)
+        Reference: [src/formatters/mod.rs:60:4](../src/formatters/mod.rs?plain=1#L60)
 
 ## DSG_GRAPH: Artefact Graph
 
-Origin: design, [doc/requirements/DESIGN.md:371](../doc/requirements/DESIGN.md?plain=1#L371)
+Origin: design, [./doc/requirements/DESIGN.md:371](.././doc/requirements/DESIGN.md?plain=1#L371)
 
 
 The Graph holds all Artefacts, and a list of relations describing which artefact covers
@@ -881,7 +881,7 @@ which
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_GRAPH](#arch_graph-graph "Graph")
-        Reference: [doc/requirements/DESIGN.md:377](../doc/requirements/DESIGN.md?plain=1#L377)
+        Reference: [./doc/requirements/DESIGN.md:377](.././doc/requirements/DESIGN.md?plain=1#L377)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -890,7 +890,7 @@ Downwards Tracing:
 
 ## DSG_GRAPH_RELATION: Artefact Relationships
 
-Origin: design, [doc/requirements/DESIGN.md:379](../doc/requirements/DESIGN.md?plain=1#L379)
+Origin: design, [./doc/requirements/DESIGN.md:379](.././doc/requirements/DESIGN.md?plain=1#L379)
 
 
 A Relation has fields:
@@ -902,7 +902,7 @@ A Relation has fields:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_GRAPH](#arch_graph-graph "Graph")
-        Reference: [doc/requirements/DESIGN.md:386](../doc/requirements/DESIGN.md?plain=1#L386)
+        Reference: [./doc/requirements/DESIGN.md:386](.././doc/requirements/DESIGN.md?plain=1#L386)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -911,7 +911,7 @@ Downwards Tracing:
 
 ## DSG_JOBS: Jobs encode requested behavior
 
-Origin: design, [doc/requirements/DESIGN.md:39](../doc/requirements/DESIGN.md?plain=1#L39)
+Origin: design, [./doc/requirements/DESIGN.md:39](.././doc/requirements/DESIGN.md?plain=1#L39)
 
 
 Jobs configure what work should be done, and in what format the results should be
@@ -927,19 +927,19 @@ presented. a Job has the following Fields:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/DESIGN.md:50](../doc/requirements/DESIGN.md?plain=1#L50)
+        Reference: [./doc/requirements/DESIGN.md:50](.././doc/requirements/DESIGN.md?plain=1#L50)
 *   requirements => [design, formats, architecture]
     *   [REQ_CONFIG](#req_config-simple-configuration-in-one-file "Simple Configuration in One File")
-        Reference: [doc/requirements/DESIGN.md:51](../doc/requirements/DESIGN.md?plain=1#L51)
+        Reference: [./doc/requirements/DESIGN.md:51](.././doc/requirements/DESIGN.md?plain=1#L51)
 
 Downwards Tracing:
 *   design => [formats, code]
     *   [run_cli_jobs](#run_cli_jobs)
-        Reference: [src/main.rs:101:8](../src/main.rs?plain=1#L101)
+        Reference: [src/main.rs:104:8](../src/main.rs?plain=1#L104)
 
 ## DSG_PARSER: Parse Data
 
-Origin: design, [doc/requirements/DESIGN.md:122](../doc/requirements/DESIGN.md?plain=1#L122)
+Origin: design, [./doc/requirements/DESIGN.md:122](.././doc/requirements/DESIGN.md?plain=1#L122)
 
 
 The Parser is called with data from one file, and the format of that data.
@@ -952,7 +952,7 @@ It returns Lists with:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_PARSER](#arch_parser-parser "Parser")
-        Reference: [doc/requirements/DESIGN.md:130](../doc/requirements/DESIGN.md?plain=1#L130)
+        Reference: [./doc/requirements/DESIGN.md:130](.././doc/requirements/DESIGN.md?plain=1#L130)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -961,7 +961,7 @@ Downwards Tracing:
 
 ## DSG_REQ_FIELDS: Requirement Fields
 
-Origin: design, [doc/requirements/DESIGN.md:314](../doc/requirements/DESIGN.md?plain=1#L314)
+Origin: design, [./doc/requirements/DESIGN.md:314](.././doc/requirements/DESIGN.md?plain=1#L314)
 
 
 Attributes of a requirement that this tool requires:
@@ -985,12 +985,12 @@ Attributes of a requirement that this tool requires:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_REQUIREMENT](#arch_requirement-requirement "Requirement")
-        Reference: [doc/requirements/DESIGN.md:339](../doc/requirements/DESIGN.md?plain=1#L339)
+        Reference: [./doc/requirements/DESIGN.md:339](.././doc/requirements/DESIGN.md?plain=1#L339)
 *   requirements => [design, formats, architecture]
     *   [REQ_DOWN](#req_down-downward-coverage "Downward Coverage")
-        Reference: [doc/requirements/DESIGN.md:338](../doc/requirements/DESIGN.md?plain=1#L338)
+        Reference: [./doc/requirements/DESIGN.md:338](.././doc/requirements/DESIGN.md?plain=1#L338)
     *   [REQ_UP](#req_up-upward-coverage "Upward Coverage")
-        Reference: [doc/requirements/DESIGN.md:337](../doc/requirements/DESIGN.md?plain=1#L337)
+        Reference: [./doc/requirements/DESIGN.md:337](.././doc/requirements/DESIGN.md?plain=1#L337)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -998,7 +998,7 @@ Downwards Tracing:
 
 ## DSG_TRACE: Walk the Graph and trace requirements
 
-Origin: design, [doc/requirements/DESIGN.md:134](../doc/requirements/DESIGN.md?plain=1#L134)
+Origin: design, [./doc/requirements/DESIGN.md:134](.././doc/requirements/DESIGN.md?plain=1#L134)
 
 
 The Tracer is passed a Graph. The Tracer inspects all relations of the graph,
@@ -1015,7 +1015,7 @@ problems and records Errors for them.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:147](../doc/requirements/DESIGN.md?plain=1#L147)
+        Reference: [./doc/requirements/DESIGN.md:147](.././doc/requirements/DESIGN.md?plain=1#L147)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -1024,7 +1024,7 @@ Downwards Tracing:
 
 ## DSG_TRACED_GRAPH: Tracing Information of Grpah
 
-Origin: design, [doc/requirements/DESIGN.md:388](../doc/requirements/DESIGN.md?plain=1#L388)
+Origin: design, [./doc/requirements/DESIGN.md:388](.././doc/requirements/DESIGN.md?plain=1#L388)
 
 
 The Traced Graph has Fields:
@@ -1044,7 +1044,7 @@ The Traced Graph has Fields:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACED_GRAPH](#arch_traced_graph-tracing-information-of-grpah "Tracing Information of Grpah")
-        Reference: [doc/requirements/DESIGN.md:403](../doc/requirements/DESIGN.md?plain=1#L403)
+        Reference: [./doc/requirements/DESIGN.md:403](.././doc/requirements/DESIGN.md?plain=1#L403)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -1053,7 +1053,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_CHECK_TITLE: When tracing upwards or downwards match title
 
-Origin: design, [doc/requirements/DESIGN.md:236](../doc/requirements/DESIGN.md?plain=1#L236)
+Origin: design, [./doc/requirements/DESIGN.md:236](.././doc/requirements/DESIGN.md?plain=1#L236)
 
 
 When tracing Upwards or Downwards, emit an error if the title of the coverage does
@@ -1076,12 +1076,12 @@ Example:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:257](../doc/requirements/DESIGN.md?plain=1#L257)
+        Reference: [./doc/requirements/DESIGN.md:257](.././doc/requirements/DESIGN.md?plain=1#L257)
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:255](../doc/requirements/DESIGN.md?plain=1#L255)
+        Reference: [./doc/requirements/DESIGN.md:255](.././doc/requirements/DESIGN.md?plain=1#L255)
     *   [REQ_VAL_TITLE](#req_val_title-check-matching-title "Check matching title")
-        Reference: [doc/requirements/DESIGN.md:256](../doc/requirements/DESIGN.md?plain=1#L256)
+        Reference: [./doc/requirements/DESIGN.md:256](.././doc/requirements/DESIGN.md?plain=1#L256)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1089,7 +1089,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_COLLECT: Collect Requirements from Artefact
 
-Origin: design, [doc/requirements/DESIGN.md:149](../doc/requirements/DESIGN.md?plain=1#L149)
+Origin: design, [./doc/requirements/DESIGN.md:149](.././doc/requirements/DESIGN.md?plain=1#L149)
 
 
 All requirements from all artefacts are added to  index.
@@ -1102,7 +1102,7 @@ references, from which they will be remove if they traced validly.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:157](../doc/requirements/DESIGN.md?plain=1#L157)
+        Reference: [./doc/requirements/DESIGN.md:157](.././doc/requirements/DESIGN.md?plain=1#L157)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -1111,7 +1111,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_DERIVED: Record requirements that do not cover anything
 
-Origin: design, [doc/requirements/DESIGN.md:209](../doc/requirements/DESIGN.md?plain=1#L209)
+Origin: design, [./doc/requirements/DESIGN.md:209](.././doc/requirements/DESIGN.md?plain=1#L209)
 
 
 When Tracing, All requirements are first added to their artefacts' deerived list.
@@ -1124,10 +1124,10 @@ All remaing requirements are derived.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:218](../doc/requirements/DESIGN.md?plain=1#L218)
+        Reference: [./doc/requirements/DESIGN.md:218](.././doc/requirements/DESIGN.md?plain=1#L218)
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:217](../doc/requirements/DESIGN.md?plain=1#L217)
+        Reference: [./doc/requirements/DESIGN.md:217](.././doc/requirements/DESIGN.md?plain=1#L217)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1140,7 +1140,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_DETECT_DUPLICATE: Detect duplicate Requirements in different Artefacts
 
-Origin: design, [doc/requirements/DESIGN.md:159](../doc/requirements/DESIGN.md?plain=1#L159)
+Origin: design, [./doc/requirements/DESIGN.md:159](.././doc/requirements/DESIGN.md?plain=1#L159)
 
 
 While collecting requirements, if there are two requirements the same identifier, log an error.
@@ -1152,7 +1152,7 @@ Upwards Tracing:
 *   architecture => [design]
 *   requirements => [design, formats, architecture]
     *   [REQ_UNIQUE_ID_v2](#req_unique_id_v2-requirements-have-a-unique-identifier "Requirements have a unique Identifier")
-        Reference: [doc/requirements/DESIGN.md:166](../doc/requirements/DESIGN.md?plain=1#L166)
+        Reference: [./doc/requirements/DESIGN.md:166](.././doc/requirements/DESIGN.md?plain=1#L166)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1161,7 +1161,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_DOWNWARDS: Trace downwards using `depends` attribute
 
-Origin: design, [doc/requirements/DESIGN.md:199](../doc/requirements/DESIGN.md?plain=1#L199)
+Origin: design, [./doc/requirements/DESIGN.md:199](.././doc/requirements/DESIGN.md?plain=1#L199)
 
 
 Requirement U covers Requirement D if D.id appears in U.Depends.
@@ -1171,14 +1171,14 @@ Requirement U covers Requirement D if D.id appears in U.Depends.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:207](../doc/requirements/DESIGN.md?plain=1#L207)
+        Reference: [./doc/requirements/DESIGN.md:207](.././doc/requirements/DESIGN.md?plain=1#L207)
 *   requirements => [design, formats, architecture]
     *   [REQ_DOWN](#req_down-downward-coverage "Downward Coverage")
-        Reference: [doc/requirements/DESIGN.md:206](../doc/requirements/DESIGN.md?plain=1#L206)
+        Reference: [./doc/requirements/DESIGN.md:206](.././doc/requirements/DESIGN.md?plain=1#L206)
     *   [REQ_MATCH_ID](#req_match_id-match-by-id "Match by ID")
-        Reference: [doc/requirements/DESIGN.md:205](../doc/requirements/DESIGN.md?plain=1#L205)
+        Reference: [./doc/requirements/DESIGN.md:205](.././doc/requirements/DESIGN.md?plain=1#L205)
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:204](../doc/requirements/DESIGN.md?plain=1#L204)
+        Reference: [./doc/requirements/DESIGN.md:204](.././doc/requirements/DESIGN.md?plain=1#L204)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1187,7 +1187,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_REFERENCE_EXIST: Coverage Links must exist
 
-Origin: design, [doc/requirements/DESIGN.md:259](../doc/requirements/DESIGN.md?plain=1#L259)
+Origin: design, [./doc/requirements/DESIGN.md:259](.././doc/requirements/DESIGN.md?plain=1#L259)
 
 
 For each Requirement that is encountered, store all "covers" and "depends" references
@@ -1201,16 +1201,16 @@ that reference, it is removed from the list of invalid references.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:272](../doc/requirements/DESIGN.md?plain=1#L272)
+        Reference: [./doc/requirements/DESIGN.md:272](.././doc/requirements/DESIGN.md?plain=1#L272)
 *   requirements => [design, formats, architecture]
     *   [REQ_DOWN](#req_down-downward-coverage "Downward Coverage")
-        Reference: [doc/requirements/DESIGN.md:270](../doc/requirements/DESIGN.md?plain=1#L270)
+        Reference: [./doc/requirements/DESIGN.md:270](.././doc/requirements/DESIGN.md?plain=1#L270)
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:269](../doc/requirements/DESIGN.md?plain=1#L269)
+        Reference: [./doc/requirements/DESIGN.md:269](.././doc/requirements/DESIGN.md?plain=1#L269)
     *   [REQ_UP](#req_up-upward-coverage "Upward Coverage")
-        Reference: [doc/requirements/DESIGN.md:271](../doc/requirements/DESIGN.md?plain=1#L271)
+        Reference: [./doc/requirements/DESIGN.md:271](.././doc/requirements/DESIGN.md?plain=1#L271)
     *   [REQ_VAL_COVERAGE](#req_val_coverage-validate-coverage "Validate Coverage")
-        Reference: [doc/requirements/DESIGN.md:273](../doc/requirements/DESIGN.md?plain=1#L273)
+        Reference: [./doc/requirements/DESIGN.md:273](.././doc/requirements/DESIGN.md?plain=1#L273)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1229,7 +1229,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_RELATION: Trace Relation
 
-Origin: design, [doc/requirements/DESIGN.md:169](../doc/requirements/DESIGN.md?plain=1#L169)
+Origin: design, [./doc/requirements/DESIGN.md:169](.././doc/requirements/DESIGN.md?plain=1#L169)
 
 
 For each Relation, inspect the requirements of the upper artefact and perform the
@@ -1250,7 +1250,7 @@ following steps:
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:186](../doc/requirements/DESIGN.md?plain=1#L186)
+        Reference: [./doc/requirements/DESIGN.md:186](.././doc/requirements/DESIGN.md?plain=1#L186)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -1259,7 +1259,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_UNCOVERED: Record requirements that are not completely covered
 
-Origin: design, [doc/requirements/DESIGN.md:220](../doc/requirements/DESIGN.md?plain=1#L220)
+Origin: design, [./doc/requirements/DESIGN.md:220](.././doc/requirements/DESIGN.md?plain=1#L220)
 
 
 When tracing a Requirement R along a Relation, if neither downward nor upward coverage is
@@ -1275,10 +1275,10 @@ code]`.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:234](../doc/requirements/DESIGN.md?plain=1#L234)
+        Reference: [./doc/requirements/DESIGN.md:234](.././doc/requirements/DESIGN.md?plain=1#L234)
 *   requirements => [design, formats, architecture]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:233](../doc/requirements/DESIGN.md?plain=1#L233)
+        Reference: [./doc/requirements/DESIGN.md:233](.././doc/requirements/DESIGN.md?plain=1#L233)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1287,7 +1287,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_UPWARDS: Trace upwards using `covers` attribute
 
-Origin: design, [doc/requirements/DESIGN.md:189](../doc/requirements/DESIGN.md?plain=1#L189)
+Origin: design, [./doc/requirements/DESIGN.md:189](.././doc/requirements/DESIGN.md?plain=1#L189)
 
 
 Requirement U covers Requirement D if U.id appears in D.Covers.
@@ -1297,14 +1297,14 @@ Requirement U covers Requirement D if U.id appears in D.Covers.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:197](../doc/requirements/DESIGN.md?plain=1#L197)
+        Reference: [./doc/requirements/DESIGN.md:197](.././doc/requirements/DESIGN.md?plain=1#L197)
 *   requirements => [design, formats, architecture]
     *   [REQ_MATCH_ID](#req_match_id-match-by-id "Match by ID")
-        Reference: [doc/requirements/DESIGN.md:195](../doc/requirements/DESIGN.md?plain=1#L195)
+        Reference: [./doc/requirements/DESIGN.md:195](.././doc/requirements/DESIGN.md?plain=1#L195)
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [doc/requirements/DESIGN.md:194](../doc/requirements/DESIGN.md?plain=1#L194)
+        Reference: [./doc/requirements/DESIGN.md:194](.././doc/requirements/DESIGN.md?plain=1#L194)
     *   [REQ_UP](#req_up-upward-coverage "Upward Coverage")
-        Reference: [doc/requirements/DESIGN.md:196](../doc/requirements/DESIGN.md?plain=1#L196)
+        Reference: [./doc/requirements/DESIGN.md:196](.././doc/requirements/DESIGN.md?plain=1#L196)
 
 Downwards Tracing:
 *   design => [formats, code]
@@ -1313,7 +1313,7 @@ Downwards Tracing:
 
 ## DSG_TRACE_VALIDATE_EDGE: Validate Edge is used at least once
 
-Origin: design, [doc/requirements/DESIGN.md:275](../doc/requirements/DESIGN.md?plain=1#L275)
+Origin: design, [./doc/requirements/DESIGN.md:275](.././doc/requirements/DESIGN.md?plain=1#L275)
 
 
 After tracing, if an edge can be found, along which no requirement is
@@ -1325,7 +1325,7 @@ covered, an error is emitted. This is likely a misconfiguration.
 Upwards Tracing:
 *   architecture => [design]
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/DESIGN.md:283](../doc/requirements/DESIGN.md?plain=1#L283)
+        Reference: [./doc/requirements/DESIGN.md:283](.././doc/requirements/DESIGN.md?plain=1#L283)
 *   requirements => [design, formats, architecture]
 
 Downwards Tracing:
@@ -1335,7 +1335,7 @@ Downwards Tracing:
 
 ## FMT_CONFIG_TOML: Use a Single TOML File as Configuration
 
-Origin: formats, [doc/requirements/FORMATS.md:86](../doc/requirements/FORMATS.md?plain=1#L86)
+Origin: formats, [./doc/requirements/FORMATS.md:86](.././doc/requirements/FORMATS.md?plain=1#L86)
 
 
 The configuration should be placed in one file `requirements.toml`.
@@ -1347,16 +1347,16 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_CONFIG](#req_config-simple-configuration-in-one-file "Simple Configuration in One File")
-        Reference: [doc/requirements/FORMATS.md:92](../doc/requirements/FORMATS.md?plain=1#L92)
+        Reference: [./doc/requirements/FORMATS.md:92](.././doc/requirements/FORMATS.md?plain=1#L92)
 
 Downwards Tracing:
 *   formats => [code]
     *   [get_config](#get_config)
-        Reference: [src/main.rs:78:4](../src/main.rs?plain=1#L78)
+        Reference: [src/main.rs:81:4](../src/main.rs?plain=1#L81)
 
 ## FMT_EXPORT_CTAGS: Export Requirements as CTags
 
-Origin: formats, [doc/requirements/FORMATS.md:131](../doc/requirements/FORMATS.md?plain=1#L131)
+Origin: formats, [./doc/requirements/FORMATS.md:131](.././doc/requirements/FORMATS.md?plain=1#L131)
 
 
 Export Requirements as `tags` file for easy navigation with tools like vim or emacs.
@@ -1375,7 +1375,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:147](../doc/requirements/FORMATS.md?plain=1#L147)
+        Reference: [./doc/requirements/FORMATS.md:147](.././doc/requirements/FORMATS.md?plain=1#L147)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1383,7 +1383,7 @@ Downwards Tracing:
 
 ## FMT_EXPORT_JSON: JSON for Exporting Results
 
-Origin: formats, [doc/requirements/FORMATS.md:106](../doc/requirements/FORMATS.md?plain=1#L106)
+Origin: formats, [./doc/requirements/FORMATS.md:106](.././doc/requirements/FORMATS.md?plain=1#L106)
 
 
 The Json Formatter emits Json objects for:
@@ -1403,9 +1403,9 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_CACHE_FRIENDLY](#req_cache_friendly-work-well-with-build-systems-that-cache "Work well with build systems that cache")
-        Reference: [doc/requirements/FORMATS.md:120](../doc/requirements/FORMATS.md?plain=1#L120)
+        Reference: [./doc/requirements/FORMATS.md:120](.././doc/requirements/FORMATS.md?plain=1#L120)
     *   [REQ_MACHINE_READABLE](#req_machine_readable-machine-readable-output "Machine Readable Output")
-        Reference: [doc/requirements/FORMATS.md:120](../doc/requirements/FORMATS.md?plain=1#L120)
+        Reference: [./doc/requirements/FORMATS.md:120](.././doc/requirements/FORMATS.md?plain=1#L120)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1413,7 +1413,7 @@ Downwards Tracing:
 
 ## FMT_EXPORT_MARKDOWN: Export to Markdown
 
-Origin: formats, [doc/requirements/FORMATS.md:122](../doc/requirements/FORMATS.md?plain=1#L122)
+Origin: formats, [./doc/requirements/FORMATS.md:122](.././doc/requirements/FORMATS.md?plain=1#L122)
 
 
 Errors, Requirements, Status, Tracing Info are exported as a useful
@@ -1425,9 +1425,9 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:128](../doc/requirements/FORMATS.md?plain=1#L128)
+        Reference: [./doc/requirements/FORMATS.md:128](.././doc/requirements/FORMATS.md?plain=1#L128)
     *   [REQ_HUMAN_READABLE](#req_human_readable-human-readable-output "Human Readable Output")
-        Reference: [doc/requirements/FORMATS.md:129](../doc/requirements/FORMATS.md?plain=1#L129)
+        Reference: [./doc/requirements/FORMATS.md:129](.././doc/requirements/FORMATS.md?plain=1#L129)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1435,7 +1435,7 @@ Downwards Tracing:
 
 ## FMT_FILE_ENCODINGS: Handle File Encodings
 
-Origin: formats, [doc/requirements/FORMATS.md:55](../doc/requirements/FORMATS.md?plain=1#L55)
+Origin: formats, [./doc/requirements/FORMATS.md:55](.././doc/requirements/FORMATS.md?plain=1#L55)
 
 
 When not otherwise specified, Text Files are read as UTF-8 and encoding errors are
@@ -1447,7 +1447,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_UNICODE_SAFE](#req_unicode_safe-sane-handling-of-unicode "Sane Handling of unicode")
-        Reference: [doc/requirements/FORMATS.md:61](../doc/requirements/FORMATS.md?plain=1#L61)
+        Reference: [./doc/requirements/FORMATS.md:61](.././doc/requirements/FORMATS.md?plain=1#L61)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1455,7 +1455,7 @@ Downwards Tracing:
 
 ## FMT_ID_v2: Requirement Identifier
 
-Origin: formats, [doc/requirements/FORMATS.md:36](../doc/requirements/FORMATS.md?plain=1#L36)
+Origin: formats, [./doc/requirements/FORMATS.md:36](.././doc/requirements/FORMATS.md?plain=1#L36)
 
 
 Requirement identifier consist of letters, digits and underscore, specifically
@@ -1475,7 +1475,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:46](../doc/requirements/FORMATS.md?plain=1#L46)
+        Reference: [./doc/requirements/FORMATS.md:46](.././doc/requirements/FORMATS.md?plain=1#L46)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1483,7 +1483,7 @@ Downwards Tracing:
 
 ## FMT_IMPORT_JSON: JSON for Importing Requirements
 
-Origin: formats, [doc/requirements/FORMATS.md:151](../doc/requirements/FORMATS.md?plain=1#L151)
+Origin: formats, [./doc/requirements/FORMATS.md:151](.././doc/requirements/FORMATS.md?plain=1#L151)
 
 
 The Json Parser loads lists of requirements from Json files, matching the following specification:
@@ -1499,11 +1499,11 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_CACHE_FRIENDLY](#req_cache_friendly-work-well-with-build-systems-that-cache "Work well with build systems that cache")
-        Reference: [doc/requirements/FORMATS.md:163](../doc/requirements/FORMATS.md?plain=1#L163)
+        Reference: [./doc/requirements/FORMATS.md:163](.././doc/requirements/FORMATS.md?plain=1#L163)
     *   [REQ_EXTENSIBLE](#req_extensible-extensible-parsing "Extensible Parsing")
-        Reference: [doc/requirements/FORMATS.md:164](../doc/requirements/FORMATS.md?plain=1#L164)
+        Reference: [./doc/requirements/FORMATS.md:164](.././doc/requirements/FORMATS.md?plain=1#L164)
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:165](../doc/requirements/FORMATS.md?plain=1#L165)
+        Reference: [./doc/requirements/FORMATS.md:165](.././doc/requirements/FORMATS.md?plain=1#L165)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1511,7 +1511,7 @@ Downwards Tracing:
 
 ## FMT_IMPORT_MARKDOWN_REQUIREMENT: Markdown File Format
 
-Origin: formats, [doc/requirements/FORMATS.md:173](../doc/requirements/FORMATS.md?plain=1#L173)
+Origin: formats, [./doc/requirements/FORMATS.md:173](.././doc/requirements/FORMATS.md?plain=1#L173)
 
 
 The artefact is a Markdown file with freely chosen layout.  A Requirement is in
@@ -1524,7 +1524,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:181](../doc/requirements/FORMATS.md?plain=1#L181)
+        Reference: [./doc/requirements/FORMATS.md:181](.././doc/requirements/FORMATS.md?plain=1#L181)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1532,7 +1532,7 @@ Downwards Tracing:
 
 ## FMT_IMPORT_MONO_REQ: Single Requirement Per File
 
-Origin: formats, [doc/requirements/FORMATS.md:290](../doc/requirements/FORMATS.md?plain=1#L290)
+Origin: formats, [./doc/requirements/FORMATS.md:290](.././doc/requirements/FORMATS.md?plain=1#L290)
 
 
 the MonoReq parser emits exactly one Requirement with the following
@@ -1552,7 +1552,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:303](../doc/requirements/FORMATS.md?plain=1#L303)
+        Reference: [./doc/requirements/FORMATS.md:303](.././doc/requirements/FORMATS.md?plain=1#L303)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1561,7 +1561,7 @@ Downwards Tracing:
 
 ## FMT_IMPORT_RUS_COV_MARK: Rust Coverage Marks
 
-Origin: formats, [doc/requirements/FORMATS.md:310](../doc/requirements/FORMATS.md?plain=1#L310)
+Origin: formats, [./doc/requirements/FORMATS.md:310](.././doc/requirements/FORMATS.md?plain=1#L310)
 
 
 Parse `requirement_covered!(REQ_ID)` and `requirement_covered!(REQ_ID,"TITLE")` as Coverage Links.
@@ -1573,7 +1573,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:316](../doc/requirements/FORMATS.md?plain=1#L316)
+        Reference: [./doc/requirements/FORMATS.md:316](.././doc/requirements/FORMATS.md?plain=1#L316)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1582,7 +1582,7 @@ Downwards Tracing:
 
 ## FMT_MD_ATTRIBUTES: Attributes
 
-Origin: formats, [doc/requirements/FORMATS.md:214](../doc/requirements/FORMATS.md?plain=1#L214)
+Origin: formats, [./doc/requirements/FORMATS.md:214](.././doc/requirements/FORMATS.md?plain=1#L214)
 
 
 Attributes are parsed from paragraphs that start with a single word followed by
@@ -1616,7 +1616,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:247](../doc/requirements/FORMATS.md?plain=1#L247)
+        Reference: [./doc/requirements/FORMATS.md:247](.././doc/requirements/FORMATS.md?plain=1#L247)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1624,7 +1624,7 @@ Downwards Tracing:
 
 ## FMT_MD_DESC: Description
 
-Origin: formats, [doc/requirements/FORMATS.md:191](../doc/requirements/FORMATS.md?plain=1#L191)
+Origin: formats, [./doc/requirements/FORMATS.md:191](.././doc/requirements/FORMATS.md?plain=1#L191)
 
 
 The paragraphs following the start of the requirement make up the description of
@@ -1641,7 +1641,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:203](../doc/requirements/FORMATS.md?plain=1#L203)
+        Reference: [./doc/requirements/FORMATS.md:203](.././doc/requirements/FORMATS.md?plain=1#L203)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1649,7 +1649,7 @@ Downwards Tracing:
 
 ## FMT_MD_DESC_HEADINGS: Heading Level in Description is adjusted
 
-Origin: formats, [doc/requirements/FORMATS.md:205](../doc/requirements/FORMATS.md?plain=1#L205)
+Origin: formats, [./doc/requirements/FORMATS.md:205](.././doc/requirements/FORMATS.md?plain=1#L205)
 
 
 Headings with a lower level than the starting one, that do not start a nested
@@ -1662,7 +1662,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:212](../doc/requirements/FORMATS.md?plain=1#L212)
+        Reference: [./doc/requirements/FORMATS.md:212](.././doc/requirements/FORMATS.md?plain=1#L212)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1670,7 +1670,7 @@ Downwards Tracing:
 
 ## FMT_MD_OPT_PREFIX: List of Prefixes
 
-Origin: formats, [doc/requirements/FORMATS.md:270](../doc/requirements/FORMATS.md?plain=1#L270)
+Origin: formats, [./doc/requirements/FORMATS.md:270](.././doc/requirements/FORMATS.md?plain=1#L270)
 
 
 A List of strings can be passed, which is used to prevent the parser from
@@ -1687,7 +1687,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:282](../doc/requirements/FORMATS.md?plain=1#L282)
+        Reference: [./doc/requirements/FORMATS.md:282](.././doc/requirements/FORMATS.md?plain=1#L282)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1695,7 +1695,7 @@ Downwards Tracing:
 
 ## FMT_MD_START: Requirement Start
 
-Origin: formats, [doc/requirements/FORMATS.md:184](../doc/requirements/FORMATS.md?plain=1#L184)
+Origin: formats, [./doc/requirements/FORMATS.md:184](.././doc/requirements/FORMATS.md?plain=1#L184)
 
 
 A Requirement starts with a `#` heading of any level that has the form `ID:
@@ -1707,7 +1707,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [doc/requirements/FORMATS.md:190](../doc/requirements/FORMATS.md?plain=1#L190)
+        Reference: [./doc/requirements/FORMATS.md:190](.././doc/requirements/FORMATS.md?plain=1#L190)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1715,7 +1715,7 @@ Downwards Tracing:
 
 ## FMT_UNICODE_NORMALIZE: Normalize Unicode during read
 
-Origin: formats, [doc/requirements/FORMATS.md:64](../doc/requirements/FORMATS.md?plain=1#L64)
+Origin: formats, [./doc/requirements/FORMATS.md:64](.././doc/requirements/FORMATS.md?plain=1#L64)
 
 
 All input strings are unicode normalizes as
@@ -1735,7 +1735,7 @@ Upwards Tracing:
 *   design => [formats, code]
 *   requirements => [design, formats, architecture]
     *   [REQ_UNICODE_SAFE](#req_unicode_safe-sane-handling-of-unicode "Sane Handling of unicode")
-        Reference: [doc/requirements/FORMATS.md:73](../doc/requirements/FORMATS.md?plain=1#L73)
+        Reference: [./doc/requirements/FORMATS.md:73](.././doc/requirements/FORMATS.md?plain=1#L73)
 
 Downwards Tracing:
 *   formats => [code]
@@ -1744,7 +1744,7 @@ Downwards Tracing:
 
 ## README: Requirement Tracing
 
-Origin: readme, [README.md](../README.md)
+Origin: readme, [./README.md](.././README.md)
 
 Upwards Tracing:
     *   Derived
@@ -1752,38 +1752,38 @@ Upwards Tracing:
 Downwards Tracing:
 *   readme => [requirements]
     *   [REQ_TRACE](#req_trace-determine-which-requirements-cover-which "Determine which requirements cover which")
-        Reference: [README.md:10](../README.md?plain=1#L10)
+        Reference: [./README.md:10](.././README.md?plain=1#L10)
     *   [REQ_UP](#req_up-upward-coverage "Upward Coverage")
-        Reference: [README.md:11](../README.md?plain=1#L11)
+        Reference: [./README.md:11](.././README.md?plain=1#L11)
     *   [REQ_DOWN](#req_down-downward-coverage "Downward Coverage")
-        Reference: [README.md:12](../README.md?plain=1#L12)
+        Reference: [./README.md:12](.././README.md?plain=1#L12)
     *   [REQ_EXTENSIBLE](#req_extensible-extensible-parsing "Extensible Parsing")
-        Reference: [README.md:15](../README.md?plain=1#L15)
+        Reference: [./README.md:15](.././README.md?plain=1#L15)
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [README.md:16](../README.md?plain=1#L16)
+        Reference: [./README.md:16](.././README.md?plain=1#L16)
     *   [REQ_HUMAN_READABLE](#req_human_readable-human-readable-output "Human Readable Output")
-        Reference: [README.md:20](../README.md?plain=1#L20)
+        Reference: [./README.md:20](.././README.md?plain=1#L20)
     *   [REQ_MACHINE_READABLE](#req_machine_readable-machine-readable-output "Machine Readable Output")
-        Reference: [README.md:21](../README.md?plain=1#L21)
+        Reference: [./README.md:21](.././README.md?plain=1#L21)
     *   [REQ_FORMATS](#req_formats-well-defined-formats "Well defined Formats")
-        Reference: [README.md:22](../README.md?plain=1#L22)
+        Reference: [./README.md:22](.././README.md?plain=1#L22)
     *   [REQ_FAST](#req_fast-fast "Fast")
-        Reference: [README.md:26](../README.md?plain=1#L26)
+        Reference: [./README.md:26](.././README.md?plain=1#L26)
     *   [REQ_CACHE_FRIENDLY](#req_cache_friendly-work-well-with-build-systems-that-cache "Work well with build systems that cache")
-        Reference: [README.md:27](../README.md?plain=1#L27)
+        Reference: [./README.md:27](.././README.md?plain=1#L27)
     *   [REQ_VAL_TITLE](#req_val_title-check-matching-title "Check matching title")
-        Reference: [README.md:28](../README.md?plain=1#L28)
+        Reference: [./README.md:28](.././README.md?plain=1#L28)
     *   [REQ_CONFIG](#req_config-simple-configuration-in-one-file "Simple Configuration in One File")
-        Reference: [README.md:31](../README.md?plain=1#L31)
+        Reference: [./README.md:31](.././README.md?plain=1#L31)
     *   [REQ_MACHINE_FRIENDLY](#req_machine_friendly-easy-to-include-in-automated-work-flows "Easy to include in automated work flows")
-        Reference: [README.md:32](../README.md?plain=1#L32)
+        Reference: [./README.md:32](.././README.md?plain=1#L32)
     *   [REQ_LATE_ERROR](#req_late_error-collect-errors-but-continue-processing "Collect Errors but continue processing")
-        Reference: [README.md:36](../README.md?plain=1#L36)
+        Reference: [./README.md:36](.././README.md?plain=1#L36)
 ## requirements
 
 ## REQ_ARTEFACT: Artefacts contain Requirements
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:10](../doc/requirements/REQUIREMENTS.md?plain=1#L10)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:10](.././doc/requirements/REQUIREMENTS.md?plain=1#L10)
 
 
 Group a set of related files as an Artefact, which contains a list of
@@ -1798,13 +1798,13 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [ARCH_ARTEFACT](#arch_artefact-artefact "Artefact")
-        Reference: [doc/requirements/ARCHITECTURE.md:102](../doc/requirements/ARCHITECTURE.md?plain=1#L102)
+        Reference: [./doc/requirements/ARCHITECTURE.md:102](.././doc/requirements/ARCHITECTURE.md?plain=1#L102)
     *   [ARCH_GRAPH](#arch_graph-graph "Graph")
-        Reference: [doc/requirements/ARCHITECTURE.md:129](../doc/requirements/ARCHITECTURE.md?plain=1#L129)
+        Reference: [./doc/requirements/ARCHITECTURE.md:129](.././doc/requirements/ARCHITECTURE.md?plain=1#L129)
 
 ## REQ_CACHE_FRIENDLY: Work well with build systems that cache
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:137](../doc/requirements/REQUIREMENTS.md?plain=1#L137)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:137](.././doc/requirements/REQUIREMENTS.md?plain=1#L137)
 
 
 Report all files which are consumed, so that build systems like make or
@@ -1816,18 +1816,18 @@ given format.rerun the tool.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:27](../README.md?plain=1#L27)
+        Reference: [./README.md:27](.././README.md?plain=1#L27)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [FMT_EXPORT_JSON](#fmt_export_json-json-for-exporting-results "JSON for Exporting Results")
-        Reference: [doc/requirements/FORMATS.md:120](../doc/requirements/FORMATS.md?plain=1#L120)
+        Reference: [./doc/requirements/FORMATS.md:120](.././doc/requirements/FORMATS.md?plain=1#L120)
     *   [FMT_IMPORT_JSON](#fmt_import_json-json-for-importing-requirements "JSON for Importing Requirements")
-        Reference: [doc/requirements/FORMATS.md:163](../doc/requirements/FORMATS.md?plain=1#L163)
+        Reference: [./doc/requirements/FORMATS.md:163](.././doc/requirements/FORMATS.md?plain=1#L163)
 
 ## REQ_CONFIG: Simple Configuration in One File
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:128](../doc/requirements/REQUIREMENTS.md?plain=1#L128)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:128](.././doc/requirements/REQUIREMENTS.md?plain=1#L128)
 
 
 All Configuration is stored in a single file using a common Format that is
@@ -1838,20 +1838,20 @@ editable for humans and machine readable.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:31](../README.md?plain=1#L31)
+        Reference: [./README.md:31](.././README.md?plain=1#L31)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_CTRL_CONFIG](#dsg_ctrl_config-single-config-file "Single Config File")
-        Reference: [doc/requirements/DESIGN.md:63](../doc/requirements/DESIGN.md?plain=1#L63)
+        Reference: [./doc/requirements/DESIGN.md:63](.././doc/requirements/DESIGN.md?plain=1#L63)
     *   [DSG_JOBS](#dsg_jobs-jobs-encode-requested-behavior "Jobs encode requested behavior")
-        Reference: [doc/requirements/DESIGN.md:51](../doc/requirements/DESIGN.md?plain=1#L51)
+        Reference: [./doc/requirements/DESIGN.md:51](.././doc/requirements/DESIGN.md?plain=1#L51)
     *   [FMT_CONFIG_TOML](#fmt_config_toml-use-a-single-toml-file-as-configuration "Use a Single TOML File as Configuration")
-        Reference: [doc/requirements/FORMATS.md:92](../doc/requirements/FORMATS.md?plain=1#L92)
+        Reference: [./doc/requirements/FORMATS.md:92](.././doc/requirements/FORMATS.md?plain=1#L92)
 
 ## REQ_DOWN: Downward Coverage
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:72](../doc/requirements/REQUIREMENTS.md?plain=1#L72)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:72](.././doc/requirements/REQUIREMENTS.md?plain=1#L72)
 
 
 A Requirement is covered by a lower one by including the id of the lower one in
@@ -1862,20 +1862,20 @@ its Dependencies attribute.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:12](../README.md?plain=1#L12)
+        Reference: [./README.md:12](.././README.md?plain=1#L12)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields")
-        Reference: [doc/requirements/DESIGN.md:338](../doc/requirements/DESIGN.md?plain=1#L338)
+        Reference: [./doc/requirements/DESIGN.md:338](.././doc/requirements/DESIGN.md?plain=1#L338)
     *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute")
-        Reference: [doc/requirements/DESIGN.md:206](../doc/requirements/DESIGN.md?plain=1#L206)
+        Reference: [./doc/requirements/DESIGN.md:206](.././doc/requirements/DESIGN.md?plain=1#L206)
     *   [DSG_TRACE_REFERENCE_EXIST](#dsg_trace_reference_exist-coverage-links-must-exist "Coverage Links must exist")
-        Reference: [doc/requirements/DESIGN.md:270](../doc/requirements/DESIGN.md?plain=1#L270)
+        Reference: [./doc/requirements/DESIGN.md:270](.././doc/requirements/DESIGN.md?plain=1#L270)
 
 ## REQ_EXTENSIBLE: Extensible Parsing
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:33](../doc/requirements/REQUIREMENTS.md?plain=1#L33)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:33](.././doc/requirements/REQUIREMENTS.md?plain=1#L33)
 
 
 If internal parsers are not able to work on an Artefact, external tools can be
@@ -1886,18 +1886,18 @@ incorporated.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:15](../README.md?plain=1#L15)
+        Reference: [./README.md:15](.././README.md?plain=1#L15)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [FMT_IMPORT_JSON](#fmt_import_json-json-for-importing-requirements "JSON for Importing Requirements")
-        Reference: [doc/requirements/FORMATS.md:164](../doc/requirements/FORMATS.md?plain=1#L164)
+        Reference: [./doc/requirements/FORMATS.md:164](.././doc/requirements/FORMATS.md?plain=1#L164)
     *   [ARCH_PARSER](#arch_parser-parser "Parser")
-        Reference: [doc/requirements/ARCHITECTURE.md:57](../doc/requirements/ARCHITECTURE.md?plain=1#L57)
+        Reference: [./doc/requirements/ARCHITECTURE.md:57](.././doc/requirements/ARCHITECTURE.md?plain=1#L57)
 
 ## REQ_FAST: Fast
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:133](../doc/requirements/REQUIREMENTS.md?plain=1#L133)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:133](.././doc/requirements/REQUIREMENTS.md?plain=1#L133)
 
 
 Show results quickly, especially if only a small query is given.
@@ -1907,16 +1907,16 @@ Show results quickly, especially if only a small query is given.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:26](../README.md?plain=1#L26)
+        Reference: [./README.md:26](.././README.md?plain=1#L26)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/ARCHITECTURE.md:32](../doc/requirements/ARCHITECTURE.md?plain=1#L32)
+        Reference: [./doc/requirements/ARCHITECTURE.md:32](.././doc/requirements/ARCHITECTURE.md?plain=1#L32)
 
 ## REQ_FORMATS: Well defined Formats
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:54](../doc/requirements/REQUIREMENTS.md?plain=1#L54)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:54](.././doc/requirements/REQUIREMENTS.md?plain=1#L54)
 
 
 To work with external programs as parsers or to process the output, the formats used must be well
@@ -1927,40 +1927,40 @@ defined.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:16](../README.md?plain=1#L16)
+        Reference: [./README.md:16](.././README.md?plain=1#L16)
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:22](../README.md?plain=1#L22)
+        Reference: [./README.md:22](.././README.md?plain=1#L22)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [FMT_EXPORT_CTAGS](#fmt_export_ctags-export-requirements-as-ctags "Export Requirements as CTags")
-        Reference: [doc/requirements/FORMATS.md:147](../doc/requirements/FORMATS.md?plain=1#L147)
+        Reference: [./doc/requirements/FORMATS.md:147](.././doc/requirements/FORMATS.md?plain=1#L147)
     *   [FMT_EXPORT_MARKDOWN](#fmt_export_markdown-export-to-markdown "Export to Markdown")
-        Reference: [doc/requirements/FORMATS.md:128](../doc/requirements/FORMATS.md?plain=1#L128)
+        Reference: [./doc/requirements/FORMATS.md:128](.././doc/requirements/FORMATS.md?plain=1#L128)
     *   [FMT_ID_v2](#fmt_id_v2-requirement-identifier "Requirement Identifier")
-        Reference: [doc/requirements/FORMATS.md:46](../doc/requirements/FORMATS.md?plain=1#L46)
+        Reference: [./doc/requirements/FORMATS.md:46](.././doc/requirements/FORMATS.md?plain=1#L46)
     *   [FMT_IMPORT_JSON](#fmt_import_json-json-for-importing-requirements "JSON for Importing Requirements")
-        Reference: [doc/requirements/FORMATS.md:165](../doc/requirements/FORMATS.md?plain=1#L165)
+        Reference: [./doc/requirements/FORMATS.md:165](.././doc/requirements/FORMATS.md?plain=1#L165)
     *   [FMT_IMPORT_MARKDOWN_REQUIREMENT](#fmt_import_markdown_requirement-markdown-file-format "Markdown File Format")
-        Reference: [doc/requirements/FORMATS.md:181](../doc/requirements/FORMATS.md?plain=1#L181)
+        Reference: [./doc/requirements/FORMATS.md:181](.././doc/requirements/FORMATS.md?plain=1#L181)
     *   [FMT_IMPORT_MONO_REQ](#fmt_import_mono_req-single-requirement-per-file "Single Requirement Per File")
-        Reference: [doc/requirements/FORMATS.md:303](../doc/requirements/FORMATS.md?plain=1#L303)
+        Reference: [./doc/requirements/FORMATS.md:303](.././doc/requirements/FORMATS.md?plain=1#L303)
     *   [FMT_IMPORT_RUS_COV_MARK](#fmt_import_rus_cov_mark-rust-coverage-marks "Rust Coverage Marks")
-        Reference: [doc/requirements/FORMATS.md:316](../doc/requirements/FORMATS.md?plain=1#L316)
+        Reference: [./doc/requirements/FORMATS.md:316](.././doc/requirements/FORMATS.md?plain=1#L316)
     *   [FMT_MD_ATTRIBUTES](#fmt_md_attributes-attributes "Attributes")
-        Reference: [doc/requirements/FORMATS.md:247](../doc/requirements/FORMATS.md?plain=1#L247)
+        Reference: [./doc/requirements/FORMATS.md:247](.././doc/requirements/FORMATS.md?plain=1#L247)
     *   [FMT_MD_DESC](#fmt_md_desc-description "Description")
-        Reference: [doc/requirements/FORMATS.md:203](../doc/requirements/FORMATS.md?plain=1#L203)
+        Reference: [./doc/requirements/FORMATS.md:203](.././doc/requirements/FORMATS.md?plain=1#L203)
     *   [FMT_MD_DESC_HEADINGS](#fmt_md_desc_headings-heading-level-in-description-is-adjusted "Heading Level in Description is adjusted")
-        Reference: [doc/requirements/FORMATS.md:212](../doc/requirements/FORMATS.md?plain=1#L212)
+        Reference: [./doc/requirements/FORMATS.md:212](.././doc/requirements/FORMATS.md?plain=1#L212)
     *   [FMT_MD_OPT_PREFIX](#fmt_md_opt_prefix-list-of-prefixes "List of Prefixes")
-        Reference: [doc/requirements/FORMATS.md:282](../doc/requirements/FORMATS.md?plain=1#L282)
+        Reference: [./doc/requirements/FORMATS.md:282](.././doc/requirements/FORMATS.md?plain=1#L282)
     *   [FMT_MD_START](#fmt_md_start-requirement-start "Requirement Start")
-        Reference: [doc/requirements/FORMATS.md:190](../doc/requirements/FORMATS.md?plain=1#L190)
+        Reference: [./doc/requirements/FORMATS.md:190](.././doc/requirements/FORMATS.md?plain=1#L190)
 
 ## REQ_HUMAN_READABLE: Human Readable Output
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:50](../doc/requirements/REQUIREMENTS.md?plain=1#L50)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:50](.././doc/requirements/REQUIREMENTS.md?plain=1#L50)
 
 
 Information can be returned in a format that can easily be read by humans
@@ -1970,18 +1970,18 @@ Information can be returned in a format that can easily be read by humans
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:20](../README.md?plain=1#L20)
+        Reference: [./README.md:20](.././README.md?plain=1#L20)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [FMT_EXPORT_MARKDOWN](#fmt_export_markdown-export-to-markdown "Export to Markdown")
-        Reference: [doc/requirements/FORMATS.md:129](../doc/requirements/FORMATS.md?plain=1#L129)
+        Reference: [./doc/requirements/FORMATS.md:129](.././doc/requirements/FORMATS.md?plain=1#L129)
     *   [ARCH_FORMATTER](#arch_formatter-format-output-in-requested-format "Format output in requested Format")
-        Reference: [doc/requirements/ARCHITECTURE.md:75](../doc/requirements/ARCHITECTURE.md?plain=1#L75)
+        Reference: [./doc/requirements/ARCHITECTURE.md:75](.././doc/requirements/ARCHITECTURE.md?plain=1#L75)
 
 ## REQ_IDENTIFIEABLE: Show versions of input artefacts in output
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:38](../doc/requirements/REQUIREMENTS.md?plain=1#L38)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:38](.././doc/requirements/REQUIREMENTS.md?plain=1#L38)
 
 
 When reading the output, each input must be clearly identifiable.
@@ -2002,7 +2002,7 @@ Downwards Tracing:
 
 ## REQ_INSTALL: Easy to install
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:28](../doc/requirements/REQUIREMENTS.md?plain=1#L28)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:28](.././doc/requirements/REQUIREMENTS.md?plain=1#L28)
 
 
 The tool should be distributed as an executable without depending on
@@ -2017,11 +2017,11 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/ARCHITECTURE.md:31](../doc/requirements/ARCHITECTURE.md?plain=1#L31)
+        Reference: [./doc/requirements/ARCHITECTURE.md:31](.././doc/requirements/ARCHITECTURE.md?plain=1#L31)
 
 ## REQ_LATE_ERROR: Collect Errors but continue processing
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:82](../doc/requirements/REQUIREMENTS.md?plain=1#L82)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:82](.././doc/requirements/REQUIREMENTS.md?plain=1#L82)
 
 
 When errors are encountered in parsing, tracing or outputting, processing
@@ -2032,16 +2032,16 @@ continues as long as possible and then all errors are reported.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:36](../README.md?plain=1#L36)
+        Reference: [./README.md:36](.././README.md?plain=1#L36)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing")
-        Reference: [doc/requirements/DESIGN.md:359](../doc/requirements/DESIGN.md?plain=1#L359)
+        Reference: [./doc/requirements/DESIGN.md:359](.././doc/requirements/DESIGN.md?plain=1#L359)
 
 ## REQ_MACHINE_FRIENDLY: Easy to include in automated work flows
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:24](../doc/requirements/REQUIREMENTS.md?plain=1#L24)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:24](.././doc/requirements/REQUIREMENTS.md?plain=1#L24)
 
 
 For ease of integration into other tools, all functionality must be available via a CLI.
@@ -2051,20 +2051,20 @@ For ease of integration into other tools, all functionality must be available vi
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:32](../README.md?plain=1#L32)
+        Reference: [./README.md:32](.././README.md?plain=1#L32)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_CLI](#dsg_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/DESIGN.md:15](../doc/requirements/DESIGN.md?plain=1#L15)
+        Reference: [./doc/requirements/DESIGN.md:15](.././doc/requirements/DESIGN.md?plain=1#L15)
     *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
-        Reference: [doc/requirements/DESIGN.md:27](../doc/requirements/DESIGN.md?plain=1#L27)
+        Reference: [./doc/requirements/DESIGN.md:27](.././doc/requirements/DESIGN.md?plain=1#L27)
     *   [ARCH_CLI](#arch_cli-command-line-interface "Command Line Interface")
-        Reference: [doc/requirements/ARCHITECTURE.md:30](../doc/requirements/ARCHITECTURE.md?plain=1#L30)
+        Reference: [./doc/requirements/ARCHITECTURE.md:30](.././doc/requirements/ARCHITECTURE.md?plain=1#L30)
 
 ## REQ_MACHINE_READABLE: Machine Readable Output
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:46](../doc/requirements/REQUIREMENTS.md?plain=1#L46)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:46](.././doc/requirements/REQUIREMENTS.md?plain=1#L46)
 
 
 Information can be returned in a format that can easily be read by other tools
@@ -2074,18 +2074,18 @@ Information can be returned in a format that can easily be read by other tools
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:21](../README.md?plain=1#L21)
+        Reference: [./README.md:21](.././README.md?plain=1#L21)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [FMT_EXPORT_JSON](#fmt_export_json-json-for-exporting-results "JSON for Exporting Results")
-        Reference: [doc/requirements/FORMATS.md:120](../doc/requirements/FORMATS.md?plain=1#L120)
+        Reference: [./doc/requirements/FORMATS.md:120](.././doc/requirements/FORMATS.md?plain=1#L120)
     *   [ARCH_FORMATTER](#arch_formatter-format-output-in-requested-format "Format output in requested Format")
-        Reference: [doc/requirements/ARCHITECTURE.md:76](../doc/requirements/ARCHITECTURE.md?plain=1#L76)
+        Reference: [./doc/requirements/ARCHITECTURE.md:76](.././doc/requirements/ARCHITECTURE.md?plain=1#L76)
 
 ## REQ_MATCH_ID: Match by ID
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:87](../doc/requirements/REQUIREMENTS.md?plain=1#L87)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:87](.././doc/requirements/REQUIREMENTS.md?plain=1#L87)
 
 
 A Requirements covers another by its ID.
@@ -2099,13 +2099,13 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute")
-        Reference: [doc/requirements/DESIGN.md:205](../doc/requirements/DESIGN.md?plain=1#L205)
+        Reference: [./doc/requirements/DESIGN.md:205](.././doc/requirements/DESIGN.md?plain=1#L205)
     *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute")
-        Reference: [doc/requirements/DESIGN.md:195](../doc/requirements/DESIGN.md?plain=1#L195)
+        Reference: [./doc/requirements/DESIGN.md:195](.././doc/requirements/DESIGN.md?plain=1#L195)
 
 ## REQ_PARSER_ERROR: Useful Parser Errors
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:77](../doc/requirements/REQUIREMENTS.md?plain=1#L77)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:77](.././doc/requirements/REQUIREMENTS.md?plain=1#L77)
 
 
 Parser Errors give the precise location and type of the problem, for example filename with
@@ -2120,11 +2120,11 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_ART_PARSE_COLLECT_ERRORS](#dsg_art_parse_collect_errors-collect-errors-but-keep-parsing "Collect errors but keep parsing")
-        Reference: [doc/requirements/DESIGN.md:360](../doc/requirements/DESIGN.md?plain=1#L360)
+        Reference: [./doc/requirements/DESIGN.md:360](.././doc/requirements/DESIGN.md?plain=1#L360)
 
 ## REQ_TRACE: Determine which requirements cover which
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:5](../doc/requirements/REQUIREMENTS.md?plain=1#L5)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:5](.././doc/requirements/REQUIREMENTS.md?plain=1#L5)
 
 
 Compute tracing for each Requirement, whether it is covered, uncovered, covers
@@ -2135,34 +2135,34 @@ another requirement or is derived.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:10](../README.md?plain=1#L10)
+        Reference: [./README.md:10](.././README.md?plain=1#L10)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title")
-        Reference: [doc/requirements/DESIGN.md:255](../doc/requirements/DESIGN.md?plain=1#L255)
+        Reference: [./doc/requirements/DESIGN.md:255](.././doc/requirements/DESIGN.md?plain=1#L255)
     *   [DSG_TRACE_DERIVED](#dsg_trace_derived-record-requirements-that-do-not-cover-anything "Record requirements that do not cover anything")
-        Reference: [doc/requirements/DESIGN.md:217](../doc/requirements/DESIGN.md?plain=1#L217)
+        Reference: [./doc/requirements/DESIGN.md:217](.././doc/requirements/DESIGN.md?plain=1#L217)
     *   [DSG_TRACE_DOWNWARDS](#dsg_trace_downwards-trace-downwards-using-depends-attribute "Trace downwards using `depends` attribute")
-        Reference: [doc/requirements/DESIGN.md:204](../doc/requirements/DESIGN.md?plain=1#L204)
+        Reference: [./doc/requirements/DESIGN.md:204](.././doc/requirements/DESIGN.md?plain=1#L204)
     *   [DSG_TRACE_REFERENCE_EXIST](#dsg_trace_reference_exist-coverage-links-must-exist "Coverage Links must exist")
-        Reference: [doc/requirements/DESIGN.md:269](../doc/requirements/DESIGN.md?plain=1#L269)
+        Reference: [./doc/requirements/DESIGN.md:269](.././doc/requirements/DESIGN.md?plain=1#L269)
     *   [DSG_TRACE_UNCOVERED](#dsg_trace_uncovered-record-requirements-that-are-not-completely-covered "Record requirements that are not completely covered")
-        Reference: [doc/requirements/DESIGN.md:233](../doc/requirements/DESIGN.md?plain=1#L233)
+        Reference: [./doc/requirements/DESIGN.md:233](.././doc/requirements/DESIGN.md?plain=1#L233)
     *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute")
-        Reference: [doc/requirements/DESIGN.md:194](../doc/requirements/DESIGN.md?plain=1#L194)
+        Reference: [./doc/requirements/DESIGN.md:194](.././doc/requirements/DESIGN.md?plain=1#L194)
     *   [ARCH_GRAPH](#arch_graph-graph "Graph")
-        Reference: [doc/requirements/ARCHITECTURE.md:128](../doc/requirements/ARCHITECTURE.md?plain=1#L128)
+        Reference: [./doc/requirements/ARCHITECTURE.md:128](.././doc/requirements/ARCHITECTURE.md?plain=1#L128)
     *   [ARCH_REQUIREMENT](#arch_requirement-requirement "Requirement")
-        Reference: [doc/requirements/ARCHITECTURE.md:95](../doc/requirements/ARCHITECTURE.md?plain=1#L95)
+        Reference: [./doc/requirements/ARCHITECTURE.md:95](.././doc/requirements/ARCHITECTURE.md?plain=1#L95)
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/ARCHITECTURE.md:65](../doc/requirements/ARCHITECTURE.md?plain=1#L65)
+        Reference: [./doc/requirements/ARCHITECTURE.md:65](.././doc/requirements/ARCHITECTURE.md?plain=1#L65)
     *   [ARCH_TRACED_GRAPH](#arch_traced_graph-tracing-information-of-grpah "Tracing Information of Grpah")
-        Reference: [doc/requirements/ARCHITECTURE.md:137](../doc/requirements/ARCHITECTURE.md?plain=1#L137)
+        Reference: [./doc/requirements/ARCHITECTURE.md:137](.././doc/requirements/ARCHITECTURE.md?plain=1#L137)
 
 ## REQ_UNICODE_SAFE: Sane Handling of unicode
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:59](../doc/requirements/REQUIREMENTS.md?plain=1#L59)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:59](.././doc/requirements/REQUIREMENTS.md?plain=1#L59)
 
 
 Some Characters can be represented by multiple different sequences of Unicode
@@ -2179,13 +2179,13 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [FMT_FILE_ENCODINGS](#fmt_file_encodings-handle-file-encodings "Handle File Encodings")
-        Reference: [doc/requirements/FORMATS.md:61](../doc/requirements/FORMATS.md?plain=1#L61)
+        Reference: [./doc/requirements/FORMATS.md:61](.././doc/requirements/FORMATS.md?plain=1#L61)
     *   [FMT_UNICODE_NORMALIZE](#fmt_unicode_normalize-normalize-unicode-during-read "Normalize Unicode during read")
-        Reference: [doc/requirements/FORMATS.md:73](../doc/requirements/FORMATS.md?plain=1#L73)
+        Reference: [./doc/requirements/FORMATS.md:73](.././doc/requirements/FORMATS.md?plain=1#L73)
 
 ## REQ_UNIQUE_ID_v2: Requirements have a unique Identifier
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:15](../doc/requirements/REQUIREMENTS.md?plain=1#L15)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:15](.././doc/requirements/REQUIREMENTS.md?plain=1#L15)
 
 
 Each requirement must be identifiable by a short, unique string.
@@ -2204,13 +2204,13 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_CTRL_DETECT_DUPLICATE_REQS](#dsg_ctrl_detect_duplicate_reqs-detect-duplicates "Detect duplicates")
-        Reference: [doc/requirements/DESIGN.md:81](../doc/requirements/DESIGN.md?plain=1#L81)
+        Reference: [./doc/requirements/DESIGN.md:81](.././doc/requirements/DESIGN.md?plain=1#L81)
     *   [DSG_TRACE_DETECT_DUPLICATE](#dsg_trace_detect_duplicate-detect-duplicate-requirements-in-different-artefacts "Detect duplicate Requirements in different Artefacts")
-        Reference: [doc/requirements/DESIGN.md:166](../doc/requirements/DESIGN.md?plain=1#L166)
+        Reference: [./doc/requirements/DESIGN.md:166](.././doc/requirements/DESIGN.md?plain=1#L166)
 
 ## REQ_UP: Upward Coverage
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:67](../doc/requirements/REQUIREMENTS.md?plain=1#L67)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:67](.././doc/requirements/REQUIREMENTS.md?plain=1#L67)
 
 
 A Requirement covers a higher one by including the id of the higer one in its
@@ -2221,20 +2221,20 @@ Coverage attribute.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:11](../README.md?plain=1#L11)
+        Reference: [./README.md:11](.././README.md?plain=1#L11)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_REQ_FIELDS](#dsg_req_fields-requirement-fields "Requirement Fields")
-        Reference: [doc/requirements/DESIGN.md:337](../doc/requirements/DESIGN.md?plain=1#L337)
+        Reference: [./doc/requirements/DESIGN.md:337](.././doc/requirements/DESIGN.md?plain=1#L337)
     *   [DSG_TRACE_REFERENCE_EXIST](#dsg_trace_reference_exist-coverage-links-must-exist "Coverage Links must exist")
-        Reference: [doc/requirements/DESIGN.md:271](../doc/requirements/DESIGN.md?plain=1#L271)
+        Reference: [./doc/requirements/DESIGN.md:271](.././doc/requirements/DESIGN.md?plain=1#L271)
     *   [DSG_TRACE_UPWARDS](#dsg_trace_upwards-trace-upwards-using-covers-attribute "Trace upwards using `covers` attribute")
-        Reference: [doc/requirements/DESIGN.md:196](../doc/requirements/DESIGN.md?plain=1#L196)
+        Reference: [./doc/requirements/DESIGN.md:196](.././doc/requirements/DESIGN.md?plain=1#L196)
 
 ## REQ_VAL_COVERAGE: Validate Coverage
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:122](../doc/requirements/REQUIREMENTS.md?plain=1#L122)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:122](.././doc/requirements/REQUIREMENTS.md?plain=1#L122)
 
 
 An error is reported for a Coverage claim for which no Requirement exists in the
@@ -2250,11 +2250,11 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_TRACE_REFERENCE_EXIST](#dsg_trace_reference_exist-coverage-links-must-exist "Coverage Links must exist")
-        Reference: [doc/requirements/DESIGN.md:273](../doc/requirements/DESIGN.md?plain=1#L273)
+        Reference: [./doc/requirements/DESIGN.md:273](.././doc/requirements/DESIGN.md?plain=1#L273)
 
 ## REQ_VAL_TITLE: Check matching title
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:91](../doc/requirements/REQUIREMENTS.md?plain=1#L91)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:91](.././doc/requirements/REQUIREMENTS.md?plain=1#L91)
 
 
 A Coverage link that is established by requirement ID can be verified by
@@ -2290,16 +2290,16 @@ the wrong coverage.
 Upwards Tracing:
 *   readme => [requirements]
     *   [README](#readme-requirement-tracing "Requirement Tracing")
-        Reference: [README.md:28](../README.md?plain=1#L28)
+        Reference: [./README.md:28](.././README.md?plain=1#L28)
 
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_TRACE_CHECK_TITLE](#dsg_trace_check_title-when-tracing-upwards-or-downwards-match-title "When tracing upwards or downwards match title")
-        Reference: [doc/requirements/DESIGN.md:256](../doc/requirements/DESIGN.md?plain=1#L256)
+        Reference: [./doc/requirements/DESIGN.md:256](.././doc/requirements/DESIGN.md?plain=1#L256)
 
 ## UC_CHECK: Check for correct Tracing
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:161](../doc/requirements/REQUIREMENTS.md?plain=1#L161)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:161](.././doc/requirements/REQUIREMENTS.md?plain=1#L161)
 
 
 Like `UC_TRACE` but the only output of interest is whether there were tracing errors or not,
@@ -2313,15 +2313,15 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_CLI_RETURN_CODE](#dsg_cli_return_code-set-return-code-to-indicate-success "Set return Code to indicate success")
-        Reference: [doc/requirements/DESIGN.md:28](../doc/requirements/DESIGN.md?plain=1#L28)
+        Reference: [./doc/requirements/DESIGN.md:28](.././doc/requirements/DESIGN.md?plain=1#L28)
     *   [DSG_CTRL_TRACE](#dsg_ctrl_trace-trace-requirements "Trace Requirements")
-        Reference: [doc/requirements/DESIGN.md:102](../doc/requirements/DESIGN.md?plain=1#L102)
+        Reference: [./doc/requirements/DESIGN.md:102](.././doc/requirements/DESIGN.md?plain=1#L102)
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/ARCHITECTURE.md:48](../doc/requirements/ARCHITECTURE.md?plain=1#L48)
+        Reference: [./doc/requirements/ARCHITECTURE.md:48](.././doc/requirements/ARCHITECTURE.md?plain=1#L48)
 
 ## UC_PARSE: Parse Artefacts
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:145](../doc/requirements/REQUIREMENTS.md?plain=1#L145)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:145](.././doc/requirements/REQUIREMENTS.md?plain=1#L145)
 
 
 A Set of artefacts are parsed, reporting all requirements and errors.
@@ -2338,15 +2338,15 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_CTRL_PARSE](#dsg_ctrl_parse-parse-all-artefacts "Parse all Artefacts")
-        Reference: [doc/requirements/DESIGN.md:74](../doc/requirements/DESIGN.md?plain=1#L74)
+        Reference: [./doc/requirements/DESIGN.md:74](.././doc/requirements/DESIGN.md?plain=1#L74)
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/ARCHITECTURE.md:46](../doc/requirements/ARCHITECTURE.md?plain=1#L46)
+        Reference: [./doc/requirements/ARCHITECTURE.md:46](.././doc/requirements/ARCHITECTURE.md?plain=1#L46)
     *   [ARCH_PARSER](#arch_parser-parser "Parser")
-        Reference: [doc/requirements/ARCHITECTURE.md:58](../doc/requirements/ARCHITECTURE.md?plain=1#L58)
+        Reference: [./doc/requirements/ARCHITECTURE.md:58](.././doc/requirements/ARCHITECTURE.md?plain=1#L58)
 
 ## UC_TMX: Create Traceability Matrix
 
-Origin: requirements, [doc/requirements/REQUIREMENTS.md:152](../doc/requirements/REQUIREMENTS.md?plain=1#L152)
+Origin: requirements, [./doc/requirements/REQUIREMENTS.md:152](.././doc/requirements/REQUIREMENTS.md?plain=1#L152)
 
 
 All requirements are matched up and down the Tracing Graph. The results are
@@ -2365,10 +2365,10 @@ Upwards Tracing:
 Downwards Tracing:
 *   requirements => [design, formats, architecture]
     *   [DSG_CTRL_TRACE](#dsg_ctrl_trace-trace-requirements "Trace Requirements")
-        Reference: [doc/requirements/DESIGN.md:101](../doc/requirements/DESIGN.md?plain=1#L101)
+        Reference: [./doc/requirements/DESIGN.md:101](.././doc/requirements/DESIGN.md?plain=1#L101)
     *   [ARCH_CONTROLLER](#arch_controller-controller "Controller")
-        Reference: [doc/requirements/ARCHITECTURE.md:47](../doc/requirements/ARCHITECTURE.md?plain=1#L47)
+        Reference: [./doc/requirements/ARCHITECTURE.md:47](.././doc/requirements/ARCHITECTURE.md?plain=1#L47)
     *   [ARCH_FORMATTER](#arch_formatter-format-output-in-requested-format "Format output in requested Format")
-        Reference: [doc/requirements/ARCHITECTURE.md:74](../doc/requirements/ARCHITECTURE.md?plain=1#L74)
+        Reference: [./doc/requirements/ARCHITECTURE.md:74](.././doc/requirements/ARCHITECTURE.md?plain=1#L74)
     *   [ARCH_TRACE](#arch_trace-tracer "Tracer")
-        Reference: [doc/requirements/ARCHITECTURE.md:66](../doc/requirements/ARCHITECTURE.md?plain=1#L66)
+        Reference: [./doc/requirements/ARCHITECTURE.md:66](.././doc/requirements/ARCHITECTURE.md?plain=1#L66)
