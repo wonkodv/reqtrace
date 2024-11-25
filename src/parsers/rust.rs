@@ -23,15 +23,19 @@ pub fn parse(reader: &mut impl io::BufRead, path: &Path) -> (Vec<Rc<Requirement>
     let mut source = String::new();
     match reader.read_to_string(&mut source) {
         Err(e) => {
-            errors.push(Error::io(path, &e));
+            let err = Error::io(path, &e);
+            log::info!("found problem {:#?}", &err);
+            errors.push(err);
         }
         Ok(_bytes) => match parse_file(&source) {
             Err(e) => {
                 let pos = e.span().start();
-                errors.push(Error::Format(
+                let err = Error::Format(
                     Location::new_with_line_and_column(path.into(), pos.line, pos.column),
                     e.to_string(),
-                ));
+                );
+                log::info!("found problem {:#?}", &err);
+                errors.push(err);
             }
             Ok(file) => {
                 let mut p = Parser {
@@ -76,10 +80,12 @@ impl Parser<'_> {
         if let Some((referenced_id, title)) = match tokens.len() {
             0 => {
                 // requirement_covered!()
-                self.errors.push(Error::Format(
+                let err = Error::Format(
                     macro_location.clone(),
                     "requirement_covered!() has no arguments".to_owned(),
-                ));
+                );
+                log::info!("found problem {:#?}", &err);
+                self.errors.push(err);
                 None
             }
             1 => {
@@ -93,11 +99,13 @@ impl Parser<'_> {
                         id = id.replace('"', ""); // TODO: better string parsing?
                         Some((id, None))
                     } else {
-                        self.errors.push(Error::Format(
+                        let err = Error::Format(
                             location_from_span(self.path, &tokens[0].span()),
                             "requirement_covered!() single argument is not an identifier"
                                 .to_owned(),
-                        ));
+                        );
+                        log::info!("found problem {:#?}", &err);
+                        self.errors.push(err);
                         None
                     }
                 }
@@ -112,28 +120,34 @@ impl Parser<'_> {
                         Some((id.to_string(), Some(title)))
                     } else {
                         // requirement_covered!(IDENT,17)
-                        self.errors.push(Error::Format(
+                        let err = Error::Format(
                             location_from_span(self.path, &tokens[2].span()),
                             "requirement_covered!() 2nd argument is not String".to_owned(),
-                        ));
+                        );
+                        log::info!("found problem {:#?}", &err);
+                        self.errors.push(err);
                         None
                     }
                 } else {
                     // requirement_covered!(17, ...)
-                    self.errors.push(Error::Format(
+                    let err = Error::Format(
                         location_from_span(self.path, &tokens[0].span()),
                         "requirement_covered!() 1st argument is not an identifier".to_owned(),
-                    ));
+                    );
+                    log::info!("found problem {:#?}", &err);
+                    self.errors.push(err);
                     None
                 }
             }
             _ => {
-                self.errors.push(Error::Format(
+                let err = Error::Format(
                     macro_location.clone(),
                     format!(
                         "requirement_covered!() called with more than 2 argument/token {tokens:?}"
                     ),
-                ));
+                );
+                log::info!("found problem {:#?}", &err);
+                self.errors.push(err);
                 None
             }
         } {

@@ -58,24 +58,22 @@ fn parse_single_file(
     base_dir: &Path,
 ) -> (Vec<PathBuf>, Vec<Rc<Requirement>>, Vec<Error>) {
     if config.paths.len() != 1 {
-        return (
-            vec![],
-            vec![],
-            vec![Error::ArtefactConfig(format!(
-                "Expected only 1 file for artefact {} with parser {:?}, got {:?}",
-                config.id, config.parser, config.paths,
-            ))],
-        );
+        let err = Error::ArtefactConfig(format!(
+            "Expected only 1 file for artefact {} with parser {:?}, got {:?}",
+            config.id, config.parser, config.paths,
+        ));
+        log::info!("found problem {err:#?}");
+        return (vec![], vec![], vec![(err)]);
     }
     let path = base_dir.join(&config.paths[0]);
 
     requirement_covered!(DSG_ART_FILES);
     match fs::File::open(&path) {
-        Err(err) => (
-            vec![path.clone()],
-            vec![],
-            vec![Error::Io(path, err.to_string())],
-        ),
+        Err(err) => {
+            let err = Error::Io(path.clone(), err.to_string());
+            log::info!("found problem {:#?}", &err);
+            (vec![path], vec![], vec![err])
+        }
         Ok(file) => {
             let mut r = io::BufReader::new(file);
 
@@ -84,13 +82,13 @@ fn parse_single_file(
                 ArtefactParser::MonoRequirement => parsers::monoreq::parse(&mut r, &path),
                 ArtefactParser::Json => match serde_json::from_reader(r) {
                     Ok(reqs) => (reqs, vec![]),
-                    Err(err) => (
-                        vec![],
-                        vec![Error::Format(
-                            Location::new_with_no_pos(path.clone()),
-                            err.to_string(),
-                        )],
-                    ),
+                    Err(err) => {
+                        let err =
+                            Error::Format(Location::new_with_no_pos(path.clone()), err.to_string());
+                        log::info!("found problem {:#?}", &err);
+
+                        (vec![], vec![err])
+                    }
                 },
                 _ => panic!("unexpected {:?}", config.parser),
             };
@@ -104,14 +102,9 @@ fn parse_multiple_files(
     base_dir: &Path,
 ) -> (Vec<PathBuf>, Vec<Rc<Requirement>>, Vec<Error>) {
     if config.paths.is_empty() {
-        return (
-            vec![],
-            vec![],
-            vec![Error::ArtefactConfig(format!(
-                "No Paths for artefact {}",
-                config.id
-            ))],
-        );
+        let err = Error::ArtefactConfig(format!("No Paths for artefact {}", config.id));
+        log::info!("found problem {:#?}", &err);
+        return (vec![], vec![], vec![err]);
     }
 
     match glob_paths(&config.paths, base_dir) {
@@ -126,7 +119,11 @@ fn parse_multiple_files(
             for path in &paths {
                 requirement_covered!(DSG_ART_FILES);
                 match fs::File::open(path) {
-                    Err(err) => errors.push(Error::Io(path.into(), err.to_string())),
+                    Err(err) => {
+                        let err = Error::Io(path.into(), err.to_string());
+                        log::info!("found problem {:#?}", &err);
+                        errors.push(err)
+                    }
                     Ok(file) => {
                         let mut r = io::BufReader::new(file);
 
@@ -167,6 +164,7 @@ pub fn parse_from_config(
             btree_map::Entry::Occupied(e) => {
                 requirement_covered!(DSG_CTRL_DETECT_DUPLICATE_REQS);
                 let err = Error::DuplicateRequirement(Rc::clone(e.get()), req);
+                log::info!("found problem {:#?}", &err);
                 errors.push(err);
             }
             btree_map::Entry::Vacant(e) => {
@@ -234,7 +232,9 @@ impl Controller {
         if !self.default_jobs.is_empty() {
             self.run_jobs_by_name(&self.default_jobs)
         } else {
-            Err(ControllerError::Config("no default_jobs configured".into()))
+            let err = ControllerError::Config("no default_jobs configured".into());
+            log::info!("found problem {:#?}", &err);
+            Err(err)
         }
     }
 
@@ -244,7 +244,9 @@ impl Controller {
             if let Some(job) = self.find_job(j) {
                 jobs.push(job);
             } else {
-                return Err(ControllerError::UnknownJob(j.clone()));
+                let err = ControllerError::UnknownJob(j.clone());
+                log::info!("found problem {:#?}", &err);
+                return Err(err);
             }
         }
         self.run_jobs(&jobs, job_names)
@@ -313,9 +315,11 @@ impl Controller {
                 // TODO: only create traced_graph lazily
                 if !tg.errors.is_empty() {
                     success = JobSuccess::ErrorsDetected;
+                    log::debug!("Job did not succeed because: Tracing Errors");
                 }
                 if tg.artefacts.values().any(|art| !art.errors.is_empty()) {
                     success = JobSuccess::ErrorsDetected;
+                    log::debug!("Job did not succeed because: Artefact Parsing Errors");
                 }
                 if tg
                     .traced_relations
@@ -323,9 +327,12 @@ impl Controller {
                     .any(|rel| !rel.uncovered.is_empty())
                 {
                     success = JobSuccess::ErrorsDetected;
+                    log::debug!("Job did not succeed because: uncovered relations");
                 }
+
                 if !tg.derived.is_empty() {
                     success = JobSuccess::ErrorsDetected;
+                    log::debug!("Job did not succeed because: derived Requirementt");
                 }
                 requirement_covered!(DSG_CTRL_FORMAT);
                 formatters::tracing(tg, &job.format, &mut out)
@@ -340,6 +347,7 @@ impl Controller {
                     .any(|art| !art.errors.is_empty())
                 {
                     success = JobSuccess::ErrorsDetected;
+                    log::debug!("Job did not succeed because: Artefact Parsing Errors");
                 }
                 requirement_covered!(DSG_CTRL_FORMAT);
                 formatters::requirements(&self.graph, &job.format, &mut out)

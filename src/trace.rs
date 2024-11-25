@@ -260,7 +260,9 @@ impl Tracer {
         }
 
         if !any_req_coverd {
-            self.errors.push(Error::UnusedRelation(relation.clone()));
+            let err = Error::UnusedRelation(relation.clone());
+            log::info!("found problem {err:#?}");
+            self.errors.push(err);
         }
 
         self.relations.push(TracedRelation {
@@ -290,7 +292,7 @@ impl Tracer {
             let location = reference.location.clone();
 
             let err = Error::CoversUnknownRequirement(Rc::clone(req), upper_id.clone(), location);
-            log::trace!("{}", err);
+            log::info!("found problem {err:#?}");
             self.errors.push(err);
         }
     }
@@ -311,7 +313,7 @@ impl Tracer {
             let location = reference.unwrap().location.clone();
 
             let err = Error::DependOnUnknownRequirement(Rc::clone(req), lower_id.clone(), location);
-            log::trace!("{}", err);
+            log::info!("found problem {err:#?}");
             self.errors.push(err);
         }
     }

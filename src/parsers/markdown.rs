@@ -82,9 +82,9 @@ pub fn parse<R: io::BufRead>(reader: &mut R, path: &Path) -> (Vec<Rc<Requirement
         context.line_number += 1;
         match reader.read_line(&mut line) {
             Err(e) => {
-                context
-                    .errors
-                    .push(Error::Io(context.path.to_owned(), e.to_string()));
+                let err = Error::Io(context.path.to_owned(), e.to_string());
+                log::info!("found problem {:#?}", &err);
+                context.errors.push(err);
                 break;
             }
             Ok(0) => {
@@ -176,10 +176,12 @@ fn parse_state_line(state: State, line: &&str, context: &mut Context<'_>) -> Sta
             if let Some(attr_line) = ATTRIBUTE_LINE.captures(line) {
                 start_attribute(context, &attr_line)
             } else {
-                context.errors.push(Error::Format(
+                let err = Error::Format(
                     context.location(),
                     "Expected an Attribute line like `Comment:`".into(),
-                ));
+                );
+                log::info!("found problem {:#?}", &err);
+                context.errors.push(err);
                 State::LookForReq
             }
         }
@@ -209,10 +211,12 @@ fn parse_state_line(state: State, line: &&str, context: &mut Context<'_>) -> Sta
                 State::LookForAttr
             } else {
                 commit_link_attr(context, attr, vec);
-                context.errors.push(Error::Format(
+                let err = Error::Format(
                     context.location(),
                     "Expected a Reference like `* REQ_ID: Title`".into(),
-                ));
+                );
+                log::info!("found problem {:#?}", &err);
+                context.errors.push(err);
                 State::LookForReq
             }
         }
@@ -349,11 +353,13 @@ fn start_attribute(context: &mut Context<'_>, attr_line: &Captures<'_>) -> State
                 .covers
                 .is_empty()
             {
-                context.errors.push(Error::DuplicateAttribute(
+                let err = Error::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
                     context.req_under_construction.as_ref().unwrap().id.clone(),
-                ));
+                );
+                log::info!("found problem {:#?}", &err);
+                context.errors.push(err);
             }
             parse_link_attr(context, attr, first_line)
         }
@@ -365,11 +371,13 @@ fn start_attribute(context: &mut Context<'_>, attr_line: &Captures<'_>) -> State
                 .depends
                 .is_empty()
             {
-                context.errors.push(Error::DuplicateAttribute(
+                let err = Error::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
                     context.req_under_construction.as_ref().unwrap().id.clone(),
-                ));
+                );
+                log::info!("found problem {:#?}", &err);
+                context.errors.push(err);
             }
             parse_link_attr(context, attr, first_line)
         }
@@ -381,11 +389,13 @@ fn start_attribute(context: &mut Context<'_>, attr_line: &Captures<'_>) -> State
                 .attributes
                 .contains_key(attr)
             {
-                context.errors.push(Error::DuplicateAttribute(
+                let err = Error::DuplicateAttribute(
                     context.location(),
                     attr.to_owned(),
                     context.req_under_construction.as_ref().unwrap().id.clone(),
-                ));
+                );
+                log::info!("found problem {:#?}", &err);
+                context.errors.push(err);
             }
             State::CollectTextAttr(attr.to_owned(), first_line.to_owned())
         }

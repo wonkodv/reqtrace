@@ -38,20 +38,6 @@ pub fn requirements(graph: &Graph, format: &Format, writer: &mut impl io::Write)
     }
 }
 
-// pub fn errors<'e, E, W>(graph: &Graph,  format: &Format, writer: &mut W) -> io::Result<()>
-// where
-//     W: io::Write,
-// {
-//      requirement_covered!(DSG_FORMATTER);
-//     match format {
-//         Format::Markdown => markdown::errors(graph, writer),
-//         Format::GnuError => gnuerr::errors(errors, writer),
-//         //     Format::Json => serde_json::to_writer_pretty(writer, &serialize::Errors::new(errors))
-//         //         .map_err(io::Error::other),
-//         _ => todo!(),
-//     }
-// }
-
 pub fn tracing(
     traced_graph: &TracedGraph,
     format: &Format,
