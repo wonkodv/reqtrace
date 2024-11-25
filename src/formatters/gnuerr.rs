@@ -30,7 +30,7 @@ where
                 writeln!(w, "{}: IO Error: {}", path.display(), err,)?;
             }
             Error::UnusedRelation(_)
-            | Error::ArtefactConfig(_)
+            | Error::Config(_)
             | Error::DuplicateArtefact(_)
             | Error::UnknownArtefact(_)
             | Error::EmptyGraph => {

@@ -58,7 +58,7 @@ fn parse_single_file(
     base_dir: &Path,
 ) -> (Vec<PathBuf>, Vec<Rc<Requirement>>, Vec<Error>) {
     if config.paths.len() != 1 {
-        let err = Error::ArtefactConfig(format!(
+        let err = Error::Config(format!(
             "Expected only 1 file for artefact {} with parser {:?}, got {:?}",
             config.id, config.parser, config.paths,
         ));
@@ -102,7 +102,7 @@ fn parse_multiple_files(
     base_dir: &Path,
 ) -> (Vec<PathBuf>, Vec<Rc<Requirement>>, Vec<Error>) {
     if config.paths.is_empty() {
-        let err = Error::ArtefactConfig(format!("No Paths for artefact {}", config.id));
+        let err = Error::Config(format!("No Paths for artefact {}", config.id));
         log::info!("found problem {:#?}", &err);
         return (vec![], vec![], vec![err]);
     }
@@ -205,6 +205,25 @@ impl Controller {
         }
 
         let relations: Vec<Relation> = config.relations;
+
+        for r in &relations {
+            if artefacts.get(&r.upper).is_none() {
+                let err = Error::Config(format!(
+                    "Relation.upper references unknown artefact {}",
+                    &r.upper
+                ));
+                todo!("log error {err}");
+            }
+            for lower in &r.lower {
+                if artefacts.get(&lower).is_none() {
+                    let err = Error::Config(format!(
+                        "Relation.lower references unknown artefact {}",
+                        &lower
+                    ));
+                    todo!("log error {err}");
+                }
+            }
+        }
 
         let graph = Graph {
             artefacts,
@@ -330,9 +349,12 @@ impl Controller {
                     log::debug!("Job did not succeed because: uncovered relations");
                 }
 
-                if !tg.derived.is_empty() {
+                if tg.derived.values().any(|a| !a.is_empty()) {
                     success = JobSuccess::ErrorsDetected;
-                    log::debug!("Job did not succeed because: derived Requirementt");
+                    log::debug!(
+                        "Job did not succeed because: derived Requirements: {:#?}",
+                        tg.derived
+                    );
                 }
                 requirement_covered!(DSG_CTRL_FORMAT);
                 formatters::tracing(tg, &job.format, &mut out)

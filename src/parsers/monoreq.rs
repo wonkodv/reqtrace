@@ -50,7 +50,7 @@ pub fn parse<R: io::BufRead>(reader: R, path: &Path) -> (Vec<Rc<Requirement>>, V
         if let Some(stem) = path.file_stem() {
             stem.to_string_lossy().to_string().into()
         } else {
-            let err = Error::ArtefactConfig(format!(
+            let err = Error::Config(format!(
                 "file for 'MonoReq' parser `{} has no stem",
                 path.display(),
             ));

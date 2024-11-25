@@ -6,6 +6,7 @@ mod utils;
 
 #[test]
 fn test() -> Result<(), Box<dyn std::error::Error + 'static>> {
+    utils::setup_logging();
     for test_file in glob::glob("tests/data/*/config.toml").expect("glob") {
         let test_file = test_file?;
         println!("Testing {test_file:?}");

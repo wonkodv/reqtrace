@@ -245,8 +245,8 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
         Error::Io(path, err) => {
             writeln!(w, "*   IO Error: {}\n   {}", err, path.display())
         }
-        Error::ArtefactConfig(err) => {
-            writeln!(w, "*   Artefact Config Error: {}", err,)
+        Error::Config(err) => {
+            writeln!(w, "*   Config Error: {}", err,)
         }
         Error::DuplicateArtefact(a) => {
             writeln!(w, "*   Duplicate Artefact: {a}")

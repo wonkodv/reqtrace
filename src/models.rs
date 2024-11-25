@@ -281,8 +281,8 @@ pub enum Error {
     #[error("IO Error: {1} in {0}")]
     Io(PathBuf, String),
 
-    #[error("Artefact Configuration Error  {0}")]
-    ArtefactConfig(String),
+    #[error("Configuration Error  {0}")]
+    Config(String),
 
     #[error("Artefact added twice: {0}")]
     DuplicateArtefact(String),
