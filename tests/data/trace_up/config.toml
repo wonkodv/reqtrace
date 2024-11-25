@@ -1,0 +1,26 @@
+[[artefacts]]
+id = "Upper"
+paths = [ "upper.md"]
+parser = "Markdown"
+ignore_derived_requirements = true
+
+[[artefacts]]
+id = "Lower"
+paths = [ "lower.md" ]
+parser = "Markdown"
+
+[[relations]]
+upper = "Upper"
+lower = ["Lower"]
+
+[jobs.trace]
+query="Trace"
+format="Markdown"
+file="out/tmx.md"
+
+[test]
+jobs = ["trace"]
+success = "Success"
+out_files = [ "tmx.md" ]
+covers = ["DSG_TRACE_UPWARDS: Trace upwards using `covers` attribute"]
+
