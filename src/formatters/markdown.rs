@@ -106,6 +106,26 @@ pub fn requirement(req: &Requirement, w: &mut impl io::Write) -> io::Result<()> 
 }
 
 pub fn requirements(graph: &Graph, w: &mut impl io::Write) -> io::Result<()> {
+    {
+        let mut headline = false;
+        for a in graph.artefacts.values() {
+            if !a.errors.is_empty() {
+                if !headline {
+                    headline = true;
+                    writeln!(w)?;
+                    writeln!(w)?;
+                    writeln!(w, "# Input Errors")?;
+                    writeln!(w)?;
+                }
+                writeln!(w)?;
+                writeln!(w, "## {}", a.id)?;
+                writeln!(w)?;
+            }
+            for e in &a.errors {
+                err(e, w)?;
+            }
+        }
+    }
     let mut reqs: Vec<&Rc<Requirement>> = graph
         .artefacts
         .values()
@@ -314,18 +334,6 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
             )
         }
     }
-}
-
-pub fn errors<'r, R>(errors: R, w: &mut impl io::Write) -> io::Result<()>
-where
-    R: Iterator<Item = &'r Error>,
-{
-    writeln!(w, "# Errors")?;
-    for e in errors {
-        err(e, w)?;
-    }
-
-    Ok(())
 }
 
 pub fn tracing(aggregated_graph: &AggregatedGraph<'_>, w: &mut impl io::Write) -> io::Result<()> {

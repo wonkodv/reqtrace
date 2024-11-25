@@ -16,7 +16,6 @@ paths = ["readme.md", ]
 parser = "MonoRequirement"
 
 [jobs.parse]
-# this job "succeeds" because it's return value is ignored"
 query="Parse"
 format="Json"
 file="out/requirements.json"

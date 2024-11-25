@@ -25,7 +25,7 @@ pub enum ControllerError {
     Io(PathBuf, String),
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, serde::Deserialize)]
 pub enum JobSuccess {
     /// All jobs were successfull
     Success,

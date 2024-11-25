@@ -11,8 +11,6 @@ New Tool to check, that requirement IDs change whenever the requirement changes
 *   Review Process to flag req as unimportant
 
 
-Hitchhiker is severley out of date
-
 add option to artefact that requirements form this art must be matched with title,
 
 Remove Delegation Requirements

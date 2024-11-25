@@ -12,7 +12,7 @@ pub fn setup_logging() {
 }
 
 pub struct TestEnv {
-    test_dir: PathBuf,
+    pub test_dir: PathBuf,
 }
 
 pub fn test_environment(test_file: &str) -> TestEnv {

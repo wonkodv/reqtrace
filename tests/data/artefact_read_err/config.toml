@@ -1,0 +1,17 @@
+relations=[]
+
+[[artefacts]]
+id = "Artefact with missing path"
+paths = [ "missing.md" ]
+parser = "Markdown"
+
+[jobs.parse]
+query="Parse"
+format="Markdown"
+file="out/tmx.md"
+
+[test]
+jobs = ["parse"]
+success = "ErrorsDetected"
+out_files = [ "tmx.md" ]
+covers = ["DERIVED"]
