@@ -40,3 +40,13 @@ Performance Optimizations
 *   use SmallString for RequirementId an  ArtefactId
 *   RC all Locations
 *   Intern all the Strings  (or leak them. As long as there is only the CLI, this will not hurt any)
+
+Tests:
+makrdown parser Errors:
+*   duplicate Attributes
+*   with / without another attribute after
+*   unexpected lines
+*   ...
+
+
+Preserve Order of Artefacts

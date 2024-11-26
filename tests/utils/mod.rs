@@ -48,16 +48,15 @@ impl TestEnv {
         if produced != expected {
             let out = Command::new("git")
                 .arg("diff")
-                .arg("--color=always")
                 .arg("--no-index")
                 .arg(produced_file)
                 .arg(expected_file)
-                .spawn()
-                .expect("git diff failed to start")
-                .wait()
-                .unwrap();
-            println!("{out:?}");
-            panic!("files do not match");
+                .output()
+                .expect("git diff failed to start");
+            panic!(
+                "files do not match: {}",
+                String::from_utf8_lossy(&out.stdout)
+            );
         }
     }
 }

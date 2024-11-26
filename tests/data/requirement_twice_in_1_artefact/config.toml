@@ -1,0 +1,20 @@
+relations = []
+
+[[artefacts]]
+id = "Upper Artefact"
+paths = [ "upper.md" ]
+parser = "Markdown"
+ignore_derived_requirements = true
+
+[jobs.parse]
+query="Trace"
+format="Markdown"
+file="out/tmx.md"
+
+[test]
+jobs = ["parse"]
+success = "ErrorsDetected"
+out_files = [ "tmx.md" ]
+covers = ["DSG_CTRL_DETECT_DUPLICATE_REQS: Detect duplicates"]
+
+

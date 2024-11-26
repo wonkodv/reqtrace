@@ -16,7 +16,7 @@ lazy_static! {
     static ref HEADING_LINE: Regex = Regex::new(r"^(#+)").unwrap();
     static ref REQUIREMENT_LINE: Regex =
         Regex::new(r"^(#+)\s*(\p{XID_Start}\p{XID_Continue}+):\s*(.+?)\s*$").unwrap();
-    static ref ATTRIBUTE_LINE: Regex = Regex::new(r"^([A-Z][a-z]+):\s+(.*)\s*$").unwrap();
+    static ref ATTRIBUTE_LINE: Regex = Regex::new(r"^([A-Z][a-z]+):\s*(.*)\s*$").unwrap();
     static ref REF_LINK_LINE: Regex =
         Regex::new(r"^*\s+(\p{XID_Start}\p{XID_Continue}+)(?::\s*(.+?))?\s*$").unwrap();
     static ref BAD_HEADLINE_UNDERLINE: Regex = Regex::new(r"^(====*)|(----*)").unwrap(); // TODO: use
