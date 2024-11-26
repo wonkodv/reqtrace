@@ -40,6 +40,8 @@ impl TestEnv {
         let produced_file = self.test_dir.join("out").join(file_to_test);
         let expected_file = self.test_dir.join("expected").join(file_to_test);
 
+        log::info!("comparing {produced_file:?} with {expected_file:?}");
+
         let produced = std::fs::read(&produced_file).expect(&format!("can read {produced_file:?}"));
         let expected = std::fs::read(&expected_file).expect(&format!("can read {expected_file:?}"));
 

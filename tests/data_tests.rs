@@ -9,7 +9,7 @@ fn test() -> Result<(), Box<dyn std::error::Error + 'static>> {
     utils::setup_logging();
     for test_file in glob::glob("tests/data/*/config.toml").expect("glob") {
         let test_file = test_file?;
-        println!("Testing {test_file:?}");
+        log::info!("Data Test with {test_file:?}");
         fun_name(&test_file).map_err(|e| format!("Error in {test_file:?}: {e:?}"))?
     }
     Ok(())
