@@ -10,9 +10,6 @@ New Tool to check, that requirement IDs change whenever the requirement changes
 *   tolerant over minor changes in case, punctuation, (spelling?)
 *   Review Process to flag req as unimportant
 
-
-add option to artefact that requirements form this art must be matched with title,
-
 Remove Delegation Requirements
 
 Add Unittests for all DSGs

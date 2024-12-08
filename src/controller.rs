@@ -189,9 +189,45 @@ impl Controller {
     pub fn new(config: Config, base_dir: &Path) -> Self {
         let mut artefacts: BTreeMap<ArtefactId, Rc<Artefact>> = BTreeMap::new();
 
-        for ac in config.artefacts {
-            let ignore_derived_requirements = ac.ignore_derived_requirements.unwrap_or(false);
-            let (files, requirements, errors) = parse_from_config(&ac, &base_dir);
+        let relations: Vec<Relation> = config.relations;
+
+        let mut is_root: BTreeMap<&ArtefactId, bool> =
+            config.artefacts.iter().map(|ac| (&ac.id, true)).collect();
+
+        for rel in &relations {
+            if is_root.get(&rel.upper).is_none() {
+                let err = Error::Config(format!(
+                    "Relation.upper references unknown artefact {}",
+                    &rel.upper
+                ));
+                todo!("log error {err}");
+            }
+
+            for lower in &rel.lower {
+                if is_root.get(&lower).is_none() {
+                    let err = Error::Config(format!(
+                        "Relation.lower references unknown artefact {}",
+                        &lower
+                    ));
+                    todo!("log error {err}");
+                }
+                *is_root.get_mut(&lower).unwrap() = false;
+            }
+        }
+        for ac in &config.artefacts {
+            let ignore_derived_requirements =
+                ac.ignore_derived_requirements.unwrap_or(is_root[&ac.id]);
+            let reference_with_title = ac.reference_with_title.unwrap_or(false);
+            let (files, requirements, mut errors) = parse_from_config(&ac, &base_dir);
+
+            if reference_with_title {
+                errors.extend(
+                    requirements
+                        .values()
+                        .filter(|r| r.title.is_none())
+                        .map(|r| Error::RequirementWithoutTitle(Rc::clone(r))),
+                );
+            }
 
             let a = Artefact {
                 id: ac.id.clone(),
@@ -199,30 +235,10 @@ impl Controller {
                 requirements,
                 errors,
                 ignore_derived_requirements,
+                reference_with_title,
             };
             let a = Rc::new(a);
-            artefacts.insert(ac.id, a);
-        }
-
-        let relations: Vec<Relation> = config.relations;
-
-        for r in &relations {
-            if artefacts.get(&r.upper).is_none() {
-                let err = Error::Config(format!(
-                    "Relation.upper references unknown artefact {}",
-                    &r.upper
-                ));
-                todo!("log error {err}");
-            }
-            for lower in &r.lower {
-                if artefacts.get(&lower).is_none() {
-                    let err = Error::Config(format!(
-                        "Relation.lower references unknown artefact {}",
-                        &lower
-                    ));
-                    todo!("log error {err}");
-                }
-            }
+            artefacts.insert(ac.id.clone(), a);
         }
 
         let graph = Graph {

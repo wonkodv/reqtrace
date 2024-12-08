@@ -24,7 +24,7 @@
 
 ## Lower Artefact
 
-## COV_1: A Coverage
+### COV_1: A Coverage
 
 Origin: Lower Artefact, [tests/data/continue_parsing_after_errors/lower.md:5](../tests/data/continue_parsing_after_errors/lower.md?plain=1#L5)
 
@@ -40,7 +40,7 @@ Upwards Tracing:
 Downwards Tracing:
 ## Upper Artefact
 
-## REQ_1: A Requirement
+### REQ_1: A Requirement
 
 Origin: Upper Artefact, [tests/data/continue_parsing_after_errors/upper.md:5](../tests/data/continue_parsing_after_errors/upper.md?plain=1#L5)
 
@@ -54,7 +54,7 @@ Downwards Tracing:
     *   [COV_1](#cov_1-a-coverage "A Coverage")
         Reference: [tests/data/continue_parsing_after_errors/lower.md:8](../tests/data/continue_parsing_after_errors/lower.md?plain=1#L8)
 
-## REQ_2: Another Requirement
+### REQ_2: Another Requirement
 
 Origin: Upper Artefact, [tests/data/continue_parsing_after_errors/upper.md:11](../tests/data/continue_parsing_after_errors/upper.md?plain=1#L11)
 

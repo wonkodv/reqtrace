@@ -25,10 +25,6 @@ struct TracedArtefact {
 }
 
 /// Tracer walks a graph and builds TracingData
-///
-/// When adding a Fork (all tines at once) add all lower Reqs to
-/// `derived`, add all  reqs to `requirements`. for all upper, find a lower that covers or is
-/// depent on. if not found, add to uncovered
 #[derive(Debug)]
 struct Tracer {
     /// Artefacts indexed by their name
@@ -71,6 +67,7 @@ impl Tracer {
         tracer.validate();
         tracer
     }
+
     fn data(self) -> TracedGraph {
         let Self {
             traced_artefacts: artefacts,
@@ -97,6 +94,7 @@ impl Tracer {
         }
     }
 
+    /// Add an Artefact's requirements
     fn add_artefact(&mut self, artefact: &Rc<Artefact>) {
         let mut derived = BTreeSet::new();
 
@@ -191,6 +189,13 @@ impl Tracer {
                                     location: depends.location.clone(),
                                 });
                             }
+                        } else {
+                            if lower_artefact.artefact.reference_with_title {
+                                self.errors.push(Error::ReferencedWithoutTitle {
+                                    referenced: Rc::clone(lower_requirement),
+                                    location: depends.location.clone(),
+                                });
+                            }
                         }
 
                         requirement_covered!(DSG_TRACE_DERIVED);
@@ -234,6 +239,13 @@ impl Tracer {
                                     upper: Rc::clone(upper_requirement),
                                     lower: Rc::clone(lower_requirement),
                                     wrong_title: title.into(),
+                                    location: covers.location.clone(),
+                                });
+                            }
+                        } else {
+                            if upper_artefact.reference_with_title {
+                                self.errors.push(Error::ReferencedWithoutTitle {
+                                    referenced: Rc::clone(upper_requirement),
                                     location: covers.location.clone(),
                                 });
                             }

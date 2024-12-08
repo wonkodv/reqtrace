@@ -66,7 +66,12 @@ pub struct ArtefactConfig {
     pub id: ArtefactId,
     pub paths: Vec<String>,
     pub parser: ArtefactParser,
+    /// Do not report requirements of this artefact, which do not cover other requirements, as
+    /// derived
     pub ignore_derived_requirements: Option<bool>,
+    /// References to requirements of this artefact must match with title (usually a good idea if
+    /// the requirement ids are mostly numeric like `DSG_0123`)
+    pub reference_with_title: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -261,6 +266,7 @@ pub struct Artefact {
     pub id: ArtefactId,
     pub files: Vec<PathBuf>,
     pub ignore_derived_requirements: bool,
+    pub reference_with_title: bool,
     pub requirements: BTreeMap<RequirementId, Rc<Requirement>>,
     pub errors: Vec<Error>,
 }
@@ -290,7 +296,9 @@ pub enum Error {
     #[error("Unknown Artefact: {0}")]
     UnknownArtefact(ArtefactId),
 
-    #[error("Requirement Covered with Wrong Title {upper} <- {lower} with {wrong_title}")]
+    #[error(
+        "Requirement Covered with Wrong Title {upper} <- {lower} with {wrong_title} at {location}"
+    )]
     CoveredWithWrongTitle {
         upper: Rc<Requirement>,
         lower: Rc<Requirement>,
@@ -298,13 +306,24 @@ pub enum Error {
         location: Location,
     },
 
-    #[error("Requirement Depended with Wrong Title {upper} -> {lower} with {wrong_title}")]
+    #[error(
+        "Requirement Depended with Wrong Title {upper} -> {lower} with {wrong_title} at {location}"
+    )]
     DependWithWrongTitle {
         upper: Rc<Requirement>,
         lower: Rc<Requirement>,
         wrong_title: String,
         location: Location,
     },
+
+    #[error("Requirement referenced without title {referenced} at {location}")]
+    ReferencedWithoutTitle {
+        referenced: Rc<Requirement>,
+        location: Location,
+    },
+
+    #[error("Requirement {0} must have a title")]
+    RequirementWithoutTitle(Rc<Requirement>),
 
     #[error("Requirement {0} depends on unknown Requirement {1} at {2}")]
     DependOnUnknownRequirement(Rc<Requirement>, RequirementId, Location),

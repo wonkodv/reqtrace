@@ -1,0 +1,40 @@
+[[artefacts]]
+id = "Upper Artefact using readable IDs"
+paths = [ "upper_readable.md" ]
+parser = "Markdown"
+
+[[artefacts]]
+id = "Upper Artefact using numeric IDs"
+paths = [ "upper_numeric.md" ]
+parser = "Markdown"
+reference_with_title = true
+
+[[artefacts]]
+id = "Lower Artefact using readable IDs"
+paths = [ "lower_readable.md" ]
+parser = "Markdown"
+
+[[artefacts]]
+id = "Lower Artefact using numeric IDs"
+paths = [ "lower_numeric.md" ]
+parser = "Markdown"
+reference_with_title = true
+
+[[relations]]
+upper="Upper Artefact using readable IDs"
+lower=["Lower Artefact using readable IDs" ]
+
+[[relations]]
+upper="Upper Artefact using numeric IDs"
+lower=["Lower Artefact using numeric IDs" ]
+
+[jobs.trace]
+query="Trace"
+format="Markdown"
+file="out/tmx.md"
+
+[test]
+jobs = ["trace", ]
+success = "ErrorsDetected"
+out_files = [ "tmx.md" ]
+covers = [ "DSG_TRACE_REQUIRE_CHECK_TITLE: Artefacts can require coverage by title" ]

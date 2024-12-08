@@ -4,7 +4,7 @@
 
 ## Lower
 
-## REQ_LOWER: The Lower Requirement
+### REQ_LOWER: The Lower Requirement
 
 Origin: Lower, [tests/data/trace_up/lower.md:2](../tests/data/trace_up/lower.md?plain=1#L2)
 
@@ -16,7 +16,7 @@ Upwards Tracing:
 Downwards Tracing:
 ## Upper
 
-## REQ_UPPER: The Upper Requirement
+### REQ_UPPER: The Upper Requirement
 
 Origin: Upper, [tests/data/trace_up/upper.md:1](../tests/data/trace_up/upper.md?plain=1#L1)
 

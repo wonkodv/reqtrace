@@ -235,7 +235,7 @@ Covers:
 
 #### DSG_TRACE_CHECK_TITLE: When tracing upwards or downwards match title
 
-When tracing Upwards or Downwards, emit an error if the title of the coverage does
+When tracing Upwards or Downwards, and the reference includes a title, emit an error if the title of the coverage does
 not match the title of the covered requirement
 
 Example:
@@ -255,6 +255,16 @@ Covers:
 *   REQ_TRACE
 *   REQ_VAL_TITLE: Check matching title
 *   ARCH_TRACE
+
+#### DSG_TRACE_REQUIRE_CHECK_TITLE: Artefacts can require coverage by title
+
+If an artefact is configured for it, all requirements belonging to that artefact must match with title.
+
+Covers:
+*   REQ_TRACE
+*   REQ_VAL_TITLE: Check matching title
+*   ARCH_TRACE
+
 
 #### DSG_TRACE_REFERENCE_EXIST: Coverage Links must exist
 

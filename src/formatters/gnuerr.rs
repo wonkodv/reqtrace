@@ -89,6 +89,29 @@ where
                     location, req.id, cover
                 )?;
             }
+            Error::ReferencedWithoutTitle {
+                referenced,
+                location,
+            } => {
+                writeln!(
+                    w,
+                    "{}: should reference {} with title {:?}",
+                    location,
+                    referenced.id,
+                    referenced
+                        .title
+                        .as_ref()
+                        .unwrap_or(&"<no title>".to_owned())
+                )?;
+            }
+            Error::RequirementWithoutTitle(req) => {
+                writeln!(
+                    w,
+                    "{}: requirement {} without title in artefact that requires referencing with title",
+                    req.location,
+                    req.id,
+                )?;
+            }
         }
     }
 

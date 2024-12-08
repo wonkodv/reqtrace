@@ -14,7 +14,7 @@
 
 ## Upper Artefact
 
-## REQ_1: A Coverage
+### REQ_1: A Coverage
 
 Origin: Upper Artefact, [tests/data/requirement_twice_in_1_artefact/upper.md:5](../tests/data/requirement_twice_in_1_artefact/upper.md?plain=1#L5)
 
@@ -23,7 +23,7 @@ Upwards Tracing:
 
 Downwards Tracing:
 
-## REQ_2: Another Coverage
+### REQ_2: Another Coverage
 
 Origin: Upper Artefact, [tests/data/requirement_twice_in_1_artefact/upper.md:7](../tests/data/requirement_twice_in_1_artefact/upper.md?plain=1#L7)
 

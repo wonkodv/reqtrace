@@ -19,7 +19,7 @@
 
 ## Lower Artefact
 
-## COV_1: A Coverage
+### COV_1: A Coverage
 
 Origin: Lower Artefact, [tests/data/requirement_twice_in_2_artefacts/lower.md:5](../tests/data/requirement_twice_in_2_artefacts/lower.md?plain=1#L5)
 
@@ -30,7 +30,7 @@ Upwards Tracing:
 
 Downwards Tracing:
 
-## REQ_1: A Requirement
+### REQ_1: A Requirement
 
 Origin: Upper Artefact, [tests/data/requirement_twice_in_2_artefacts/upper.md:5](../tests/data/requirement_twice_in_2_artefacts/upper.md?plain=1#L5)
 
@@ -44,7 +44,7 @@ Downwards Tracing:
         Reference: [tests/data/requirement_twice_in_2_artefacts/lower.md:6](../tests/data/requirement_twice_in_2_artefacts/lower.md?plain=1#L6)
 ## Upper Artefact
 
-## REQ_1: A Requirement
+### REQ_1: A Requirement
 
 Origin: Upper Artefact, [tests/data/requirement_twice_in_2_artefacts/upper.md:5](../tests/data/requirement_twice_in_2_artefacts/upper.md?plain=1#L5)
 

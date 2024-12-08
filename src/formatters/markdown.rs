@@ -61,7 +61,7 @@ fn location_link(loc: &Location) -> String {
 pub fn requirement(req: &Requirement, w: &mut impl io::Write) -> io::Result<()> {
     writeln!(
         w,
-        "\n## {}: {}\n\nOrigin: {}",
+        "\n### {}: {}\n\nOrigin: {}",
         req.id,
         req.title.as_ref().unwrap_or(&String::new()),
         location_link(&req.location)
@@ -143,7 +143,7 @@ pub fn requirements(graph: &Graph, w: &mut impl io::Write) -> io::Result<()> {
 pub fn traced_requirement(req: &RequirementTrace<'_>, w: &mut impl io::Write) -> io::Result<()> {
     writeln!(
         w,
-        "\n## {}{}\n\nOrigin: {}, {}",
+        "\n### {}{}\n\nOrigin: {}, {}",
         req.requirement.id,
         req.requirement
             .title
@@ -331,6 +331,24 @@ pub fn err(error: &Error, w: &mut impl io::Write) -> io::Result<()> {
                 w,
                 "*   No requirement was traced along the relation {}. (Configuration error?)",
                 rel
+            )
+        }
+        Error::ReferencedWithoutTitle {
+            referenced,
+            location,
+        } => {
+            writeln!(
+                w,
+                "*   {} covered without title\n    {}",
+                requirement_link(referenced),
+                location,
+            )
+        }
+        Error::RequirementWithoutTitle(req) => {
+            writeln!(
+                w,
+                "*   Requirement {} without title in artefact that requires referencing with title",
+                requirement_link(req),
             )
         }
     }
