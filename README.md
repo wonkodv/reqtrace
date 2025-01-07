@@ -38,9 +38,9 @@ or lacks this:
 State of this Project
 =====================
 
-Currently in development. v0.1.0 is stable enough to try things out, but everything can still change.
-
-A lot of features are not yet implemented; take a look at the [Tracing Report](reports/tmx.md)
+This is a hobby project.
+Version v0.2.0 is in pretty good shape to try it. For a quick start with minimal clutter, copy the [Trace Up
+Test](tests/data/trace_up/).
 
 Have a look at [`hitchhiker.md`](hitchhiker.md) for a guided tour through the code.
 
