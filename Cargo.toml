@@ -1,6 +1,6 @@
 [package]
 name = "reqtrace"
-version = "0.2.0"
+version = "0.2.0" # keep in sync with flake.nix, run `git tag -a vX.X.X` after commiting this.
 authors = ["Wonko <wonko@hanstool.org>"]
 edition = "2021"
 description = "A Requirement Tracing tool"
